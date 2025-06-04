@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aventura de Texto Épica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c; /* Color de fondo oscuro */
+            color: #e2e8f0; /* Color de texto claro */
+        }
+        #game-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #2d3748; /* Color de fondo del contenedor un poco más claro */
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        #story-output {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #4a5568; /* Borde sutil */
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.375rem;
+            background-color: #1a202c; /* Fondo del output igual al body */
+            line-height: 1.6;
+        }
+        #story-output p {
+            margin-bottom: 0.75rem;
+        }
+        #story-output .command-echo {
+            color: #63b3ed; /* Azul para los comandos del jugador */
+            font-style: italic;
+        }
+        #story-output .error {
+            color: #fc8181; /* Rojo para mensajes de error */
+        }
+        #story-output .info {
+            color: #a0aec0; /* Gris claro para información general */
+        }
+        #story-output .location-title {
+            color: #9f7aea; /* Púrpura para títulos de ubicación */
+            font-weight: bold;
+        }
+        #command-input {
+            width: calc(100% - 100px); /* Ajustar ancho para el botón */
+            padding: 0.75rem;
+            border: 1px solid #4a5568;
+            border-radius: 0.375rem;
+            background-color: #2d3748;
+            color: #e2e8f0;
+            margin-right: 0.5rem;
+        }
+        #command-input::placeholder {
+            color: #a0aec0;
+        }
+        #submit-command {
+            padding: 0.75rem 1.5rem;
+            background-color: #4299e1; /* Azul */
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #submit-command:hover {
+            background-color: #2b6cb0; /* Azul más oscuro */
+        }
+        #inventory-display {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #2d3748;
+            border: 1px solid #4a5568;
+            border-radius: 0.375rem;
+        }
+        #inventory-display h3 {
+            color: #9f7aea;
+            margin-bottom: 0.5rem;
+        }
+        #inventory-list li {
+            color: #e2e8f0;
+        }
+        .room-item, .inventory-item-name {
+            color: #f6e05e; /* Amarillo para objetos */
+            font-weight: bold;
+        }
+        .npc-name {
+            color: #68d391; /* Verde para NPCs */
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <header class="text-center mb-6">
+            <h1 class="text-4xl font-bold text-purple-400">Aventura en las Cavernas de Zyllia</h1>
+            <p class="text-lg text-gray-400">Recupera el Orbe Perdido</p>
+        </header>
+
+        <div id="story-output">
+            </div>
+
+        <div id="input-area" class="flex items-center mb-4">
+            <input type="text" id="command-input" placeholder="Escribe tu comando (ej: norte, tomar mapa)...">
+            <button id="submit-command">Enviar</button>
+        </div>
+        
+        <div id="status-area" class="mb-4 p-3 bg-gray-700 rounded">
+            <p><strong>Salud:</strong> <span id="player-health">100</span></p>
+            </div>
+
+        <div id="inventory-display" class="rounded">
+            <h3 class="text-xl font-semibold">Inventario:</h3>
+            <ul id="inventory-list" class="list-disc list-inside ml-4">
+                </ul>
+        </div>
+    </div>
+
+    <script>
+        // Elementos del DOM
+        const storyOutput = document.getElementById('story-output');
+        const commandInput = document.getElementById('command-input');
+        const submitCommandButton = document.getElementById('submit-command');
+        const inventoryList = document.getElementById('inventory-list');
+        const playerHealthDisplay = document.getElementById('player-health');
+
+        // Estado del juego
+        let player = {
+            currentRoom: 'inicio',
+            inventory: [],
+            health: 100,
+            maxHealth: 100,
+            attackPower: 10,
+            hasWon: false
+        };
+
+        // Definición de los objetos del juego
+        const items = {
+            mapa: { 
+                name: "Mapa Desgastado", 
+                description: "Un mapa viejo y polvoriento. Muestra algunas rutas del bosque.",
+                messageOnTake: "Tomas el mapa. Podría ser útil.",
+                canTake: true
+            },
+            rama: { 
+                name: "Rama Robusta", 
+                description: "Una rama de árbol sorprendentemente fuerte. Podría usarse como arma improvisada.",
+                messageOnTake: "Agarras la rama. Te sientes un poco más seguro.",
+                canTake: true,
+                damage: 5 // Daño adicional si se usa como arma
+            },
+            bayas: { 
+                name: "Bayas Brillantes", 
+                description: "Unas bayas rojas y brillantes. Parecen jugosas.",
+                messageOnTake: "Recoges las bayas. Huelen dulces.",
+                canTake: true,
+                heals: 20 // Cuánto curan
+            },
+            espada_oxidada: {
+                name: "Espada Oxidada",
+                description: "Una espada vieja y oxidada. Mejor que nada.",
+                messageOnTake: "Tomas la espada oxidada. No es la mejor, pero servirá.",
+                canTake: true,
+                damage: 10
+            },
+            orbe_perdido: {
+                name: "Orbe Perdido de Zyllia",
+                description: "¡El legendario Orbe Perdido! Brilla con una luz tenue y cálida.",
+                messageOnTake: "¡Has encontrado el Orbe Perdido de Zyllia! Sientes una oleada de poder y esperanza.",
+                canTake: true
+            }
+        };
+
+        // Definición de los NPCs (Personajes No Jugadores)
+        const npcs = {
+            lobo_hambriento: {
+                name: "Lobo Hambriento",
+                description: "Un lobo grande y de aspecto famélico te mira con ojos brillantes. Gruñe amenazadoramente.",
+                health: 50,
+                attackPower: 15,
+                isHostile: true,
+                defeated: false,
+                drops: null, // Podría soltar un objeto al ser derrotado
+                dialogue: {
+                    attack: "El lobo se abalanza sobre ti con sus fauces abiertas!",
+                    defeat: "El lobo yace inmóvil en el suelo.",
+                    distracted: "El lobo devora las bayas con avidez, ignorándote por un momento."
+                }
+            },
+            guardian_orbe: {
+                name: "Guardián Espectral",
+                description: "Una figura espectral flota ante el pedestal del orbe. Sus ojos brillan con una luz fría.",
+                health: 80,
+                attackPower: 20,
+                isHostile: true,
+                defeated: false,
+                drops: 'orbe_perdido',
+                dialogue: {
+                    attack: "El guardián espectral levanta una mano huesuda y una energía fría te golpea!",
+                    defeat: "El guardián espectral se desvanece con un susurro, dejando el camino libre."
+                }
+            }
+        };
+        
+        // Definición de las habitaciones
+        const rooms = {
+            inicio: {
+                title: "Cabaña Abandonada",
+                description: "Estás en una pequeña y destartalada cabaña de madera. El aire está cargado de polvo. Hay una única puerta al <span class='text-yellow-300'>norte</span> que parece llevar al exterior. Sobre una mesa coja, ves un <span class='room-item'>mapa</span>.",
+                exits: { norte: 'bosque_entrada' },
+                items: ['mapa'],
+                npc: null
+            },
+            bosque_entrada: {
+                title: "Entrada del Bosque Sombrío",
+                description: "Te encuentras a la entrada de un oscuro y silencioso bosque. Árboles nudosos se alzan como espectros. Un sendero apenas visible se adentra hacia el <span class='text-yellow-300'>norte</span>. La cabaña está al <span class='text-yellow-300'>sur</span>. En el suelo, cerca de un árbol, hay una <span class='room-item'>rama</span> robusta.",
+                exits: { norte: 'bosque_profundo', sur: 'inicio' },
+                items: ['rama'],
+                npc: null
+            },
+            bosque_profundo: {
+                title: "Corazón del Bosque",
+                description: "El bosque es denso y opresivo aquí. La luz del sol apenas se filtra a través de las copas de los árboles. Escuchas un gruñido gutural cercano. Hay un pequeño claro al <span class='text-yellow-300'>este</span> y el sendero continúa, más ominoso, hacia el <span class='text-yellow-300'>norte</span>. El camino de regreso está al <span class='text-yellow-300'>sur</span>.",
+                exits: { norte: 'cueva_entrada_exterior', este: 'claro_bosque', sur: 'bosque_entrada' },
+                items: [],
+                npc: 'lobo_hambriento' // El lobo está aquí
+            },
+            claro_bosque: {
+                title: "Claro Tranquilo",
+                description: "Un pequeño y sorprendentemente tranquilo claro se abre en el bosque. La luz del sol baña este lugar. Ves unas <span class='room-item'>bayas</span> brillantes y rojas en un arbusto. El bosque denso está al <span class='text-yellow-300'>oeste</span>.",
+                exits: { oeste: 'bosque_profundo' },
+                items: ['bayas'],
+                npc: null
+            },
+            cueva_entrada_exterior: {
+                title: "Exterior de la Cueva Misteriosa",
+                description: "Frente a ti se abre la boca oscura de una cueva. Un aire frío emana de su interior. El sendero del bosque está al <span class='text-yellow-300'>sur</span>. Si el <span class='npc-name'>Lobo Hambriento</span> está aquí, bloquea la entrada.",
+                exits: { sur: 'bosque_profundo', norte: 'interior_cueva_entrada' }, // 'norte' solo si el lobo no está o está derrotado
+                items: [],
+                npc: null // El lobo se maneja en bosque_profundo, pero afecta esta salida.
+            },
+            interior_cueva_entrada: {
+                title: "Entrada de la Cueva",
+                description: "Has entrado en la cueva. Es húmeda y oscura. El sonido de gotas de agua resonando es lo único que rompe el silencio. Hay un pasadizo que se adentra más en la oscuridad hacia el <span class='text-yellow-300'>norte</span>. Ves una <span class='room-item'>espada oxidada</span> apoyada contra una pared. La salida está al <span class='text-yellow-300'>sur</span>.",
+                exits: { norte: 'camara_orbe', sur: 'cueva_entrada_exterior' },
+                items: ['espada_oxidada'],
+                npc: null
+            },
+            camara_orbe: {
+                title: "Cámara del Orbe",
+                description: "Llegas a una cámara espaciosa. En el centro, sobre un pedestal de piedra, algo brilla débilmente. ¡Debe ser el Orbe Perdido! Un <span class='npc-name'>Guardián Espectral</span> protege el pedestal.",
+                exits: { sur: 'interior_cueva_entrada' },
+                items: [], // El orbe es soltado por el guardián
+                npc: 'guardian_orbe',
+                isGoal: true
+            }
+        };
+
+        // Función para mostrar texto en la pantalla del juego
+        function displayText(text, type = 'normal') {
+            const p = document.createElement('p');
+            p.innerHTML = text; // Usar innerHTML para permitir etiquetas span para colorear
+            if (type === 'command') p.classList.add('command-echo');
+            if (type === 'error') p.classList.add('error');
+            if (type === 'info') p.classList.add('info');
+            if (type === 'location') p.classList.add('location-title');
+            storyOutput.appendChild(p);
+            storyOutput.scrollTop = storyOutput.scrollHeight; // Auto-scroll hacia abajo
+        }
+
+        // Función para actualizar la pantalla del inventario
+        function updateInventoryDisplay() {
+            inventoryList.innerHTML = ''; // Limpiar lista actual
+            if (player.inventory.length === 0) {
+                const li = document.createElement('li');
+                li.textContent = 'Vacío';
+                li.classList.add('text-gray-500');
+                inventoryList.appendChild(li);
+            } else {
+                player.inventory.forEach(itemId => {
+                    const item = items[itemId];
+                    if (item) {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<span class="inventory-item-name">${item.name}</span>`;
+                        inventoryList.appendChild(li);
+                    }
+                });
+            }
+        }
+        
+        // Función para actualizar la salud del jugador
+        function updatePlayerHealthDisplay() {
+            playerHealthDisplay.textContent = `${player.health}/${player.maxHealth}`;
+            if (player.health <= 0) {
+                 playerHealthDisplay.parentElement.classList.add('text-red-500', 'font-bold');
+            } else {
+                 playerHealthDisplay.parentElement.classList.remove('text-red-500', 'font-bold');
+            }
+        }
+
+        // Función para mostrar la descripción de la habitación actual
+        function displayRoom() {
+            if (player.hasWon) return;
+
+            const room = rooms[player.currentRoom];
+            if (room) {
+                displayText(`<strong>--- ${room.title} ---</strong>`, 'location');
+                displayText(room.description);
+
+                if (room.items.length > 0) {
+                    displayText("Ves aquí: " + room.items.map(id => `<span class='room-item'>${items[id].name}</span>`).join(', ') + ".", 'info');
+                }
+
+                // Mostrar NPC si existe y no está derrotado
+                const npcId = room.npc;
+                if (npcId && npcs[npcId] && !npcs[npcId].defeated) {
+                    displayText(`Hay un <span class='npc-name'>${npcs[npcId].name}</span> aquí. ${npcs[npcId].description}`, 'info');
+                }
+                
+                // Mostrar salidas disponibles
+                let exitsAvailable = "Salidas: ";
+                let exitKeys = Object.keys(room.exits);
+                
+                // Caso especial para la cueva_entrada_exterior y el lobo
+                if (player.currentRoom === 'cueva_entrada_exterior') {
+                    const lobo = npcs.lobo_hambriento;
+                    if (lobo && !lobo.defeated && rooms.bosque_profundo.npc === 'lobo_hambriento') { // Si el lobo está en bosque_profundo y no derrotado
+                        displayText("El <span class='npc-name'>Lobo Hambriento</span> de la zona anterior parece bloquear el camino al norte hacia la cueva.", "error");
+                        exitKeys = exitKeys.filter(exit => exit !== 'norte'); // Remover salida norte
+                    }
+                }
+                
+                exitsAvailable += exitKeys.map(e => `<span class='text-yellow-300'>${e}</span>`).join(', ');
+                displayText(exitsAvailable, 'info');
+
+            } else {
+                displayText("Error: Habitación desconocida.", 'error');
+            }
+            updateInventoryDisplay();
+            updatePlayerHealthDisplay();
+        }
+
+        // Función para procesar los comandos del jugador
+        function processCommand(command) {
+            if (player.hasWon || player.health <= 0) return;
+
+            displayText(`> ${command}`, 'command');
+            const parts = command.toLowerCase().split(' ');
+            const action = parts[0];
+            const target = parts.slice(1).join(' '); // El resto como objetivo
+
+            switch (action) {
+                case 'norte':
+                case 'sur':
+                case 'este':
+                case 'oeste':
+                    move(action);
+                    break;
+                case 'mirar':
+                    displayRoom(); // Simplemente redisplayea la habitación
+                    break;
+                case 'tomar':
+                    takeItem(target);
+                    break;
+                case 'inventario':
+                    displayText("En tu inventario tienes: " + (player.inventory.length > 0 ? player.inventory.map(id => items[id].name).join(', ') : "nada") + ".");
+                    break;
+                case 'usar':
+                    // Formato: usar [objeto] en [objetivo_npc] o usar [objeto_curativo]
+                    const useParts = command.toLowerCase().split(' en ');
+                    const itemToUseName = useParts[0].substring(action.length + 1).trim();
+                    const targetNpcName = useParts.length > 1 ? useParts[1].trim() : null;
+                    useItem(itemToUseName, targetNpcName);
+                    break;
+                case 'atacar':
+                    attackNpc(target);
+                    break;
+                case 'ayuda':
+                    displayHelp();
+                    break;
+                default:
+                    displayText("Comando desconocido. Escribe 'ayuda' para ver los comandos disponibles.", 'error');
+            }
+            // Después de cada comando, verificar si hay un NPC hostil en la sala y si puede atacar.
+            const currentRoomNpcId = rooms[player.currentRoom].npc;
+            if (currentRoomNpcId && npcs[currentRoomNpcId] && npcs[currentRoomNpcId].isHostile && !npcs[currentRoomNpcId].defeated && player.health > 0) {
+                if (action !== 'atacar' && action !== 'usar') { // Si el jugador no acaba de atacar o usar un objeto (que podría ser contra el NPC)
+                     npcAttack(currentRoomNpcId);
+                }
+            }
+             if (player.health <= 0 && !player.hasWon) {
+                gameOver();
+            }
+        }
+
+        function displayHelp() {
+            displayText("Comandos disponibles:", "info");
+            displayText("<span class='text-yellow-300'>norte, sur, este, oeste</span> - Para moverte.", "info");
+            displayText("<span class='text-yellow-300'>mirar</span> - Para ver la descripción de la habitación actual.", "info");
+            displayText("<span class='text-yellow-300'>tomar [nombre del objeto]</span> - Para recoger un objeto.", "info");
+            displayText("<span class='text-yellow-300'>inventario</span> - Para ver tus objetos.", "info");
+            displayText("<span class='text-yellow-300'>usar [objeto]</span> - Para usar un objeto consumible (ej: bayas).", "info");
+            displayText("<span class='text-yellow-300'>usar [objeto] en [npc]</span> - Para usar un objeto sobre un NPC (ej: usar bayas en lobo).", "info");
+            displayText("<span class='text-yellow-300'>atacar [npc]</span> - Para atacar a un NPC hostil.", "info");
+            displayText("<span class='text-yellow-300'>ayuda</span> - Para mostrar esta ayuda.", "info");
+        }
+
+        function move(direction) {
+            const room = rooms[player.currentRoom];
+            if (room.exits[direction]) {
+                // Lógica especial para la cueva_entrada_exterior
+                if (player.currentRoom === 'cueva_entrada_exterior' && direction === 'norte') {
+                    const lobo = npcs.lobo_hambriento;
+                    // El lobo está en 'bosque_profundo', pero su estado afecta esta salida.
+                    // Necesitamos verificar si el NPC 'lobo_hambriento' aún está activo en 'bosque_profundo'.
+                    const loboEnBosqueProfundo = rooms.bosque_profundo.npc === 'lobo_hambriento' && !lobo.defeated;
+                    if (loboEnBosqueProfundo) {
+                        displayText("El <span class='npc-name'>Lobo Hambriento</span> bloquea el camino hacia la cueva. Debes encargarte de él primero.", 'error');
+                        return;
+                    }
+                }
+                player.currentRoom = room.exits[direction];
+                displayRoom();
+            } else {
+                displayText("No puedes ir por ese camino.", 'error');
+            }
+        }
+
+        function takeItem(itemNameQuery) {
+            const room = rooms[player.currentRoom];
+            const itemKey = Object.keys(items).find(key => items[key].name.toLowerCase() === itemNameQuery.toLowerCase() && room.items.includes(key));
+
+            if (itemKey) {
+                const item = items[itemKey];
+                if (item.canTake) {
+                    player.inventory.push(itemKey);
+                    room.items = room.items.filter(id => id !== itemKey); // Remover de la habitación
+                    displayText(item.messageOnTake || `Tomas ${item.name}.`);
+                    updateInventoryDisplay();
+                    // Si el objeto es un arma, equiparla (simple, solo considera el daño)
+                    if (item.damage) {
+                        // Podríamos tener una lógica más compleja para "equipar"
+                        // Por ahora, asumimos que el mejor arma se usa automáticamente o se suma al poder base.
+                        // Para simplificar, digamos que el último arma tomada es la activa.
+                         displayText(`Ahora tienes un arma con ${item.damage} de daño base.`, 'info');
+                    }
+                     // Si el objeto es el Orbe Perdido, el jugador gana.
+                    if (itemKey === 'orbe_perdido') {
+                        gameWon();
+                    }
+                } else {
+                    displayText(`No puedes tomar ${item.name}.`, 'error');
+                }
+            } else {
+                displayText("No ves ese objeto aquí.", 'error');
+            }
+        }
+        
+        function getPlayerAttackPower() {
+            let totalAttack = player.attackPower; // Poder base
+            // Buscar el arma más fuerte en el inventario
+            let bestWeaponDamage = 0;
+            player.inventory.forEach(itemId => {
+                const item = items[itemId];
+                if (item && item.damage && item.damage > bestWeaponDamage) {
+                    bestWeaponDamage = item.damage;
+                }
+            });
+            return totalAttack + bestWeaponDamage;
+        }
+
+        function attackNpc(npcNameQuery) {
+            const currentRoomData = rooms[player.currentRoom];
+            const npcId = currentRoomData.npc;
+
+            if (!npcId || npcs[npcId].name.toLowerCase() !== npcNameQuery.toLowerCase()) {
+                displayText("No hay tal criatura aquí para atacar.", 'error');
+                return;
+            }
+
+            const npc = npcs[npcId];
+            if (npc.defeated) {
+                displayText(`El <span class='npc-name'>${npc.name}</span> ya está derrotado.`, 'info');
+                return;
+            }
+
+            if (!npc.isHostile && !npc.health) { // Si no es hostil y no tiene salud, no se puede atacar
+                 displayText(`No puedes atacar a <span class='npc-name'>${npc.name}</span>.`, 'error');
+                 return;
+            }
+            
+            // Jugador ataca
+            const playerDamage = getPlayerAttackPower() + Math.floor(Math.random() * 5); // Daño con algo de aleatoriedad
+            npc.health -= playerDamage;
+            displayText(`Atacas al <span class='npc-name'>${npc.name}</span> y le haces ${playerDamage} de daño.`);
+
+            if (npc.health <= 0) {
+                npc.health = 0;
+                npc.defeated = true;
+                displayText(`¡Has derrotado al <span class='npc-name'>${npc.name}</span>! ${npc.dialogue.defeat}`);
+                currentRoomData.npc = null; // Remover NPC de la habitación
+                
+                // Si el NPC suelta un objeto
+                if (npc.drops) {
+                    const droppedItemKey = npc.drops;
+                    if (items[droppedItemKey]) {
+                        currentRoomData.items.push(droppedItemKey); // Añadir objeto a la habitación
+                        displayText(`El <span class='npc-name'>${npc.name}</span> soltó un <span class='room-item'>${items[droppedItemKey].name}</span>.`, 'info');
+                    }
+                }
+                // Si el NPC derrotado es el lobo, ya no está en bosque_profundo
+                if (npcId === 'lobo_hambriento') {
+                    rooms.bosque_profundo.npc = null; 
+                }
+
+
+            } else {
+                displayText(`Al <span class='npc-name'>${npc.name}</span> le quedan ${npc.health} de salud.`);
+                // NPC contraataca
+                npcAttack(npcId);
+            }
+            updatePlayerHealthDisplay();
+        }
+
+        function npcAttack(npcId) {
+            if (player.health <= 0 || player.hasWon) return;
+
+            const npc = npcs[npcId];
+            if (npc && npc.isHostile && !npc.defeated) {
+                const npcDamage = npc.attackPower + Math.floor(Math.random() * 3);
+                player.health -= npcDamage;
+                displayText(`${npc.dialogue.attack} Te hace ${npcDamage} de daño.`, 'error');
+                updatePlayerHealthDisplay();
+
+                if (player.health <= 0) {
+                    player.health = 0;
+                    updatePlayerHealthDisplay();
+                    gameOver();
+                }
+            }
+        }
+        
+        function useItem(itemNameQuery, targetNpcNameQuery = null) {
+            const itemKey = Object.keys(items).find(key => 
+                items[key].name.toLowerCase() === itemNameQuery.toLowerCase() && player.inventory.includes(key)
+            );
+
+            if (!itemKey) {
+                displayText("No tienes ese objeto en tu inventario.", 'error');
+                return;
+            }
+
+            const item = items[itemKey];
+
+            // Caso 1: Usar objeto en un NPC
+            if (targetNpcNameQuery) {
+                const currentRoomData = rooms[player.currentRoom];
+                const npcId = currentRoomData.npc;
+
+                if (!npcId || npcs[npcId].name.toLowerCase() !== targetNpcNameQuery.toLowerCase()) {
+                    displayText(`No ves a <span class='npc-name'>${targetNpcNameQuery}</span> aquí.`, 'error');
+                    return;
+                }
+                const npc = npcs[npcId];
+                if (npc.defeated) {
+                     displayText(`El <span class='npc-name'>${npc.name}</span> ya está fuera de combate.`, 'info');
+                     return;
+                }
+
+                // Lógica específica para "bayas en lobo"
+                if (itemKey === 'bayas' && npcId === 'lobo_hambriento') {
+                    displayText(`Le lanzas las <span class='room-item'>${item.name}</span> al <span class='npc-name'>${npc.name}</span>. ${npc.dialogue.distracted}`);
+                    npc.isHostile = false; // El lobo se distrae y deja de ser hostil temporalmente o permanentemente
+                    npc.defeated = true; // Consideramos que distraerlo es como "derrotarlo" para pasar
+                    rooms.bosque_profundo.npc = null; // Remover al lobo de la habitación para que no bloquee
+                    player.inventory = player.inventory.filter(id => id !== itemKey); // Consumir bayas
+                    updateInventoryDisplay();
+                    displayText("El camino hacia el norte ahora parece despejado.", "info");
+                } else {
+                    displayText(`No puedes usar <span class='room-item'>${item.name}</span> en <span class='npc-name'>${npc.name}</span> de esa manera.`, 'error');
+                }
+            } 
+            // Caso 2: Usar objeto consumible en el jugador (ej. curación)
+            else if (item.heals) {
+                player.health += item.heals;
+                if (player.health > player.maxHealth) player.health = player.maxHealth;
+                displayText(`Usas <span class='room-item'>${item.name}</span> y recuperas ${item.heals} de salud.`);
+                player.inventory = player.inventory.filter(id => id !== itemKey); // Consumir objeto
+                updateInventoryDisplay();
+                updatePlayerHealthDisplay();
+            } else {
+                displayText(`No puedes 'usar' <span class='room-item'>${item.name}</span> de esa manera sin un objetivo, o no es un objeto consumible.`, 'error');
+            }
+        }
+
+        function gameOver() {
+            displayText("--------------------------------", "error");
+            displayText("GAME OVER", "error");
+            displayText("Has caído en combate. Tu aventura termina aquí.", "error");
+            displayText("--------------------------------", "error");
+            commandInput.disabled = true;
+            submitCommandButton.disabled = true;
+        }
+
+        function gameWon() {
+            displayText("********************************", "location");
+            displayText("¡FELICIDADES!", "location");
+            displayText("Has recuperado el Orbe Perdido de Zyllia y salvado estas tierras.", "location");
+            displayText("¡TU AVENTURA HA SIDO UN ÉXITO!", "location");
+            displayText("********************************", "location");
+            player.hasWon = true;
+            commandInput.disabled = true;
+            submitCommandButton.disabled = true;
+        }
+
+
+        // Iniciar el juego
+        submitCommandButton.addEventListener('click', () => {
+            const command = commandInput.value.trim();
+            if (command) {
+                processCommand(command);
+                commandInput.value = ''; // Limpiar input
+            }
+        });
+
+        commandInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                submitCommandButton.click();
+            }
+        });
+        
+        function startGame() {
+            displayText("Bienvenido, aventurero, a las Cavernas de Zyllia.", "info");
+            displayText("Tu misión: encontrar el legendario Orbe Perdido, oculto en las profundidades de estas tierras.", "info");
+            displayText("Escribe 'ayuda' para ver los comandos disponibles.", "info");
+            displayRoom();
+        }
+
+        startGame();
+    </script>
+</body>
+</html>
