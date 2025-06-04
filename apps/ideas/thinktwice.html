@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documento de Diseño Funcional: Think Twice</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Light Slate 50 */
+            color: #1e293b; /* Slate 900 */
+        }
+        .container {
+            max-width: 960px; /* Max width for content */
+        }
+        h1, h2, h3, h4 {
+            font-weight: 600; /* Semi-bold for headings */
+            color: #0f172a; /* Slate 950 */
+        }
+        h1 {
+            font-size: 2.5rem; /* 40px */
+            line-height: 1.2;
+        }
+        h2 {
+            font-size: 2rem; /* 32px */
+            line-height: 1.3;
+        }
+        h3 {
+            font-size: 1.5rem; /* 24px */
+            line-height: 1.4;
+        }
+        h4 {
+            font-size: 1.25rem; /* 20px */
+            line-height: 1.5;
+        }
+        p {
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+        ul, ol {
+            list-style-position: inside;
+            margin-bottom: 1rem;
+        }
+        ul li, ol li {
+            margin-bottom: 0.5rem;
+        }
+        .section-card {
+            background-color: #ffffff;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .code-block {
+            background-color: #e2e8f0; /* Slate 200 */
+            border-left: 4px solid #3b82f6; /* Blue 500 */
+            padding: 1rem;
+            border-radius: 0.5rem; /* rounded-lg */
+            font-family: monospace;
+            overflow-x: auto;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8">
+    <div class="container mx-auto">
+        <!-- Header Section -->
+        <header class="text-center mb-12 py-8 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl shadow-lg">
+            <h1 class="text-4xl sm:text-5xl font-extrabold mb-2">Documento de Diseño Funcional</h1>
+            <p class="text-2xl sm:text-3xl font-light">Think Twice</p>
+        </header>
+
+        <!-- Introduction -->
+        <section class="section-card">
+            <h2 class="text-3xl mb-4">1. Introducción</h2>
+            <p>Este documento detalla el diseño funcional de <strong>"Think Twice"</strong>, una herramienta diseñada para mejorar la calidad y la utilidad de la información compartida en grupos de mensajería (como WhatsApp), mitigando la saturación de enlaces de redes sociales. La herramienta busca fomentar la reflexión y la creación de resúmenes concisos y útiles por parte del usuario, asistido por Inteligencia Artificial, antes de compartir un enlace.</p>
+        </section>
+
+        <!-- Problem Overview -->
+        <section class="section-card">
+            <h2 class="text-3xl mb-4">2. Visión General del Problema</h2>
+            <p>En la era digital, la proliferación de enlaces de redes sociales en grupos de mensajería es una fuente común de saturación y frustración. Los usuarios comparten enlaces sin contexto, obligando a los receptores a salir de la aplicación de mensajería, cargar contenido potencialmente pesado (videos, imágenes) y discernir la relevancia por sí mismos. Esto consume tiempo, datos y desincentiva la interacción significativa.</p>
+        </section>
+
+        <!-- Solution Overview -->
+        <section class="section-card">
+            <h2 class="text-3xl mb-4">3. Visión General de la Solución: Think Twice</h2>
+            <p><strong>"Think Twice"</strong> propone un enfoque semi-automatizado donde el usuario es el curador final del contenido. En lugar de compartir un enlace directamente, el usuario lo procesa a través de "Think Twice". La herramienta utiliza un LLM para extraer información inicial y luego guía al usuario a través de un proceso de preguntas para crear un resumen personalizado. Este resumen, junto con el enlace original, se empaqueta en una mini-página dinámica optimizada para las previsualizaciones de WhatsApp, y se almacena en un directorio consultable.</p>
+            <h3 class="text-2xl mt-6 mb-3">Principios Clave:</h3>
+            <ul class="list-disc pl-5">
+                <li><strong>Asistencia de IA, Control Humano:</strong> El LLM asiste, pero el usuario define el mensaje final.</li>
+                <li><strong>Contexto Primero:</strong> Proporcionar un resumen útil antes de que el usuario haga clic en el enlace.</li>
+                <li><strong>Eficiencia en la Comunicación:</strong> Reducir la "fricción" y la "saturación" en los grupos.</li>
+                <li><strong>Valor Añadido:</strong> Crear un directorio de conocimiento compartido y curado, y un historial personal de enlaces.</li>
+            </ul>
+        </section>
+
+        <!-- Proposed Architecture -->
+        <section class="section-card">
+            <h2 class="text-3xl mb-4">4. Arquitectura Propuesta</h2>
+            <p>La arquitectura se basa en servicios serverless de Google Cloud Platform (GCP) para optimizar la escalabilidad, el costo y la mantenibilidad, aprovechando las cuentas existentes del desarrollador.</p>
+            <ul class="list-disc pl-5">
+                <li><strong>Control de Versiones:</strong> GitHub</li>
+                <li><strong>Frontend (Interfaz de Usuario):</strong> Firebase Hosting (HTML/CSS/JS o framework compilado)</li>
+                <li><strong>Backend (API y Lógica):</strong> Google Cloud Run (Python con Flask/FastAPI)
+                    <ul class="list-circle pl-5">
+                        <li>Maneja la recepción de enlaces, la interacción con el LLM, la generación de preguntas, el almacenamiento en la DB y la generación dinámica de las mini-páginas.</li>
+                    </ul>
+                </li>
+                <li><strong>Base de Datos:</strong> Firestore (NoSQL)
+                    <ul class="list-circle pl-5">
+                        <li>Almacena enlaces originales, resúmenes generados, historial de interacciones, datos de usuario y la estructura del directorio.</li>
+                    </ul>
+                </li>
+                <li><strong>Inteligencia Artificial:</strong> Google Gemini API
+                    <ul class="list-circle pl-5">
+                        <li>Utilizado para el análisis inicial del enlace (extracción de metadatos, título, descripción) y la generación de preguntas contextuales para el usuario.</li>
+                    </ul>
+                </li>
+                <li><strong>Autenticación:</strong> Firebase Authentication</li>
+                <li><strong>Hosting de Mini-Páginas Dinámicas:</strong> Firebase Hosting (sirviendo rutas reescritas a Cloud Run para renderizado dinámico).</li>
+            </ul>
+        </section>
+
+        <!-- Use Cases -->
+        <section class="section-card">
+            <h2 class="text-3xl mb-4">5. Casos de Uso</h2>
+
+            <h3 class="text-2xl mt-6 mb-3">5.1 Caso de Uso Principal: Crear y Compartir un Resumen de Post Social</h3>
+            <p><strong>Actor Principal:</strong> Usuario que desea compartir un enlace.</p>
+            <h4 class="text-xl mt-4 mb-2">Precondiciones:</h4>
+            <ul class="list-disc pl-5">
+                <li>El usuario tiene un enlace de un post social (ej. Instagram, X, YouTube, artículo de blog).</li>
+                <li>El usuario tiene acceso a la herramienta "Think Twice" (a través de una URL web).</li>
+            </ul>
+            <h4 class="text-xl mt-4 mb-2">Flujo Principal:</h4>
+            <ol class="list-decimal pl-5">
+                <li><strong>Inicio:</strong> El usuario abre la página web de "Think Twice".</li>
+                <li><strong>Pegar Enlace:</strong> El usuario pega el enlace del post social en un campo de texto y hace clic en "Analizar".</li>
+                <li><strong>Análisis Inicial (Backend/LLM):</strong>
+                    <ul class="list-circle pl-5">
+                        <li>El backend recibe el enlace.</li>
+                        <li>Intenta extraer metadatos públicos del enlace (título, descripción, imagen principal) utilizando librerías de scraping ligero o confiando en las capacidades del LLM para acceder a URLs públicas.</li>
+                        <li>Envía esta información al LLM (Gemini) con un prompt para un análisis inicial y la generación de preguntas relevantes.</li>
+                    </ul>
+                </li>
+                <li><strong>Interacción con el Usuario (Frontend):</strong>
+                    <ul class="list-circle pl-5">
+                        <li>La herramienta muestra el análisis inicial (ej. título sugerido, miniatura) y una serie de preguntas generadas por el LLM (ej. "¿Cuál es la idea principal que quieres transmitir?", "¿Por qué crees que esto es relevante para tu grupo?").</li>
+                        <li>El usuario revisa el análisis y responde las preguntas, editando libremente el resumen sugerido o añadiendo su propio texto.</li>
+                    </ul>
+                </li>
+                <li><strong>Generación de Resumen Final:</strong>
+                    <ul class="list-circle pl-5">
+                        <li>El usuario confirma el resumen final.</li>
+                        <li>El backend guarda el enlace original, el resumen final, la fecha y el ID del usuario (si está autenticado) en Firestore.</li>
+                        <li>Se genera una URL única para la mini-página dinámica del resumen (ej. <code>thinktwice.link/resumen-id</code>).</li>
+                    </ul>
+                </li>
+                <li><strong>Compartir:</strong>
+                    <ul class="list-circle pl-5">
+                        <li>La herramienta muestra la URL generada y un botón para copiarla.</li>
+                        <li>El usuario copia la URL y la pega en su grupo de WhatsApp.</li>
+                    </ul>
+                </li>
+                <li><strong>Previsualización en WhatsApp:</strong>
+                    <ul class="list-circle pl-5">
+                        <li>WhatsApp detecta la URL de "Think Twice" y genera una previsualización enriquecida usando las meta etiquetas OG de la mini-página. Esta previsualización muestra el resumen curado y la miniatura relevante, haciendo el enlace más útil.</li>
+                    </ul>
+                </li>
+            </ol>
+            <h4 class="text-xl mt-4 mb-2">Postcondiciones:</h4>
+            <ul class="list-disc pl-5">
+                <li>El resumen del post social está disponible a través de una URL de "Think Twice".</li>
+                <li>El resumen y el enlace original están almacenados en la base de datos.</li>
+                <li>El usuario ha compartido un enlace más útil y contextualizado en su grupo.</li>
+            </ul>
+
+            <h3 class="text-2xl mt-8 mb-3">5.2 Caso de Uso Secundario: Consultar el Directorio de Resúmenes</h3>
+            <p><strong>Actor Principal:</strong> Cualquier usuario de la herramienta.</p>
+            <h4 class="text-xl mt-4 mb-2">Precondiciones:</h4>
+            <ul class="list-disc pl-5">
+                <li>Existen resúmenes previamente generados y marcados como "públicos".</li>
+            </ul>
+            <h4 class="text-xl mt-4 mb-2">Flujo Principal:</h4>
+            <ol class="list-decimal pl-5">
+                <li><strong>Acceso al Directorio:</strong> El usuario navega a la sección de "Directorio" en la página de "Think Twice".</li>
+                <li><strong>Búsqueda/Exploración:</strong> El usuario puede buscar resúmenes por palabras clave, categorías o explorar los más recientes/populares.</li>
+                <li><strong>Visualización:</strong> Los resultados muestran el título del resumen, una breve descripción y un enlace a la mini-página de "Think Twice" o al post original.</li>
+            </ol>
+            <h4 class="text-xl mt-4 mb-2">Postcondiciones:</h4>
+            <ul class="list-disc pl-5">
+                <li>El usuario ha encontrado y accedido a resúmenes de enlaces compartidos previamente por él o por otros.</li>
+            </ul>
+
+            <h3 class="text-2xl mt-8 mb-3">5.3 Caso de Uso Futuro: Gestión de Perfil y Resúmenes Propios</h3>
+            <p><strong>Actor Principal:</strong> Usuario autenticado.</p>
+            <h4 class="text-xl mt-4 mb-2">Precondiciones:</h4>
+            <ul class="list-disc pl-5">
+                <li>El usuario ha iniciado sesión en "Think Twice".</li>
+            </ul>
+            <h4 class="text-xl mt-4 mb-2">Flujo Principal:</h4>
+            <ol class="list-decimal pl-5">
+                <li><strong>Acceso al Perfil:</strong> El usuario navega a su sección de perfil.</li>
+                <li><strong>Ver Historial de Creación:</strong> El usuario puede ver todos los resúmenes que él mismo ha creado.</li>
+                <li><strong>Gestionar Resúmenes:</strong> El usuario puede editar, eliminar o cambiar la visibilidad (público/privado) de sus propios resúmenes.</li>
+                <li><strong>Organización:</strong> El usuario puede organizar sus resúmenes en colecciones o carpetas.</li>
+            </ol>
+            <h4 class="text-xl mt-4 mb-2">Postcondiciones:</h4>
+            <ul class="list-disc pl-5">
+                <li>El usuario tiene control sobre su contenido generado y su historial de creación.</li>
+            </ul>
+
+            <h3 class="text-2xl mt-8 mb-3">5.4 Caso de Uso Futuro: Historial de Enlaces Recibidos/Guardados</h3>
+            <p><strong>Actor Principal:</strong> Usuario autenticado.</p>
+            <h4 class="text-xl mt-4 mb-2">Precondiciones:</h4>
+            <ul class="list-disc pl-5">
+                <li>El usuario ha iniciado sesión en "Think Twice".</li>
+                <li>El usuario ha interactuado con (ej. abierto, guardado) enlaces de "Think Twice" creados por otros.</li>
+            </ul>
+            <h4 class="text-xl mt-4 mb-2">Flujo Principal:</h4>
+            <ol class="list-decimal pl-5">
+                <li><strong>Acceso al Historial:</strong> El usuario navega a una sección dedicada a "Enlaces Recibidos" o "Mis Guardados".</li>
+                <li><strong>Visualización de Enlaces:</strong> La herramienta muestra una lista de URLs de "Think Twice" que el usuario ha guardado explícitamente o que el sistema ha registrado como vistas por él (si se implementa el seguimiento de vistas).</li>
+                <li><strong>Detalles del Enlace:</strong> Para cada entrada en el historial, se muestra el título del resumen, una breve descripción y la opción de ir a la mini-página de "Think Twice" o al enlace original.</li>
+                <li><strong>Gestión del Historial:</strong> El usuario puede eliminar enlaces de su historial de recibidos.</li>
+            </ol>
+            <h4 class="text-xl mt-4 mb-2">Postcondiciones:</h4>
+            <ul class="list-disc pl-5">
+                <li>El usuario tiene un registro personal de los resúmenes de "Think Twice" que ha encontrado útiles, creados por otros.</li>
+            </ul>
+        </section>
+
+        <!-- Functionalities by Version -->
+        <section class="section-card">
+            <h2 class="text-3xl mb-4">6. Funcionalidades por Versión (Metodología Incremental)</h2>
+            <p>Adoptaremos una metodología incremental, lanzando un Producto Mínimo Viable (MVP) y añadiendo funcionalidades en versiones posteriores.</p>
+
+            <h3 class="text-2xl mt-6 mb-3">6.1 Versión 1.0 (MVP)</h3>
+            <p><strong>Objetivo:</strong> Validar el flujo central de creación de resumen y la previsualización en WhatsApp.</p>
+            <h4 class="text-xl mt-4 mb-2">Funcionalidades:</h4>
+            <ul class="list-disc pl-5">
+                <li><strong>Interfaz de Usuario Sencilla:</strong> Página web con un campo para pegar el enlace y un botón "Analizar".</li>
+                <li><strong>Análisis Básico de Enlace:</strong> El backend (Cloud Run) recibe el enlace, lo envía al LLM (Gemini).</li>
+                <li><strong>Interacción LLM-Usuario (Texto):</strong> El LLM devuelve un resumen inicial y/o preguntas básicas. El usuario edita un campo de texto para el resumen final.</li>
+                <li><strong>Generación de Mini-Página:</strong> Creación de una URL única (<code>thinktwice.link/resumen-id</code>) que muestra el resumen y el enlace original.</li>
+                <li><strong>Optimización para WhatsApp Preview:</strong> La mini-página incluye meta etiquetas OG para una previsualización útil en WhatsApp.</li>
+                <li><strong>Almacenamiento Básico:</strong> Guardar en Firestore el enlace original, el resumen final y la URL de la mini-página.</li>
+                <li><strong>Sin Autenticación:</strong> Todos los resúmenes son "públicos" por defecto (accesibles si se tiene la URL). No hay perfiles de usuario ni historial personal.</li>
+            </ul>
+            <h4 class="text-xl mt-4 mb-2">Tecnologías:</h4>
+            <p>Firebase Hosting, Google Cloud Run (Python), Firestore, Google Gemini API.</p>
+
+            <h3 class="text-2xl mt-8 mb-3">6.2 Versión 1.1 (Mejoras de Usabilidad y Feedback)</h3>
+            <p><strong>Objetivo:</strong> Mejorar la experiencia del usuario y recolectar feedback.</p>
+            <h4 class="text-xl mt-4 mb-2">Funcionalidades (adicionales al MVP):</h4>
+            <ul class="list-disc pl-5">
+                <li><strong>UI/UX Mejorada:</strong> Diseño más pulido, retroalimentación visual durante el proceso de análisis (ej. spinners de carga).</li>
+                <li><strong>Manejo de Errores:</strong> Mensajes claros para enlaces inválidos o errores de procesamiento.</li>
+                <li><strong>Sugerencias de Resumen del LLM:</strong> El LLM ofrece un borrador de resumen que el usuario puede aceptar o modificar.</li>
+                <li><strong>Manejo de Miniaturas:</strong> La mini-página muestra la miniatura extraída del post original (si está disponible y es segura de mostrar).</li>
+                <li><strong>Contador de Caracteres:</strong> Límite recomendado para el resumen para optimizar la previsualización de WhatsApp.</li>
+            </ul>
+
+            <h3 class="text-2xl mt-8 mb-3">6.3 Versión 1.2 (Directorio y Compartir Avanzado)</h3>
+            <p><strong>Objetivo:</strong> Introducir el directorio de resúmenes y opciones de compartir más flexibles.</p>
+            <h4 class="text-xl mt-4 mb-2">Funcionalidades (adicionales a v1.1):</h4>
+            <ul class="list-disc pl-5">
+                <li><strong>Directorio Público:</strong> Una sección en la web de "Think Twice" donde los usuarios pueden ver y buscar resúmenes generados por otros (que hayan sido marcados como públicos).</li>
+                <li><strong>Funcionalidad de Búsqueda:</strong> Búsqueda por palabras clave dentro de los resúmenes y títulos.</li>
+                <li><strong>Categorización (Manual):</strong> El usuario puede añadir etiquetas o categorías a sus resúmenes al crearlos.</li>
+                <li><strong>Botón "Compartir" Directo:</strong> Integración de un botón para compartir directamente la URL de "Think Twice" en WhatsApp u otras apps.</li>
+                <li><strong>Analytics Básicos:</strong> Contador de clics en las mini-páginas de resumen.</li>
+            </ul>
+
+            <h3 class="text-2xl mt-8 mb-3">6.4 Versión 1.3 (Personalización y Colaboración)</h3>
+            <p><strong>Objetivo:</strong> Añadir funcionalidades de usuario y colaboración.</p>
+            <h4 class="text-xl mt-4 mb-2">Funcionalidades (adicionales a v1.2):</h4>
+            <ul class="list-disc pl-5">
+                <li><strong>Autenticación de Usuarios:</strong> Integración con Firebase Authentication (Google, correo/contraseña).</li>
+                <li><strong>Historial de Resúmenes Propios:</strong> Cada usuario autenticado puede ver y gestionar solo los resúmenes que él mismo ha creado.</li>
+                <li><strong>Resúmenes Privados/Públicos:</strong> Opción para el usuario de marcar un resumen como privado (solo visible para él) o público (visible en el directorio).</li>
+                <li><strong>Colecciones/Carpetas:</strong> Los usuarios pueden organizar sus resúmenes en colecciones personalizadas.</li>
+                <li><strong>Historial de Enlaces Recibidos/Guardados:</strong> Implementación de la funcionalidad para que los usuarios autenticados puedan ver y gestionar los enlaces de "Think Twice" que han recibido de otros o que han guardado activamente. Esto podría incluir un botón "Guardar en mi historial" en las mini-páginas de resumen.</li>
+                <li><strong>Feedback al LLM:</strong> Opción para que el usuario califique la utilidad del resumen inicial del LLM, para futuras mejoras.</li>
+            </ul>
+        </section>
+
+        <!-- Ethical and Legal Considerations -->
+        <section class="section-card">
+            <h2 class="text-3xl mb-4">7. Consideraciones Éticas y Legales (Reiteración)</h2>
+            <p>Es crucial mantener estas consideraciones en mente durante todo el ciclo de vida del desarrollo:</p>
+            <ul class="list-disc pl-5">
+                <li><strong>Transparencia:</strong> Ser claro con los usuarios sobre cómo funciona la herramienta, qué datos se recolectan y cómo se utilizan.</li>
+                <li><strong>Derechos de Autor:</strong> La herramienta no debe almacenar ni redistribuir contenido original con derechos de autor (videos, audios, imágenes completas). El enfoque es en la creación de un resumen transformativo y el enlace al original.</li>
+                <li><strong>Términos de Servicio (ToS) de Plataformas:</strong> Aunque el riesgo se reduce significativamente al no "grabar" contenido y al confiar en metadatos públicos, es importante monitorear los ToS de las principales redes sociales. La herramienta se posiciona como un asistente de curación de enlaces, no como un scraper masivo.</li>
+                <li><strong>Privacidad del Usuario:</strong> Implementar estrictas políticas de privacidad para los datos de usuario y el historial de enlaces. Si se implementa un directorio público, asegurar que solo el contenido marcado explícitamente como público sea visible.</li>
+            </ul>
+        </section>
+
+        <!-- Conclusion -->
+        <section class="section-card">
+            <h2 class="text-3xl mb-4">8. Conclusión</h2>
+            <p><strong>"Think Twice"</strong> es una solución innovadora y práctica para un problema común en la comunicación digital. Su arquitectura serverless y su enfoque en la colaboración entre IA y usuario la hacen robusta, escalable y éticamente defendible. La metodología incremental permitirá validar el concepto con un MVP y evolucionar la herramienta basándose en el feedback real de los usuarios. Este diseño establece una base sólida para el desarrollo de un producto valioso y sostenible.</p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center mt-12 py-6 text-gray-500 text-sm">
+            <p>&copy; 2024 Think Twice. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+</body>
+</html>
