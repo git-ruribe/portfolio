@@ -1,0 +1,2844 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FF5722">
+    <title>v0 Calientapp - Tu entrenador de calentamiento</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>">
+    <style>
+        :root {
+            --primary: #FF5722;
+            --primary-dark: #E64A19;
+            --primary-light: #FFCCBC;
+            --secondary: #2196F3;
+            --text: #212121;
+            --text-light: #757575;
+            --background: #FAFAFA;
+            --white: #FFFFFF;
+            --success: #4CAF50;
+            --warning: #FFC107;
+            --error: #F44336;
+            --gray-light: #EEEEEE;
+            --gray: #9E9E9E;
+            --border-radius: 8px;
+            --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            --anim-duration: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            outline: none;
+            background: none;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+            transition: all var(--anim-duration) ease;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            filter: brightness(90%);
+        }
+
+        .btn-outline {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            background-color: transparent;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-light);
+        }
+
+        .btn-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            padding: 0;
+        }
+
+        .btn-large {
+            font-size: 1.2rem;
+            padding: 16px 32px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .screen {
+            display: none;
+            min-height: 100vh;
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Header */
+        .app-header {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            z-index: 100;
+            padding: 16px 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+            margin-right: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 16px;
+        }
+
+        .nav-link {
+            color: var(--text);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: var(--border-radius);
+        }
+
+        .nav-link:hover {
+            background-color: var(--gray-light);
+        }
+
+        .nav-link.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Home Screen */
+        .home-screen {
+            text-align: center;
+            gap: 32px;
+        }
+
+        .welcome-section {
+            margin-bottom: 32px;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            color: var(--primary);
+        }
+
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .start-button {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Exercise Screen */
+        .exercise-screen {
+            gap: 24px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            max-width: 800px;
+            height: 8px;
+            background-color: var(--gray-light);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .exercise-header {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .exercise-position {
+            font-size: 1rem;
+            color: var(--text-light);
+        }
+
+        .exercise-timer {
+            font-size: 1rem;
+            color: var(--text-light);
+        }
+
+        .exercise-card {
+            width: 100%;
+            max-width: 800px;
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .exercise-title {
+            font-size: 1.8rem;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        .exercise-subtitle {
+            font-size: 1.2rem;
+            text-align: center;
+            color: var(--text-light);
+            margin-top: -16px;
+        }
+
+        .exercise-image {
+            width: 0px; /* Adjusted if images are not present */
+            max-width: 300px;
+            height: 0px; /* Adjusted if images are not present */
+            background-color: var(--gray-light);
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .exercise-image img, .exercise-image svg {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .counter-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .counter-label {
+            font-size: 1rem;
+            color: var(--text-light);
+        }
+
+        .counter-value {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .exercise-description {
+            font-size: 1.5rem;
+            text-align: center;
+            color: var(--text);
+            margin-bottom: 12px;
+        }
+
+        .exercise-controls {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        /* History Screen */
+        .history-screen {
+            gap: 24px;
+        }
+
+        .history-title {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            color: var(--primary);
+        }
+
+        .calendar-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .calendar-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-light);
+            padding: 8px 0;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .calendar-day:hover {
+            background-color: var(--gray-light);
+        }
+
+        .calendar-day.active {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .calendar-day.today {
+            border: 2px solid var(--primary);
+        }
+
+        .history-list {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .history-card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .history-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .history-date {
+            font-weight: 600;
+        }
+
+        .history-time {
+            color: var(--text-light);
+        }
+
+        .history-details {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .history-stats {
+            display: flex;
+            gap: 16px;
+        }
+
+        .history-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .history-stat-value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .history-stat-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* Summary Screen */
+        .summary-screen {
+            gap: 24px;
+            text-align: center;
+        }
+
+        .summary-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .summary-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 32px;
+        }
+
+        .summary-card {
+            width: 100%;
+            max-width: 800px;
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .summary-stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .summary-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 100px;
+        }
+
+        .summary-stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .summary-stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .summary-message {
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            color: var(--success);
+        }
+
+        .summary-controls {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .slide-up {
+            animation: slideUp 0.5s ease forwards;
+        }
+
+        .slide-down {
+            animation: slideDown 0.5s ease forwards;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .welcome-title {
+                font-size: 2rem;
+            }
+            
+            .exercise-card {
+                padding: 20px;
+            }
+            
+            .counter-value {
+                font-size: 3.5rem;
+            }
+            
+            .exercise-controls {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .exercise-controls button {
+                width: 100%;
+            }
+            
+            .summary-stats {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Utilities */
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-1 {
+            margin-bottom: 8px;
+        }
+
+        .mb-2 {
+            margin-bottom: 16px;
+        }
+
+        .mb-3 {
+            margin-bottom: 24px;
+        }
+
+        .mb-4 {
+            margin-bottom: 32px;
+        }
+
+        .mt-1 {
+            margin-top: 8px;
+        }
+
+        .mt-2 {
+            margin-top: 16px;
+        }
+
+        .mt-3 {
+            margin-top: 24px;
+        }
+
+        .mt-4 {
+            margin-top: 32px;
+        }
+
+        /* Toast Messages */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: calc(100% - 48px);
+            max-width: 400px;
+        }
+
+        .toast {
+            background-color: var(--white);
+            color: var(--text);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 16px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .toast-success {
+            border-left: 4px solid var(--success);
+        }
+
+        .toast-error {
+            border-left: 4px solid var(--error);
+        }
+
+        .toast-warning {
+            border-left: 4px solid var(--warning);
+        }
+
+        .toast-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toast-icon {
+            font-size: 1.5rem;
+        }
+
+        .toast-message {
+            font-size: 0.9rem;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+
+        .toast-close:hover {
+            color: var(--text);
+        }
+
+        /* Spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 87, 34, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Service Worker notification */
+        .sw-notification {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--white);
+            padding: 16px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .sw-notification.active {
+            transform: translateY(0);
+        }
+
+        .sw-message {
+            flex: 1;
+        }
+
+        .sw-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .exercise-details-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .exercise-details-content {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .exercise-details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .exercise-details-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .exercise-details-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .exercise-details-section {
+            margin-bottom: 16px;
+        }
+
+        .exercise-details-section-title {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+
+        .exercise-details-section-content {
+            color: var(--text);
+        }
+
+        .exercise-details-list {
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <div class="container header-content">
+            <div class="logo">
+                <span class="logo-icon">🔥</span>
+                <span>Calientapp</span>
+            </div>
+            <nav class="nav-links">
+                <a href="#" class="nav-link active" id="home-nav">Inicio</a>
+                <a href="#" class="nav-link" id="history-nav">Historial</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="screen active" id="home-screen">
+        <div class="container home-screen">
+            <div class="welcome-section">
+                <h1 class="welcome-title">¡Bienvenido a Calientapp!</h1>
+                <p class="welcome-subtitle">Tu entrenador personal para rutinas de calentamiento efectivas. Prepara tu cuerpo para el ejercicio con la secuencia perfecta de movimientos.</p>
+            </div>
+            <button id="start-workout-btn" class="btn btn-primary btn-large start-button">
+                Iniciar calentamiento
+            </button>
+        </div>
+    </section>
+
+    <section class="screen" id="exercise-screen">
+        <div class="container exercise-screen">
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="exercise-progress-bar"></div>
+            </div>
+            <div class="exercise-header">
+                <div class="exercise-position" id="exercise-position">Ejercicio 1 de 10</div>
+                <div class="exercise-timer" id="exercise-timer">00:00</div>
+            </div>
+            <div class="exercise-card">
+                <h2 class="exercise-title" id="exercise-title">Movilidad de Tobillos</h2>
+                <p class="exercise-subtitle" id="exercise-subtitle">Círculos con cada tobillo</p>
+                <p class="exercise-description" id="exercise-description">
+                    Realiza círculos suaves con cada tobillo, 10 en cada dirección.
+                </p>
+                <div class="exercise-image" id="exercise-image">
+                    </div>
+                <div class="counter-container">
+                    <div class="counter-label" id="counter-label">Repeticiones restantes</div>
+                    <div class="counter-value" id="counter-value">10</div>
+                </div>
+                <div class="exercise-controls">
+                    <button id="pause-btn" class="btn btn-outline">Pausar</button>
+                    <button id="next-btn" class="btn btn-primary">Siguiente</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="screen" id="history-screen">
+        <div class="container history-screen">
+            <h1 class="history-title">Tu historial de actividad</h1>
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <div class="calendar-title" id="calendar-month">Abril 2025</div>
+                    <div class="calendar-controls">
+                        <button id="prev-month-btn" class="btn btn-icon">
+                            ⬅️
+                        </button>
+                        <button id="next-month-btn" class="btn btn-icon">
+                            ➡️
+                        </button>
+                    </div>
+                </div>
+                <div class="calendar-grid" id="calendar-grid">
+                    <div class="calendar-day-header">Dom</div>
+                    <div class="calendar-day-header">Lun</div>
+                    <div class="calendar-day-header">Mar</div>
+                    <div class="calendar-day-header">Mié</div>
+                    <div class="calendar-day-header">Jue</div>
+                    <div class="calendar-day-header">Vie</div>
+                    <div class="calendar-day-header">Sáb</div>
+                    </div>
+            </div>
+            <div class="history-list" id="history-list">
+                <div class="history-empty text-center" id="history-empty">
+                    <p>No tienes sesiones registradas aún. ¡Completa tu primer calentamiento!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="screen" id="summary-screen">
+        <div class="container summary-screen">
+            <h1 class="summary-title">¡Calentamiento completado!</h1>
+            <p class="summary-subtitle">Excelente trabajo. Tu cuerpo ahora está listo para la actividad física.</p>
+            <div class="summary-card">
+                <div class="summary-stats">
+                    <div class="summary-stat">
+                        <div class="summary-stat-value" id="summary-time">10:30</div>
+                        <div class="summary-stat-label">Tiempo total</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="summary-stat-value" id="summary-exercises">10</div>
+                        <div class="summary-stat-label">Ejercicios</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="summary-stat-value" id="summary-streak">3</div>
+                        <div class="summary-stat-label">Días seguidos</div>
+                    </div>
+                </div>
+                <p class="summary-message" id="summary-message">Has mejorado tu tiempo en un 5% comparado con tu última sesión.</p>
+            </div>
+            <div class="summary-controls">
+                <button id="home-btn" class="btn btn-outline">Volver al inicio</button>
+                <button id="restart-btn" class="btn btn-primary">Nueva sesión</button>
+            </div>
+        </div>
+    </section>
+
+    <div class="toast-container" id="toast-container">
+    </div>
+
+    <div class="sw-notification" id="sw-notification">
+        <div class="sw-message">¡Nueva versión disponible!</div>
+        <div class="sw-actions">
+            <button id="sw-dismiss" class="btn btn-outline">Después</button>
+            <button id="sw-update" class="btn btn-primary">Actualizar</button>
+        </div>
+    </div>
+
+    <div id="exercise-details-modal" class="exercise-details-modal">
+        <div class="exercise-details-content">
+            <div class="exercise-details-header">
+                <h2 id="exercise-details-title" class="exercise-details-title">Detalles del Ejercicio</h2>
+                <button id="exercise-details-close" class="exercise-details-close">×</button>
+            </div>
+            <div id="exercise-details-purpose" class="exercise-details-section">
+                <h3 class="exercise-details-section-title">Propósito</h3>
+                <p class="exercise-details-section-content"></p>
+            </div>
+            <div id="exercise-details-technique" class="exercise-details-section">
+                <h3 class="exercise-details-section-title">Técnica</h3>
+                <ul class="exercise-details-list exercise-details-section-content"></ul>
+            </div>
+            <div id="exercise-details-benefits" class="exercise-details-section">
+                <h3 class="exercise-details-section-title">Beneficios</h3>
+                <ul class="exercise-details-list exercise-details-section-content"></ul>
+            </div>
+            <div id="exercise-details-common-mistakes" class="exercise-details-section">
+                <h3 class="exercise-details-section-title">Errores Comunes</h3>
+                <ul class="exercise-details-list exercise-details-section-content"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Embedded workout-routine.json data
+        const WORKOUT_ROUTINE_JSON_DATA = {
+          "id": "calientapp-workout-routine-v1",
+          "sections": [
+            {
+              "name": "Movilidad Dinámica General",
+              "exercises": [
+                {
+                  "id": "tobillos-circulos",
+                  "title": "Círculos de Tobillo",
+                  "exerciseTypes": {
+                    "countType": {
+                      "value": "repetitions",
+                      "count": 20
+                    },
+                    "bodyType": {
+                      "value": "bilateral"
+                    },
+                    "movementType": {
+                      "value": "compound"
+                    }
+                  },
+                  "expectedTime": 10,
+                  "steps": [
+                    {
+                      "count": 10,
+                      "side": "derecho",
+                      "direction": "reloj",
+                      "description": "Gira el tobillo derecho hacia afuera completando 10 círculos amplios y controlados"
+                    },
+                    {
+                      "count": 10,
+                      "side": "izquierdo",
+                      "direction": "reloj",
+                      "description": "Gira el tobillo izquierdo hacia afuera completando 10 círculos amplios y controlados"
+                    },
+                    {
+                      "count": 10,
+                      "side": "derecho",
+                      "direction": "contrareloj",
+                      "description": "Gira el tobillo derecho hacia adentro completando 10 círculos amplios y controlados"
+                    },
+                    {
+                      "count": 10,
+                      "side": "izquierdo",
+                      "direction": "contrareloj",
+                      "description": "Gira el tobillo izquierdo hacia adentro completando 10 círculos amplios y controlados"
+                    }
+                  ],
+                  "detailedInstructions": {
+                    "purpose": "Activar y lubricar las articulaciones de los tobillos para prevenir lesiones y mejorar su rango de movilidad antes de realizar ejercicios más intensos.",
+                    "technique": [
+                      "Siéntate o apóyate en una superficie estable si lo necesitas para mantener el equilibrio",
+                      "Mantén la pierna ligeramente elevada y estable mientras realizas el movimiento",
+                      "Realiza movimientos circulares completos, lentos y controlados",
+                      "Visualiza que estás dibujando un círculo perfecto con la punta del pie",
+                      "No fuerces el movimiento si sientes molestia o dolor"
+                    ],
+                    "benefits": [
+                      "Reduce significativamente el riesgo de lesiones en los tobillos durante la actividad física",
+                      "Mejora la flexibilidad y lubricación articular para movimientos más eficientes",
+                      "Activa la circulación sanguínea en los tobillos y pies, preparándolos para el ejercicio",
+                      "Mejora la propiocepción (conciencia espacial) de las articulaciones inferiores"
+                    ],
+                    "commonMistakes": [
+                      "Realizar movimientos bruscos o demasiado rápidos que pueden causar tensión",
+                      "Hacer círculos muy pequeños que no aprovechan todo el rango de movimiento",
+                      "Tensar excesivamente los músculos de la pierna en lugar de mantenerla relajada",
+                      "No completar círculos completos, limitando los beneficios del ejercicio"
+                    ]
+                  }
+                },
+                {
+                  "id": "tobillos-flexion",
+                  "title": "Flexión y Extensión de Tobillo",
+                  "exerciseTypes": {
+                    "countType": {
+                      "value": "repetitions",
+                      "count": 10
+                    },
+                    "bodyType": {
+                      "value": "bilateral"
+                    },
+                    "movementType": {
+                      "value": "simple"
+                    }
+                  },
+                  "expectedTime": 30,
+                  "steps": [
+                    {
+                      "count": 5,
+                      "side": "derecho",
+                      "description": "Flexiona el pie derecho hacia arriba y luego hacia abajo 5 veces completas, controlando el movimiento"
+                    },
+                    {
+                      "count": 5,
+                      "side": "izquierdo",
+                      "description": "Flexiona el pie izquierdo hacia arriba y luego hacia abajo 5 veces completas, controlando el movimiento"
+                    }
+                  ],
+                  "detailedInstructions": {
+                    "purpose": "Aumentar la movilidad y flexibilidad de los tobillos en dirección anteroposterior, fundamental para actividades como caminar, correr y saltar.",
+                    "technique": [
+                      "Siéntate o mantente de pie con apoyo si es necesario para mayor estabilidad",
+                      "Eleva la punta del pie hacia la espinilla (flexión dorsal) hasta sentir un estiramiento suave",
+                      "Luego, apunta los dedos hacia abajo (flexión plantar) extendiendo completamente",
+                      "Mantén los movimientos fluidos y controlados, evitando movimientos bruscos",
+                      "Concéntrate en utilizar solo los músculos del tobillo y pie, no la pierna completa"
+                    ],
+                    "benefits": [
+                      "Mejora la flexibilidad y rango de movimiento del tobillo en ambas direcciones",
+                      "Fortalece los músculos tibiales y peroneos que estabilizan el tobillo",
+                      "Previene lesiones comunes como esguinces y torceduras durante actividades más intensas",
+                      "Mejora la mecánica de marcha y carrera al aumentar la movilidad del tobillo"
+                    ],
+                    "commonMistakes": [
+                      "Realizar movimientos demasiado rápidos o descontrolados que reducen los beneficios",
+                      "Mover toda la pierna en lugar de aislar el movimiento en el tobillo",
+                      "No alcanzar el rango completo de movimiento en ambas direcciones",
+                      "Tensar innecesariamente los músculos de la pantorrilla durante el ejercicio"
+                    ]
+                  }
+                },
+                {
+                  "id": "rodillas-rotaciones",
+                  "title": "Rotaciones de Rodillas",
+                  "exerciseTypes": {
+                    "countType": {
+                      "value": "repetitions",
+                      "count": 10
+                    },
+                    "bodyType": {
+                      "value": "unilateral"
+                    },
+                    "movementType": {
+                      "value": "simple"
+                    }
+                  },
+                  "expectedTime": 30,
+                  "steps": [
+                    {
+                      "count": 5,
+                      "direction": "interna",
+                      "description": "Realiza 5 rotaciones internas de ambas rodillas simultáneamente, manteniendo los pies apoyados"
+                    },
+                    {
+                      "count": 5,
+                      "direction": "externa",
+                      "description": "Realiza 5 rotaciones externas de ambas rodillas simultáneamente, manteniendo los pies apoyados"
+                    }
+                  ],
+                  "detailedInstructions": {
+                    "purpose": "Movilizar las articulaciones de las rodillas en un patrón rotativo controlado para mejorar la lubricación articular y preparar las rodillas para movimientos más exigentes.",
+                    "technique": [
+                      "Colócate de pie con los pies separados al ancho de la cadera y las rodillas ligeramente flexionadas",
+                      "Coloca las manos suavemente sobre las rodillas como guía del movimiento",
+                      "Dibuja círculos suaves con las rodillas sin mover los pies del suelo",
+                      "Mantén el torso erguido y estable durante todo el ejercicio",
+                      "Realiza movimientos lentos y controlados dentro de un rango cómodo"
+                    ],
+                    "benefits": [
+                      "Reduce la rigidez articular en las rodillas mejorando su lubricación natural",
+                      "Aumenta la movilidad circular de la rodilla, preparándola para movimientos multidireccionales",
+                      "Activa los músculos estabilizadores alrededor de la rodilla para mayor protección",
+                      "Mejora la propiocepción (conciencia espacial) de la articulación"
+                    ],
+                    "commonMistakes": [
+                      "Realizar rotaciones bruscas o demasiado amplias que pueden estresar la articulación",
+                      "Forzar el rango de movimiento más allá del punto de comodidad",
+                      "Hundir el pecho o curvar la espalda durante el ejercicio",
+                      "Bloquear las rodillas en lugar de mantenerlas ligeramente flexionadas"
+                    ]
+                  }
+                },
+                {
+                  "id": "rodillas-mini-sentadillas",
+                  "title": "Mini Sentadillas Parciales",
+                  "exerciseTypes": {
+                    "countType": {
+                      "value": "repetitions",
+                      "count": 10
+                    },
+                    "bodyType": {
+                      "value": "unilateral"
+                    },
+                    "movementType": {
+                      "value": "simple"
+                    }
+                  },
+                  "expectedTime": 30,
+                  "steps": [
+                    {
+                      "count": 5,
+                      "description": "Realiza 5 mini sentadillas descendiendo solo hasta un cuarto del recorrido, manteniendo la espalda recta"
+                    },
+                    {
+                      "count": 5,
+                      "description": "Realiza 5 mini sentadillas con un descenso ligeramente más profundo, hasta un tercio del recorrido"
+                    }
+                  ],
+                  "detailedInstructions": {
+                    "purpose": "Activar suavemente los músculos de las piernas y preparar las articulaciones de rodilla y cadera para movimientos más intensos, sin fatigarse demasiado pronto.",
+                    "technique": [
+                      "Párate con los pies separados al ancho de los hombros y ligeramente girados hacia afuera",
+                      "Mantén la espalda recta y el pecho elevado en todo momento",
+                      "Baja solo un 20-30% de una sentadilla completa, como si fueras a sentarte en una silla alta",
+                      "Distribuye el peso del cuerpo en los talones y la parte media del pie, nunca en las puntas",
+                      "Extiende los brazos hacia adelante para mantener el equilibrio si es necesario"
+                    ],
+                    "benefits": [
+                      "Activa de forma segura los músculos cuádriceps, isquiotibiales y glúteos sin sobrecargarlos",
+                      "Mejora la estabilidad articular en rodillas, tobillos y caderas",
+                      "Prepara las articulaciones para soportar el peso corporal en movimientos más exigentes",
+                      "Inicia el calentamiento metabólico sin fatiga prematura"
+                    ],
+                    "commonMistakes": [
+                      "Descender demasiado profundo convirtiendo el ejercicio en una sentadilla completa",
+                      "Inclinar la espalda hacia adelante comprometiendo la columna lumbar",
+                      "Permitir que las rodillas se desplacen hacia adentro (valgo) o hacia afuera (varo)",
+                      "Elevar los talones del suelo durante el descenso, trasladando la presión a las puntas"
+                    ]
+                  }
+                },
+                {
+                  "id": "caderas-circulos",
+                  "title": "Círculos de Cadera",
+                  "exerciseTypes": {
+                    "countType": {
+                      "value": "repetitions",
+                      "count": 10
+                    },
+                    "bodyType": {
+                      "value": "unilateral"
+                    },
+                    "movementType": {
+                      "value": "simple"
+                    }
+                  },
+                  "expectedTime": 30,
+                  "steps": [
+                    {
+                      "count": 5,
+                      "direction": "derecha",
+                      "description": "Realiza 5 círculos completos con las caderas girando hacia la derecha, manteniendo el movimiento fluido"
+                    },
+                    {
+                      "count": 5,
+                      "direction": "izquierda",
+                      "description": "Realiza 5 círculos completos con las caderas girando hacia la izquierda, manteniendo el movimiento fluido"
+                    }
+                  ],
+                  "detailedInstructions": {
+                    "purpose": "Movilizar la articulación de la cadera en un patrón circular completo, mejorando su flexibilidad tridimensional y preparándola para movimientos dinámicos.",
+                    "technique": [
+                      "Colócate de pie con los pies separados al ancho de la cadera y las rodillas ligeramente flexionadas",
+                      "Coloca las manos en la cintura como punto de referencia para sentir el movimiento",
+                      "Realiza círculos amplios y controlados con las caderas, como si estuvieras usando un hula-hoop",
+                      "Mantén el torso erguido y la parte superior del cuerpo relativamente estable",
+                      "Visualiza que dibujas un círculo completo y perfecto con la cadera"
+                    ],
+                    "benefits": [
+                      "Aumenta la movilidad tridimensional de la cadera, fundamental para la mayoría de los movimientos atléticos",
+                      "Reduce la tensión acumulada en la zona lumbar y pélvica",
+                      "Mejora la circulación sanguínea en la región de la cadera y zona pélvica",
+                      "Activa los músculos estabilizadores profundos de la pelvis y el core"
+                    ],
+                    "commonMistakes": [
+                      "Hacer círculos demasiado pequeños que no aprovechan el rango completo de movimiento",
+                      "Mover excesivamente la parte superior del cuerpo en lugar de aislar el movimiento en la cadera",
+                      "Realizar movimientos bruscos o descontrolados que pueden causar tensión",
+                      "No mantener una base estable con las piernas, comprometiendo el equilibrio"
+                    ]
+                  }
+                },
+                {
+                  "id": "caderas-balanceos",
+                  "title": "Balanceos de Cadera",
+                  "exerciseTypes": {
+                    "countType": {
+                      "value": "repetitions",
+                      "count": 5
+                    },
+                    "bodyType": {
+                      "value": "bilateral"
+                    },
+                    "movementType": {
+                      "value": "simple"
+                    }
+                  },
+                  "expectedTime": 30,
+                  "steps": [
+                    {
+                      "count": 2,
+                      "side": "derecho",
+                      "description": "Balancea la pierna derecha hacia adelante y atrás de forma controlada, manteniendo el torso erguido"
+                    },
+                    {
+                      "count": 3,
+                      "side": "izquierdo",
+                      "description": "Balancea la pierna izquierda hacia adelante y atrás de forma controlada, manteniendo el torso erguido"
+                    }
+                  ],
+                  "detailedInstructions": {
+                    "purpose": "Movilizar la articulación de la cadera en el plano sagital (adelante-atrás) para mejorar su amplitud de movimiento y activar los flexores y extensores de cadera.",
+                    "technique": [
+                      "Mantente de pie con una postura erguida y apóyate ligeramente en una pared o silla si necesitas equilibrio",
+                      "Balancea una pierna hacia adelante y atrás de manera controlada, manteniendo una ligera flexión en la rodilla",
+                      "Mantén el torso completamente estable y erguido durante todo el movimiento",
+                      "Controla activamente el balanceo con los músculos de la cadera, no dejes que sea un movimiento pasivo",
+                      "Incrementa gradualmente la amplitud del balanceo sin forzar el movimiento"
+                    ],
+                    "benefits": [
+                      "Mejora la movilidad de la cadera en el plano sagital, fundamental para caminar y correr",
+                      "Activa de forma progresiva los músculos flexores y extensores de la cadera",
+                      "Mejora la coordinación neuromuscular y el control dinámico de la articulación",
+                      "Prepara la articulación para movimientos más exigentes como zancadas o sentadillas"
+                    ],
+                    "commonMistakes": [
+                      "Balancear con demasiada fuerza o velocidad, perdiendo el control del movimiento",
+                      "Inclinar el torso hacia adelante o hacia atrás durante el balanceo",
+                      "No mantener activos los músculos estabilizadores del core",
+                      "Bloquear la rodilla durante el balanceo en lugar de mantenerla ligeramente flexionada"
+                    ]
+                  }
+                },
+                {
+                  "id": "columna-rotaciones",
+                  "title": "Rotaciones de Tronco",
+                  "exerciseTypes": {
+                    "countType": {
+                      "value": "repetitions",
+                      "count": 10
+                    },
+                    "bodyType": {
+                      "value": "unilateral"
+                    },
+                    "movementType": {
+                      "value": "simple"
+                    }
+                  },
+                  "expectedTime": 30,
+                  "steps": [
+                    {
+                      "count": 5,
+                      "side": "derecha",
+                      "description": "Rota el tronco hacia la derecha 5 veces, manteniendo las caderas estables y los brazos abiertos"
+                    },
+                    {
+                      "count": 5,
+                      "side": "izquierda",
+                      "description": "Rota el tronco hacia la izquierda 5 veces, manteniendo las caderas estables y los brazos abiertos"
+                    }
+                  ],
+                  "detailedInstructions": {
+                    "purpose": "Mejorar la movilidad rotacional de la columna vertebral y activar los músculos oblicuos y rotadores del tronco, preparando el cuerpo para movimientos que requieren rotación.",
+                    "technique": [
+                      "Colócate de pie con los pies separados al ancho de los hombros y las rodillas ligeramente flexionadas",
+                      "Extiende los brazos hacia los lados a la altura de los hombros para aumentar el momento rotacional",
+                      "Gira el tronco hacia un lado tan lejos como sea cómodo, manteniendo las caderas alineadas al frente",
+                      "Utiliza la respiración para potenciar el movimiento: exhala durante la rotación, inhala al centro",
+                      "Mantén la mirada en la dirección de la rotación para involucrar también el cuello"
+                    ],
+                    "benefits": [
+                      "Aumenta la movilidad rotacional de la columna vertebral, especialmente en la región torácica",
+                      "Activa y calienta los músculos oblicuos, rotadores y estabilizadores del tronco",
+                      "Mejora la coordinación entre la parte superior e inferior del cuerpo",
+                      "Prepara el cuerpo para movimientos deportivos que requieren rotación como golpes o lanzamientos"
+                    ],
+                    "commonMistakes": [
+                      "Girar con demasiada rapidez o fuerza, pudiendo causar tensión en la columna",
+                      "Permitir que las caderas roten junto con el tronco, perdiendo la estabilidad de la base",
+                      "No mantener los hombros relajados y nivelados durante la rotación",
+                      "Flexionar el tronco lateralmente en lugar de realizar una rotación pura"
+                    ]
+                  }
+                },
+                {
+                  "id": "columna-inclinaciones",
+                  "title": "Inclinaciones Laterales",
+                  "exerciseTypes": {
+                    "countType": {
+                      "value": "repetitions",
+                      "count": 5
+                    },
+                    "bodyType": {
+                      "value": "unilateral"
+                    },
+                    "movementType": {
+                      "value": "simple"
+                    }
+                  },
+                  "expectedTime": 30,
+                  "steps": [
+                    {
+                      "count": 2,
+                      "side": "derecha",
+                      "description": "Inclina el tronco lateralmente hacia la derecha, deslizando la mano por el lateral del muslo"
+                    },
+                    {
+                      "count": 3,
+                      "side": "izquierda",
+                      "description": "Inclina el tronco lateralmente hacia la izquierda, deslizando la mano por el lateral del muslo"
+                    }
+                  ],
+                  "detailedInstructions": {
+                    "purpose": "Mejorar la flexibilidad lateral de la columna vertebral y estirar los músculos del costado (cuadrado lumbar, oblicuos y latísimo), creando mayor amplitud de movimiento lateral.",
+                    "technique": [
+                      "Colócate de pie con los pies separados al ancho de los hombros para una base estable",
+                      "Deja que un brazo descanse junto al cuerpo mientras el otro se extiende por encima de la cabeza",
+                      "Inclina lentamente el tronco hacia un lado, creando una curva suave con la columna",
+                      "Desliza la mano del brazo inferior por el lateral del muslo para guiar el movimiento",
+                      "Mantén ambos pies completamente apoyados y evita inclinarte hacia adelante o atrás"
+                    ],
+                    "benefits": [
+                      "Mejora la flexibilidad lateral de la columna, especialmente en la región torácica y lumbar",
+                      "Estira los músculos intercostales y del costado que suelen tensarse con el sedentarismo",
+                      "Potencia la capacidad respiratoria al liberar tensión en los músculos intercostales",
+                      "Mejora la conciencia corporal y el control del movimiento lateral"
+                    ],
+                    "commonMistakes": [
+                      "Inclinarse demasiado, forzando la posición más allá del punto de tensión confortable",
+                      "Rotar el tronco o las caderas durante la inclinación, perdiendo el plano puramente lateral",
+                      "Elevar el talón del lado opuesto a la inclinación, desestabilizando la postura",
+                      "Contener la respiración durante el estiramiento en lugar de mantenerla fluida"
+                    ]
+                  }
+                },
+                {
+                  "id": "columna-cat-cow",
+                  "title": "Cat-Cow",
+                  "exerciseTypes": {
+                    "countType": {
+                      "value": "repetitions",
+                      "count": 10
+                    },
+                    "bodyType": {
+                      "value": "unilateral"
+                    },
+                    "movementType": {
+                      "value": "simple"
+                    }
+                  },
+                  "expectedTime": 30,
+                  "steps": [
+                    {
+                      "count": 5,
+                      "position": "cuadrupedia",
+                      "description": "Posición de 'Cat': redondea la columna hacia arriba mientras exhalas, bajando la cabeza"
+                    },
+                    {
+                      "count": 5,
+                      "position": "cuadrupedia",
+                      "description": "Posición de 'Cow': arquea la columna hacia abajo mientras inhalas, elevando la cabeza y el cóccix"
+                    }
+                  ],
+                  "detailedInstructions": {
+                    "purpose": "Movilizar la columna vertebral en flexión y extensión, mejorando su flexibilidad, liberando tensión acumulada y estableciendo una conexión entre movimiento y respiración.",
+                    "technique": [
+                      "Colócate en posición de cuadrupedia con las manos bajo los hombros y las rodillas bajo las caderas",
+                      "Para la posición 'Cat': exhala mientras redondeas la espalda hacia el techo, contrayendo el abdomen y llevando el mentón hacia el pecho",
+                      "Para la posición 'Cow': inhala mientras arqueas la espalda hacia abajo, elevando la cabeza y el cóccix, abriendo el pecho",
+                      "Realiza los movimientos de manera fluida, permitiendo que cada vértebra se articule individualmente",
+                      "Sincroniza conscientemente cada movimiento con la respiración para maximizar la movilidad"
+                    ],
+                    "benefits": [
+                      "Mejora la flexibilidad y movilidad de toda la columna en los movimientos de flexión y extensión",
+                      "Alivia la tensión acumulada en la espalda, especialmente después de largos períodos sentado",
+                      "Fortalece la conexión mente-cuerpo a través de la sincronización del movimiento con la respiración",
+                      "Prepara la espalda para actividades más intensas, reduciendo el riesgo de lesiones"
+                    ],
+                    "commonMistakes": [
+                      "Realizar movimientos bruscos sin respetar el propio ritmo de la respiración",
+                      "Mantener los hombros tensos o elevados en lugar de relajados y alejados de las orejas",
+                      "No involucrar toda la columna vertebral, moviendo solo ciertas secciones",
+                      "Mantener una respiración superficial o descoordinada con el movimiento"
+                    ]
+                  }
+                },
+                {
+                  "id": "hombros-circulos",
+                  "title": "Círculos de Hombros",
+                  "exerciseTypes": {
+                    "countType": {
+                      "value": "repetitions",
+                      "count": 20
+                    },
+                    "bodyType": {
+                      "value": "unilateral"
+                    },
+                    "movementType": {
+                      "value": "compound"
+                    }
+                  },
+                  "expectedTime": 30,
+                  "steps": [
+                    {
+                      "count": 10,
+                      "direction": "adelante",
+                      "description": "Realiza 10 círculos completos con ambos hombros hacia adelante, moviendo de forma amplia y controlada"
+                    },
+                    {
+                      "count": 10,
+                      "direction": "atrás",
+                      "description": "Realiza 10 círculos completos con ambos hombros hacia atrás, moviendo de forma amplia y controlada"
+                    }
+                  ],
+                  "detailedInstructions": {
+                    "purpose": "Movilizar la articulación del hombro en un patrón circular completo para mejorar su flexibilidad, reducir tensiones y preparar la cintura escapular para movimientos más exigentes.",
+                    "technique": [
+                      "Mantente de pie o sentado con la espalda recta y el pecho ligeramente elevado",
+                      "Realiza círculos amplios y deliberados con ambos hombros simultáneamente",
+                      "Para los círculos hacia adelante: eleva los hombros, llévalos hacia adelante, bájalos y regresa a la posición inicial",
+                      "Para los círculos hacia atrás: eleva los hombros, llévalos hacia atrás, bájalos y regresa a la posición inicial",
+                      "Mantén el resto del cuerpo estable y concentra el movimiento en la articulación del hombro"
+                    ],
+                    "benefits": [
+                      "Mejora la movilidad completa de la articulación glenohumeral y la escápula",
+                      "Reduce la tensión acumulada en los músculos trapecio y elevador de la escápula",
+                      "Previene problemas comunes como el hombro congelado o el síndrome del manguito rotador",
+                      "Prepara la cintura escapular para movimientos que requieren estabilidad y movilidad"
+                    ],
+                    "commonMistakes": [
+                      "Realizar círculos muy pequeños que no aprovechan todo el rango de movimiento articular",
+                      "Ejecutar movimientos rápidos y descontrolados que limitan los beneficios del ejercicio",
+                      "Elevar excesivamente los hombros hacia las orejas, creando tensión desnecesaria",
+                      "No mantener una postura erguida, lo que compromete la efectividad del ejercicio"
+                    ]
+                  }
+                },
+                {
+                  "id": "hombros-brazos-cruzados",
+                  "title": "Brazos Cruzados y Abiertos",
+                  "exerciseTypes": {
+                    "countType": {
+                      "value": "repetitions",
+                      "count": 10
+                    },
+                    "bodyType": {
+                      "value": "unilateral"
+                    },
+                    "movementType": {
+                      "value": "simple"
+                    }
+                  },
+                  "expectedTime": 30,
+                  "steps": [
+                    {
+                      "count": 5,
+                      "description": "Cruza los brazos frente al pecho y luego ábrelos ampliamente hacia los lados como un abrazo"
+                    },
+                    {
+                      "count": 5,
+                      "description": "Aumenta ligeramente la velocidad manteniendo el control, sintiendo la apertura del pecho"
+                    }
+                  ],
+                  "detailedInstructions": {
+                    "purpose": "Movilizar las articulaciones de los hombros, mejorar la flexibilidad de la parte superior del cuerpo y activar los músculos pectorales y de la espalda alta.",
+                    "technique": [
+                      "Mantente de pie con la espalda recta y el pecho ligeramente elevado",
+                      "Cruza los brazos frente al pecho, abrazándote a ti mismo suavemente",
+                      "Abre completamente los brazos hacia los lados, como si estuvieras abrazando el mundo",
+                      "Alterna entre cruzar el brazo derecho por encima del izquierdo y viceversa",
+                      "Realiza el movimiento de manera fluida, como si estuvieras dibujando un arco con los brazos"
+                    ],
+                    "benefits": [
+                      "Mejora la movilidad de las articulaciones del hombro y la escápula",
+                      "Activa los músculos pectorales, deltoides y romboides de manera controlada",
+                      "Favorece la apertura del pecho, contrarrestando la postura encorvada típica del trabajo sedentario",
+                      "Promueve una mejor postura y conciencia corporal de la parte superior del cuerpo"
+                    ],
+                    "commonMistakes": [
+                      "Realizar movimientos bruscos o descoordinados que pueden generar tensión",
+                      "No mantener los brazos a la misma altura durante todo el recorrido",
+                      "Tensar excesivamente los músculos del cuello y hombros durante el ejercicio",
+                      "No completar la apertura total de los brazos, limitando los beneficios del estiramiento"
+                    ]
+                  }
+                },
+                {
+                  "id": "hombros-elevaciones",
+                  "title": "Elevaciones de Hombros",
+                  "exerciseTypes": {
+                    "countType": {
+                      "value": "repetitions",
+                      "count": 10
+                    },
+                    "bodyType": {
+                      "value": "unilateral"
+                    },
+                    "movementType": {
+                      "value": "simple"
+                    }
+                  },
+                  "expectedTime": 30,
+                  "steps": [
+                    {
+                      "count": 5,
+                      "description": "Eleva ambos hombros hacia las orejas, mantén brevemente y suelta con control"
+                    },
+                    {
+                      "count": 5,
+                      "description": "Eleva los hombros alternadamente: primero el derecho, luego el izquierdo"
+                    }
+                  ],
+                  "detailedInstructions": {
+                    "purpose": "Liberar la tensión acumulada en los músculos del trapecio y la zona cervical, mejorando la circulación y reduciendo la rigidez en hombros y cuello.",
+                    "technique": [
+                      "Mantente de pie o sentado con la espalda recta y la mirada al frente",
+                      "Eleva ambos hombros hacia las orejas de manera controlada, como si quisieras tocarlas",
+                      "Mantén la elevación durante 1-2 segundos, sintiendo la contracción muscular",
+                      "Relaja completamente los hombros, dejándolos caer sin forzar",
+                      "Respira de manera consciente: inhala al elevar y exhala al relajar"
+                    ],
+                    "benefits": [
+                      "Reduce significativamente la tensión acumulada en la zona del trapecio superior",
+                      "Mejora la circulación sanguínea en el área cervical y de los hombros",
+                      "Alivia la rigidez causada por el estrés o largas horas frente a la computadora",
+                      "Aumenta la conciencia corporal sobre cuándo estás manteniendo los hombros tensos"
+                    ],
+                    "commonMistakes": [
+                      "Elevar los hombros con brusquedad, creando más tensión en lugar de aliviarla",
+                      "Mantener los hombros elevados durante demasiado tiempo, fatigando los músculos",
+                      "No relajar completamente los hombros entre repeticiones",
+                      "Tensar el cuello o la mandíbula durante el ejercicio, trasladando la tensión"
+                    ]
+                  }
+                },
+                {
+                  "id": "munecas-circulos",
+                  "title": "Círculos de Muñecas",
+                  "exerciseTypes": {
+                    "countType": {
+                      "value": "repetitions",
+                      "count": 20
+                    },
+                    "bodyType": {
+                      "value": "bilateral"
+                    },
+                    "movementType": {
+                      "value": "simple"
+                    }
+                  },
+                  "expectedTime": 30,
+                  "steps": [
+                    {
+                      "count": 10,
+                      "side": "ambos",
+                      "direction": "interior",
+                      "description": "Realiza 10 círculos con ambas muñecas simultáneamente hacia el interior (hacia el cuerpo)"
+                    },
+                    {
+                      "count": 10,
+                      "side": "ambos",
+                      "direction": "exterior",
+                      "description": "Realiza 10 círculos con ambas muñecas simultáneamente hacia el exterior (alejándose del cuerpo)"
+                    }
+                  ],
+                  "detailedInstructions": {
+                    "purpose": "Movilizar las articulaciones de las muñecas en un patrón circular completo para mejorar su flexibilidad, reducir la rigidez y preparar las manos para actividades que requieren destreza.",
+                    "technique": [
+                      "Extiende los brazos frente a ti con los codos ligeramente flexionados",
+                      "Mantén las manos relajadas y los dedos ligeramente extendidos",
+                      "Realiza círculos completos y amplios con las muñecas, manteniendo los antebrazos estables",
+                      "Alterna la dirección de los círculos: hacia adentro (hacia el cuerpo) y hacia afuera (alejándose)",
+                      "Intenta que el movimiento sea fluido y controlado, como si dibujaras círculos perfectos con los dedos"
+                    ],
+                    "benefits": [
+                      "Mejora la movilidad articular de las muñecas en todos los planos de movimiento",
+                      "Reduce el riesgo de lesiones como tendinitis o síndrome del túnel carpiano",
+                      "Activa la circulación sanguínea en las manos y antebrazos, preparándolos para el ejercicio",
+                      "Aumenta la lubricación articular, reduciendo la sensación de rigidez o chasquidos"
+                    ],
+                    "commonMistakes": [
+                      "Realizar movimientos bruscos o demasiado rápidos, que pueden forzar la articulación",
+                      "Hacer círculos muy pequeños que no aprovechan todo el rango de movimiento",
+                      "Tensar los músculos del antebrazo durante la rotación, limitando la fluidez",
+                      "No completar círculos enteros, reduciendo los beneficios del ejercicio"
+                    ]
+                  }
+                },
+                {
+                  "id": "cuello-rotaciones",
+                  "title": "Rotaciones Suaves de Cuello",
+                  "exerciseTypes": {
+                    "countType": {
+                      "value": "repetitions",
+                      "count": 5
+                    },
+                    "bodyType": {
+                      "value": "unilateral"
+                    },
+                    "movementType": {
+                      "value": "simple"
+                    }
+                  },
+                  "expectedTime": 30,
+                  "steps": [
+                    {
+                      "count": 2,
+                      "side": "derecha",
+                      "description": "Gira suavemente la cabeza hacia la derecha, manteniendo brevemente y regresando al centro"
+                    },
+                    {
+                      "count": 2,
+                      "side": "izquierda",
+                      "description": "Gira suavemente la cabeza hacia la izquierda, manteniendo brevemente y regresando al centro"
+                    },
+                    {
+                      "count": 1,
+                      "description": "Inclina suavemente la cabeza hacia adelante, sintiendo un estiramiento en la nuca"
+                    }
+                  ],
+                  "detailedInstructions": {
+                    "purpose": "Liberar la tensión acumulada en la musculatura del cuello, mejorar la movilidad cervical y preparar la zona para movimientos más dinámicos, reduciendo el riesgo de molestias o lesiones.",
+                    "technique": [
+                      "Siéntate o mantente de pie con la espalda recta y los hombros relajados",
+                      "Comienza llevando la barbilla hacia el pecho suavemente, sintiendo el estiramiento en la nuca",
+                      "Gira lentamente la cabeza hacia un lado, manteniendo la posición durante 2-3 segundos",
+                      "Regresa al centro y repite hacia el otro lado con movimientos lentos y controlados",
+                      "IMPORTANTE: Evita llevar la cabeza hacia atrás o realizar círculos completos para proteger las vértebras cervicales"
+                    ],
+                    "benefits": [
+                      "Reduce la rigidez y tensión acumulada en los músculos del cuello y zona cervical",
+                      "Mejora la movilidad articular de las vértebras cervicales de manera segura",
+                      "Alivia dolores asociados al estrés o a malas posturas mantenidas durante el día",
+                      "Prepara el cuello para actividades que requieren girar la cabeza con frecuencia"
+                    ],
+                    "commonMistakes": [
+                      "Realizar rotaciones bruscas o demasiado amplias que podrían lesionar las vértebras cervicales",
+                      "Hacer círculos completos con el cuello, lo que puede comprometer la columna cervical",
+                      "Forzar el movimiento más allá del punto de tensión confortable",
+                      "Tensar los hombros o la mandíbula durante el ejercicio, trasladando la tensión"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Activación Neural Progresiva",
+              "exercises": [
+                {
+                  "id": "marcha-sitio",
+                  "title": "Marcha en el Sitio",
+                  "exerciseTypes": {
+                    "countType": {
+                      "value": "seconds",
+                      "count": 60
+                    },
+                    "bodyType": {
+                      "value": "unilateral"
+                    },
+                    "movementType": {
+                      "value": "simple"
+                    }
+                  },
+                  "expectedTime": 60,
+                  "steps": [
+                    {
+                      "count": 30,
+                      "intensity": "baja",
+                      "description": "Primeros 30 segundos: marcha suave elevando ligeramente las rodillas, brazos con movimiento natural"
+                    },
+                    {
+                      "count": 30,
+                      "intensity": "moderada",
+                      "description": "Últimos 30 segundos: aumenta gradualmente la altura de las rodillas y la velocidad de los brazos"
+                    }
+                  ],
+                  "detailedInstructions": {
+                    "purpose": "Activar progresivamente el sistema nervioso y cardiovascular, preparando el cuerpo para el movimiento más intenso y elevando la temperatura corporal de manera gradual y controlada.",
+                    "technique": [
+                      "Comienza con una postura erguida, abdomen ligeramente contraído y hombros relajados",
+                      "Inicia con pasos suaves y controlados, elevando las rodillas a una altura cómoda",
+                      "Coordina el movimiento natural de los brazos: brazo derecho avanza con pierna izquierda y viceversa",
+                      "Aumenta gradualmente la altura de las rodillas y la velocidad según tu nivel de comodidad",
+                      "Mantén la mirada al frente y el pecho ligeramente elevado durante todo el ejercicio"
+                    ],
+                    "breathingTips": [
+                      "Establece un patrón de respiración rítmico y constante desde el inicio",
+                      "Inhala profundamente por la nariz durante 2-3 pasos",
+                      "Exhala completamente por la boca durante los siguientes 2-3 pasos",
+                      "Mantén la respiración diafragmática (abdominal) en lugar de la torácica"
+                    ],
+                    "benefits": [
+                      "Eleva gradualmente la frecuencia cardíaca preparando el sistema cardiovascular",
+                      "Mejora la coordinación neuromuscular entre brazos y piernas",
+                      "Aumenta la temperatura corporal, mejorando la elasticidad muscular",
+                      "Activa el metabolismo energético de manera progresiva y eficiente"
+                    ],
+                    "commonMistakes": [
+                      "Comenzar con demasiada intensidad, elevando excesivamente el ritmo cardíaco desde el inicio",
+                      "No mantener una postura erguida, inclinando el torso hacia adelante",
+                      "Realizar movimientos descoordinados entre brazos y piernas",
+                      "Mantener una respiración superficial o entrecortada que limita la oxigenación"
+                    ],
+                    "modifications": [
+                      "Para menor intensidad: reduce la altura de las rodillas y el movimiento de brazos",
+                      "Para mayor estabilidad: mantente cerca de una pared o silla para apoyo si es necesario",
+                      "Para personas con problemas de rodilla: reduce la elevación de las piernas",
+                      "Para aumentar la intensidad: incorpora pequeños saltos alternando los pies"
+                    ]
+                  }
+                },
+                {
+                  "id": "skipping-suave",
+                  "title": "Skipping Suave",
+                  "exerciseTypes": {
+                    "countType": {
+                      "value": "seconds",
+                      "count": 60
+                    },
+                    "bodyType": {
+                      "value": "unilateral"
+                    },
+                    "movementType": {
+                      "value": "simple"
+                    }
+                  },
+                  "expectedTime": 60,
+                  "steps": [
+                    {
+                      "count": 30,
+                      "intensity": "baja",
+                      "description": "Primeros 30 segundos: eleva las rodillas alternadamente con pequeños rebotes, brazos coordinados"
+                    },
+                    {
+                      "count": 30,
+                      "intensity": "moderada",
+                      "description": "Últimos 30 segundos: aumenta ligeramente la velocidad y la altura de las rodillas, manteniendo la técnica"
+                    }
+                  ],
+                  "detailedInstructions": {
+                    "purpose": "Desarrollar la coordinación neuromuscular y activar los músculos de las piernas de forma dinámica, aumentando progresivamente la intensidad cardiovascular y preparando el cuerpo para movimientos más explosivos.",
+                    "technique": [
+                      "Mantente sobre la punta de los pies con el peso ligeramente adelantado",
+                      "Eleva las rodillas alternadamente con un ligero rebote entre cada elevación",
+                      "Mantén los tobillos flexibles, como si rebotaras sobre un muelle",
+                      "Coordina el movimiento de los brazos: brazo contrario a la pierna que se eleva",
+                      "Mantén el torso erguido y el core ligeramente activado para estabilizar el movimiento"
+                    ],
+                    "breathingTips": [
+                      "Establece un ritmo de respiración controlado que puedas mantener durante todo el ejercicio",
+                      "Inhala por la nariz durante 2-3 elevaciones de rodilla",
+                      "Exhala por la boca durante las siguientes 2-3 elevaciones",
+                      "Evita contener la respiración o respirar de manera superficial"
+                    ],
+                    "benefits": [
+                      "Mejora la coordinación neuromuscular entre el tren superior e inferior",
+                      "Activa los músculos flexores de cadera, cuádriceps y pantorrillas",
+                      "Desarrolla la capacidad reactiva y elástica de los tobillos y pies",
+                      "Prepara el sistema cardiovascular para esfuerzos más intensos"
+                    ],
+                    "commonMistakes": [
+                      "Realizar el ejercicio con los talones apoyados, perdiendo el componente pliométrico",
+                      "No coordinar correctamente el movimiento de brazos y piernas",
+                      "Inclinar excesivamente el torso hacia adelante o hacia atrás",
+                      "Elevar las rodillas de manera desigual o con movimientos bruscos"
+                    ],
+                    "modifications": [
+                      "Para menor intensidad: reduce la altura de las elevaciones y la velocidad",
+                      "Para problemas de impacto: realiza el ejercicio sobre una superficie acolchada",
+                      "Para mayor estabilidad: mantente cerca de un apoyo como una pared o silla",
+                      "Para aumentar el desafío: incrementa gradualmente la altura de las rodillas"
+                    ]
+                  }
+                },
+                {
+                  "id": "jumping-jacks-suaves",
+                  "title": "Jumping Jacks Suaves",
+                  "exerciseTypes": {
+                    "countType": {
+                      "value": "seconds",
+                      "count": 60
+                    },
+                    "bodyType": {
+                      "value": "unilateral"
+                    },
+                    "movementType": {
+                      "value": "simple"
+                    }
+                  },
+                  "expectedTime": 60,
+                  "steps": [
+                    {
+                      "count": 20,
+                      "intensity": "muy baja",
+                      "description": "Primeros 20 segundos: movimientos reducidos sin saltos, solo separando y juntando pies con brazos coordinados"
+                    },
+                    {
+                      "count": 20,
+                      "intensity": "baja",
+                      "description": "Segundos 20-40: incorpora pequeños saltos manteniendo un impacto mínimo"
+                    },
+                    {
+                      "count": 20,
+                      "intensity": "moderada",
+                      "description": "Últimos 20 segundos: aumenta ligeramente la amplitud de los movimientos manteniendo el control"
+                    }
+                  ],
+                  "detailedInstructions": {
+                    "purpose": "Activar de forma global el sistema cardiovascular y múltiples grupos musculares simultáneamente, mejorando la coordinación bilateral y elevando progresivamente la frecuencia cardíaca con un ejercicio de bajo impacto.",
+                    "technique": [
+                      "Comienza con los pies juntos y los brazos a los lados del cuerpo",
+                      "Realiza un pequeño salto abriendo las piernas ligeramente más allá del ancho de los hombros",
+                      "Simultáneamente, eleva los brazos por los lados hasta que las manos casi se toquen sobre la cabeza",
+                      "Con otro pequeño salto, vuelve a la posición inicial, juntando pies y bajando los brazos",
+                      "Mantén las rodillas ligeramente flexionadas para absorber el impacto en cada salto"
+                    ],
+                    "breathingTips": [
+                      "Establece un ritmo respiratorio constante desde el principio",
+                      "Inhala por la nariz cuando los brazos y piernas se separan (apertura)",
+                      "Exhala por la boca cuando los brazos y piernas se juntan (cierre)",
+                      "Mantén la respiración profunda y controlada incluso al aumentar la intensidad"
+                    ],
+                    "benefits": [
+                      "Mejora la coordinación bilateral entre la parte superior e inferior del cuerpo",
+                      "Aumenta la frecuencia cardíaca de manera eficiente activando grandes grupos musculares",
+                      "Desarrolla la capacidad cardiovascular y la resistencia muscular de forma integrada",
+                      "Activa músculos de hombros, brazos, abdomen, glúteos y piernas simultáneamente"
+                    ],
+                    "commonMistakes": [
+                      "Comenzar con movimientos demasiado amplios o intensos antes de calentar adecuadamente",
+                      "Perder el ritmo de respiración al aumentar la velocidad del ejercicio",
+                      "No mantener las rodillas ligeramente flexionadas, aumentando el impacto en las articulaciones",
+                      "Elevar los hombros hacia las orejas, creando tensión innecesaria en el cuello"
+                    ],
+                    "modifications": [
+                      "Para menor impacto: realiza el ejercicio sin saltos, solo con pasos laterales",
+                      "Para problemas de hombro: limita la elevación de los brazos hasta donde sea cómodo",
+                      "Para problemas de equilibrio: reduce la amplitud de la apertura de piernas",
+                      "Para aumentar gradualmente: incrementa la altura del salto y la velocidad con el tiempo"
+                    ]
+                  }
+                },
+                {
+                  "id": "rotaciones-coordinadas",
+                  "title": "Rotaciones Coordinadas",
+                  "exerciseTypes": {
+                    "countType": {
+                      "value": "seconds",
+                      "count": 60
+                    },
+                    "bodyType": {
+                      "value": "unilateral"
+                    },
+                    "movementType": {
+                      "value": "simple"
+                    }
+                  },
+                  "expectedTime": 60,
+                  "steps": [
+                    {
+                      "count": 30,
+                      "side": "derecha",
+                      "description": "Rota el tronco hacia la derecha con los brazos extendidos, 30 segundos con movimientos lentos y controlados"
+                    },
+                    {
+                      "count": 30,
+                      "side": "izquierda",
+                      "description": "Rota el tronco hacia la izquierda con los brazos extendidos, 30 segundos con movimientos lentos y controlados"
+                    }
+                  ],
+                  "detailedInstructions": {
+                    "purpose": "Integrar la movilidad rotacional del tronco con la coordinación respiratoria y el control neuromuscular, preparando el cuerpo para movimientos deportivos que requieren rotación coordinada y estabilidad central.",
+                    "technique": [
+                      "Colócate de pie con los pies separados al ancho de los hombros y rodillas ligeramente flexionadas",
+                      "Extiende los brazos frente a ti a la altura de los hombros, con los codos ligeramente flexionados",
+                      "Rota el tronco hacia un lado mientras mantienes las caderas relativamente estables al frente",
+                      "Gira la cabeza en la misma dirección que el tronco para un movimiento integrado",
+                      "Regresa al centro y repite hacia el lado opuesto con un movimiento fluido y controlado"
+                    ],
+                    "breathingTips": [
+                      "Sincroniza conscientemente la respiración con el movimiento para potenciar la rotación",
+                      "Exhala profundamente durante la rotación, facilitando la activación del core",
+                      "Inhala al regresar a la posición central, preparándote para la siguiente rotación",
+                      "Mantén la respiración profunda y rítmica, evitando contenerla durante el movimiento"
+                    ],
+                    "benefits": [
+                      "Mejora la coordinación neuromuscular entre la parte superior e inferior del cuerpo",
+                      "Desarrolla la estabilidad del core mientras se moviliza la columna vertebral",
+                      "Aumenta la conciencia corporal y el control de los movimientos rotacionales",
+                      "Prepara el cuerpo para deportes y actividades que requieren rotación del tronco"
+                    ],
+                    "commonMistakes": [
+                      "Realizar rotaciones bruscas o descontroladas que pueden forzar la columna",
+                      "No sincronizar la respiración con el movimiento, perdiendo potencia y control",
+                      "Permitir que las caderas giren en exceso, perdiendo la estabilidad del core",
+                      "Rotar solo desde la región lumbar en lugar de involucrar toda la columna torácica"
+                    ],
+                    "modifications": [
+                      "Para menos intensidad: reduce el rango de rotación manteniendo el torso más estable",
+                      "Para mayor estabilidad: separa más los pies creando una base más amplia",
+                      "Para aumentar el desafío: sostén una pelota o peso ligero con ambas manos",
+                      "Para problemas de espalda: reduce el rango de rotación y mantén más activado el core"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        };
+
+        // 2. Content of app.js (modified)
+        /**
+         * CALIENTAPP - Aplicación para guiar rutinas de calentamiento
+         * Versión: 0.1.0
+         */
+
+        // ===== CARGA DE RUTINA DE EJERCICIOS =====
+        let workoutRoutine = WORKOUT_ROUTINE_JSON_DATA.sections;
+
+        async function loadWorkoutRoutine() {
+          try {
+            if (typeof workoutRoutine !== 'undefined' && workoutRoutine !== null) {
+                return Promise.resolve(workoutRoutine);
+            } else {
+                console.error('Error: workoutRoutine (embedded) no está definida o es nula.');
+                if (typeof showToast === 'function') { // Ensure showToast is available
+                    showToast('No se pudo cargar la rutina de ejercicios (datos no encontrados)', 'error');
+                }
+                return Promise.resolve(null);
+            }
+          } catch (error) {
+            console.error('Error procesando la rutina de ejercicios (embebida):', error);
+            if (typeof showToast === 'function') {
+                showToast('No se pudo cargar la rutina de ejercicios (error de procesamiento)', 'error');
+            }
+            return Promise.resolve(null);
+          }
+        }
+
+        // ===== MÓDULO DE GESTIÓN DEL ESTADO DE LA APLICACIÓN =====
+        const AppState = {
+          currentSession: {
+            active: false,
+            startTime: null,
+            endTime: null,
+            currentExerciseIndex: 0,
+            currentSectionIndex: 0,
+            exerciseStartTime: null,
+            exerciseTimes: [],
+            paused: false,
+            pauseStartTime: null,
+            totalPausedTime: 0
+          },
+          userData: {
+            exerciseTimings: {},
+            streak: 0,
+            lastWorkoutDate: null,
+            history: []
+          },
+          
+          async init() {
+            const loadedRoutine = await loadWorkoutRoutine();
+            if (!loadedRoutine) {
+                console.error("Inicialización detenida: la rutina de ejercicios no se cargó.");
+                return this; 
+            }
+            this.loadUserData();
+            this.updateStreak();
+            return this;
+          },
+          
+          loadUserData() {
+            const savedData = localStorage.getItem('calientapp_userData');
+            if (savedData) {
+              try {
+                this.userData = JSON.parse(savedData);
+                if (!this.userData.exerciseTimings) this.userData.exerciseTimings = {};
+                if (!this.userData.streak) this.userData.streak = 0;
+                if (!this.userData.history) this.userData.history = [];
+              } catch (e) {
+                console.error('Error al cargar datos de usuario:', e);
+                this.userData = {
+                  exerciseTimings: {},
+                  streak: 0,
+                  lastWorkoutDate: null,
+                  history: []
+                };
+              }
+            }
+          },
+          
+          getCurrentExercise() {
+            if (!this.currentSession.active || !workoutRoutine) return null;
+            
+            const { currentSectionIndex, currentExerciseIndex } = this.currentSession;
+            
+            if (currentSectionIndex >= workoutRoutine.length) {
+              return null;
+            }
+            
+            const section = workoutRoutine[currentSectionIndex];
+            
+            if (currentExerciseIndex >= section.exercises.length) {
+              return null;
+            }
+            
+            const exercise = section.exercises[currentExerciseIndex];
+            
+            return {
+              ...exercise,
+              sectionName: section.name, // Uses section.name
+              position: {
+                exercise: currentExerciseIndex + 1,
+                totalExercises: section.exercises.length,
+                section: currentSectionIndex + 1,
+                totalSections: workoutRoutine.length
+              }
+            };
+          },
+          
+          nextExercise() {
+            if (!this.currentSession.active || !workoutRoutine) return null;
+            
+            const exerciseEndTime = new Date();
+            const currentSectionIndex = this.currentSession.currentSectionIndex;
+            const currentExIndex = this.currentSession.currentExerciseIndex;
+            
+            const effectiveTime = exerciseEndTime - this.currentSession.exerciseStartTime - this.currentSession.totalPausedTime;
+            this.currentSession.exerciseTimes.push(effectiveTime);
+            
+            const currentExerciseDef = workoutRoutine[currentSectionIndex].exercises[currentExIndex];
+            this.updateExerciseTiming(currentExerciseDef.id, effectiveTime);
+            
+            this.currentSession.totalPausedTime = 0;
+            this.currentSession.currentExerciseIndex++;
+            
+            if (this.currentSession.currentExerciseIndex >= workoutRoutine[currentSectionIndex].exercises.length) {
+              this.currentSession.currentSectionIndex++;
+              this.currentSession.currentExerciseIndex = 0;
+              
+              if (this.currentSession.currentSectionIndex >= workoutRoutine.length) {
+                return this.endSession();
+              }
+            }
+            
+            this.currentSession.exerciseStartTime = new Date();
+            return this.getCurrentExercise();
+          },
+          
+          updateExerciseTiming(exerciseId, time) {
+            const timings = this.userData.exerciseTimings;
+            if (!timings[exerciseId]) {
+              timings[exerciseId] = time;
+            } else {
+              timings[exerciseId] = timings[exerciseId] * 0.7 + time * 0.3;
+            }
+            this.saveUserData();
+          },
+
+          saveUserData() {
+            try {
+              localStorage.setItem('calientapp_userData', JSON.stringify(this.userData));
+            } catch (e) {
+              console.error('Error al guardar datos de usuario:', e);
+              if (typeof showToast === 'function') {
+                showToast('Error al guardar tus datos. Es posible que no haya suficiente espacio.', 'error');
+              }
+            }
+          },
+          
+          updateStreak() {
+            const today = new Date().toLocaleDateString();
+            const lastWorkout = this.userData.lastWorkoutDate;
+            if (!lastWorkout) return;
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toLocaleDateString();
+            if (lastWorkout !== today && lastWorkout !== yesterdayStr) {
+              this.userData.streak = 0;
+              this.saveUserData();
+            }
+          },
+          
+          startSession() {
+            this.currentSession = {
+              active: true,
+              startTime: new Date(),
+              endTime: null,
+              currentSectionIndex: 0,
+              currentExerciseIndex: 0,
+              exerciseStartTime: new Date(),
+              exerciseTimes: [],
+              paused: false,
+              pauseStartTime: null,
+              totalPausedTime: 0
+            };
+            return this.currentSession;
+          },
+          
+          pauseSession() {
+            if (!this.currentSession.active || this.currentSession.paused) return;
+            this.currentSession.paused = true;
+            this.currentSession.pauseStartTime = new Date();
+          },
+          
+          resumeSession() {
+            if (!this.currentSession.active || !this.currentSession.paused) return;
+            const pauseDuration = new Date() - this.currentSession.pauseStartTime;
+            this.currentSession.totalPausedTime += pauseDuration;
+            this.currentSession.paused = false;
+            this.currentSession.pauseStartTime = null;
+          },
+          
+          getExpectedTime(exerciseId) {
+            // Flatten workoutRoutine to find the exercise if workoutRoutine is loaded
+            let exercise = null;
+            if (workoutRoutine && Array.isArray(workoutRoutine)) {
+                for (const section of workoutRoutine) {
+                    if (section.exercises && Array.isArray(section.exercises)) {
+                        exercise = section.exercises.find(ex => ex && ex.id === exerciseId);
+                        if (exercise) break;
+                    }
+                }
+            }
+            
+            const userTime = this.userData.exerciseTimings[exerciseId];
+            const jsonTime = exercise?.expectedTime;
+            const defaultTime = 20; 
+
+            let timeToUse;
+            if (userTime) {
+              timeToUse = userTime;
+            } else if (jsonTime !== undefined) {
+              timeToUse = jsonTime * 1000; 
+            } else {
+              timeToUse = defaultTime * 1000;
+            }
+            return timeToUse;
+          },
+
+          endSession() {
+            if (!this.currentSession.active) return null;
+            this.currentSession.active = false;
+            this.currentSession.endTime = new Date();
+            
+            const sessionSummary = {
+              date: this.currentSession.startTime,
+              duration: this.currentSession.endTime - this.currentSession.startTime,
+              exerciseTimes: this.currentSession.exerciseTimes,
+              exerciseCount: this.currentSession.exerciseTimes.length
+            };
+            
+            const today = new Date().toLocaleDateString();
+            const lastWorkout = this.userData.lastWorkoutDate;
+            
+            if (lastWorkout !== today) {
+              const yesterday = new Date();
+              yesterday.setDate(yesterday.getDate() - 1);
+              const yesterdayStr = yesterday.toLocaleDateString();
+              if (!lastWorkout || lastWorkout === yesterdayStr) {
+                this.userData.streak++;
+              } else {
+                this.userData.streak = 1;
+              }
+              this.userData.lastWorkoutDate = today;
+            }
+            
+            this.userData.history.unshift(sessionSummary);
+            if (this.userData.history.length > 100) {
+              this.userData.history = this.userData.history.slice(0, 100);
+            }
+            this.saveUserData();
+            return sessionSummary;
+          },
+          
+          getHistory() {
+            return this.userData.history;
+          },
+          
+          getStats() {
+            return {
+              streak: this.userData.streak,
+              totalSessions: this.userData.history.length,
+              lastSession: this.userData.history[0] || null
+            };
+          }
+        };
+
+        // ===== MÓDULO DE INTERFAZ DE USUARIO =====
+        const DOM = {
+          screens: {
+            home: document.getElementById('home-screen'),
+            exercise: document.getElementById('exercise-screen'),
+            history: document.getElementById('history-screen'),
+            summary: document.getElementById('summary-screen')
+          },
+          nav: {
+            home: document.getElementById('home-nav'),
+            history: document.getElementById('history-nav')
+          },
+          home: {
+            startButton: document.getElementById('start-workout-btn')
+          },
+          exercise: {
+            title: document.getElementById('exercise-title'),
+            subtitle: document.getElementById('exercise-subtitle'),
+            description: document.getElementById('exercise-description'),
+            image: document.getElementById('exercise-image'),
+            counterValue: document.getElementById('counter-value'),
+            counterLabel: document.getElementById('counter-label'),
+            position: document.getElementById('exercise-position'),
+            timer: document.getElementById('exercise-timer'),
+            progressBar: document.getElementById('exercise-progress-bar'),
+            pauseButton: document.getElementById('pause-btn'),
+            nextButton: document.getElementById('next-btn')
+          },
+          history: {
+            calendarMonth: document.getElementById('calendar-month'),
+            calendarGrid: document.getElementById('calendar-grid'),
+            prevMonthBtn: document.getElementById('prev-month-btn'),
+            nextMonthBtn: document.getElementById('next-month-btn'),
+            historyList: document.getElementById('history-list'),
+            historyEmpty: document.getElementById('history-empty')
+          },
+          summary: {
+            time: document.getElementById('summary-time'),
+            exercises: document.getElementById('summary-exercises'),
+            streak: document.getElementById('summary-streak'),
+            message: document.getElementById('summary-message'),
+            homeButton: document.getElementById('home-btn'),
+            restartButton: document.getElementById('restart-btn')
+          },
+          toastContainer: document.getElementById('toast-container')
+        };
+
+        const UI = {
+          state: {
+            activeScreen: 'home',
+            calendarDate: new Date(),
+            counterInterval: null,
+            timerInterval: null,
+            exerciseCountdown: 0,
+            currentStep: 0, // Added for multi-step exercises
+            totalSteps: 0   // Added for multi-step exercises
+          },
+          
+          init() {
+            this.bindEvents();
+            this.showScreen('home');
+            this.updateHistoryView();
+            return this;
+          },
+          
+          bindEvents() {
+            DOM.nav.home.addEventListener('click', () => this.showScreen('home'));
+            DOM.nav.history.addEventListener('click', () => this.showScreen('history'));
+            DOM.home.startButton.addEventListener('click', () => this.startWorkout());
+            DOM.exercise.pauseButton.addEventListener('click', () => this.togglePause());
+            DOM.exercise.nextButton.addEventListener('click', () => this.nextExercise());
+            DOM.history.prevMonthBtn.addEventListener('click', () => this.changeCalendarMonth(-1));
+            DOM.history.nextMonthBtn.addEventListener('click', () => this.changeCalendarMonth(1));
+            DOM.summary.homeButton.addEventListener('click', () => this.showScreen('home'));
+            DOM.summary.restartButton.addEventListener('click', () => this.startWorkout());
+          },
+          
+          showScreen(screenName) {
+            Object.values(DOM.screens).forEach(screen => screen.classList.remove('active'));
+            DOM.screens[screenName].classList.add('active');
+            Object.entries(DOM.nav).forEach(([name, element]) => {
+              element.classList.toggle('active', name === screenName);
+            });
+            if (screenName === 'history') this.updateHistoryView();
+            this.state.activeScreen = screenName;
+          },
+          
+          startWorkout() {
+            AppState.startSession();
+            this.showScreen('exercise');
+            const exercise = AppState.getCurrentExercise();
+            this.setExercise(exercise);
+            this.startExerciseCounter();
+          },
+          
+          setExercise(exercise) {
+            if (!exercise) return;
+            DOM.exercise.title.textContent = exercise.title;
+            DOM.exercise.subtitle.textContent = exercise.subtitle || ''; // Ensure subtitle is not undefined
+            DOM.exercise.description.textContent = exercise.description || (exercise.steps && exercise.steps[0] ? exercise.steps[0].description : 'Comienza el ejercicio.');
+            DOM.exercise.image.innerHTML = exercise.image || ''; // Ensure image is not undefined
+            DOM.exercise.nextButton.style.display = 'none';
+            DOM.exercise.pauseButton.style.display = 'flex';
+            DOM.exercise.pauseButton.textContent = 'Pausar';
+            
+            // Default to reps if countType or value is missing
+            const countTypeValue = exercise.exerciseTypes?.countType?.value || 'repetitions';
+            const count = exercise.exerciseTypes?.countType?.count || 10;
+
+            this.state.exerciseCountdown = count;
+            DOM.exercise.counterValue.textContent = count;
+            
+            if (countTypeValue === 'seconds') {
+              DOM.exercise.counterLabel.textContent = 'Segundos restantes';
+            } else {
+              DOM.exercise.counterLabel.textContent = 'Repeticiones restantes';
+            }
+            
+            const { position } = exercise;
+            DOM.exercise.position.textContent = `Ejercicio ${position.exercise} de ${position.totalExercises} - Sección ${position.section} de ${position.totalSections}`;
+            const overallProgress = this.calculateOverallProgress(position);
+            DOM.exercise.progressBar.style.width = `${overallProgress}%`;
+            this.state.currentStep = 0; // Reset step for new exercise
+            this.resetExerciseTimer();
+          },
+          
+          calculateOverallProgress(position) {
+            if (!workoutRoutine) return 0;
+            let totalExercises = 0;
+            let completedExercises = 0;
+            workoutRoutine.forEach((section, sectionIndex) => {
+              section.exercises.forEach((_, exerciseIndex) => {
+                totalExercises++;
+                if (sectionIndex < position.section - 1) {
+                  completedExercises++;
+                } else if (sectionIndex === position.section - 1 && exerciseIndex < position.exercise - 1) {
+                  completedExercises++;
+                }
+              });
+            });
+            return totalExercises > 0 ? (completedExercises / totalExercises) * 100 : 0;
+          },
+          
+          startExerciseCounter() {
+            if (this.state.counterInterval) clearInterval(this.state.counterInterval);
+            const exercise = AppState.getCurrentExercise();
+            if (!exercise) return;
+          
+            const steps = exercise.steps && exercise.steps.length > 0 ? exercise.steps : [{ description: exercise.description || 'Realiza el ejercicio.' }];    
+            this.state.totalSteps = steps.length;
+
+            const updateStepUI = () => {
+              const currentStepData = steps[this.state.currentStep] || { description: exercise.description || 'Paso actual.' };
+              DOM.exercise.description.textContent = currentStepData.description || exercise.description || 'Sigue las instrucciones.';
+              
+              const countTypeValue = exercise.exerciseTypes?.countType?.value || 'repetitions';
+              const baseCount = exercise.exerciseTypes?.countType?.count || 10;
+
+              let stepCount;
+              if (currentStepData.count !== undefined) {
+                stepCount = currentStepData.count;
+              } else {
+                stepCount = steps.length > 1 ? Math.round(baseCount / steps.length) : baseCount;
+              }
+
+              this.state.exerciseCountdown = stepCount;
+              DOM.exercise.counterValue.textContent = stepCount;
+              DOM.exercise.counterLabel.textContent = countTypeValue === 'seconds' ? 'Segundos restantes' : 'Repeticiones restantes';
+            };
+
+            updateStepUI();
+            DOM.exercise.nextButton.style.display = 'flex'; // Show next button to advance steps/exercise
+
+            const countTypeValue = exercise.exerciseTypes?.countType?.value || 'repetitions';
+            const expectedTimeForRep = countTypeValue === 'seconds' ? 1000 : (AppState.getExpectedTime(exercise.id) / (exercise.exerciseTypes?.countType?.count || 1));
+
+            this.state.counterInterval = setInterval(() => {
+              if (AppState.currentSession.paused) return;
+              this.state.exerciseCountdown--;
+              DOM.exercise.counterValue.textContent = Math.max(this.state.exerciseCountdown, 0);
+              if (this.state.exerciseCountdown <= 0) {
+                clearInterval(this.state.counterInterval);
+                // Do not automatically call nextExercise here, user clicks "Next" button
+              }
+            }, expectedTimeForRep);
+            this.startExerciseTimer();
+          },
+          
+          startExerciseTimer() {
+            if (this.state.timerInterval) clearInterval(this.state.timerInterval);
+            const startTime = Date.now() - (AppState.currentSession.totalPausedTime || 0); // Adjust for current exercise's pause time
+            
+            this.state.timerInterval = setInterval(() => {
+              if (AppState.currentSession.paused) return;
+              const elapsedTime = Date.now() - AppState.currentSession.exerciseStartTime - AppState.currentSession.totalPausedTime;
+              const minutes = Math.floor(elapsedTime / 60000);
+              const seconds = Math.floor((elapsedTime % 60000) / 1000);
+              DOM.exercise.timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+          },
+          
+          resetExerciseTimer() {
+            if (this.state.timerInterval) {
+              clearInterval(this.state.timerInterval);
+              this.state.timerInterval = null;
+            }
+            DOM.exercise.timer.textContent = '00:00';
+            // Timer will be started by startExerciseCounter -> startExerciseTimer
+          },
+          
+          togglePause() {
+            if (AppState.currentSession.paused) {
+              AppState.resumeSession();
+              DOM.exercise.pauseButton.textContent = 'Pausar';
+              this.showToast('Ejercicio reanudado', 'success');
+            } else {
+              AppState.pauseSession();
+              DOM.exercise.pauseButton.textContent = 'Reanudar';
+              this.showToast('Ejercicio pausado', 'warning');
+            }
+          },
+          
+          nextExercise() {
+            const currentExercise = AppState.getCurrentExercise();
+            if (!currentExercise) { // Should not happen if button is visible
+                 this.showWorkoutSummary(); return;
+            }
+
+            // If current exercise has multiple steps and not all are completed
+            if (currentExercise.steps && currentExercise.steps.length > 1 && this.state.currentStep < this.state.totalSteps -1) {
+                this.state.currentStep++;
+                this.startExerciseCounter(); // Re-init counter for the new step
+                return; 
+            }
+            
+            // All steps for current exercise are done, or it's a single-step exercise. Move to next AppState exercise.
+            this.state.currentStep = 0; // Reset for the next exercise
+            const nextAppStateExercise = AppState.nextExercise();
+
+            if (nextAppStateExercise) {
+                this.setExercise(nextAppStateExercise);
+                this.startExerciseCounter(); // Start counter for the new exercise
+            } else {
+                // End of workout
+                this.showWorkoutSummary();
+            }
+          },
+            
+          showWorkoutSummary() {
+            const summary = AppState.currentSession.endTime 
+              ? { 
+                  duration: AppState.currentSession.endTime - AppState.currentSession.startTime,
+                  exerciseCount: AppState.currentSession.exerciseTimes.length,
+                  streak: AppState.userData.streak
+                }
+              : AppState.endSession();
+            
+            if (!summary) return;
+            
+            const minutes = Math.floor(summary.duration / 60000);
+            const seconds = Math.floor((summary.duration % 60000) / 1000);
+            const timeStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            DOM.summary.time.textContent = timeStr;
+            DOM.summary.exercises.textContent = summary.exerciseCount;
+            DOM.summary.streak.textContent = AppState.userData.streak;
+            
+            const history = AppState.getHistory();
+            if (history.length > 1) {
+              const lastSession = history[1]; 
+              const improvement = lastSession.duration > summary.duration;
+              if (improvement) {
+                const diff = Math.round((lastSession.duration - summary.duration) / lastSession.duration * 100);
+                DOM.summary.message.textContent = `¡Has mejorado tu tiempo en un ${diff}% comparado con tu última sesión!`;
+                DOM.summary.message.style.color = 'var(--success)';
+              } else {
+                DOM.summary.message.textContent = '¡Buen trabajo! Mantén la constancia para seguir mejorando.';
+                DOM.summary.message.style.color = 'var(--primary)';
+              }
+            } else {
+              DOM.summary.message.textContent = '¡Felicidades por completar tu primera sesión! ¡Sigue así!';
+              DOM.summary.message.style.color = 'var(--success)';
+            }
+            this.showScreen('summary');
+          },
+          
+          updateHistoryView() {
+            this.updateCalendar();
+            this.updateHistoryList();
+          },
+          
+          updateCalendar() {
+            const date = this.state.calendarDate;
+            const month = date.getMonth();
+            const year = date.getFullYear();
+            const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            DOM.history.calendarMonth.textContent = `${monthNames[month]} ${year}`;
+            
+            const headerCellsHTML = DOM.history.calendarGrid.querySelectorAll('.calendar-day-header');
+            let headers = '';
+            headerCellsHTML.forEach(cell => headers += cell.outerHTML);
+            DOM.history.calendarGrid.innerHTML = headers; // Keep headers
+
+            const history = AppState.getHistory();
+            const activeDays = new Set();
+            history.forEach(session => {
+              const sessionDate = new Date(session.date);
+              if (sessionDate.getMonth() === month && sessionDate.getFullYear() === year) {
+                activeDays.add(sessionDate.getDate());
+              }
+            });
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            for (let i = 0; i < firstDay; i++) {
+              const emptyCell = document.createElement('div');
+              emptyCell.classList.add('calendar-day');
+              DOM.history.calendarGrid.appendChild(emptyCell);
+            }
+            
+            const today = new Date();
+            const isCurrentMonth = today.getMonth() === month && today.getFullYear() === year;
+            const currentDay = today.getDate();
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+              const dayCell = document.createElement('div');
+              dayCell.classList.add('calendar-day');
+              dayCell.textContent = day;
+              if (activeDays.has(day)) dayCell.classList.add('active');
+              if (isCurrentMonth && day === currentDay) dayCell.classList.add('today');
+              DOM.history.calendarGrid.appendChild(dayCell);
+            }
+          },
+          
+          changeCalendarMonth(delta) {
+            this.state.calendarDate.setMonth(this.state.calendarDate.getMonth() + delta);
+            this.updateCalendar();
+          },
+          
+          updateHistoryList() {
+            const history = AppState.getHistory();
+            DOM.history.historyList.innerHTML = '';
+            DOM.history.historyEmpty.style.display = history.length === 0 ? 'block' : 'none';
+            if (history.length === 0) return;
+
+            const historyByDay = {};
+            history.forEach(session => {
+              const date = new Date(session.date).toLocaleDateString();
+              if (!historyByDay[date]) historyByDay[date] = [];
+              historyByDay[date].push(session);
+            });
+            
+            Object.entries(historyByDay).forEach(([date, sessions]) => {
+              sessions.forEach(session => {
+                DOM.history.historyList.appendChild(this.createHistoryCard(date, session));
+              });
+            });
+          },
+          
+          createHistoryCard(date, session) {
+            const card = document.createElement('div');
+            card.classList.add('history-card');
+            const sessionDate = new Date(session.date);
+            const timeStr = `${sessionDate.getHours().toString().padStart(2, '0')}:${sessionDate.getMinutes().toString().padStart(2, '0')}`;
+            const durationMinutes = Math.floor(session.duration / 60000);
+            const durationSeconds = Math.floor((session.duration % 60000) / 1000);
+            const durationStr = `${durationMinutes.toString().padStart(2, '0')}:${durationSeconds.toString().padStart(2, '0')}`;
+            card.innerHTML = `
+              <div class="history-card-header">
+                <div class="history-date">${date}</div>
+                <div class="history-time">${timeStr}</div>
+              </div>
+              <div class="history-details">
+                <div class="history-stats">
+                  <div class="history-stat">
+                    <div class="history-stat-value">${durationStr}</div>
+                    <div class="history-stat-label">Duración</div>
+                  </div>
+                  <div class="history-stat">
+                    <div class="history-stat-value">${session.exerciseCount}</div>
+                    <div class="history-stat-label">Ejercicios</div>
+                  </div>
+                </div>
+              </div>`;
+            return card;
+          },
+          
+          showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.classList.add('toast', `toast-${type}`);
+            let icon = '🔔';
+            if (type === 'success') icon = '✅';
+            if (type === 'error') icon = '❌';
+            if (type === 'warning') icon = '⚠️';
+            toast.innerHTML = `
+              <div class="toast-content">
+                <span class="toast-icon">${icon}</span>
+                <span class="toast-message">${message}</span>
+              </div>
+              <button class="toast-close">×</button>`;
+            DOM.toastContainer.appendChild(toast);
+            toast.querySelector('.toast-close').addEventListener('click', () => toast.remove());
+            setTimeout(() => {
+              toast.classList.add('fade-out');
+              setTimeout(() => toast.remove(), 300);
+            }, 3000);
+          }
+        };
+        
+        // ===== INICIALIZACIÓN DE LA APLICACIÓN (COMBINED) =====
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize AppState and UI
+            // AppState.init() is async, so wait for it.
+            AppState.init().then(() => {
+                // Exercise Details Modal Functionality and UI patching
+                const modal = document.getElementById('exercise-details-modal');
+                const closeBtn = document.getElementById('exercise-details-close');
+                const titleEl = document.getElementById('exercise-details-title');
+                const purposeEl = document.getElementById('exercise-details-purpose').querySelector('.exercise-details-section-content');
+                const techniqueEl = document.getElementById('exercise-details-technique').querySelector('.exercise-details-list');
+                const benefitsEl = document.getElementById('exercise-details-benefits').querySelector('.exercise-details-list');
+                const mistakesEl = document.getElementById('exercise-details-common-mistakes').querySelector('.exercise-details-list');
+
+                window.showExerciseDetails = function(exercise) {
+                    if (!exercise || !exercise.detailedInstructions) return;
+                    titleEl.textContent = exercise.title;
+                    purposeEl.textContent = exercise.detailedInstructions.purpose || '';
+                    techniqueEl.innerHTML = exercise.detailedInstructions.technique?.map(tip => `<li>${tip}</li>`).join('') || '';
+                    benefitsEl.innerHTML = exercise.detailedInstructions.benefits?.map(benefit => `<li>${benefit}</li>`).join('') || '';
+                    mistakesEl.innerHTML = exercise.detailedInstructions.commonMistakes?.map(mistake => `<li>${mistake}</li>`).join('') || '';
+                    modal.style.display = 'flex';
+                }
+
+                closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+                modal.addEventListener('click', (event) => { if (event.target === modal) modal.style.display = 'none'; });
+
+                window.addExerciseDetailsButton = function() {
+                    const exerciseCard = document.querySelector('.exercise-card');
+                    if (!exerciseCard) return;
+                    let detailsButton = exerciseCard.querySelector('.exercise-details-btn');
+                    if (!detailsButton) {
+                        detailsButton = document.createElement('button');
+                        detailsButton.textContent = 'Ver Detalles';
+                        detailsButton.classList.add('btn', 'btn-outline', 'mt-2', 'exercise-details-btn');
+                        exerciseCard.appendChild(detailsButton);
+                    }
+                    detailsButton.removeEventListener('click', window.handleDetailsButtonClick); // Remove old listener if any
+                    window.handleDetailsButtonClick = () => { // Store handler to remove later
+                        const currentExercise = AppState.getCurrentExercise();
+                        if (currentExercise) window.showExerciseDetails(currentExercise);
+                    };
+                    detailsButton.addEventListener('click', window.handleDetailsButtonClick);
+                }
+                
+                // Patch UI.init and UI.setExercise
+                if (UI && typeof UI.init === 'function' && typeof UI.setExercise === 'function') {
+                    const originalUIInit = UI.init;
+                    UI.init = function() { // This replaces the original UI.init
+                        const result = originalUIInit.apply(this, arguments); // Call original
+                        
+                        const originalSetExercise = UI.setExercise;
+                        UI.setExercise = function(exercise) { // This replaces original UI.setExercise
+                            originalSetExercise.apply(this, arguments);
+                            if (exercise && typeof window.addExerciseDetailsButton === 'function') {
+                                window.addExerciseDetailsButton();
+                            }
+                        };
+                        return result;
+                    };
+                }
+                
+                // Now call the (possibly patched) UI.init
+                UI.init();
+
+                // First visit toast
+                if (!localStorage.getItem('calientapp_firstVisit')) {
+                    localStorage.setItem('calientapp_firstVisit', 'true');
+                    UI.showToast('¡Bienvenido a Calientapp! Tu entrenador personal de calentamiento.', 'success');
+                }
+
+            }).catch(error => {
+                console.error("Error durante la inicialización de AppState:", error);
+                if(typeof UI !== 'undefined' && UI.showToast) {
+                    UI.showToast("Error crítico al iniciar la aplicación.", "error");
+                }
+            });
+
+            // Service Worker Registration (Embedded)
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    const swCode = `
+                        const CACHE_NAME = 'calientapp-v1-embedded';
+                        // For a single file, we primarily cache the main document itself.
+                        // The URL used for caching should be the actual URL when served.
+                        // self.location.href can be used within the SW for this.
+                        
+                        self.addEventListener('install', event => {
+                          event.waitUntil(
+                            caches.open(CACHE_NAME)
+                              .then(cache => {
+                                console.log('Embedded SW: Opened cache');
+                                // Cache the main document.
+                                // Using new Request to ensure it's a GET request.
+                                return cache.add(new Request(self.location.href));
+                              })
+                              .then(() => self.skipWaiting()) // Activate new SW immediately
+                          );
+                        });
+
+                        self.addEventListener('activate', event => {
+                          const cacheWhitelist = [CACHE_NAME];
+                          event.waitUntil(
+                            caches.keys().then(cacheNames => {
+                              return Promise.all(
+                                cacheNames.map(cacheName => {
+                                  if (cacheWhitelist.indexOf(cacheName) === -1) {
+                                    console.log('Embedded SW: Deleting old cache', cacheName);
+                                    return caches.delete(cacheName);
+                                  }
+                                })
+                              );
+                            }).then(() => self.clients.claim()) // Take control of clients
+                          );
+                        });
+
+                        self.addEventListener('fetch', event => {
+                          // For navigation requests, try cache first, then network.
+                          // For other requests (if any for a single file), also cache-first.
+                          event.respondWith(
+                            caches.match(event.request)
+                              .then(response => {
+                                if (response) {
+                                  return response; // Serve from cache
+                                }
+                                // Not in cache, fetch from network
+                                return fetch(event.request).then(
+                                  fetchResponse => {
+                                    // Check if we received a valid response
+                                    if (!fetchResponse || fetchResponse.status !== 200 || fetchResponse.type !== 'basic') {
+                                      return fetchResponse;
+                                    }
+                                    
+                                    // IMPORTANT: Clone the response. A response is a stream
+                                    // and because we want the browser to consume the response
+                                    // as well as the cache consuming the response, we need
+                                    // to clone it so we have two streams.
+                                    const responseToCache = fetchResponse.clone();
+                                    
+                                    caches.open(CACHE_NAME)
+                                      .then(cache => {
+                                        cache.put(event.request, responseToCache);
+                                      });
+                                      
+                                    return fetchResponse;
+                                  }
+                                ).catch(() => {
+                                    // Network request failed, and not in cache.
+                                    // This is critical for the main document if it's the first load and offline.
+                                    // However, after install, the main doc should be cached.
+                                    if (event.request.mode === 'navigate') {
+                                       // Attempt to serve the main page from cache again as a fallback.
+                                       return caches.match(new Request(self.location.href));
+                                    }
+                                    // For other assets, could return a generic offline response or error
+                                    return new Response("Network error trying to fetch resource.", {"status": 404, "headers": {"Content-Type": "text/plain"}});
+                                });
+                              })
+                          );
+                        });
+                        
+                        self.addEventListener('message', event => {
+                            if (event.data && event.data.action === 'skipWaiting') {
+                                self.skipWaiting();
+                            }
+                        });
+                    `;
+                    const swBlob = new Blob([swCode], { type: 'application/javascript' });
+                    const swUrl = URL.createObjectURL(swBlob);
+
+                    navigator.serviceWorker.register(swUrl)
+                        .then(registration => {
+                            console.log('Embedded ServiceWorker registered: ', registration);
+                            registration.addEventListener('updatefound', () => {
+                                const newWorker = registration.installing;
+                                newWorker.addEventListener('statechange', () => {
+                                    if (newWorker.state === 'installed') {
+                                        if (navigator.serviceWorker.controller) {
+                                            document.getElementById('sw-notification').classList.add('active');
+                                        }
+                                    }
+                                });
+                            });
+                        })
+                        .catch(error => {
+                            console.log('Embedded ServiceWorker registration failed: ', error);
+                        });
+                    
+                    let refreshing;
+                    navigator.serviceWorker.addEventListener('controllerchange', () => {
+                        if (refreshing) return;
+                        window.location.reload();
+                        refreshing = true;
+                    });
+
+                    document.getElementById('sw-update').addEventListener('click', () => {
+                        navigator.serviceWorker.getRegistration().then(reg => {
+                            if (reg && reg.waiting) {
+                                reg.waiting.postMessage({ action: 'skipWaiting' });
+                            } else if (reg) {
+                                reg.update().catch(err => console.error("SW update check failed:", err));
+                            } else {
+                                window.location.reload();
+                            }
+                        });
+                    });
+                    
+                    document.getElementById('sw-dismiss').addEventListener('click', () => {
+                        document.getElementById('sw-notification').classList.remove('active');
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
