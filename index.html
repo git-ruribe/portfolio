@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Portafolio de Aplicaciones</title>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+    <style>
+        /* Tus estilos generales para el portafolio */
+        body { font-family: sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; color: #333; }
+        header { text-align: center; margin-bottom: 40px; }
+        h1, h2 { color: #007bff; }
+        #portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+        .portfolio-item {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            text-align: center;
+            padding-bottom: 20px;
+            transition: transform 0.2s ease-in-out;
+        }
+        .portfolio-item:hover {
+            transform: translateY(-5px);
+        }
+        .portfolio-item img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+            display: block;
+        }
+        .portfolio-item h2 {
+            margin: 15px 0 8px;
+            font-size: 1.4em;
+            color: #333;
+        }
+        .portfolio-item a {
+            text-decoration: none;
+            color: inherit;
+        }
+        .portfolio-item a:hover h2 {
+            color: #007bff;
+        }
+        .portfolio-item .category {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .portfolio-item p {
+            padding: 0 15px;
+            font-size: 0.95em;
+            line-height: 1.5;
+            color: #555;
+        }
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #777;
+        }
+        footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Mis Proyectos Web</h1>
+        <p>Explora algunas de mis aplicaciones y experimentos.</p>
+    </header>
+
+    <main id="portfolio-grid">
+        <p id="loading-message">Cargando proyectos...</p>
+        <p id="error-message" style="color: red; display: none;">No se pudieron cargar los proyectos. Inténtalo de nuevo más tarde.</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Tu Nombre. Todos los derechos reservados.</p>
+        <p><a href="admin.html">Acceder a Gestión</a></p>
+    </footer>
+
+    <script>
+        // --- Firebase Configuration (¡¡¡IMPORTANTE: REEMPLAZA ESTO CON TUS PROPIOS VALORES!!!) ---
+        const firebaseConfig = {
+          apiKey: "AIzaSyB2Jo2pqMfAOC-h9M9qrV4t-3adq8f-B9A",
+          authDomain: "appszoo.firebaseapp.com",
+          projectId: "appszoo",
+          storageBucket: "appszoo.firebasestorage.app",
+          messagingSenderId: "489054092246",
+          appId: "1:489054092246:web:07a78ff4d5abd0c9414277"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const projectsCollection = db.collection('portfolioProjects'); // Misma colección que en admin.html
+
+        // --- DOM Elements ---
+        const portfolioGrid = document.getElementById('portfolio-grid');
+        const loadingMessage = document.getElementById('loading-message');
+        const errorMessage = document.getElementById('error-message');
+
+        // --- Cargar y Mostrar Proyectos ---
+        async function loadAndDisplayPortfolio() {
+            try {
+                const snapshot = await projectsCollection.orderBy('nombre').get();
+                const projects = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                portfolioGrid.innerHTML = ''; // Limpiar mensaje de carga
+
+                if (projects.length === 0) {
+                    portfolioGrid.innerHTML = '<p>Aún no hay proyectos en el portafolio.</p>';
+                    return;
+                }
+
+                projects.forEach(project => {
+                    const projectCard = document.createElement('div');
+                    projectCard.classList.add('portfolio-item');
+
+                    projectCard.innerHTML = `
+                        <a href="${project.direccion}" target="_blank">
+                            <img src="${project.imagenBase64}" alt="${project.nombre}">
+                            <h2>${project.nombre}</h2>
+                        </a>
+                        <p class="category">${project.categoria} - ${project.estatus}</p>
+                        <p>${project.descripcion}</p>
+                    `;
+                    portfolioGrid.appendChild(projectCard);
+                });
+                loadingMessage.style.display = 'none';
+            } catch (error) {
+                console.error('Error al cargar el portafolio desde Firestore:', error);
+                loadingMessage.style.display = 'none';
+                errorMessage.style.display = 'block';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadAndDisplayPortfolio);
+    </script>
+</body>
+</html>
