@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reconocimiento Facial con Webcam</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- face-api.js via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <style>
+        /* Estilos adicionales para asegurar que el canvas se superponga correctamente */
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 720px; /* Límite de ancho para el video */
+            margin: auto; /* Centrar el contenedor */
+        }
+        #canvasOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none; /* Para que los eventos del mouse pasen al video si es necesario */
+        }
+        /* Estilo para el spinner de carga */
+        .loader {
+            border: 5px solid #f3f3f3; /* Light grey */
+            border-top: 5px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 font-sans">
+
+    <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-3xl">
+        <header class="mb-6 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold text-blue-600">Reconocimiento Facial 🤳</h1>
+            <p class="text-gray-600 mt-2">Carga tu archivo JSON de descriptores y mira la magia.</p>
+        </header>
+
+        <!-- Contenedor para el video y el canvas -->
+        <div class="video-container mb-6 rounded-lg overflow-hidden shadow-lg border-2 border-blue-300">
+            <video id="videoFeed" playsinline autoplay muted class="w-full h-auto block"></video>
+            <canvas id="canvasOverlay" class="w-full h-auto"></canvas>
+        </div>
+
+        <!-- Controles y Estado -->
+        <div class="controls-status mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <div class="mb-4">
+                <label for="jsonFileInput" class="block text-sm font-medium text-gray-700 mb-1">
+                    Cargar archivo <code>face_recognition_data.json</code>:
+                </label>
+                <input type="file" id="jsonFileInput" accept=".json"
+                       class="block w-full text-sm text-gray-500
+                              file:mr-4 file:py-2 file:px-4
+                              file:rounded-lg file:border-0
+                              file:text-sm file:font-semibold
+                              file:bg-blue-50 file:text-blue-700
+                              hover:file:bg-blue-100
+                              cursor-pointer">
+            </div>
+            <div id="statusMessage" class="text-sm text-center p-3 rounded-md min-h-[50px] flex items-center justify-center">
+                <div id="loader" class="loader hidden"></div>
+                <span id="statusText" class="text-gray-700">Inicializando aplicación...</span>
+            </div>
+        </div>
+
+        <footer class="text-center text-xs text-gray-500">
+            <p>&copy; 2024 Aplicación de Reconocimiento Facial. Usando face-api.js.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Referencias a elementos del DOM
+        const videoElement = document.getElementById('videoFeed');
+        const canvasElement = document.getElementById('canvasOverlay');
+        const jsonFileInputElement = document.getElementById('jsonFileInput');
+        const statusTextElement = document.getElementById('statusText');
+        const loaderElement = document.getElementById('loader');
+
+        // Constantes y variables globales
+        const MODEL_URL = 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@0.22.2/weights';
+        let labeledFaceDescriptors = null;
+        let faceMatcher = null;
+        let modelsAreLoaded = false;
+        let streamGlob = null; // Para poder detener el stream
+        let recognitionInterval = null;
+
+        // --- 1. Funciones de Carga y Configuración ---
+
+        /**
+         * Muestra u oculta el spinner de carga y actualiza el mensaje de estado.
+         * @param {boolean} isLoading - True si se debe mostrar el loader, false si se debe ocultar.
+         * @param {string} message - El mensaje de estado a mostrar.
+         * @param {string} [type='info'] - 'info', 'success', 'warning', 'error' para colorear el mensaje.
+         */
+        function updateStatus(message, isLoading = false, type = 'info') {
+            statusTextElement.textContent = message;
+            loaderElement.classList.toggle('hidden', !isLoading);
+            statusTextElement.classList.toggle('hidden', isLoading && !message); // Ocultar texto si solo hay loader y no mensaje
+
+            const statusMessageContainer = document.getElementById('statusMessage');
+            statusMessageContainer.className = 'text-sm text-center p-3 rounded-md min-h-[50px] flex items-center justify-center '; // Clases base
+            switch (type) {
+                case 'success':
+                    statusMessageContainer.classList.add('bg-green-100', 'text-green-700');
+                    break;
+                case 'warning':
+                    statusMessageContainer.classList.add('bg-yellow-100', 'text-yellow-700');
+                    break;
+                case 'error':
+                    statusMessageContainer.classList.add('bg-red-100', 'text-red-700');
+                    break;
+                default: // info
+                    statusMessageContainer.classList.add('bg-blue-50', 'text-blue-700');
+                    break;
+            }
+            console.log(`Status: ${message} (Type: ${type}, Loading: ${isLoading})`);
+        }
+
+        /**
+         * Carga los modelos de face-api.js.
+         */
+        async function loadModels() {
+            updateStatus("Cargando modelos de IA...", true, 'info');
+            try {
+                await Promise.all([
+                    faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
+                    faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+                    faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
+                ]);
+                modelsAreLoaded = true;
+                updateStatus("Modelos cargados. ✅ Inicia la webcam o carga tu JSON.", false, 'success');
+            } catch (error) {
+                console.error("Error al cargar los modelos de face-api.js:", error);
+                updateStatus("Error al cargar modelos. 😭 Revisa la consola.", false, 'error');
+                modelsAreLoaded = false;
+            }
+        }
+
+        /**
+         * Inicia la webcam y la muestra en el elemento de video.
+         */
+        async function startWebcam() {
+            if (!modelsAreLoaded) {
+                updateStatus("Espera a que los modelos carguen antes de iniciar la webcam.", false, 'warning');
+                return;
+            }
+            updateStatus("Accediendo a la webcam...", true, 'info');
+            try {
+                if (streamGlob) { // Detener stream anterior si existe
+                    streamGlob.getTracks().forEach(track => track.stop());
+                }
+                streamGlob = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'user' }, // Prioriza la cámara frontal
+                    audio: false
+                });
+                videoElement.srcObject = streamGlob;
+                videoElement.onloadedmetadata = () => {
+                    videoElement.play();
+                    updateStatus("Webcam activa. 🎥 Carga tu archivo JSON para reconocer.", false, 'success');
+                    // Ajustar dimensiones del canvas una vez que el video tenga metadatos
+                    faceapi.matchDimensions(canvasElement, videoElement, true);
+                }
+            } catch (err) {
+                console.error("Error al acceder a la webcam:", err);
+                updateStatus("Error al acceder a la webcam. 🚫 Verifica permisos y conexión.", false, 'error');
+                if (err.name === "NotAllowedError") {
+                     updateStatus("Permiso para la webcam denegado. Por favor, habilítalo.", false, 'error');
+                } else if (err.name === "NotFoundError") {
+                     updateStatus("No se encontró ninguna webcam conectada.", false, 'error');
+                }
+            }
+        }
+
+        // --- 2. Funciones de Procesamiento del JSON ---
+
+        /**
+         * Maneja la carga del archivo JSON.
+         * @param {Event} event - El evento del input de archivo.
+         */
+        async function handleJsonFile(event) {
+            if (!modelsAreLoaded) {
+                updateStatus("Modelos no cargados. Espera e intenta de nuevo.", false, 'warning');
+                jsonFileInputElement.value = ""; // Reset input
+                return;
+            }
+            if (!event.target.files || event.target.files.length === 0) {
+                updateStatus("No se seleccionó ningún archivo.", false, 'warning');
+                return;
+            }
+
+            const file = event.target.files[0];
+            updateStatus(`Procesando archivo: ${file.name}...`, true, 'info');
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const jsonString = e.target.result;
+                    const parsedData = JSON.parse(jsonString);
+
+                    if (!Array.isArray(parsedData)) {
+                        throw new Error("El formato del JSON no es un array como se esperaba.");
+                    }
+                    if (parsedData.length === 0) {
+                        updateStatus("El archivo JSON está vacío o no contiene descriptores.", false, 'warning');
+                        labeledFaceDescriptors = null;
+                        faceMatcher = null;
+                        return;
+                    }
+
+                    // Reconstruir LabeledFaceDescriptors
+                    labeledFaceDescriptors = parsedData.map(person => {
+                        if (!person.label || !Array.isArray(person.descriptors)) {
+                            console.warn("Registro de persona inválido en JSON:", person);
+                            throw new Error(`Registro de persona inválido para "${person.label || 'desconocido'}". Faltan datos o formato incorrecto.`);
+                        }
+                        const descriptorsAsFloat32Array = person.descriptors.map(descriptorArray => {
+                            // Asegurarse de que descriptorArray sea un array de números
+                            if (!Array.isArray(descriptorArray) || !descriptorArray.every(n => typeof n === 'number')) {
+                                console.warn("Descriptor inválido en JSON:", descriptorArray, "para persona:", person.label);
+                                throw new Error(`Descriptor inválido para "${person.label}". Debe ser un array de números.`);
+                            }
+                            return new Float32Array(descriptorArray);
+                        });
+                        return new faceapi.LabeledFaceDescriptors(person.label, descriptorsAsFloat32Array);
+                    });
+
+                    console.log("Descriptores faciales cargados desde JSON:", labeledFaceDescriptors);
+
+                    // Crear FaceMatcher
+                    if (labeledFaceDescriptors.length > 0) {
+                        faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.55); // 0.55 es el umbral de distancia
+                        console.log("FaceMatcher creado con éxito.");
+                        updateStatus(`¡Listo para reconocer! ${labeledFaceDescriptors.length} persona(s) cargada(s). ✨`, false, 'success');
+                        if (videoElement.paused && videoElement.srcObject) videoElement.play(); // Asegurar que el video esté reproduciéndose
+                    } else {
+                        faceMatcher = null;
+                        updateStatus("No se cargaron descriptores válidos desde el JSON.", false, 'warning');
+                    }
+
+                } catch (error) {
+                    console.error("Error al cargar o procesar el JSON de descriptores:", error);
+                    updateStatus(`Error al procesar JSON: ${error.message}. 😞 Revisa la consola.`, false, 'error');
+                    labeledFaceDescriptors = null;
+                    faceMatcher = null;
+                }
+            };
+            reader.onerror = (error) => {
+                console.error("Error al leer el archivo:", error);
+                updateStatus("Error al leer el archivo JSON.", false, 'error');
+            };
+            reader.readAsText(file);
+        }
+
+        // --- 3. Funciones de Reconocimiento Facial ---
+
+        /**
+         * Inicia el bucle de reconocimiento facial.
+         */
+        function startRecognition() {
+            if (recognitionInterval) clearInterval(recognitionInterval); // Limpiar intervalo anterior
+
+            recognitionInterval = setInterval(async () => {
+                if (!videoElement || videoElement.paused || videoElement.ended || !faceMatcher || !modelsAreLoaded) {
+                    // Limpiar canvas si no hay reconocimiento activo
+                    if (canvasElement.getContext) {
+                        const context = canvasElement.getContext('2d');
+                        if (context) context.clearRect(0, 0, canvasElement.width, canvasElement.height);
+                    }
+                    return;
+                }
+
+                // Asegurar que las dimensiones del canvas coincidan con el video
+                // Esto es importante si el tamaño del video cambia o al inicio
+                if (canvasElement.width !== videoElement.videoWidth || canvasElement.height !== videoElement.videoHeight) {
+                    faceapi.matchDimensions(canvasElement, videoElement, true);
+                }
+
+                const displaySize = { width: videoElement.videoWidth, height: videoElement.videoHeight };
+
+                // Detectar caras
+                const detections = await faceapi.detectAllFaces(videoElement, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.5 }))
+                    .withFaceLandmarks()
+                    .withFaceDescriptors();
+
+                const resizedDetections = faceapi.resizeResults(detections, displaySize);
+                const context = canvasElement.getContext('2d');
+                context.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+                resizedDetections.forEach(detection => {
+                    const bestMatch = faceMatcher.findBestMatch(detection.descriptor);
+                    let label = bestMatch.toString(); // Ej: "Nombre (0.45)" o "unknown"
+
+                    // Personalizar etiqueta si es desconocido o la confianza es baja
+                    if (bestMatch.label === 'unknown' || bestMatch.distance > 0.55) { // Ajusta este umbral (0.0 a 1.0)
+                        label = `Desconocido (${bestMatch.distance.toFixed(2)})`;
+                    } else {
+                        label = `${bestMatch.label} (${bestMatch.distance.toFixed(2)})`;
+                    }
+
+                    const box = detection.detection.box;
+                    const drawBox = new faceapi.draw.DrawBox(box, {
+                        label: label,
+                        boxColor: 'rgba(0, 255, 0, 0.7)', // Verde para el cuadro
+                        drawLabelOptions: {
+                            fontColor: 'white',
+                            fontSize: 16,
+                            padding: 4,
+                            backgroundColor: 'rgba(0, 150, 0, 0.7)' // Fondo verde oscuro para la etiqueta
+                        }
+                    });
+                    drawBox.draw(canvasElement);
+
+                    // Opcional: Dibujar puntos faciales (landmarks)
+                    // faceapi.draw.drawFaceLandmarks(canvasElement, resizedDetections, {
+                    //    drawLines: true,
+                    //    color: 'rgba(255, 255, 0, 0.7)' // Amarillo para landmarks
+                    // });
+                });
+
+            }, 150); // Ajusta el intervalo (ms) según el rendimiento deseado
+        }
+
+
+        // --- 4. Inicialización y Event Listeners ---
+
+        // Listener para el input del archivo JSON
+        jsonFileInputElement.addEventListener('change', handleJsonFile);
+
+        // Listener para cuando el video comienza a reproducirse
+        videoElement.addEventListener('play', () => {
+            if (!modelsAreLoaded) {
+                updateStatus("Modelos aún no cargados. El reconocimiento no comenzará.", false, 'warning');
+                return;
+            }
+            if (!faceMatcher) {
+                 updateStatus("Webcam activa. Carga un archivo JSON para iniciar el reconocimiento.", false, 'info');
+            }
+            console.log("Video está reproduciéndose. Iniciando/verificando reconocimiento.");
+            startRecognition(); // Iniciar el bucle de reconocimiento
+        });
+
+        videoElement.addEventListener('loadedmetadata', () => {
+            console.log("Metadatos del video cargados. Dimensiones:", videoElement.videoWidth, videoElement.videoHeight);
+            faceapi.matchDimensions(canvasElement, videoElement, true);
+        });
+
+        // Función principal de inicialización
+        async function initializeApp() {
+            await loadModels(); // Cargar modelos primero
+            await startWebcam();  // Luego intentar iniciar la webcam
+        }
+
+        // Iniciar la aplicación cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
