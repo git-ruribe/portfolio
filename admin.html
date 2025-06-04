@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Portafolio (Firestore)</title>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+    <style>
+        /* --- CSS para la App de Gestión --- */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        #auth-screen, #admin-panel {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-width: 700px;
+            margin: 50px auto;
+        }
+        h1, h2 {
+            color: #0056b3;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="password"],
+        input[type="text"],
+        input[type="file"],
+        select,
+        textarea {
+            width: calc(100% - 22px); /* Ajuste para padding/border */
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box; /* Incluye padding y border en el ancho */
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button#delete-button {
+            background-color: #dc3545;
+        }
+        button#delete-button:hover {
+            background-color: #c82333;
+        }
+        button#clear-form-button {
+            background-color: #6c757d;
+        }
+        button#clear-form-button:hover {
+            background-color: #5a6268;
+        }
+        #project-list-container {
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        #project-list {
+            list-style: none;
+            padding: 0;
+        }
+        #project-list li {
+            background-color: #e9ecef;
+            margin-bottom: 8px;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #project-list li:hover {
+            background-color: #dee2e6;
+        }
+        #image-preview {
+            display: block;
+            max-width: 150px;
+            max-height: 150px;
+            margin: 10px 0 15px;
+            border: 1px solid #ddd;
+            padding: 5px;
+            border-radius: 4px;
+            object-fit: contain; /* Para que la imagen se ajuste sin distorsionarse */
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background: #eee;
+            margin: 40px 0;
+        }
+        #status-message {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="auth-screen">
+        <h2>Ingresar a Gestión de Portafolio</h2>
+        <input type="password" id="password-input" placeholder="Contraseña">
+        <button id="login-button">Acceder</button>
+        <p id="auth-message" style="color: red;"></p>
+    </div>
+
+    <div id="admin-panel" style="display: none;">
+        <h1>Administrar Proyectos del Portafolio</h1>
+
+        <button id="refresh-button">Refrescar Lista</button>
+        <button id="add-new-button">Añadir Nuevo Proyecto</button>
+        <p id="status-message"></p>
+        <div id="project-list-container">
+            <h2>Proyectos Actuales</h2>
+            <ul id="project-list"></ul>
+        </div>
+
+        <hr>
+
+        <h2>Formulario de Proyecto</h2>
+        <form id="project-form">
+            <input type="hidden" id="project-id">
+
+            <label for="nombre">Nombre de la Aplicación:</label>
+            <input type="text" id="nombre" required>
+
+            <label for="categoria">Categoría:</label>
+            <input type="text" id="categoria" required>
+
+            <label for="estatus">Estatus:</label>
+            <select id="estatus" required>
+                <option value="Produccion">Producción</option>
+                <option value="MVP">MVP</option>
+                <option value="Prototipo">Prototipo</option>
+                <option value="Experimento">Experimento</option>
+            </select>
+
+            <label for="descripcion">Descripción:</label>
+            <textarea id="descripcion" rows="4" required></textarea>
+
+            <label for="imagen">Imagen (PNG/JPG):</label>
+            <input type="file" id="imagen" accept="image/png, image/jpeg">
+            <img id="image-preview" src="" alt="Previsualización" style="display: none;">
+            <input type="hidden" id="imagenBase64">
+
+            <label for="direccion">Dirección (URL de la App):</label>
+            <input type="text" id="direccion" placeholder="ej: apps/mi-app/index.html" required>
+
+            <button type="submit">Guardar Proyecto</button>
+            <button type="button" id="delete-button" style="display: none;">Eliminar Proyecto</button>
+            <button type="button" id="clear-form-button">Limpiar Formulario</button>
+        </form>
+    </div>
+
+    <script>
+        // --- Firebase Configuration (¡¡¡IMPORTANTE: REEMPLAZA ESTO CON TUS PROPIOS VALORES!!!) ---
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY", // Ej: "AIzaSyD-..."
+            authDomain: "tu-proyecto.firebaseapp.com",
+            projectId: "tu-proyecto-id", // Ej: "mi-portafolio-12345"
+            storageBucket: "tu-proyecto.appspot.com",
+            messagingSenderId: "1234567890",
+            appId: "1:1234567890:web:abcdef1234567890"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const projectsCollection = db.collection('portfolioProjects'); // Nombre de tu colección en Firestore
+
+        // --- Configuración de la aplicación ---
+        const ADMIN_PASSWORD = "tu_password_secreto"; // ¡¡¡CAMBIA ESTO!!!
+
+        // --- Elementos del DOM ---
+        const authScreen = document.getElementById('auth-screen');
+        const adminPanel = document.getElementById('admin-panel');
+        const passwordInput = document.getElementById('password-input');
+        const loginButton = document.getElementById('login-button');
+        const authMessage = document.getElementById('auth-message');
+
+        const projectForm = document.getElementById('project-form');
+        const projectIdInput = document.getElementById('project-id');
+        const projectNameInput = document.getElementById('nombre');
+        const projectCategoryInput = document.getElementById('categoria');
+        const projectStatusSelect = document.getElementById('estatus');
+        const projectDescriptionInput = document.getElementById('descripcion');
+        const projectImageInput = document.getElementById('imagen');
+        const projectImageBase64Input = document.getElementById('imagenBase64');
+        const projectImagePreview = document.getElementById('image-preview');
+        const projectAddressInput = document.getElementById('direccion');
+        const saveButton = projectForm.querySelector('button[type="submit"]');
+        const deleteButton = document.getElementById('delete-button');
+        const clearFormButton = document.getElementById('clear-form-button');
+        const projectList = document.getElementById('project-list');
+        const refreshButton = document.getElementById('refresh-button');
+        const addNewButton = document.getElementById('add-new-button');
+        const statusMessage = document.getElementById('status-message');
+
+        let currentProjects = []; // Array para mantener los proyectos cargados localmente
+
+        // --- Funciones de Utilidad ---
+        function showStatus(message, type = 'info') {
+            statusMessage.textContent = message;
+            if (type === 'error') {
+                statusMessage.style.color = 'red';
+            } else if (type === 'success') {
+                statusMessage.style.color = 'green';
+            } else {
+                statusMessage.style.color = 'black';
+            }
+        }
+
+        function clearStatus() {
+            statusMessage.textContent = '';
+        }
+
+        function showLoading(message) {
+            statusMessage.innerHTML = `${message} <span class="loading-spinner"></span>`;
+            statusMessage.style.color = 'gray';
+        }
+
+        // --- Autenticación ---
+        loginButton.addEventListener('click', () => {
+            if (passwordInput.value === ADMIN_PASSWORD) {
+                authScreen.style.display = 'none';
+                adminPanel.style.display = 'block';
+                loadPortfolioProjects();
+            } else {
+                authMessage.textContent = 'Contraseña incorrecta.';
+            }
+        });
+
+        // --- Cargar Proyectos desde Firestore ---
+        async function loadPortfolioProjects() {
+            showLoading('Cargando proyectos...');
+            try {
+                const snapshot = await projectsCollection.orderBy('nombre').get(); // Ordenar por nombre
+                currentProjects = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                displayProjects();
+                clearForm();
+                showStatus(`Proyectos cargados: ${currentProjects.length}`, 'success');
+            } catch (error) {
+                console.error("Error al cargar proyectos:", error);
+                showStatus("Error al cargar proyectos. Revisa la consola.", 'error');
+            }
+        }
+
+        // --- Mostrar Proyectos en la Lista ---
+        function displayProjects() {
+            projectList.innerHTML = '';
+            if (currentProjects.length === 0) {
+                projectList.innerHTML = '<li>No hay proyectos registrados.</li>';
+                return;
+            }
+            currentProjects.forEach(project => {
+                const li = document.createElement('li');
+                li.textContent = `${project.nombre} (${project.estatus})`;
+                li.dataset.id = project.id;
+                li.addEventListener('click', () => editProject(project.id));
+                projectList.appendChild(li);
+            });
+        }
+
+        // --- Manejar Formulario (Guardar/Actualizar) ---
+        projectForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            showLoading('Guardando proyecto...');
+
+            const projectData = {
+                nombre: projectNameInput.value,
+                categoria: projectCategoryInput.value,
+                estatus: projectStatusSelect.value,
+                descripcion: projectDescriptionInput.value,
+                imagenBase64: projectImageBase64Input.value,
+                direccion: projectAddressInput.value
+            };
+
+            try {
+                if (projectIdInput.value) {
+                    // Actualizar proyecto existente
+                    await projectsCollection.doc(projectIdInput.value).update(projectData);
+                    showStatus('Proyecto actualizado con éxito.', 'success');
+                } else {
+                    // Añadir nuevo proyecto
+                    await projectsCollection.add(projectData); // Firestore asigna un ID automáticamente
+                    showStatus('Nuevo proyecto añadido con éxito.', 'success');
+                }
+                loadPortfolioProjects(); // Recargar la lista para mostrar los cambios
+            } catch (error) {
+                console.error("Error al guardar proyecto:", error);
+                showStatus("Error al guardar proyecto. Revisa la consola.", 'error');
+            }
+        });
+
+        // --- Cargar Proyecto en Formulario para Edición ---
+        function editProject(id) {
+            const project = currentProjects.find(p => p.id === id);
+            if (project) {
+                projectIdInput.value = project.id;
+                projectNameInput.value = project.nombre;
+                projectCategoryInput.value = project.categoria;
+                projectStatusSelect.value = project.estatus;
+                projectDescriptionInput.value = project.descripcion;
+                projectAddressInput.value = project.direccion;
+
+                if (project.imagenBase64) {
+                    projectImagePreview.src = project.imagenBase64;
+                    projectImagePreview.style.display = 'block';
+                    projectImageBase64Input.value = project.imagenBase64;
+                } else {
+                    projectImagePreview.style.display = 'none';
+                    projectImagePreview.src = '';
+                    projectImageBase64Input.value = '';
+                }
+
+                saveButton.textContent = 'Actualizar Proyecto';
+                deleteButton.style.display = 'inline-block';
+                clearStatus();
+            }
+        }
+
+        // --- Eliminar Proyecto ---
+        deleteButton.addEventListener('click', async () => {
+            if (!confirm('¿Estás seguro de que quieres eliminar este proyecto?')) {
+                return;
+            }
+            showLoading('Eliminando proyecto...');
+            try {
+                await projectsCollection.doc(projectIdInput.value).delete();
+                showStatus('Proyecto eliminado con éxito.', 'success');
+                loadPortfolioProjects(); // Recargar la lista
+            } catch (error) {
+                console.error("Error al eliminar proyecto:", error);
+                showStatus("Error al eliminar proyecto. Revisa la consola.", 'error');
+            }
+        });
+
+        // --- Limpiar Formulario ---
+        function clearForm() {
+            projectForm.reset();
+            projectIdInput.value = '';
+            projectImagePreview.src = '';
+            projectImagePreview.style.display = 'none';
+            projectImageBase64Input.value = '';
+            saveButton.textContent = 'Guardar Proyecto';
+            deleteButton.style.display = 'none';
+            clearStatus();
+        }
+        clearFormButton.addEventListener('click', clearForm);
+        addNewButton.addEventListener('click', clearForm);
+
+        // --- Convertir Imagen a Base64 ---
+        projectImageInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    projectImageBase64Input.value = e.target.result;
+                    projectImagePreview.src = e.target.result;
+                    projectImagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                projectImageBase64Input.value = '';
+                projectImagePreview.src = '';
+                projectImagePreview.style.display = 'none';
+            }
+        });
+
+        // --- Eventos de Botones ---
+        refreshButton.addEventListener('click', loadPortfolioProjects);
+    </script>
+</body>
+</html>
