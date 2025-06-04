@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reconocimiento Facial Múltiple Avanzado</title>
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <style>
+        body { 
+            font-family: 'Inter', Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background-color: #f0f2f5; 
+            color: #333; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            line-height: 1.6;
+        }
+        .container { 
+            background-color: white; 
+            padding: 25px; 
+            border-radius: 12px; 
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1); 
+            margin-bottom: 25px; 
+            width: 95%; 
+            max-width: 750px;
+        }
+        h1, h2 { 
+            text-align: center; 
+            color: #1a237e; /* Azul oscuro */
+            margin-bottom: 20px;
+        }
+        h1 { font-size: 2em; }
+        h2 { font-size: 1.5em; border-bottom: 2px solid #3f51b5; padding-bottom: 10px; }
+        
+        video {
+            display: block; margin: 15px auto; border: 2px solid #e0e0e0; 
+            border-radius: 8px; max-width: 100%; background-color: #222;
+        }
+        #overlayCanvas {
+            display: block; margin: 15px auto; border: 2px solid #e0e0e0;
+            border-radius: 8px; max-width: 100%; position: absolute; 
+            top: 0; left: 0; pointer-events: none;
+        }
+
+        .controls, .person-input, .capture-area, .data-management { 
+            margin-bottom: 20px; display: flex; flex-direction: column; gap: 12px; 
+        }
+        input[type="text"], input[type="file"] { 
+            padding: 12px; border-radius: 6px; border: 1px solid #ccc; 
+            font-size: 16px; box-sizing: border-box; width: 100%;
+        }
+        button { 
+            padding: 12px 18px; border-radius: 6px; border: none; 
+            font-size: 16px; background-color: #3f51b5; color: white; 
+            cursor: pointer; transition: background-color 0.3s, transform 0.1s; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button:hover { background-color: #303f9f; transform: translateY(-1px); }
+        button:active { transform: translateY(0px); }
+        button:disabled { background-color: #9e9e9e; cursor: not-allowed; box-shadow: none; }
+        
+        #clearAllButton { background-color: #d32f2f; }
+        #clearAllButton:hover { background-color: #c62828; }
+        
+        #messageArea, #recognitionStatus, #personList, #importMessageArea { 
+            margin-top: 15px; padding: 12px; background-color: #e8eaf6; 
+            border-radius: 6px; border-left: 4px solid #3f51b5; font-size: 0.95em;
+        }
+        #personList ul { list-style-type: none; padding: 0; margin:0; }
+        #personList li { 
+            padding: 8px 0; border-bottom: 1px solid #c5cae9; 
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        #personList li:last-child { border-bottom: none; }
+        #personList .person-actions button { font-size: 0.8em; padding: 6px 10px; margin-left: 8px;}
+
+        .webcam-container { position: relative; width: fit-content; margin: auto; max-width: 100%; }
+        #recognitionStatus, #messageArea, #importMessageArea { min-height: 20px; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6); display: none; /* Oculto por defecto */
+            justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-content {
+            background-color: white; padding: 30px; border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center;
+            max-width: 90%; width: 450px;
+        }
+        .modal-content h3 { margin-top: 0; color: #1a237e; }
+        .modal-content p { margin-bottom: 15px; font-size: 1.1em; }
+        .modal-content .modal-buttons { display: flex; justify-content: space-around; gap: 10px;}
+        .modal-content .modal-buttons button { flex-grow: 1; }
+    </style>
+</head>
+<body>
+    <h1>Reconocimiento Facial Múltiple Avanzado</h1>
+
+    <div class="container">
+        <h2>Añadir / Modificar Persona (Máx. 10)</h2>
+        <div class="person-input">
+            <input type="text" id="personName" placeholder="Nombre de la persona (para nueva persona)">
+            <button id="startCaptureButton">Iniciar Captura para Nueva Persona</button>
+        </div>
+        <div class="capture-area" style="display:none;">
+            <p>Modo: <span id="captureModeText">Nueva Persona</span>. Nombre: <strong id="currentCaptureNameText"></strong></p>
+            <p>Se tomarán <span id="photosToCaptureText">3</span> fotos. Asegúrate de que la cara sea claramente visible y esté bien iluminada.</p>
+            <p>Fotos capturadas: <span id="captureCount">0</span>/<span id="totalCapturesNeededText">3</span></p>
+            <div class="webcam-container">
+                 <video id="captureVideo" width="320" height="240" autoplay muted playsinline></video>
+            </div>
+            <button id="capturePhotoButton" disabled>Capturar Foto</button>
+            <button id="cancelCaptureButton" style="background-color: #757575;">Cancelar Captura</button>
+        </div>
+        <div id="messageArea">Proporciona un nombre y haz clic en "Iniciar Captura".</div>
+    </div>
+
+    <div class="container">
+        <h2>Personas Registradas</h2>
+        <div id="personList"><ul><li>Cargando...</li></ul></div>
+        <button id="clearAllButton">Borrar Todas las Personas (¡Acción Irreversible!)</button>
+    </div>
+    
+    <div class="container">
+        <h2>Gestión de Datos</h2>
+        <div class="data-management">
+            <button id="exportDataButton">Exportar Datos a JSON</button>
+            <label for="importFile" style="font-weight: bold; margin-top:10px;">Importar Datos desde JSON:</label>
+            <input type="file" id="importFile" accept=".json">
+            <button id="importDataButton" disabled>Importar Archivo Seleccionado</button>
+            <div id="importMessageArea"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Reconocimiento en Webcam</h2>
+        <div class="webcam-container">
+            <video id="webcamVideo" width="640" height="480" autoplay muted playsinline></video>
+            <canvas id="overlayCanvas"></canvas>
+        </div>
+        <p id="recognitionStatus">Cargando modelos de IA y preparando webcam...</p>
+    </div>
+
+    <div id="debugModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Procesando Foto...</h3>
+            <p id="debugModalMessage">Iniciando...</p>
+        </div>
+    </div>
+
+    <div id="conflictModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Conflicto de Importación</h3>
+            <p id="conflictModalMessage"></p>
+            <div class="modal-buttons">
+                <button id="keepLocalButton">Mantener Local</button>
+                <button id="useImportedButton">Usar Importado</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Elementos del DOM
+        const personNameInput = document.getElementById('personName');
+        const startCaptureButton = document.getElementById('startCaptureButton');
+        const captureArea = document.querySelector('.capture-area');
+        const captureVideo = document.getElementById('captureVideo');
+        const capturePhotoButton = document.getElementById('capturePhotoButton');
+        const cancelCaptureButton = document.getElementById('cancelCaptureButton');
+        const captureCountSpan = document.getElementById('captureCount');
+        const messageArea = document.getElementById('messageArea');
+        const captureModeText = document.getElementById('captureModeText');
+        const currentCaptureNameText = document.getElementById('currentCaptureNameText');
+        const photosToCaptureText = document.getElementById('photosToCaptureText');
+        const totalCapturesNeededText = document.getElementById('totalCapturesNeededText');
+
+
+        const webcamVideo = document.getElementById('webcamVideo');
+        const overlayCanvas = document.getElementById('overlayCanvas');
+        const recognitionStatus = document.getElementById('recognitionStatus');
+
+        const personListDiv = document.getElementById('personList');
+        const clearAllButton = document.getElementById('clearAllButton');
+
+        const exportDataButton = document.getElementById('exportDataButton');
+        const importFileElement = document.getElementById('importFile');
+        const importDataButton = document.getElementById('importDataButton');
+        const importMessageArea = document.getElementById('importMessageArea');
+
+        // Modales
+        const debugModal = document.getElementById('debugModal');
+        const debugModalMessage = document.getElementById('debugModalMessage');
+        const conflictModal = document.getElementById('conflictModal');
+        const conflictModalMessage = document.getElementById('conflictModalMessage');
+        const keepLocalButton = document.getElementById('keepLocalButton');
+        const useImportedButton = document.getElementById('useImportedButton');
+
+        // Constantes y variables globales
+        const MAX_PERSONS = 10;
+        const PHOTOS_PER_CAPTURE_SESSION = 3; // Fotos a tomar por sesión (nueva o añadir)
+        const LOCAL_STORAGE_KEY = 'faceRecognitionData_v2'; // Clave para localStorage (versión incrementada)
+        let labeledFaceDescriptors = [];
+        let faceMatcher = null;
+        let currentPersonCaptures = [];
+        let currentPersonName = '';
+        let modelsLoaded = false;
+        let recognitionInterval = null;
+        let captureMode = 'NEW'; // 'NEW' o 'ADD'
+        let personToUpdate = null; // Para el modo 'ADD'
+
+        let conflictQueue = []; // Cola para manejar conflictos de importación
+        let resolveConflictPromise = null; // Promesa para la resolución de conflictos
+
+        // --- Funciones del Modal ---
+        function showModal(modalElement, message) {
+            if (message && modalElement.querySelector('p')) {
+                 modalElement.querySelector('p').innerText = message;
+            }
+            modalElement.style.display = 'flex';
+        }
+        function hideModal(modalElement) {
+            modalElement.style.display = 'none';
+        }
+        function updateDebugModalMessage(message) { debugModalMessage.innerText = message; }
+
+        // --- Carga de Modelos de face-api.js ---
+        async function loadModels() {
+            const MODEL_URL = 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@0.22.2/weights';
+            try {
+                recognitionStatus.innerText = "Cargando modelos de IA desde la red...";
+                await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
+                await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+                await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+                modelsLoaded = true;
+                recognitionStatus.innerText = "Modelos cargados. Preparando webcam...";
+                console.log("Models loaded successfully from CDN.");
+            } catch (error) {
+                console.error("Error loading models from CDN:", error);
+                recognitionStatus.innerText = "Error crítico al cargar modelos. Revisa tu conexión y la consola (F12).";
+                messageArea.innerText = "Error al cargar modelos de IA.";
+            }
+        }
+
+        // --- Gestión de la Webcam ---
+        async function startWebcam(videoElement, successCallback, errorCallback) {
+            try {
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+                    videoElement.srcObject = stream;
+                    videoElement.onloadedmetadata = () => {
+                        videoElement.play().then(() => {
+                            if (successCallback) successCallback();
+                        }).catch(playError => {
+                             console.error("Error playing video:", playError);
+                             if(errorCallback) errorCallback("Error al reproducir el video.");
+                        });
+                    }
+                } else { throw new Error("getUserMedia not supported."); }
+            } catch (error) {
+                console.error("Error starting webcam:", error);
+                const msg = `Error al iniciar webcam: ${error.message}. Revisa permisos.`;
+                if (errorCallback) errorCallback(msg);
+                else if (videoElement.id === 'captureVideo') messageArea.innerText = msg;
+                else recognitionStatus.innerText = msg;
+            }
+        }
+        
+        function stopWebcam(videoElement) {
+            if (videoElement.srcObject) {
+                videoElement.srcObject.getTracks().forEach(track => track.stop());
+                videoElement.srcObject = null;
+            }
+        }
+
+        // --- Almacenamiento de Datos (localStorage) ---
+        function loadStoredPeople() {
+            const data = localStorage.getItem(LOCAL_STORAGE_KEY);
+            if (data) {
+                try {
+                    const parsedData = JSON.parse(data);
+                    labeledFaceDescriptors = parsedData.map(person =>
+                        new faceapi.LabeledFaceDescriptors(
+                            person.label,
+                            person.descriptors.map(d => new Float32Array(Object.values(d))) // Asegurar conversión correcta
+                        )
+                    );
+                } catch (e) {
+                    console.error("Error parsing data from localStorage:", e);
+                    labeledFaceDescriptors = [];
+                    localStorage.removeItem(LOCAL_STORAGE_KEY);
+                }
+            } else {
+                labeledFaceDescriptors = [];
+            }
+            updatePersonListUI();
+            updateFaceMatcher();
+        }
+
+        function saveStoredPeople() {
+            const serializableData = labeledFaceDescriptors.map(lfd => ({
+                label: lfd.label,
+                descriptors: lfd.descriptors.map(d => Array.from(d))
+            }));
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(serializableData));
+            updatePersonListUI();
+            updateFaceMatcher();
+        }
+
+        // --- Actualización del Comparador de Rostros (FaceMatcher) ---
+        function updateFaceMatcher() {
+            if (labeledFaceDescriptors.length > 0 && modelsLoaded) {
+                faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors);
+                console.log("FaceMatcher updated.");
+            } else {
+                faceMatcher = null;
+                console.log("FaceMatcher cleared or not ready.");
+            }
+        }
+
+        // --- Actualización de la UI de Personas Registradas ---
+        function updatePersonListUI() {
+            personListDiv.innerHTML = '<ul></ul>';
+            const ul = personListDiv.querySelector('ul');
+            if (labeledFaceDescriptors.length === 0) {
+                ul.innerHTML = '<li>No hay personas registradas.</li>';
+            } else {
+                labeledFaceDescriptors.forEach(person => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <span>${person.label} (${person.descriptors.length} descriptores)</span>
+                        <div class="person-actions">
+                            <button class="add-photos-btn" data-name="${person.label}">Añadir Fotos</button>
+                        </div>
+                    `;
+                    ul.appendChild(li);
+                });
+                document.querySelectorAll('.add-photos-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => handleAddPhotosClick(e.target.dataset.name));
+                });
+            }
+            startCaptureButton.disabled = labeledFaceDescriptors.length >= MAX_PERSONS || !modelsLoaded;
+            if (labeledFaceDescriptors.length >= MAX_PERSONS && captureMode === 'NEW') {
+                messageArea.innerText = `Límite de ${MAX_PERSONS} personas alcanzado.`;
+            }
+        }
+        
+        // --- Lógica para Añadir/Modificar Persona ---
+        function handleAddPhotosClick(name) {
+            if (!modelsLoaded) {
+                messageArea.innerText = "Modelos de IA no cargados.";
+                return;
+            }
+            personToUpdate = labeledFaceDescriptors.find(p => p.label === name);
+            if (!personToUpdate) {
+                messageArea.innerText = "Persona no encontrada.";
+                return;
+            }
+            captureMode = 'ADD';
+            currentPersonName = name;
+            startCaptureSession();
+        }
+
+        startCaptureButton.addEventListener('click', () => {
+            if (!modelsLoaded) {
+                messageArea.innerText = "Modelos de IA no cargados.";
+                return;
+            }
+            if (labeledFaceDescriptors.length >= MAX_PERSONS) {
+                messageArea.innerText = `Límite de ${MAX_PERSONS} personas alcanzado.`;
+                return;
+            }
+            currentPersonName = personNameInput.value.trim();
+            if (!currentPersonName) {
+                messageArea.innerText = "Ingresa un nombre para la nueva persona.";
+                return;
+            }
+            if (labeledFaceDescriptors.find(p => p.label.toLowerCase() === currentPersonName.toLowerCase())) {
+                messageArea.innerText = `El nombre "${currentPersonName}" ya existe.`;
+                return;
+            }
+            captureMode = 'NEW';
+            personToUpdate = null;
+            startCaptureSession();
+        });
+
+        function startCaptureSession() {
+            currentPersonCaptures = [];
+            captureCountSpan.innerText = "0";
+            totalCapturesNeededText.innerText = PHOTOS_PER_CAPTURE_SESSION.toString();
+            photosToCaptureText.innerText = PHOTOS_PER_CAPTURE_SESSION.toString();
+            captureModeText.innerText = captureMode === 'NEW' ? 'Nueva Persona' : 'Añadiendo Fotos a';
+            currentCaptureNameText.innerText = currentPersonName;
+            
+            captureArea.style.display = 'block';
+            personNameInput.disabled = true;
+            startCaptureButton.disabled = true;
+            
+            messageArea.innerText = `Preparando para capturar ${PHOTOS_PER_CAPTURE_SESSION} fotos para ${currentPersonName}.`;
+            startWebcam(captureVideo, 
+                () => { capturePhotoButton.disabled = false; },
+                (errorMsg) => { messageArea.innerText = errorMsg; resetCaptureUI(); }
+            );
+        }
+        
+        cancelCaptureButton.addEventListener('click', () => {
+            resetCaptureUI();
+            messageArea.innerText = "Captura cancelada.";
+        });
+
+        capturePhotoButton.addEventListener('click', async () => {
+            if (currentPersonCaptures.length >= PHOTOS_PER_CAPTURE_SESSION) return;
+
+            capturePhotoButton.disabled = true;
+            messageArea.innerText = `Procesando foto ${currentPersonCaptures.length + 1}/${PHOTOS_PER_CAPTURE_SESSION}...`;
+            showModal(debugModal, `Iniciando captura de foto ${currentPersonCaptures.length + 1}...`);
+
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = captureVideo.videoWidth;
+            tempCanvas.height = captureVideo.videoHeight;
+            const ctx = tempCanvas.getContext('2d');
+            
+            updateDebugModalMessage("Dibujando frame...");
+            ctx.drawImage(captureVideo, 0, 0, tempCanvas.width, tempCanvas.height);
+
+            const dataUrl = tempCanvas.toDataURL('image/jpeg');
+            let imageForApi;
+            try {
+                updateDebugModalMessage("Convirtiendo a Blob...");
+                const fetchRes = await fetch(dataUrl);
+                const blob = await fetchRes.blob();
+                updateDebugModalMessage("Convirtiendo a imagen API...");
+                imageForApi = await faceapi.bufferToImage(blob);
+            } catch (e) {
+                 console.error("Error converting image:", e);
+                 messageArea.innerText = `Error procesando imagen. Intenta de nuevo.`;
+                 capturePhotoButton.disabled = false;
+                 hideModal(debugModal);
+                 return;
+            }
+            
+            updateDebugModalMessage("Detectando rostro y descriptor...");
+            const detection = await faceapi.detectSingleFace(imageForApi, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.5 }))
+                .withFaceLandmarks()
+                .withFaceDescriptor();
+            
+            hideModal(debugModal);
+
+            if (detection) {
+                currentPersonCaptures.push(detection.descriptor);
+                captureCountSpan.innerText = currentPersonCaptures.length.toString();
+                messageArea.innerText = `Foto ${currentPersonCaptures.length} capturada para ${currentPersonName}.`;
+
+                if (currentPersonCaptures.length === PHOTOS_PER_CAPTURE_SESSION) {
+                    if (captureMode === 'NEW') {
+                        const newPerson = new faceapi.LabeledFaceDescriptors(currentPersonName, currentPersonCaptures);
+                        labeledFaceDescriptors.push(newPerson);
+                        messageArea.innerText = `Persona "${currentPersonName}" añadida.`;
+                    } else if (captureMode === 'ADD' && personToUpdate) {
+                        const updatedDescriptors = personToUpdate.descriptors.concat(currentPersonCaptures);
+                        // Encontrar el índice de la persona a actualizar
+                        const personIndex = labeledFaceDescriptors.findIndex(p => p.label === personToUpdate.label);
+                        if (personIndex !== -1) {
+                            labeledFaceDescriptors[personIndex] = new faceapi.LabeledFaceDescriptors(personToUpdate.label, updatedDescriptors);
+                            messageArea.innerText = `Fotos añadidas a "${personToUpdate.label}".`;
+                        } else {
+                             messageArea.innerText = `Error: No se pudo encontrar a la persona ${personToUpdate.label} para actualizar.`;
+                        }
+                    }
+                    saveStoredPeople();
+                    resetCaptureUI();
+                } else {
+                    capturePhotoButton.disabled = false;
+                    messageArea.innerText += ` Faltan ${PHOTOS_PER_CAPTURE_SESSION - currentPersonCaptures.length} foto(s).`;
+                }
+            } else {
+                messageArea.innerText = `No se detectó cara. Intenta de nuevo.`;
+                capturePhotoButton.disabled = false;
+            }
+        });
+
+        function resetCaptureUI() {
+            captureArea.style.display = 'none';
+            stopWebcam(captureVideo);
+            personNameInput.value = '';
+            personNameInput.disabled = false;
+            startCaptureButton.disabled = labeledFaceDescriptors.length >= MAX_PERSONS || !modelsLoaded;
+            capturePhotoButton.disabled = true;
+            currentPersonCaptures = [];
+            currentPersonName = '';
+            captureCountSpan.innerText = "0";
+            personToUpdate = null;
+            captureMode = 'NEW';
+            hideModal(debugModal);
+        }
+
+        // --- Botón para Borrar Todas las Personas ---
+        clearAllButton.addEventListener('click', () => {
+            localStorage.removeItem(LOCAL_STORAGE_KEY);
+            labeledFaceDescriptors = [];
+            saveStoredPeople();
+            messageArea.innerText = "Todos los datos borrados.";
+            recognitionStatus.innerText = "No hay personas registradas.";
+            if (webcamVideo.srcObject && labeledFaceDescriptors.length === 0) {
+                 const displaySize = { width: webcamVideo.videoWidth, height: webcamVideo.videoHeight };
+                 if (displaySize.width > 0 && displaySize.height > 0) {
+                    faceapi.matchDimensions(overlayCanvas, displaySize);
+                    overlayCanvas.getContext('2d').clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+                 }
+            }
+        });
+
+        // --- Exportar Datos ---
+        exportDataButton.addEventListener('click', () => {
+            if (labeledFaceDescriptors.length === 0) {
+                messageArea.innerText = "No hay datos para exportar.";
+                return;
+            }
+            const serializableData = labeledFaceDescriptors.map(lfd => ({
+                label: lfd.label,
+                descriptors: lfd.descriptors.map(d => Array.from(d))
+            }));
+            const jsonData = JSON.stringify(serializableData, null, 2);
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'face_recognition_data.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            messageArea.innerText = "Datos exportados a face_recognition_data.json";
+        });
+
+        // --- Importar Datos ---
+        importFileElement.addEventListener('change', () => {
+            importDataButton.disabled = !importFileElement.files || importFileElement.files.length === 0;
+        });
+
+        importDataButton.addEventListener('click', async () => {
+            const file = importFileElement.files[0];
+            if (!file) {
+                importMessageArea.innerText = "Selecciona un archivo JSON.";
+                return;
+            }
+            importMessageArea.innerText = "Procesando archivo...";
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+                try {
+                    const importedData = JSON.parse(event.target.result);
+                    if (!Array.isArray(importedData)) throw new Error("El JSON debe ser un array.");
+
+                    const newDescriptors = []; // Para los que no tienen conflicto o se resuelven a importar
+                    const unresolvedConflicts = []; // Para los que necesitan decisión del usuario
+
+                    for (const importedPerson of importedData) {
+                        if (!importedPerson.label || !Array.isArray(importedPerson.descriptors)) {
+                            console.warn("Persona importada con formato incorrecto:", importedPerson);
+                            continue;
+                        }
+                        const existingPersonIndex = labeledFaceDescriptors.findIndex(p => p.label === importedPerson.label);
+                        if (existingPersonIndex !== -1) { // Conflicto de nombre
+                            unresolvedConflicts.push({ imported: importedPerson, local: labeledFaceDescriptors[existingPersonIndex], index: existingPersonIndex });
+                        } else { // Sin conflicto
+                            if (labeledFaceDescriptors.length + newDescriptors.length < MAX_PERSONS) {
+                                newDescriptors.push(new faceapi.LabeledFaceDescriptors(
+                                    importedPerson.label,
+                                    importedPerson.descriptors.map(d => new Float32Array(Object.values(d)))
+                                ));
+                            } else {
+                                importMessageArea.innerText = `Límite de ${MAX_PERSONS} personas alcanzado. Algunas personas del archivo no fueron importadas.`;
+                                break; 
+                            }
+                        }
+                    }
+                    
+                    // Añadir los que no tuvieron conflicto
+                    labeledFaceDescriptors = labeledFaceDescriptors.concat(newDescriptors);
+
+                    // Procesar conflictos
+                    if (unresolvedConflicts.length > 0) {
+                        conflictQueue = unresolvedConflicts;
+                        await processConflictQueue();
+                    }
+
+                    saveStoredPeople();
+                    importMessageArea.innerText = `Importación completada. ${newDescriptors.length} personas añadidas/actualizadas sin conflicto directo. ${unresolvedConflicts.length} conflictos procesados.`;
+                
+                } catch (e) {
+                    console.error("Error importando datos:", e);
+                    importMessageArea.innerText = `Error al importar: ${e.message}`;
+                } finally {
+                    importFileElement.value = ''; // Resetear input de archivo
+                    importDataButton.disabled = true;
+                }
+            };
+            reader.onerror = () => {
+                importMessageArea.innerText = "Error al leer el archivo.";
+                importFileElement.value = '';
+                importDataButton.disabled = true;
+            };
+            reader.readAsText(file);
+        });
+
+        async function processConflictQueue() {
+            while (conflictQueue.length > 0) {
+                const conflict = conflictQueue.shift(); // Tomar el primer conflicto
+                const choice = await presentConflictChoice(conflict.imported, conflict.local);
+                
+                if (choice === 'imported') {
+                    // Reemplazar el local con el importado
+                    const personIndex = labeledFaceDescriptors.findIndex(p => p.label === conflict.local.label);
+                    if (personIndex !== -1) {
+                         labeledFaceDescriptors[personIndex] = new faceapi.LabeledFaceDescriptors(
+                            conflict.imported.label,
+                            conflict.imported.descriptors.map(d => new Float32Array(Object.values(d)))
+                        );
+                    } else { // Debería existir, pero por si acaso
+                        labeledFaceDescriptors.push(new faceapi.LabeledFaceDescriptors(
+                            conflict.imported.label,
+                            conflict.imported.descriptors.map(d => new Float32Array(Object.values(d)))
+                        ));
+                    }
+                }
+                // Si es 'local', no se hace nada, ya está allí.
+            }
+        }
+        
+        function presentConflictChoice(importedPerson, localPerson) {
+            return new Promise((resolve) => {
+                resolveConflictPromise = resolve; // Guardar la función resolve para usarla en los botones del modal
+                const message = `Conflicto para "${importedPerson.label}":\nLocal: ${localPerson.descriptors.length} descriptores.\nImportado: ${importedPerson.descriptors.length} descriptores.\n¿Qué versión deseas conservar?`;
+                showModal(conflictModal, message);
+            });
+        }
+
+        keepLocalButton.addEventListener('click', () => {
+            if (resolveConflictPromise) {
+                resolveConflictPromise('local');
+                hideModal(conflictModal);
+                resolveConflictPromise = null;
+            }
+        });
+
+        useImportedButton.addEventListener('click', () => {
+            if (resolveConflictPromise) {
+                resolveConflictPromise('imported');
+                hideModal(conflictModal);
+                resolveConflictPromise = null;
+            }
+        });
+
+
+        // --- Reconocimiento Facial en Tiempo Real ---
+        async function startMainRecognitionWebcam() {
+            if (!modelsLoaded) {
+                recognitionStatus.innerText = "Esperando carga de modelos...";
+                return;
+            }
+            recognitionStatus.innerText = "Iniciando webcam para reconocimiento...";
+            if (recognitionInterval) clearInterval(recognitionInterval);
+            await startWebcam(webcamVideo, onPlayWebcamRecognition, (errorMsg) => { recognitionStatus.innerText = errorMsg; });
+        }
+
+        function onPlayWebcamRecognition() {
+            if (!webcamVideo.srcObject || webcamVideo.paused || webcamVideo.ended || !modelsLoaded) {
+                setTimeout(onPlayWebcamRecognition, 200); return;
+            }
+            if (!faceMatcher && labeledFaceDescriptors.length > 0) updateFaceMatcher();
+
+            if (labeledFaceDescriptors.length === 0) {
+                recognitionStatus.innerText = "Webcam activa. Añade personas para reconocer.";
+                const ds = { width: webcamVideo.videoWidth, height: webcamVideo.videoHeight };
+                if (ds.width > 0 && ds.height > 0) {
+                    faceapi.matchDimensions(overlayCanvas, ds);
+                    overlayCanvas.getContext('2d').clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+                }
+                if (recognitionInterval) clearInterval(recognitionInterval);
+                recognitionInterval = setTimeout(onPlayWebcamRecognition, 1000); return;
+            }
+            if (!faceMatcher) {
+                recognitionStatus.innerText = "Preparando comparador de rostros...";
+                if (recognitionInterval) clearInterval(recognitionInterval);
+                recognitionInterval = setTimeout(onPlayWebcamRecognition, 200); return;
+            }
+
+            recognitionStatus.innerText = "Webcam activa. Buscando personas...";
+            const displaySize = { width: webcamVideo.videoWidth, height: webcamVideo.videoHeight };
+            faceapi.matchDimensions(overlayCanvas, displaySize);
+
+            if (recognitionInterval) clearInterval(recognitionInterval);
+            recognitionInterval = setInterval(async () => {
+                if (webcamVideo.paused || webcamVideo.ended || !faceMatcher || labeledFaceDescriptors.length === 0) {
+                    overlayCanvas.getContext('2d').clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+                    if (labeledFaceDescriptors.length === 0 && recognitionInterval) {
+                         clearInterval(recognitionInterval); recognitionInterval = null;
+                         recognitionStatus.innerText = "Webcam activa. No hay personas para reconocer.";
+                    }
+                    return;
+                }
+                const detections = await faceapi.detectAllFaces(webcamVideo, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.5 }))
+                    .withFaceLandmarks().withFaceDescriptors();
+                const resizedDetections = faceapi.resizeResults(detections, displaySize);
+                overlayCanvas.getContext('2d').clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+                if (resizedDetections && faceMatcher) {
+                    resizedDetections.forEach(detection => {
+                        const bestMatch = faceMatcher.findBestMatch(detection.descriptor);
+                        const box = detection.detection.box;
+                        new faceapi.draw.DrawBox(box, { 
+                            label: bestMatch.toString(), boxColor: 'rgba(0, 255, 0, 0.7)',
+                            drawLabelOptions: { fontColor: 'white', backgroundColor: 'rgba(0, 150, 0, 0.7)'}
+                        }).draw(overlayCanvas);
+                    });
+                }
+            }, 250);
+        }
+
+        // --- Inicialización de la Aplicación ---
+        async function initializeApp() {
+            messageArea.innerText = "Iniciando aplicación...";
+            await loadModels();
+            loadStoredPeople();
+            if (modelsLoaded) startMainRecognitionWebcam();
+            else {
+                recognitionStatus.innerText = "Fallo crítico al cargar modelos. Funcionalidad limitada.";
+                startCaptureButton.disabled = true;
+            }
+            importDataButton.disabled = true; // Deshabilitado hasta que se seleccione un archivo
+        }
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>
