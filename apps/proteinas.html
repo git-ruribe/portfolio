@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografía de Proteínas</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for 3D flip effect */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-preserve-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+        .transition-transform {
+            transition: transform 0.7s ease-in-out;
+        }
+        .touch-manipulation {
+            touch-action: manipulation;
+        }
+        /* Ensure front is always on top when not flipped, and back when flipped */
+        .card-front {
+            z-index: 1;
+        }
+        .card-back {
+            z-index: 0;
+        }
+        .card-container.is-flipped .card-front {
+            opacity: 0;
+            pointer-events: none;
+            z-index: 0; /* Ensure it's behind when flipped */
+        }
+        .card-container.is-flipped .card-back {
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 1; /* Ensure it's on top when flipped */
+        }
+        .card-container:not(.is-flipped) .card-front {
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 1; /* Ensure it's on top when not flipped */
+        }
+        .card-container:not(.is-flipped) .card-back {
+            opacity: 0;
+            pointer-events: none;
+            z-index: 0; /* Ensure it's behind when not flipped */
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 font-sans text-gray-800 p-4 sm:p-6 flex flex-col items-center justify-start overflow-y-auto">
+
+    <!-- Header -->
+    <header class="w-full max-w-md bg-gradient-to-r from-purple-600 to-pink-700 text-white p-6 rounded-3xl shadow-lg mb-8 text-center">
+        <h1 class="text-3xl font-extrabold mb-2 leading-tight">
+            💪 Proteínas en tu Bolsillo
+        </h1>
+        <p class="text-lg font-light opacity-90">
+            Guía Rápida de Alimentos
+        </p>
+        <p class="text-sm mt-2 opacity-80">
+            ¡Toca cada tarjeta para más detalles!
+        </p>
+    </header>
+
+    <!-- Infographic Content -->
+    <main class="w-full max-w-md">
+        <div id="cards-container" class="grid grid-cols-2 gap-4">
+            <!-- Cards will be injected here by JavaScript -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full max-w-md text-center text-gray-600 text-xs sm:text-sm mt-8 p-4 bg-white rounded-2xl shadow-md">
+        <p>Datos aproximados por ración estándar.</p>
+        <p class="mt-1">Las cantidades pueden variar ligeramente.</p>
+        <p class="mt-1">Ideal para tu fondo de pantalla.</p>
+    </footer>
+
+    <script>
+        // Data for protein content, with emojis, placeholder text, serving size, and extra info
+        const proteinData = [
+            { name: 'Pechuga de Pollo', protein: 31, icon: '🍗', servingSize: '100g cocido', extraInfo: 'Fuente magra y versátil.' },
+            { name: 'Carne de Res Magra', protein: 26, icon: '🥩', servingSize: '100g cocido', extraInfo: 'Rica en hierro y zinc.' },
+            { name: 'Salmón', protein: 22, icon: '🐟', servingSize: '100g cocido', extraInfo: 'Alto en Omega-3.' },
+            { name: 'Huevo', protein: 6, icon: '🥚', servingSize: '1 huevo grande', extraInfo: 'Proteína completa.' },
+            { name: 'Leche', protein: 8, icon: '🥛', servingSize: '1 taza (240ml)', extraInfo: 'Aporta calcio y vitamina D.' },
+            { name: 'Yogur Griego', protein: 17, icon: '🍦', servingSize: '170g natural', extraInfo: 'Ideal para el desayuno.' },
+            { name: 'Queso Cottage', protein: 14, icon: '🧀', servingSize: '1/2 taza (113g)', extraInfo: 'Bajo en grasa y calorías.' },
+            { name: 'Atún enlatado', protein: 25, icon: '🥫', servingSize: '100g escurrido', extraInfo: 'Conveniente y económico.' },
+            { name: 'Lentejas', protein: 18, icon: '🥣', servingSize: '1 taza cocidas', extraInfo: 'Gran fuente de fibra.' },
+            { name: 'Garbanzos', protein: 15, icon: '🫘', servingSize: '1 taza cocidos', extraInfo: 'Base para hummus.' },
+            { name: 'Frijoles Negros', protein: 15, icon: '🫘', servingSize: '1 taza cocidos', extraInfo: 'Beneficiosos para la digestión.' },
+            { name: 'Tofu', protein: 10, icon: '⬜', servingSize: '100g firme', extraInfo: 'Alternativa vegetal versátil.' },
+            { name: 'Tempeh', protein: 19, icon: '🟫', servingSize: '100g', extraInfo: 'Fermentado, con textura firme.' },
+            { name: 'Edamame', protein: 18, icon: '🌿', servingSize: '1 taza cocido', extraInfo: 'Snack nutritivo.' },
+            { name: 'Quinoa', protein: 8, icon: '🌾', servingSize: '1 taza cocida', extraInfo: 'Grano completo sin gluten.' },
+            { name: 'Avena', protein: 5, icon: '🥣', servingSize: '1/2 taza seca', extraInfo: 'Ideal para el desayuno.' },
+            { name: 'Almendras', protein: 8, icon: '🌰', servingSize: '1/4 taza (35g)', extraInfo: 'Ricas en vitamina E.' },
+            { name: 'Mantequilla de Cacahuete', protein: 7, icon: '🥜', servingSize: '2 cucharadas (32g)', extraInfo: 'Buena fuente de grasas saludables.' },
+            { name: 'Brócoli', protein: 4, icon: '🥦', servingSize: '1 taza cocido', extraInfo: 'Alto en vitamina C y K.' },
+            { name: 'Espinacas', protein: 5, icon: '🥬', servingSize: '1 taza cocidas', extraInfo: 'Ricas en hierro y folato.' },
+            { name: 'Semillas de Chía', protein: 4, icon: '⚫', servingSize: '2 cucharadas (28g)', extraInfo: 'Gran fuente de fibra y Omega-3.' },
+            { name: 'Semillas de Calabaza', protein: 8, icon: '🎃', servingSize: '1/4 taza (15g)', extraInfo: 'Ricas en magnesio.' },
+        ];
+
+        // Get the container for the cards
+        const cardsContainer = document.getElementById('cards-container');
+
+        // Function to create a single card element
+        function createCard(item) {
+            const cardWrapper = document.createElement('div');
+            cardWrapper.className = 'relative w-full h-48 sm:h-56 perspective-1000 cursor-pointer touch-manipulation';
+
+            const cardContainer = document.createElement('div');
+            cardContainer.className = 'relative w-full h-full transform-style-preserve-3d transition-transform duration-700 ease-in-out rounded-2xl shadow-md card-container';
+
+            // Front of the card
+            const cardFront = document.createElement('div');
+            cardFront.className = 'absolute w-full h-full backface-hidden bg-white rounded-2xl p-4 flex flex-col items-center justify-center text-center transition-opacity duration-300 card-front';
+            cardFront.style.zIndex = 1; // Default z-index for front
+
+            if (item.icon) {
+                const iconSpan = document.createElement('span');
+                iconSpan.className = 'text-5xl sm:text-6xl mb-2';
+                iconSpan.textContent = item.icon;
+                cardFront.appendChild(iconSpan);
+            } else {
+                const placeholderDiv = document.createElement('div');
+                placeholderDiv.className = 'w-20 h-20 sm:w-24 sm:h-24 bg-purple-200 flex items-center justify-center rounded-lg mb-2';
+                const placeholderSpan = document.createElement('span');
+                placeholderSpan.className = 'text-purple-700 font-bold text-sm sm:text-base';
+                placeholderSpan.textContent = item.placeholderText;
+                placeholderDiv.appendChild(placeholderSpan);
+                cardFront.appendChild(placeholderDiv);
+            }
+
+            const nameH3 = document.createElement('h3');
+            nameH3.className = 'font-semibold text-base sm:text-lg mb-1 leading-tight';
+            nameH3.textContent = item.name;
+            cardFront.appendChild(nameH3);
+
+            const proteinP = document.createElement('p');
+            proteinP.className = 'text-purple-600 font-bold text-lg sm:text-xl';
+            proteinP.textContent = `${item.protein}g`;
+            cardFront.appendChild(proteinP);
+
+            // Back of the card
+            const cardBack = document.createElement('div');
+            cardBack.className = 'absolute w-full h-full backface-hidden bg-purple-600 text-white rounded-2xl p-4 flex flex-col items-center justify-center text-center transform rotate-y-180 transition-opacity duration-300 card-back';
+            cardBack.style.zIndex = 0; // Default z-index for back
+
+            const backNameH3 = document.createElement('h3');
+            backNameH3.className = 'font-semibold text-lg sm:text-xl mb-2 leading-tight';
+            backNameH3.textContent = item.name;
+            cardBack.appendChild(backNameH3);
+
+            const servingP = document.createElement('p');
+            servingP.className = 'text-sm sm:text-base mb-1';
+            servingP.innerHTML = `<span class="font-bold">Ración:</span> ${item.servingSize}`;
+            cardBack.appendChild(servingP);
+
+            const extraInfoP = document.createElement('p');
+            extraInfoP.className = 'text-xs sm:text-sm italic opacity-90';
+            extraInfoP.textContent = item.extraInfo;
+            cardBack.appendChild(extraInfoP);
+
+            cardContainer.appendChild(cardFront);
+            cardContainer.appendChild(cardBack);
+            cardWrapper.appendChild(cardContainer);
+
+            // Event handling
+            let isTouched = false; // Flag to track if a touch event occurred
+
+            cardWrapper.addEventListener('touchstart', () => {
+                isTouched = true; // Mark that a touch interaction has started
+            });
+
+            cardWrapper.addEventListener('touchend', (e) => {
+                e.preventDefault(); // Prevent default touch behavior (like double-tap zoom)
+                if (isTouched) {
+                    cardContainer.classList.toggle('is-flipped');
+                }
+                isTouched = false; // Reset for next interaction
+            });
+
+            cardWrapper.addEventListener('click', () => {
+                // Only flip if it was a mouse click (and not already handled by touch)
+                if (!isTouched) {
+                    cardContainer.classList.toggle('is-flipped');
+                }
+            });
+
+            return cardWrapper;
+        }
+
+        // Populate the container with cards
+        proteinData.forEach(item => {
+            cardsContainer.appendChild(createCard(item));
+        });
+    </script>
+</body>
+</html>
