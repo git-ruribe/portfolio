@@ -8,7 +8,7 @@
         "tel": "+52-826-263-8312",
         "social": "https://www.facebook.com/elgranprincipal",
         "photos": ["https://example.com/principal-montemorelos.jpg"],
-        "description": "Restaurante norteño tradicional con décadas de historia en Montemorelos, conocido localmente como uno de los mejores destinos de comida regional tradicional. Frecuentado por locales y grupos motociclistas. Especializado en machacado en varios estilos, cabrito en salsa y tortillas de harina gigantes. Ambiente rústico estilo rancho mexicano tradicional."
+        "description": "Especializado en machacado en varios estilos (a la mexicana, a la ranchera, natural), cabrito en salsa, frijoles con veneno, agujas norteñas, gorditas, bocoles con salsas, asado de puerco y tortillas de harina gigantes. Ambiente rústico estilo rancho mexicano tradicional, familiar y auténtico con porciones generosas. Restaurante tradicional norteño con décadas de historia en Montemorelos, conocido localmente como uno de los mejores destinos de comida regional tradicional, frecuentado por locales y grupos motociclistas."
     },
     {
         "name": "El Mirador",
@@ -19,7 +19,7 @@
         "tel": "+52-81-8343-6894",
         "social": "https://www.facebook.com/restaurantemirador",
         "photos": ["https://example.com/el-mirador.jpg"],
-        "description": "Steakhouse tradicional en el centro de Monterrey con décadas de historia sirviendo cocina regional. Establecimiento familiar que mantiene métodos tradicionales de cocina norteña. Famoso por sus agujas de rib eye y ambiente de negocios tradicional del centro histórico."
+        "description": "Famoso por sus agujas de rib eye (plato insignia), cabrito guisado, alambres, costillas de cerdo adobadas, tortillas de harina caseras, pie de plátano y flan con dulce de leche y nueces. Ambiente tradicional del centro histórico, propicio para negocios con áreas de comedor privadas para grupos grandes. Steakhouse tradicional en el centro de Monterrey con décadas de historia sirviendo cocina regional, establecimiento familiar que mantiene métodos tradicionales de cocina norteña."
     },
     {
         "name": "La Real",
@@ -30,7 +30,7 @@
         "tel": "+52-81-xxxx-xxxx",
         "social": "https://www.facebook.com/LaRealCantina",
         "photos": ["https://example.com/la-real.jpg"],
-        "description": "Cantina tradicional de Monterrey que representa la cultura clásica de cantina donde 'las botanas se siguen sirviendo con cada ronda'. Mantiene las tradiciones de la cultura cantinera regiomontana con ambiente auténtico y servicio tradicional."
+        "description": "Cantina tradicional donde 'las botanas se siguen sirviendo con cada ronda' según la guía. Ambiente clásico de cantina que mantiene las tradiciones de la cultura cantinera regiomontana con servicio tradicional auténtico. Representa la cultura clásica de cantina de Monterrey preservando las costumbres tradicionales del noreste."
     },
     {
         "name": "El Nuevo Aguacate",
@@ -41,7 +41,7 @@
         "tel": "+52-81-8346-8751",
         "social": "https://www.facebook.com/ElNuevoAguacate",
         "photos": ["https://example.com/nuevo-aguacate.jpg"],
-        "description": "Cantina tradicional con aproximadamente 55 años de existencia, bajo la administración actual por más de 23 años. Ubicada en el centro histórico de Monterrey, sirve a la comunidad local. Famosa por su cortadillo y ambiente auténtico de cantina tradicional, popular para dominó y conversación."
+        "description": "Famoso por su cortadillo (especialidad insignia), taquitos de hígado, taquitos de guisos, queso con chorizo, milanesa de res, aguacate con atún, queso flameado y Jarrito Mamalón. Ambiente auténtico de cantina tradicional íntima, popular para dominó y conversación, establecimiento pequeño sin fumar. Cantina tradicional con aproximadamente 55 años de existencia, bajo la administración actual por más de 23 años, ubicada en el centro histórico sirviendo a la comunidad local."
     },
     {
         "name": "Club del Transportista",
@@ -52,7 +52,7 @@
         "tel": "+52-81-8372-0299",
         "social": "https://www.facebook.com/ClubTransportista",
         "photos": ["https://example.com/club-transportista.jpg"],
-        "description": "Club privado especializado en cocina del noreste mexicano, con componentes de membresía requeridos para el acceso. Conocido por sus asados y carne zaraza. Nota: Las mujeres pueden ingresar solo si van acompañadas de un miembro del club."
+        "description": "Especializado en asado (carnes a la parrilla), carne zaraza, quesadillas y preparaciones tradicionales de arroz norteño. Ambiente de club privado con componentes de membresía requeridos para el acceso. Club privado establecido especializándose en cocina del noreste mexicano. Nota importante: Las mujeres pueden ingresar solo si van acompañadas de un miembro del club."
     },
     {
         "name": "Restaurant Bar Zacatecas",
@@ -63,7 +63,7 @@
         "tel": "+52-81-8375-6174",
         "social": "https://www.facebook.com/ELZACATECASBAR",
         "photos": ["https://example.com/zacatecas-bar.jpg"],
-        "description": "Cantina tradicional en el centro histórico de Monterrey, conocida como competencia/alternativa a la famosa cantina Indio Azteca. Representa la tradición clásica de cantina norteña mexicana. Famosa por tener 'las mejores costillas de puerco adobadas de Monterrey'. Ambiente nostálgico y acogedor."
+        "description": "Famoso por su Costilla de Puerco Adobada considerada 'la mejor de Monterrey', costillas adobadas, chamorro y botanas tradicionales de la cocina del norte de México. Ambiente tradicional de cantina con muebles de madera, ambiente tranquilo y agradable para conversaciones, ambiente acogedor y nostálgico con aire acondicionado. Cantina tradicional en el centro histórico de Monterrey, conocida como competencia/alternativa a la famosa cantina Indio Azteca, representando la tradición clásica de cantina norteña mexicana."
     },
     {
         "name": "Indio Azteca",
@@ -74,7 +74,7 @@
         "tel": "+52-81-8375-xxxx",
         "social": "https://www.facebook.com/IndioAztecaCantina",
         "photos": ["https://example.com/indio-azteca.jpg"],
-        "description": "Fundada en 1920, es la cantina más antigua de Monterrey que aún opera (más de 100 años). Originalmente establecimiento solo para hombres hasta el 13 de octubre de 2022, cuando las mujeres entraron y fueron atendidas por primera vez, rompiendo 102 años de tradición. Edificio estilo siglo XVI con mesas de madera de 80 años."
+        "description": "Especializado en Costillas Adobadas de Puerco, aldilla, hígados, frijoles con veneno (frijoles con asado de puerco), chicharrón en salsa verde, chamorro y botanas tradicionales de cantina. Ambiente de edificio estilo siglo XVI con mesas de madera de 80 años que tienen compartimentos para botellas de cerveza, numerosas cabezas de venado montadas, atmósfera tradicional de cantina. Fundada en 1920, es la cantina más antigua de Monterrey que aún opera (más de 100 años). Originalmente establecimiento solo para hombres hasta el 13 de octubre de 2022, cuando las mujeres entraron y fueron atendidas por primera vez, rompiendo 102 años de tradición."
     },
     {
         "name": "El Ranchito",
@@ -85,7 +85,7 @@
         "tel": "+52-81-xxxx-xxxx",
         "social": "https://www.facebook.com/ElRanchitoCantina",
         "photos": ["https://example.com/el-ranchito.jpg"],
-        "description": "Fundada en 1981 por Antonio Ayala Malacara, actualmente propiedad de sus hijos Miguel Ángel y Juan Antonio. Nombrada por los antecedentes de rancho del fundador de San Pablo, Galeana. Opera desde hace 44 años representando la cultura tradicional de cantina de barrio. Fachada imponente de ladrillo rojo con memorabilia deportiva."
+        "description": "Famoso por su cortadillo (guiso insignia), atropellado, queso flameado, guacamole, chuletas de puerco al piquín, milanesa y sopas diarias (fideo y albóndigas, frijoles a la charra, lentejas). Ambiente con fachada imponente de ladrillo rojo, televisores mostrando deportes, memorabilia incluyendo jerseys deportivos firmados (notablemente Javier 'Chicharito' Hernández), vendedores ambulantes vendiendo productos regionales que añaden autenticidad. Fundada en 1981 por Antonio Ayala Malacara, actualmente propiedad de sus hijos Miguel Ángel y Juan Antonio. Nombrada por los antecedentes de rancho del fundador de San Pablo, Galeana, operando desde hace 44 años representando la cultura tradicional de cantina de barrio."
     },
     {
         "name": "Ray Bar",
@@ -96,7 +96,7 @@
         "tel": "+52-81-8338-6251",
         "social": "https://www.facebook.com/RayBarSanPedro",
         "photos": ["https://example.com/ray-bar.jpg"],
-        "description": "Cantina tradicional de larga trayectoria en San Pedro Garza García que mantiene la cultura tradicional de cantina. Sin cocina propia, pero los clientes pueden ordenar de establecimientos cercanos. Popular maridaje con tacos amarillos del vendedor adyacente. Rocola en planta baja, terraza grande en segundo piso con bar privado y mesa de billar."
+        "description": "Sin cocina propia pero los clientes pueden ordenar de establecimientos cercanos, popular maridaje con tacos amarillos del vendedor adyacente, amplia selección de cervezas. Ambiente de cantina clásica con rocola en planta baja, terraza grande en segundo piso con bar privado y mesa de billar, ambiente clásico de cantina. Cantina tradicional de larga trayectoria en San Pedro Garza García que mantiene la cultura tradicional de cantina, reconocida como el 'Mejor bar en la zona de Monterrey San Pedro'."
     },
     {
         "name": "La Constancia",
@@ -107,7 +107,7 @@
         "tel": "+52-81-8675-5782",
         "social": "https://www.facebook.com/LaConstanciaCantina",
         "photos": ["https://example.com/la-constancia.jpg"],
-        "description": "Cantina tradicional con décadas de operación, conocida como una de las cantinas icónicas de Nuevo León. Establecimiento modesto pequeño distinguido por servir las mejores costillas al horno de Monterrey. Ambiente íntimo tradicional que se siente como la casa de la abuela, ambiente tranquilo propicio para conversación."
+        "description": "Famosa por sus costillas al horno consideradas 'las mejores de Monterrey', asado de puerco, cortadillo, hígado encebollado, guacamole con queso y tomate, lentejas y tostadas tatemadas. Ambiente íntimo tradicional pequeño que se siente como la casa de la abuela, ambiente tranquilo propicio para conversación tranquila, solo efectivo, el servicio puede ser lento (40-50 minutos). Cantina tradicional con décadas de operación, conocida como una de las cantinas icónicas de Nuevo León, establecimiento modesto pequeño distinguido por servir las mejores costillas al horno de Monterrey."
     },
     {
         "name": "Pilo's Bar",
@@ -118,6 +118,6 @@
         "tel": "+52-81-8355-0622",
         "social": "https://www.facebook.com/PILOSBAR",
         "photos": ["https://example.com/pilos-bar.jpg"],
-        "description": "Fundado el 10 de marzo de 1954 por Rogelio Elizondo, nombrado por su padre don Porfirio 'Pilo' Elizondo. Actualmente propiedad de Isidro Elizondo 'el Pilos', ex acordeonista profesional con Los Tremendos del Norte por 20 años. Conocido como 'La Catedral de la Música Norteña'. Paredes cubiertas con memorabilia de artistas norteños famosos, música norteña en vivo todas las noches."
+        "description": "Especializado en aguachile, beefsteak y cocina tradicional norteña. Ambiente con paredes cubiertas de memorabilia y fotos de artistas norteños famosos, altar de tributo a Francisco Elizondo en la entrada, música norteña en vivo todas las noches 8:00 PM-1:00 AM, muy económico ($100-400 pesos por persona), sin consumo mínimo, entrada gratuita. Fundado el 10 de marzo de 1954 por Rogelio Elizondo, nombrado por su padre don Porfirio 'Pilo' Elizondo. Actualmente propiedad de Isidro Elizondo 'el Pilos', ex acordeonista profesional con Los Tremendos del Norte por 20 años. Conocido como 'La Catedral de la Música Norteña'. Grupo Pesado grabó 'Desde la Cantina Vol. I & II' en vivo aquí, Pa'l Norte festival recrea el ambiente de Pilo's Bar desde 2018."
     }
 ]
