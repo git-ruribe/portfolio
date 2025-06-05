@@ -1,0 +1,123 @@
+[
+    {
+        "name": "El Principal de Montemorelos",
+        "type": "Restaurante Norteño Tradicional",
+        "address": "Carretera Nacional Km. 215, El Blanquillo, Montemorelos, Nuevo León 67608",
+        "mapUrl": "https://www.google.com/maps/place/El+Principal+de+Montemorelos/@25.1947,-99.8294,17z/",
+        "coordinates": [25.1947, -99.8294],
+        "tel": "+52-826-263-8312",
+        "social": "https://www.facebook.com/elgranprincipal",
+        "photos": ["https://example.com/principal-montemorelos.jpg"],
+        "description": "Restaurante norteño tradicional con décadas de historia en Montemorelos, conocido localmente como uno de los mejores destinos de comida regional tradicional. Frecuentado por locales y grupos motociclistas. Especializado en machacado en varios estilos, cabrito en salsa y tortillas de harina gigantes. Ambiente rústico estilo rancho mexicano tradicional."
+    },
+    {
+        "name": "El Mirador",
+        "type": "Steakhouse Tradicional",
+        "address": "Av. Constitución No. 1257 Poniente, Centro, Monterrey 64070",
+        "mapUrl": "https://www.google.com/maps/place/El+Mirador/@25.6692,-100.3153,17z/",
+        "coordinates": [25.6692, -100.3153],
+        "tel": "+52-81-8343-6894",
+        "social": "https://www.facebook.com/restaurantemirador",
+        "photos": ["https://example.com/el-mirador.jpg"],
+        "description": "Steakhouse tradicional en el centro de Monterrey con décadas de historia sirviendo cocina regional. Establecimiento familiar que mantiene métodos tradicionales de cocina norteña. Famoso por sus agujas de rib eye y ambiente de negocios tradicional del centro histórico."
+    },
+    {
+        "name": "La Real",
+        "type": "Cantina Tradicional",
+        "address": "Centro, Monterrey, N.L., México",
+        "mapUrl": "https://www.google.com/maps/place/La+Real/@25.6695,-100.3095,17z/",
+        "coordinates": [25.6695, -100.3095],
+        "tel": "+52-81-xxxx-xxxx",
+        "social": "https://www.facebook.com/LaRealCantina",
+        "photos": ["https://example.com/la-real.jpg"],
+        "description": "Cantina tradicional de Monterrey que representa la cultura clásica de cantina donde 'las botanas se siguen sirviendo con cada ronda'. Mantiene las tradiciones de la cultura cantinera regiomontana con ambiente auténtico y servicio tradicional."
+    },
+    {
+        "name": "El Nuevo Aguacate",
+        "type": "Cantina Tradicional",
+        "address": "Calle General Jerónimo Treviño Poniente 2002, Colonia Centro, Monterrey 64000",
+        "mapUrl": "https://www.google.com/maps/place/El+Nuevo+Aguacate/@25.6698,-100.3142,17z/",
+        "coordinates": [25.6698, -100.3142],
+        "tel": "+52-81-8346-8751",
+        "social": "https://www.facebook.com/ElNuevoAguacate",
+        "photos": ["https://example.com/nuevo-aguacate.jpg"],
+        "description": "Cantina tradicional con aproximadamente 55 años de existencia, bajo la administración actual por más de 23 años. Ubicada en el centro histórico de Monterrey, sirve a la comunidad local. Famosa por su cortadillo y ambiente auténtico de cantina tradicional, popular para dominó y conversación."
+    },
+    {
+        "name": "Club del Transportista",
+        "type": "Club Privado - Cocina Norteña",
+        "address": "Calle Héroes del 47 Norte 513, Modelo, Monterrey 64000",
+        "mapUrl": "https://www.google.com/maps/place/Club+del+Transportista/@25.6834,-100.3234,17z/",
+        "coordinates": [25.6834, -100.3234],
+        "tel": "+52-81-8372-0299",
+        "social": "https://www.facebook.com/ClubTransportista",
+        "photos": ["https://example.com/club-transportista.jpg"],
+        "description": "Club privado especializado en cocina del noreste mexicano, con componentes de membresía requeridos para el acceso. Conocido por sus asados y carne zaraza. Nota: Las mujeres pueden ingresar solo si van acompañadas de un miembro del club."
+    },
+    {
+        "name": "Restaurant Bar Zacatecas",
+        "type": "Cantina Tradicional",
+        "address": "Av. Francisco I. Madero #1070, Centro, 64000 Monterrey",
+        "mapUrl": "https://www.google.com/maps/place/Restaurant+Bar+Zacatecas/@25.6695,-100.3098,17z/",
+        "coordinates": [25.6695, -100.3098],
+        "tel": "+52-81-8375-6174",
+        "social": "https://www.facebook.com/ELZACATECASBAR",
+        "photos": ["https://example.com/zacatecas-bar.jpg"],
+        "description": "Cantina tradicional en el centro histórico de Monterrey, conocida como competencia/alternativa a la famosa cantina Indio Azteca. Representa la tradición clásica de cantina norteña mexicana. Famosa por tener 'las mejores costillas de puerco adobadas de Monterrey'. Ambiente nostálgico y acogedor."
+    },
+    {
+        "name": "Indio Azteca",
+        "type": "Cantina Histórica",
+        "address": "Calzada Francisco I. Madero 1101, Centro, Monterrey 64000",
+        "mapUrl": "https://www.google.com/maps/place/Cantina+El+Indio+Azteca/@25.6695,-100.3085,17z/",
+        "coordinates": [25.6695, -100.3085],
+        "tel": "+52-81-8375-xxxx",
+        "social": "https://www.facebook.com/IndioAztecaCantina",
+        "photos": ["https://example.com/indio-azteca.jpg"],
+        "description": "Fundada en 1920, es la cantina más antigua de Monterrey que aún opera (más de 100 años). Originalmente establecimiento solo para hombres hasta el 13 de octubre de 2022, cuando las mujeres entraron y fueron atendidas por primera vez, rompiendo 102 años de tradición. Edificio estilo siglo XVI con mesas de madera de 80 años."
+    },
+    {
+        "name": "El Ranchito",
+        "type": "Cantina de Barrio",
+        "address": "Cruce de 5 de Mayo con Venustiano Carranza, Centro de Monterrey, N.L., México",
+        "mapUrl": "https://www.google.com/maps/place/El+Ranchito/@25.6712,-100.3089,17z/",
+        "coordinates": [25.6712, -100.3089],
+        "tel": "+52-81-xxxx-xxxx",
+        "social": "https://www.facebook.com/ElRanchitoCantina",
+        "photos": ["https://example.com/el-ranchito.jpg"],
+        "description": "Fundada en 1981 por Antonio Ayala Malacara, actualmente propiedad de sus hijos Miguel Ángel y Juan Antonio. Nombrada por los antecedentes de rancho del fundador de San Pablo, Galeana. Opera desde hace 44 años representando la cultura tradicional de cantina de barrio. Fachada imponente de ladrillo rojo con memorabilia deportiva."
+    },
+    {
+        "name": "Ray Bar",
+        "type": "Cantina Tradicional",
+        "address": "Avenida José Vasconcelos 316, Colonia Tampiquito, San Pedro Garza García 66240",
+        "mapUrl": "https://www.google.com/maps/place/Ray+Bar/@25.6543,-100.3456,17z/",
+        "coordinates": [25.6543, -100.3456],
+        "tel": "+52-81-8338-6251",
+        "social": "https://www.facebook.com/RayBarSanPedro",
+        "photos": ["https://example.com/ray-bar.jpg"],
+        "description": "Cantina tradicional de larga trayectoria en San Pedro Garza García que mantiene la cultura tradicional de cantina. Sin cocina propia, pero los clientes pueden ordenar de establecimientos cercanos. Popular maridaje con tacos amarillos del vendedor adyacente. Rocola en planta baja, terraza grande en segundo piso con bar privado y mesa de billar."
+    },
+    {
+        "name": "La Constancia",
+        "type": "Cantina Tradicional",
+        "address": "Santiago Tapia Ote. 958, Centro, Monterrey 64000",
+        "mapUrl": "https://www.google.com/maps/place/La+Constancia/@25.6723,-100.3167,17z/",
+        "coordinates": [25.6723, -100.3167],
+        "tel": "+52-81-8675-5782",
+        "social": "https://www.facebook.com/LaConstanciaCantina",
+        "photos": ["https://example.com/la-constancia.jpg"],
+        "description": "Cantina tradicional con décadas de operación, conocida como una de las cantinas icónicas de Nuevo León. Establecimiento modesto pequeño distinguido por servir las mejores costillas al horno de Monterrey. Ambiente íntimo tradicional que se siente como la casa de la abuela, ambiente tranquilo propicio para conversación."
+    },
+    {
+        "name": "Pilo's Bar",
+        "type": "Cantina Musical - 'La Catedral de la Música Norteña'",
+        "address": "Juan Zuazua 204 Sur, esquina Jiménez, Centro, Guadalupe, Nuevo León 67117",
+        "mapUrl": "https://www.google.com/maps/place/Pilo's+Bar/@25.6789,-100.2567,17z/",
+        "coordinates": [25.6789, -100.2567],
+        "tel": "+52-81-8355-0622",
+        "social": "https://www.facebook.com/PILOSBAR",
+        "photos": ["https://example.com/pilos-bar.jpg"],
+        "description": "Fundado el 10 de marzo de 1954 por Rogelio Elizondo, nombrado por su padre don Porfirio 'Pilo' Elizondo. Actualmente propiedad de Isidro Elizondo 'el Pilos', ex acordeonista profesional con Los Tremendos del Norte por 20 años. Conocido como 'La Catedral de la Música Norteña'. Paredes cubiertas con memorabilia de artistas norteños famosos, música norteña en vivo todas las noches."
+    }
+]
