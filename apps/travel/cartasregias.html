@@ -327,8 +327,20 @@
 
         /* Image Modal - Styles for Robustness */
         .image-modal-overlay { 
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
             z-index: 1001; 
             background: rgba(0, 0, 0, 0.9); /* Darker background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .image-modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
         }
         .image-modal-content {
             position: relative;
