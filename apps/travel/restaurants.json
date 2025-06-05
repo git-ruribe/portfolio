@@ -1,0 +1,15 @@
+[
+  {
+    "name": "El Lontananza",
+    "type": "Cantina Tradicional",
+    "address": "C. Aramberri 102, Centro, 64000 Monterrey, N.L., México",
+    "mapUrl": "https://www.google.com/maps/place/Bar+El+Lontananza/@25..."
+  },
+  {
+    "name": "El Indio Azteca",
+    "type": "Cantina Tradicional",
+    "address": "Av. Francisco I. Madero 1101, Centro, 64000 Monterrey, N.L., México",
+    "mapUrl": "https://www.google.com/maps/place/Cantina+El+Indio+Azteca/@25..."
+  }
+  // ...agrega los demás restaurantes
+]
