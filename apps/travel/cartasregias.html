@@ -260,7 +260,7 @@
 
         /* Modal Styles */
         .modal-overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.75);
             display: flex; justify-content: center; align-items: center;
             opacity: 0; visibility: hidden;
@@ -412,27 +412,28 @@
                 Siguiente <i class="fas fa-chevron-right"></i>
             </button>
         </div>
+
+        <div id="infoModal" class="modal-overlay">
+            <div class="modal-content">
+                <h3 id="modalTitle" class="modal-header"></h3>
+                <div id="modalBody" class="modal-body"></div>
+                <button class="modal-close-btn" onclick="closeInfoModal()">Cerrar</button>
+            </div>
+        </div>
+    
+        <div id="imageModal" class="image-modal-overlay">
+            <div class="image-modal-content">
+                <!-- Added onerror handler -->
+                <img id="modalImage" src="" alt="Ampliar imagen" class="image-modal-img" onerror="this.style.display='none'; console.error('Error al cargar imagen en modal:', this.src);">
+                <button class="image-modal-close-btn" onclick="closeImageModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
     </div>
 
     <input type="file" id="userPhotoInput" accept="image/*" style="display:none;">
 
-    <div id="infoModal" class="modal-overlay">
-        <div class="modal-content">
-            <h3 id="modalTitle" class="modal-header"></h3>
-            <div id="modalBody" class="modal-body"></div>
-            <button class="modal-close-btn" onclick="closeInfoModal()">Cerrar</button>
-        </div>
-    </div>
-
-    <div id="imageModal" class="image-modal-overlay">
-        <div class="image-modal-content">
-            <!-- Added onerror handler -->
-            <img id="modalImage" src="" alt="Ampliar imagen" class="image-modal-img" onerror="this.style.display='none'; console.error('Error al cargar imagen en modal:', this.src);">
-            <button class="image-modal-close-btn" onclick="closeImageModal()">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    </div>
 
     <script>
         const restaurants = [
