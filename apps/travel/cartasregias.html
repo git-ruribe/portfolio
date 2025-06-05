@@ -602,14 +602,11 @@
         window.closeInfoModal = function() { infoModal.classList.remove('show'); };
 
         window.openImageModal = function(imageUrl) {
-            // Reset display style in case it was hidden by onerror
-            modalImageEl.style.display = 'block'; 
-            if (!imageUrl || imageUrl.startsWith('https://placehold.co/')) {
-                modalImageEl.style.display = 'none'; // Hide if placeholder
-                console.log("Placeholder image or no URL, modal not fully shown.");
-                // Optionally, still show the modal with a "no image" message, or just return
-                return; 
+            if (!imageUrl || imageUrl === window.location.href || imageUrl.endsWith('.html')) {
+                modalImageEl.style.display = 'none';
+                return;
             }
+            modalImageEl.style.display = 'block';
             modalImageEl.src = imageUrl;
             imageModal.classList.add('show');
         };
