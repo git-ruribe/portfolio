@@ -1,0 +1,112 @@
+[
+    {
+        "name": "Botanero Moritas",
+        "type": "Botanero Contemporáneo",
+        "address": "Calle Juan Ignacio Ramón 852, Centro, 64000 Monterrey, N.L., México",
+        "mapUrl": "https://www.google.com/maps/place/Botanero+Moritas/@25.6698,-100.3095,17z/",
+        "coordinates": [25.6698, -100.3095],
+        "tel": "+52-81-8340-2036",
+        "social": "https://www.instagram.com/botaneromoritas",
+        "photos": ["https://example.com/botanero-moritas.jpg"],
+        "description": "Originalmente fundado en 1939 como 'Bar Las Moritas', reabrió en 2015 como 'Botanero Moritas' después de renovación completa. Anteriormente sirvió como club de boxeo de San Pedro con billar y peleas de gallos. El nombre deriva de un árbol de morera que estaba en la terraza original. Ambiente histórico de cantina con decoración vintage, terraza y música tradicional mexicana."
+    },
+    {
+        "name": "Fidencio Botanero",
+        "type": "Cantina Regional Moderna",
+        "address": "Av. Batallón de San Patricio 109, Valle Oriente, San Pedro Garza García, N.L., México",
+        "mapUrl": "https://www.google.com/maps/place/Fidencio+Botanero/@25.6234,-100.2789,17z/",
+        "coordinates": [25.6234, -100.2789],
+        "tel": "+52-81-2316-0739",
+        "social": "https://www.instagram.com/fidenciomty",
+        "photos": ["https://example.com/fidencio-botanero.jpg"],
+        "description": "Representa la mezcla perfecta entre cantina mexicana tradicional y restaurante regional, mostrando con orgullo la identidad norteña mexicana a través de especialidades integrales de Nuevo León. Cantina elegante con música regional en vivo (Fara Fara) miércoles-sábado 7:00-9:00 PM, presentaciones de mariachi y accesibilidad para sillas de ruedas."
+    },
+    {
+        "name": "Jabalina",
+        "type": "Restaurante Contemporáneo",
+        "address": "C. Padre Mier 859, Col. Centro (Barrio Antiguo), Entre Diego de Montemayor y Dr. Coss, Monterrey 64000",
+        "mapUrl": "https://www.google.com/maps/place/Jabalina/@25.6712,-100.3067,17z/",
+        "coordinates": [25.6712, -100.3067],
+        "tel": "+52-81-xxxx-xxxx",
+        "social": "https://www.instagram.com/jabalinarestaurante",
+        "photos": ["https://example.com/jabalina.jpg"],
+        "description": "Ubicado en el histórico distrito del Barrio Antiguo, se ha convertido en uno de los destinos gastronómicos contemporáneos más populares de Monterrey. Ambiente espectacular con temática de jungla, techo retráctil, iluminación hermosa, escenario para música en vivo y opciones de asientos interiores/exteriores. Entrada simple que lleva a un área trasera extraordinaria."
+    },
+    {
+        "name": "El Jonuco",
+        "type": "Cocina Regional Contemporánea",
+        "address": "Mariano Abasolo 102-A, Col. Centro, Apodaca, Nuevo León 66600",
+        "mapUrl": "https://www.google.com/maps/place/El+Jonuco/@25.7789,-100.1867,17z/",
+        "coordinates": [25.7789, -100.1867],
+        "tel": "+52-81-3260-8870",
+        "social": "https://www.instagram.com/eljonucomx",
+        "photos": ["https://example.com/el-jonuco.jpg"],
+        "description": "El nombre se refiere a un cuarto de almacenamiento bajo las escaleras donde se guardan objetos viejos, relacionándose con la cocina del noreste mexicano que ha sido 'guardada' por años. Dirigido por el Chef Hugo Guajardo, busca mostrar la cocina tradicional de Nuevo León a través de propuestas contemporáneas. Joya escondida en Apodaca con música regional ambiental."
+    },
+    {
+        "name": "Koli Cocina de Origen",
+        "type": "Fine Dining Contemporáneo",
+        "address": "Río Amazonas 225 Oriente, Colonia Del Valle, San Pedro Garza García, Nuevo León 66220",
+        "mapUrl": "https://www.google.com/maps/place/Koli+Cocina+de+Origen/@25.6456,-100.3234,17z/",
+        "coordinates": [25.6456, -100.3234],
+        "tel": "+52-81-9688-7333",
+        "social": "https://www.instagram.com/koli.rest",
+        "photos": ["https://example.com/koli.jpg"],
+        "description": "Fundado en 2015 por los hermanos Rivera-Río: Rodrigo (Chef), Daniel (Chef Pastelero) y Patricio (Maître d'/Sommelier). 'Koli' significa 'abuelo' en náhuatl, dedicado a su abuelo que les enseñó su amor por la comida. Fine dining íntimo que acomoda solo 20 comensales por noche, decoración minimalista enfocada en narrativa culinaria. Una Estrella Michelin (2024)."
+    },
+    {
+        "name": "Vernáculo",
+        "type": "Cocina al Fuego Contemporánea",
+        "address": "Av. Circuito Frida Kahlo 303, Plaza Distrito Armida Segundo Piso, Valle Oriente, San Pedro Garza García 66260",
+        "mapUrl": "https://www.google.com/maps/place/Vernáculo/@25.6234,-100.2678,17z/",
+        "coordinates": [25.6234, -100.2678],
+        "tel": "+52-81-xxxx-xxxx",
+        "social": "https://www.instagram.com/vernaculomx",
+        "photos": ["https://example.com/vernaculo.jpg"],
+        "description": "Creado por el Chef Hugo Guajardo durante siete años de desarrollo. Graduado en negocios del ITESM, su pasión por la cocina al fuego comenzó en la infancia haciendo carne asada con su padre en su rancho. Ambiente inspirado en el desierto con decoración moderna que evoca el paisaje del norte de México, concepto de cocina a fuego abierto. Selección Guía Michelin México (2024)."
+    },
+    {
+        "name": "Cara de Vaca",
+        "type": "Steakhouse Contemporáneo",
+        "address": "Río de la Plata 448, Colonia Del Valle, San Pedro Garza García 66220",
+        "mapUrl": "https://www.google.com/maps/place/Cara+de+Vaca/@25.6445,-100.3223,17z/",
+        "coordinates": [25.6445, -100.3223],
+        "tel": "+52-81-2676-9800",
+        "social": "https://www.instagram.com/caradevacarestaurant",
+        "photos": ["https://example.com/cara-de-vaca.jpg"],
+        "description": "Creado por el Chef Chuy Villarreal, reconocido por Food & Wine como uno de los mejores chefs de México. Representa la evolución de la tradicional 'carne asada regiomontana' con entusiasmo y creatividad modernos. Espacio lleno de luz inspirado en el minimalismo japonés y escandinavo con toques mexicanos, bar central mostrando vinos naturales y destilados mexicanos."
+    },
+    {
+        "name": "La Nacional",
+        "type": "Steakhouse Icónico",
+        "address": "Av. San Jerónimo 1106, Col. Miravalle, Monterrey, N.L., México",
+        "mapUrl": "https://www.google.com/maps/place/La+Nacional/@25.6789,-100.3456,17z/",
+        "coordinates": [25.6789, -100.3456],
+        "tel": "+52-81-8347-9205",
+        "social": "https://www.instagram.com/lanacionalmx",
+        "photos": ["https://example.com/la-nacional.jpg"],
+        "description": "Abierto en 2003, esta institución de Monterrey se ha establecido como uno de los steakhouses más icónicos de la ciudad, conocido por rescatar recetas de pueblos pequeños y preservar tradiciones culinarias. Comedor espacioso con paredes rojo sangre de buey, retratos enmarcados en blanco y negro, mantelería blanca de alta gama, cuarto de puros y patio al aire libre."
+    },
+    {
+        "name": "Gallo 71",
+        "type": "Taquería Gourmet",
+        "address": "Av. José Vasconcelos 71, Col. del Valle, San Pedro Garza García 66220",
+        "mapUrl": "https://www.google.com/maps/place/Gallo+71/@25.6445,-100.3234,17z/",
+        "coordinates": [25.6445, -100.3234],
+        "tel": "+52-81-xxxx-xxxx",
+        "social": "https://www.instagram.com/gallo71",
+        "photos": ["https://example.com/gallo-71.jpg"],
+        "description": "Tributo a 'El Gallo Abarrotes', una tienda de abarrotes fundada por la Familia Chapa en 1923. Restaurante hermano de La Nacional con el lema 'Nuestra especialidad es el Fuego', representando la cultura tradicional regia de carne asada. Diseño rústico con atmósfera rock & roll, ambiente moderno trendy, mesa del chef, asientos de bar, DJ en vivo miércoles-sábado."
+    },
+    {
+        "name": "Tacos Atarantados",
+        "type": "Taquería Moderna",
+        "address": "Av. José Vasconcelos 465, Col. del Valle, San Pedro Garza García, N.L., México",
+        "mapUrl": "https://www.google.com/maps/place/Tacos+Atarantados/@25.6456,-100.3245,17z/",
+        "coordinates": [25.6456, -100.3245],
+        "tel": "+52-81-2710-7986",
+        "social": "https://www.instagram.com/tacosatarantados",
+        "photos": ["https://example.com/tacos-atarantados.jpg"],
+        "description": "Fundado en 2020-2021 por el Chef Jorge Guadiana con socios Sergio Cantú y Patricio Bernardini durante la pandemia COVID-19. Parte del Grupo Buenas Vibras, se expandió rápidamente a 9 ubicaciones en Monterrey más Ciudad de México. Esquema de colores dominado por verde, estética de taquería urbana, música de cumbia y banda, atmósfera juvenil energética, cocina abierta mostrando preparación de trompo."
+    }
+]
