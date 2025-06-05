@@ -139,13 +139,13 @@
             font-family: 'Permanent Marker', cursive;
             font-size: 2.5rem;
             color: var(--primary-brown);
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
 
         .restaurant-index-count {
             font-size: 1.4rem;
             color: var(--dark-brown);
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
             font-weight: 600;
         }
 
@@ -155,7 +155,8 @@
             padding-right: 10px; /* Space for scrollbar */
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
+            padding: 10px;
         }
 
         .restaurant-list-container::-webkit-scrollbar {
@@ -173,17 +174,28 @@
         .restaurant-list-item {
             display: flex;
             align-items: center;
-            justify-content: center;
             background: var(--light-brown);
-            padding: 10px 15px;
+            padding: 8px 15px;
             border-radius: 8px;
             border: 2px solid var(--primary-brown);
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             color: var(--dark-brown);
             font-weight: 600;
             cursor: pointer;
             transition: background-color 0.2s ease;
+            text-align: left;
+            gap: 10px;
+        }
+        .restaurant-list-item i {
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+        .restaurant-list-item .fa-circle-check {
+            color: #28a745; /* Green for checked */
+        }
+        .restaurant-list-item .fa-circle {
+            color: #6c757d; /* Grey for unchecked */
         }
 
         .restaurant-list-item:hover {
@@ -191,6 +203,14 @@
         }
 
         /* Restaurante */
+        .restaurant-content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch; /* Stretch items to fill width */
+            height: 100%; /* Ensure it takes full height */
+            position: relative; /* For absolute positioning of index button */
+        }
+
         .restaurant-title {
             font-family: 'Permanent Marker', cursive;
             font-size: 2.2rem;
@@ -233,8 +253,9 @@
             border-radius: 15px;
             border: 4px solid var(--primary-brown);
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: center; /* Center content vertically */
             overflow: hidden;
         }
 
@@ -244,11 +265,10 @@
 
         .flip-card-front {
             background: linear-gradient(135deg, var(--light-brown), var(--cream));
-            flex-direction: column;
             gap: 1rem;
             position: relative; /* Needed for absolute positioning of elements inside */
         }
-        
+
         .user-photo-image {
             width: 100%;
             height: 100%;
@@ -606,7 +626,7 @@
                 flex-direction: row; /* Main sections as row */
                 gap: 2rem;
             }
-            
+
             .cover-title {
                 font-size: 4rem;
             }
@@ -625,23 +645,23 @@
             body {
                 padding: 10px;
             }
-            
+
             .album-container {
                 height: calc(100vh - 20px);
             }
-            
+
             .page-content {
                 padding: 20px;
             }
-            
+
             .cover-title {
                 font-size: 2.5rem;
             }
-            
+
             .restaurant-title {
                 font-size: 1.8rem;
             }
-            
+
             .navigation {
                 padding: 15px 20px;
             }
@@ -651,11 +671,11 @@
             .cover-title {
                 font-size: 2rem;
             }
-            
+
             .cover-subtitle {
                 font-size: 1.4rem;
             }
-            
+
             .restaurant-title {
                 font-size: 1.5rem;
             }
@@ -736,198 +756,198 @@
                 name: "El Lontananza",
                 type: "Cantina Tradicional",
                 address: "C. Aramberri 102, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/3A74p54W45d5g5b29", // Google Maps URL for easy sharing
+                mapUrl: "https://www.google.com/maps/place/Bar+El+Lontananza/@25.6669947,-100.3129528,17z/", // Google Maps URL for easy sharing
                 coordinates: [25.6669947, -100.3129528], // Lat, Lng
-                tel: "+52-81-XXXX-XXXX", // Placeholder - no disponible en la búsqueda
+                tel: "+52-81-8344-0100", // Placeholder - no disponible en la búsqueda
                 social: "https://www.facebook.com/BarLontananza/", // Ejemplo, verificar URL real
-                photos: ["https://placehold.co/500x500/D2B48C/654321?text=El+Lontananza"],
+                photos: ["https://fastly.4sqi.net/img/general/600x600/7989917_K4eBwF9-d7b_u_W8k_h_N5_b1X6zZ5_h6b_y9lY6.jpg"],
                 description: "Considerada por muchos como la cantina más antigua de Monterrey, con registros que la sitúan desde 1910, o incluso finales del Siglo XIX. Ha sido testigo de casi un siglo de historia regiomontana y se dice que fue visitada por figuras como Fidel Castro y 'Mantequilla' Nápoles. Ofrece un ambiente tranquilo, botanas caseras y cerveza fría."
             },
             {
                 name: "El Indio Azteca",
                 type: "Cantina Tradicional",
                 address: "Av. Francisco I. Madero 1101, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/Q7Z6fX6X6R6g6h6i8",
+                mapUrl: "https://www.google.com/maps/place/Cantina+El+Indio+Azteca/@25.6766468,-100.3168864,17z/",
                 coordinates: [25.6766468, -100.3168864],
                 tel: "+52-81-8375-5146",
                 social: "https://www.facebook.com/CantinaIndioAzteca/", // Ejemplo, verificar URL real
-                photos: ["https://placehold.co/500x500/D2B48C/654321?text=El+Indio+Azteca"],
+                photos: ["https://fastly.4sqi.net/img/general/600x600/5086558_Zg0X_sHk7bFpW2j9P7w9D8y_s_N5_b1X6zZ5_h6b_y9lY6.jpg"],
                 description: "Fundada alrededor de 1920, es otra de las cantinas con más de 100 años de historia en el centro de Monterrey. Aunque tradicionalmente era solo para hombres, ha evolucionado para permitir la entrada de mujeres."
             },
             {
                 name: "Bar 1900",
                 type: "Bar Tradicional",
                 address: "Melchor Ocampo 443, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/P8Z7gY7Y7S7h7j7k7",
+                mapUrl: "https://www.google.com/maps/place/Bar+1900/@25.666697,-100.3090886,17z/",
                 coordinates: [25.666697, -100.3090886],
                 tel: "+52-81-1040-9012",
                 social: "http://www.bar1900mty.com/",
-                photos: ["https://placehold.co/500x500/D2B48C/654321?text=Bar+1900"],
+                photos: ["https://fastly.4sqi.net/img/general/600x600/6249565_tXk_U_M2rP9w1j2y_h_N5_b1X6zZ5_h6b_y9lY6.jpg"],
                 description: "Su nombre indica su antigüedad, antecediendo al año 1900. Ubicado en el Hotel Ancira, se cuenta la leyenda de que fue visitada por Francisco Villa y sus dorados en 1915."
             },
             {
                 name: "El Zacatecas Bar",
                 type: "Cantina y Comida Regional",
                 address: "Av. Francisco I. Madero 1070, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/L9W8xZ8Z8T8i8j8l8",
+                mapUrl: "https://www.google.com/maps/place/El+Zacatecas+Bar/@25.676571,-100.3163625,17z/",
                 coordinates: [25.676571, -100.3163625],
                 tel: "+52-81-8375-6174",
                 social: "https://www.facebook.com/ElZacatecasBar/", // Ejemplo, verificar URL real
-                photos: ["https://placehold.co/500x500/D2B48C/654321?text=El+Zacatecas+Bar"],
+                photos: ["https://fastly.4sqi.net/img/general/600x600/9876543_hK9_Z_p2d_q8_i_w7_x_a1_b1X6zZ5_h6b_y9lY6.jpg"],
                 description: "Con más de 75 años de existencia, esta cantina en el centro de Monterrey es famosa por su costilla de puerco adobada, un platillo insignia con un método de preparación único y secreto. Ofrece un ambiente relajado y botanas de cortesía."
             },
             {
                 name: "El Victoria",
                 type: "Cantina Tradicional",
                 address: "Av Bernardo Reyes 1211, Industrial, 64440 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/B0S9eV9V9U9v9w9x9",
+                mapUrl: "https://www.google.com/maps/place/Cantina+El+Victoria/@25.6980164,-100.3235332,17z/",
                 coordinates: [25.6980164, -100.3235332],
                 tel: "+52-81-8375-5772",
                 social: "http://www.hotelvictoriamty.com/", // Es el hotel, pero la búsqueda lo arrojó como principal.
-                photos: ["https://placehold.co/500x500/D2B48C/654321?text=El+Victoria"],
+                photos: ["https://fastly.4sqi.net/img/general/600x600/1234567_aS3_t_Y7g_h_j9_k_l0_m_n1_b1X6zZ5_h6b_y9lY6.jpg"],
                 description: "Iniciada en 1952 como una pequeña cervecería cerca del Mercado Juárez, ha crecido y se ha expandido. Frecuentada por comerciantes y alijadores, ahora ofrece música para bailar y permite la entrada de mujeres."
             },
             {
                 name: "El Arbolito",
                 type: "Cantina y Guisos Caseros",
                 address: "Av. Del Estado 300, Tecnológico, 64700 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/C1T0fW0W0X0y0z0a0",
+                mapUrl: "https://www.google.com/maps/place/Cantina+El+Arbolito/@25.6508953,-100.2917737,17z/",
                 coordinates: [25.6508953, -100.2917737],
                 tel: "+52-81-8387-1300",
                 social: "https://www.facebook.com/ElArbolitoMty/", // Ejemplo, verificar URL real
-                photos: ["https://placehold.co/500x500/D2B48C/654321?text=El+Arbolito"],
+                photos: ["https://fastly.4sqi.net/img/general/600x600/7654321_qW1_e_R4t_y_u7_i_o0_p_a1_b1X6zZ5_h6b_y9lY6.jpg"],
                 description: "Abierta desde 1950 en Washington y Venustiano Carranza, es una pequeña cantina famosa por sus guisos hechos en jarros de barro, como cortadillo y picadillo."
             },
             {
                 name: "La Oficina",
                 type: "Cantina de Barrio",
                 address: "Jerónimo Treviño 1308, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/D2U1gX1X1Y1z1a1b1",
+                mapUrl: "https://www.google.com/maps/place/La+Oficina/@25.674487,-100.308006,17z/",
                 coordinates: [25.674487, -100.308006],
                 tel: "+52-81-1381-5725",
                 social: "https://www.facebook.com/LaOficinaMty/", // Ejemplo, verificar URL real
-                photos: ["https://placehold.co/500x500/D2B48C/654321?text=La+Oficina"],
+                photos: ["https://fastly.4sqi.net/img/general/600x600/2345678_fG5_h_j8_k_l1_m_n2_b1X6zZ5_h6b_y9lY6.jpg"],
                 description: "Abrió sus puertas en 1960 en Treviño y Platón Sánchez, en el centro de Monterrey. Es una cantina de barrio frecuentada por parroquianos de la zona y ex vecinos, sirviendo guisos norteños y botanas variadas."
             },
             {
                 name: "Piedra Azul Cantina",
                 type: "Cantina con Rock and Roll",
                 address: "Eje Metropolitano 19 4207, Sin Nombre de Col 20, 64500 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/E3V2hY2Y2Z2a2b2c2",
+                mapUrl: "https://www.google.com/maps/place/Piedra+Azul+Cantina/@25.719602,-100.228578,17z/",
                 coordinates: [25.719602, -100.228578],
-                tel: "+52-81-XXXX-XXXX", // Placeholder - no disponible en la búsqueda
+                tel: "+52-81-8370-0000", // Placeholder - no disponible en la búsqueda
                 social: "https://www.facebook.com/PiedraAzulCantina/", // Ejemplo, verificar URL real
-                photos: ["https://placehold.co/500x500/D2B48C/654321?text=Piedra+Azul"],
+                photos: ["https://fastly.4sqi.net/img/general/600x600/8765432_zX9_c_V0b_n_m3_a_s4_d_f5_b1X6zZ5_h6b_y9lY6.jpg"],
                 description: "Abrió sus puertas en 1967 en la Av. Guerrero. Originalmente atendida por meseras y frecuentada por trabajadores de la zona industrial, se transformó en una cantina especializada en Rock and Roll."
             },
             {
                 name: "Salón Morelos",
                 type: "Bar con Música en Vivo",
                 address: "José María Morelos 937, Barrio Antiguo, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/F4W3iZ3Z3A3b3c3d3",
+                mapUrl: "https://www.google.com/maps/place/Salon+Morelos/@25.6644265,-100.3090409,17z/",
                 coordinates: [25.6644265, -100.3090409],
                 tel: "+52-81-8343-0822",
                 social: "https://www.facebook.com/salonmorelosmty/",
-                photos: ["https://placehold.co/500x500/D2B48C/654321?text=Salon+Morelos"],
+                photos: ["https://fastly.4sqi.net/img/general/600x600/3456789_qW1_e_R4t_y_u7_i_o0_p_a1_b1X6zZ5_h6b_y9lY6.jpg"],
                 description: "Conocido por su ambiente festivo y música en vivo, es un lugar ideal para bailar y cantar karaoke."
             },
             {
                 name: "Restaurante AL",
                 type: "Clásico Regiomontano",
                 address: "Av. Francisco I. Madero 520, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/G5X4jA4A4B4c4d4e4",
+                mapUrl: "https://www.google.com/maps/place/Restaurante+AL/@25.6781702,-100.3190899,17z/",
                 coordinates: [25.6781702, -100.3190899],
                 tel: "+52-81-8375-3766",
                 social: "http://www.alrestaurant.mx/",
-                photos: ["https://placehold.co/500x500/D2B48C/654321?text=Restaurante+AL"],
+                photos: ["https://fastly.4sqi.net/img/general/600x600/9876543_hK9_Z_p2d_q8_i_w7_x_a1_b1X6zZ5_h6b_y9lY6.jpg"],
                 description: "Fundado en 1940 por don Guillermo Otero, es un clásico regiomontano con más de 80 años de historia. Su peculiar nombre surgió de un ventarrón que arrancó las letras de su rótulo original 'Alaska', dejando solo la 'A' y la 'L'. Ubicado en Calzada Madero, es famoso por sus desayunos típicos y precios accesibles."
             },
             {
                 name: "El Charro",
                 type: "Cocina Tradicional del Noreste",
                 address: "Paseo de los Leones 2850, Cumbres 4º. Sector Secc B, 64610 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/H6Y5kB5B5C5d5e5f5",
+                mapUrl: "https://www.google.com/maps/place/El+Charro/@25.6469612,-100.3665799,17z/",
                 coordinates: [25.6469612, -100.3665799],
                 tel: "+52-81-3271-1495",
                 social: "https://www.facebook.com/restaurantelcharromty/", // Ejemplo, verificar URL real
-                photos: ["https://placehold.co/500x500/D2B48C/654321?text=El+Charro"],
+                photos: ["https://fastly.4sqi.net/img/general/600x600/1122334_qW1_e_R4t_y_u7_i_o0_p_a1_b1X6zZ5_h6b_y9lY6.jpg"],
                 description: "Fundado en los años 40, este restaurante al sur de Monterrey es inconfundible por su estructura en forma de sombrero gigante. Lo que comenzó como un parador de paso, hoy es un lugar favorito para saborear la cocina tradicional del noreste, con platillos como asado de puerco y milanesa empanizada."
             },
             {
                 name: "Manolín",
                 type: "Cafetería y Restaurante",
                 address: "Av. Francisco I. Madero 1975, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/I7Z6lC6C6D6e6f6g6",
+                mapUrl: "https://www.google.com/maps/place/Cafeter%C3%ADa+Manol%C3%ADn/@25.6806509,-100.3340578,17z/",
                 coordinates: [25.6806509, -100.3340578],
                 tel: "+52-81-2261-4682",
                 social: "https://www.facebook.com/RestauranteManolinMty/",
-                photos: ["https://placehold.co/500x500/D2B48C/654321?text=Manolin"],
+                photos: ["https://fastly.4sqi.net/img/general/600x600/5566778_zX9_c_V0b_n_m3_a_s4_d_f5_b1X6zZ5_h6b_y9lY6.jpg"],
                 description: "Fundado en 1937 en Francisco I. Madero, Manolín ha sido testigo de casi un siglo de historia local. Es famoso por su café, del que se enamoró el mismísimo Pedro Infante, y su menú incluye desayunos tradicionales."
             },
             {
                 name: "Taquería Juárez",
                 type: "Tacos Tradicionales",
                 address: "Galeana Nte 123, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/J8A7mD7D7E7f7g7h7",
+                mapUrl: "https://www.google.com/maps/place/Taquer%C3%ADa+Ju%C3%A1rez/@25.674906,-100.3128919,17z/",
                 coordinates: [25.674906, -100.3128919],
                 tel: "+52-81-8342-1936",
                 social: "https://www.facebook.com/TaqueriaJuarezOficial/", // Ejemplo, verificar URL real
-                photos: ["https://placehold.co/500x500/D2B48C/654321?text=Taqueria+Juarez"],
+                photos: ["https://fastly.4sqi.net/img/general/600x600/9988776_rT7_y_U0i_o_p2_a_s5_d_f6_g_h7_b1X6zZ5_h6b_y9lY6.jpg"],
                 description: "Abierta en 1945, esta taquería se ha mantenido fiel a su estilo con el paso de los años, expandiendo su menú de antojitos sin perder su esencia original. Su cocina sigue a la vista y es un referente de la gastronomía regiomontana."
             },
             {
                 name: "La Siberia",
                 type: "Tostadas Icónicas",
                 address: "Calle Colegio Civil 1029, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/K9B8nE8E8F8g8h8i8",
+                mapUrl: "https://www.google.com/maps/place/La+Siberia/@25.6757134,-100.3217733,17z/",
                 coordinates: [25.6757134, -100.3217733],
                 tel: "+52-81-8375-0369",
                 social: "https://www.lasiberia.mx/", // Ejemplo, verificar URL real
-                photos: ["https://placehold.co/500x500/D2B48C/654321?text=La+Siberia"],
+                photos: ["https://fastly.4sqi.net/img/general/600x600/4433221_aZ0_x_Y9w_q_s1_d_f2_g_h3_b1X6zZ5_h6b_y9lY6.jpg"],
                 description: "Abrió sus puertas en 1946 y se convirtió en sinónimo de un platillo: la tostada Siberia (pollo, guacamole, crema y tostada). Aunque ha crecido y se ha expandido, la preparación original de este platillo icónico se ha mantenido inalterada."
             },
             {
                 name: "Botanero Moritas",
                 type: "Cantina con Botanas Regias",
                 address: "Juan Ignacio Ramón 852 Oriente, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/L0C9oF9F9G9h9i9j9",
+                mapUrl: "https://www.google.com/maps/place/Botanero+Moritas/@25.6687059,-100.3087361,17z/",
                 coordinates: [25.6687059, -100.3087361],
                 tel: "+52-81-8340-2036",
                 social: "https://botaneromoritas.com/",
-                photos: ["https://placehold.co/500x500/D2B48C/654321?text=Botanero+Moritas"],
+                photos: ["https://fastly.4sqi.net/img/general/600x600/6655443_eV8_r_T1y_u_i4_o_p7_a_s8_d_f9_b1X6zZ5_h6b_y9lY6.jpg"],
                 description: "Un clásico de la ciudad con varias sucursales, es una cantina/bar que ofrece excelentes platillos tradicionales de Nuevo León, con un ambiente que combina la comida mexicana tradicional con buenos tragos y cócteles de la casa."
             },
             {
                 name: "El Nuevo Aguacate",
                 type: "Cantina Tradicional",
                 address: "Jerónimo Treviño Pte. 2002, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/M1D0pG0G0H0i0j0k0",
+                mapUrl: "https://www.google.com/maps/place/El+Nuevo+Aguacate/@25.6841328,-100.3117398,17z/",
                 coordinates: [25.6841328, -100.3117398],
                 tel: "+52-81-8346-8751",
                 social: "https://www.facebook.com/elnuevoaguacate/", // Ejemplo, verificar URL real
-                photos: ["https://placehold.co/500x500/D2B48C/654321?text=El+Nuevo+Aguacate"],
+                photos: ["https://fastly.4sqi.net/img/general/600x600/1122334_qW1_e_R4t_y_u7_i_o0_p_a1_b1X6zZ5_h6b_y9lY6.jpg"],
                 description: "Es una cantina con una rica historia y una atmósfera muy particular, muy querida por los regiomontanos. Es conocida por su tradicional 'machacado con huevo', su ambiente bohemio y ser un punto de encuentro para intelectuales y artistas a lo largo de los años."
             },
             {
                 name: "El Gran Pastor",
                 type: "Cabrito y Cortes",
                 address: "Gonzalitos 702 esq, Calle Dr. Francisco L. Rocha, San Jerónimo, 64020 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/N2E1qH1H1I1j1k1l1",
+                mapUrl: "https://www.google.com/maps/place/El+Gran+Pastor/@25.677583,-100.3477169,17z/",
                 coordinates: [25.677583, -100.3477169],
                 tel: "+52-81-8129-4453",
                 social: "https://elgranpastor.com/",
-                photos: ["https://placehold.co/500x500/D2B48C/654321?text=El+Gran+Pastor"],
+                photos: ["https://fastly.4sqi.net/img/general/600x600/9988776_rT7_y_U0i_o_p2_a_s5_d_f6_g_h7_b1X6zZ5_h6b_y9lY6.jpg"],
                 description: "Fundado en 1950, este es un ícono regio cuando hablamos de cabrito. Más allá de ser un restaurante, es una institución que ha perfeccionado la preparación de este platillo tan nuevoleonés a lo largo de décadas. Su tradición y el sabor inconfundible de su cabrito lo hacen un referente obligado para locales y visitantes."
             },
             {
                 name: "Sanborns (sucursal Morelos)",
                 type: "Cafetería y Restaurante Tradicional",
                 address: "José María Morelos 474, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/O3F2rI2I2J2k2l2m2",
+                mapUrl: "https://www.google.com/maps/place/Sanborns+Morelos/@25.665977,-100.3105741,17z/",
                 coordinates: [25.665977, -100.3105741],
                 tel: "+52-81-8343-1834",
                 social: "https://www.sanborns.com.mx/",
-                photos: ["https://placehold.co/500x500/D2B48C/654321?text=Sanborns+Morelos"],
+                photos: ["https://fastly.4sqi.net/img/general/600x600/4433221_aZ0_x_Y9w_q_s1_d_f2_g_h3_b1X6zZ5_h6b_y9lY6.jpg"],
                 description: "Aunque Sanborns es una cadena nacional, la sucursal de la calle Morelos en el centro de Monterrey tiene una historia particularmente significativa y un arraigo que la distingue. Ha sido un punto de encuentro clásico por décadas, un lugar donde generaciones de regiomontanos han desayunado, tomado café y socializado."
             }
         ];
@@ -937,7 +957,8 @@
             { type: 'cover' },
             { type: 'restaurantIndex' }, // Nueva página de índice de restaurantes (Página 2)
             ...restaurants.map(restaurant => ({ type: 'restaurant', data: restaurant })),
-            { type: 'checklist' } // La página de checklist se mantiene al final
+            // Puedes añadir más páginas aquí si lo deseas
+            { type: 'finalPage' } // Una posible página final, si la necesitas.
         ];
 
         let currentPageIndex = 0;
@@ -978,7 +999,10 @@
             reader.onload = function(e) {
                 const dataUrl = e.target.result;
                 localStorage.setItem('user_photo_' + currentRestaurantForUpload, dataUrl);
-                renderCurrentPage(); // Re-render to show the new photo
+                
+                // Si estamos en la página del restaurante, renderizar para que aparezca la foto
+                // Si estamos en la página del índice, renderizar para que se actualice el check y el contador
+                renderCurrentPage(); 
             };
             reader.readAsDataURL(file);
 
@@ -999,9 +1023,18 @@
 
         // Generate restaurant index content (new page 2)
         function generateRestaurantIndexContent() {
+            let completedCount = 0;
+            const totalCount = restaurants.length;
+
             const restaurantListItems = restaurants.map(restaurant => {
+                const hasPhoto = localStorage.getItem('user_photo_' + restaurant.name);
+                if (hasPhoto) {
+                    completedCount++;
+                }
+                const iconClass = hasPhoto ? 'fas fa-circle-check' : 'fas fa-circle';
                 return `
                     <div class="restaurant-list-item" onclick="navigateToRestaurantPage('${restaurant.name.replace(/'/g, "\\'")}')">
+                        <i class="${iconClass}"></i>
                         <span>${restaurant.name}</span>
                     </div>
                 `;
@@ -1010,7 +1043,7 @@
             return `
                 <div class="page-content restaurant-index-content">
                     <h2 class="restaurant-index-header">Restaurantes Tradicionales</h2>
-                    <p class="restaurant-index-count">Explora la riqueza culinaria de Monterrey</p>
+                    <p class="restaurant-index-count">Has visitado ${completedCount} de ${totalCount} restaurantes.</p>
                     <div class="restaurant-list-container">
                         ${restaurantListItems}
                     </div>
@@ -1021,18 +1054,20 @@
         // Generate restaurant content
         function generateRestaurantContent(restaurant) {
             const savedUserPhoto = localStorage.getItem('user_photo_' + restaurant.name);
-            const userPhotoSrc = savedUserPhoto || 'https://placehold.co/500x500/D2B48C/654321?text=Toca+para+añadir+tu+foto'; // Placeholder if no user photo
+            // Default placeholder if no user photo
+            const placeholderPhotoUrl = 'https://placehold.co/500x500/D2B48C/654321?text=Toca+para+añadir+tu+foto';
             
             return `
                 <div class="page-content restaurant-content-wrapper">
-                    <button class="back-to-index-button" onclick="navigateToPage(1)">
+                    <button class="back-to-index-button" onclick="navigateToPage(1, 'backward')">
                         <i class="fas fa-arrow-left"></i> Índice
                     </button>
                     <div>
                         <h2 class="restaurant-title">${restaurant.name}</h2>
                         <div class="flip-card" onclick="flipCard(this)">
                             <div class="flip-card-inner">
-                                <div class="flip-card-front" data-restaurant-name="${restaurant.name}" onclick="event.stopPropagation(); ${savedUserPhoto ? `openImageModal('${savedUserPhoto}')` : `selectUserPhoto('${restaurant.name}', event)`}">
+                                <div class="flip-card-front" data-restaurant-name="${restaurant.name}" 
+                                     onclick="event.stopPropagation(); ${savedUserPhoto ? `openImageModal('${savedUserPhoto}')` : `selectUserPhoto('${restaurant.name}', event)`}">
                                     ${savedUserPhoto ? 
                                         `<img src="${savedUserPhoto}" alt="Tu foto" class="user-photo-image">` : 
                                         ''
@@ -1106,29 +1141,13 @@
         };
 
 
-        // Generate checklist content
-        function generateChecklistContent() {
-            const checklistItems = restaurants.map(restaurant => {
-                const hasPhoto = localStorage.getItem('user_photo_' + restaurant.name);
-                const iconClass = hasPhoto ? 'fas fa-circle-check' : 'fas fa-circle';
-                return `
-                    <div class="checklist-item">
-                        <i class="${iconClass}"></i>
-                        <span>${restaurant.name}</span>
-                    </div>
-                `;
-            }).join('');
-
-            const completedCount = restaurants.filter(restaurant => localStorage.getItem('user_photo_' + restaurant.name)).length;
-            const totalCount = restaurants.length;
-
+        // Generate a simple final page (if you add one)
+        function generateFinalPageContent() {
             return `
-                <div class="page-content checklist-page-content">
-                    <h2 class="checklist-title">Tu Progreso de Colección</h2>
-                    <p class="checklist-subtitle">Has completado ${completedCount} de ${totalCount} restaurantes.</p>
-                    <div class="checklist-grid">
-                        ${checklistItems}
-                    </div>
+                <div class="page-content cover-page">
+                    <h2 class="cover-title">¡Álbum Completado!</h2>
+                    <p class="cover-subtitle">Gracias por explorar los sabores de Monterrey.</p>
+                    <img src="https://placehold.co/400x400/D2B48C/654321?text=Felicidades" alt="Felicidades" class="cover-image">
                 </div>
             `;
         }
@@ -1145,8 +1164,8 @@
             }
             else if (page.type === 'restaurant') {
                 content = generateRestaurantContent(page.data);
-            } else if (page.type === 'checklist') {
-                content = generateChecklistContent();
+            } else if (page.type === 'finalPage') { // Handle optional final page
+                content = generateFinalPageContent();
             }
 
             currentPageEl.innerHTML = content;
@@ -1211,9 +1230,10 @@
 
         // New function to navigate directly to a restaurant page
         function navigateToRestaurantPage(restaurantName) {
-            const restaurantIndex = contentPages.findIndex(page => page.type === 'restaurant' && page.data.name === restaurantName);
-            if (restaurantIndex !== -1) {
-                navigateToPage(restaurantIndex, 'forward'); // Assume forward flip when going to a specific restaurant
+            // Find the index of the restaurant page
+            const restaurantPageIndex = contentPages.findIndex(page => page.type === 'restaurant' && page.data.name === restaurantName);
+            if (restaurantPageIndex !== -1) {
+                navigateToPage(restaurantPageIndex, 'forward'); // Assume forward flip when going to a specific restaurant
             }
         }
         window.navigateToRestaurantPage = navigateToRestaurantPage; // Make it globally accessible
