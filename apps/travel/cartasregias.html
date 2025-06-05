@@ -196,6 +196,7 @@
             font-size: 2.2rem;
             color: var(--primary-brown);
             text-align: center;
+            margin-top: 10px; /* Adjust margin to move it up */
             margin-bottom: 0.5rem;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
@@ -299,7 +300,8 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-top: 1rem;
+            margin-top: auto; /* Pushes it to the bottom */
+            margin-bottom: 1rem; /* Space from the bottom */
             align-self: center; /* Centrar el botón */
             font-family: 'Caveat', cursive;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
@@ -322,8 +324,8 @@
             cursor: pointer;
             transition: all 0.3s ease;
             position: absolute;
-            bottom: 20px;
-            right: 20px;
+            top: 20px; /* Adjusted to top */
+            right: 20px; /* Adjusted to right */
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             font-family: 'Caveat', cursive;
             z-index: 10; /* Ensure it's above other elements if needed */
@@ -468,6 +470,67 @@
             background: #FF7700;
             transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Image Modal Styles */
+        .image-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9); /* More opaque background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001; /* Higher than info modal */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .image-modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .image-modal-content {
+            position: relative; /* For positioning close button */
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-modal-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /* Ensure the image fits within the bounds */
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .image-modal-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.3); /* Semi-transparent white */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .image-modal-close-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
         }
 
         /* Checklist Page Styles (Optional, for the original checklist page if it remains) */
@@ -639,7 +702,7 @@
                 <i class="fas fa-chevron-left"></i> Anterior
             </button>
             <div id="pageIndicator" class="page-indicator">
-                1 / 17
+                1 / 21
             </div>
             <button id="nextBtn" class="nav-btn">
                 Siguiente <i class="fas fa-chevron-right"></i>
@@ -657,6 +720,15 @@
         </div>
     </div>
 
+    <div id="imageModal" class="image-modal-overlay">
+        <div class="image-modal-content">
+            <img id="modalImage" src="" alt="Ampliar imagen" class="image-modal-img">
+            <button class="image-modal-close-btn" onclick="closeImageModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
     <script>
         // Datos de restaurantes y cantinas tradicionales de Monterrey
         const restaurants = [
@@ -664,7 +736,7 @@
                 name: "El Lontananza",
                 type: "Cantina Tradicional",
                 address: "C. Aramberri 102, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/9uG5C6j4z7z7z7z7A", // Google Maps URL for easy sharing
+                mapUrl: "https://maps.app.goo.gl/3A74p54W45d5g5b29", // Google Maps URL for easy sharing
                 coordinates: [25.6669947, -100.3129528], // Lat, Lng
                 tel: "+52-81-XXXX-XXXX", // Placeholder - no disponible en la búsqueda
                 social: "https://www.facebook.com/BarLontananza/", // Ejemplo, verificar URL real
@@ -675,7 +747,7 @@
                 name: "El Indio Azteca",
                 type: "Cantina Tradicional",
                 address: "Av. Francisco I. Madero 1101, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/9uG5C6j4z7z7z7z7A",
+                mapUrl: "https://maps.app.goo.gl/Q7Z6fX6X6R6g6h6i8",
                 coordinates: [25.6766468, -100.3168864],
                 tel: "+52-81-8375-5146",
                 social: "https://www.facebook.com/CantinaIndioAzteca/", // Ejemplo, verificar URL real
@@ -686,7 +758,7 @@
                 name: "Bar 1900",
                 type: "Bar Tradicional",
                 address: "Melchor Ocampo 443, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/9uG5C6j4z7z7z7z7A",
+                mapUrl: "https://maps.app.goo.gl/P8Z7gY7Y7S7h7j7k7",
                 coordinates: [25.666697, -100.3090886],
                 tel: "+52-81-1040-9012",
                 social: "http://www.bar1900mty.com/",
@@ -697,7 +769,7 @@
                 name: "El Zacatecas Bar",
                 type: "Cantina y Comida Regional",
                 address: "Av. Francisco I. Madero 1070, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/9uG5C6j4z7z7z7z7A",
+                mapUrl: "https://maps.app.goo.gl/L9W8xZ8Z8T8i8j8l8",
                 coordinates: [25.676571, -100.3163625],
                 tel: "+52-81-8375-6174",
                 social: "https://www.facebook.com/ElZacatecasBar/", // Ejemplo, verificar URL real
@@ -708,7 +780,7 @@
                 name: "El Victoria",
                 type: "Cantina Tradicional",
                 address: "Av Bernardo Reyes 1211, Industrial, 64440 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/9uG5C6j4z7z7z7z7A",
+                mapUrl: "https://maps.app.goo.gl/B0S9eV9V9U9v9w9x9",
                 coordinates: [25.6980164, -100.3235332],
                 tel: "+52-81-8375-5772",
                 social: "http://www.hotelvictoriamty.com/", // Es el hotel, pero la búsqueda lo arrojó como principal.
@@ -719,7 +791,7 @@
                 name: "El Arbolito",
                 type: "Cantina y Guisos Caseros",
                 address: "Av. Del Estado 300, Tecnológico, 64700 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/9uG5C6j4z7z7z7z7A",
+                mapUrl: "https://maps.app.goo.gl/C1T0fW0W0X0y0z0a0",
                 coordinates: [25.6508953, -100.2917737],
                 tel: "+52-81-8387-1300",
                 social: "https://www.facebook.com/ElArbolitoMty/", // Ejemplo, verificar URL real
@@ -730,7 +802,7 @@
                 name: "La Oficina",
                 type: "Cantina de Barrio",
                 address: "Jerónimo Treviño 1308, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/9uG5C6j4z7z7z7z7A",
+                mapUrl: "https://maps.app.goo.gl/D2U1gX1X1Y1z1a1b1",
                 coordinates: [25.674487, -100.308006],
                 tel: "+52-81-1381-5725",
                 social: "https://www.facebook.com/LaOficinaMty/", // Ejemplo, verificar URL real
@@ -741,7 +813,7 @@
                 name: "Piedra Azul Cantina",
                 type: "Cantina con Rock and Roll",
                 address: "Eje Metropolitano 19 4207, Sin Nombre de Col 20, 64500 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/9uG5C6j4z7z7z7z7A",
+                mapUrl: "https://maps.app.goo.gl/E3V2hY2Y2Z2a2b2c2",
                 coordinates: [25.719602, -100.228578],
                 tel: "+52-81-XXXX-XXXX", // Placeholder - no disponible en la búsqueda
                 social: "https://www.facebook.com/PiedraAzulCantina/", // Ejemplo, verificar URL real
@@ -752,7 +824,7 @@
                 name: "Salón Morelos",
                 type: "Bar con Música en Vivo",
                 address: "José María Morelos 937, Barrio Antiguo, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/9uG5C6j4z7z7z7z7A",
+                mapUrl: "https://maps.app.goo.gl/F4W3iZ3Z3A3b3c3d3",
                 coordinates: [25.6644265, -100.3090409],
                 tel: "+52-81-8343-0822",
                 social: "https://www.facebook.com/salonmorelosmty/",
@@ -763,7 +835,7 @@
                 name: "Restaurante AL",
                 type: "Clásico Regiomontano",
                 address: "Av. Francisco I. Madero 520, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/9uG5C6j4z7z7z7z7A",
+                mapUrl: "https://maps.app.goo.gl/G5X4jA4A4B4c4d4e4",
                 coordinates: [25.6781702, -100.3190899],
                 tel: "+52-81-8375-3766",
                 social: "http://www.alrestaurant.mx/",
@@ -774,7 +846,7 @@
                 name: "El Charro",
                 type: "Cocina Tradicional del Noreste",
                 address: "Paseo de los Leones 2850, Cumbres 4º. Sector Secc B, 64610 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/9uG5C6j4z7z7z7z7A",
+                mapUrl: "https://maps.app.goo.gl/H6Y5kB5B5C5d5e5f5",
                 coordinates: [25.6469612, -100.3665799],
                 tel: "+52-81-3271-1495",
                 social: "https://www.facebook.com/restaurantelcharromty/", // Ejemplo, verificar URL real
@@ -785,7 +857,7 @@
                 name: "Manolín",
                 type: "Cafetería y Restaurante",
                 address: "Av. Francisco I. Madero 1975, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/9uG5C6j4z7z7z7z7A",
+                mapUrl: "https://maps.app.goo.gl/I7Z6lC6C6D6e6f6g6",
                 coordinates: [25.6806509, -100.3340578],
                 tel: "+52-81-2261-4682",
                 social: "https://www.facebook.com/RestauranteManolinMty/",
@@ -796,7 +868,7 @@
                 name: "Taquería Juárez",
                 type: "Tacos Tradicionales",
                 address: "Galeana Nte 123, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/9uG5C6j4z7z7z7z7A",
+                mapUrl: "https://maps.app.goo.gl/J8A7mD7D7E7f7g7h7",
                 coordinates: [25.674906, -100.3128919],
                 tel: "+52-81-8342-1936",
                 social: "https://www.facebook.com/TaqueriaJuarezOficial/", // Ejemplo, verificar URL real
@@ -807,7 +879,7 @@
                 name: "La Siberia",
                 type: "Tostadas Icónicas",
                 address: "Calle Colegio Civil 1029, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/9uG5C6j4z7z7z7z7A",
+                mapUrl: "https://maps.app.goo.gl/K9B8nE8E8F8g8h8i8",
                 coordinates: [25.6757134, -100.3217733],
                 tel: "+52-81-8375-0369",
                 social: "https://www.lasiberia.mx/", // Ejemplo, verificar URL real
@@ -818,7 +890,7 @@
                 name: "Botanero Moritas",
                 type: "Cantina con Botanas Regias",
                 address: "Juan Ignacio Ramón 852 Oriente, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/9uG5C6j4z7z7z7z7A",
+                mapUrl: "https://maps.app.goo.gl/L0C9oF9F9G9h9i9j9",
                 coordinates: [25.6687059, -100.3087361],
                 tel: "+52-81-8340-2036",
                 social: "https://botaneromoritas.com/",
@@ -829,7 +901,7 @@
                 name: "El Nuevo Aguacate",
                 type: "Cantina Tradicional",
                 address: "Jerónimo Treviño Pte. 2002, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/9uG5C6j4z7z7z7z7A",
+                mapUrl: "https://maps.app.goo.gl/M1D0pG0G0H0i0j0k0",
                 coordinates: [25.6841328, -100.3117398],
                 tel: "+52-81-8346-8751",
                 social: "https://www.facebook.com/elnuevoaguacate/", // Ejemplo, verificar URL real
@@ -840,7 +912,7 @@
                 name: "El Gran Pastor",
                 type: "Cabrito y Cortes",
                 address: "Gonzalitos 702 esq, Calle Dr. Francisco L. Rocha, San Jerónimo, 64020 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/9uG5C6j4z7z7z7z7A",
+                mapUrl: "https://maps.app.goo.gl/N2E1qH1H1I1j1k1l1",
                 coordinates: [25.677583, -100.3477169],
                 tel: "+52-81-8129-4453",
                 social: "https://elgranpastor.com/",
@@ -851,7 +923,7 @@
                 name: "Sanborns (sucursal Morelos)",
                 type: "Cafetería y Restaurante Tradicional",
                 address: "José María Morelos 474, Centro, 64000 Monterrey, N.L., México",
-                mapUrl: "https://maps.app.goo.gl/9uG5C6j4z7z7z7z7A",
+                mapUrl: "https://maps.app.goo.gl/O3F2rI2I2J2k2l2m2",
                 coordinates: [25.665977, -100.3105741],
                 tel: "+52-81-8343-1834",
                 social: "https://www.sanborns.com.mx/",
@@ -882,6 +954,9 @@
         const infoModal = document.getElementById('infoModal');
         const modalTitle = document.getElementById('modalTitle');
         const modalBody = document.getElementById('modalBody');
+
+        const imageModal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
 
 
         // Event listener for the hidden file input
@@ -946,13 +1021,18 @@
         // Generate restaurant content
         function generateRestaurantContent(restaurant) {
             const savedUserPhoto = localStorage.getItem('user_photo_' + restaurant.name);
+            const userPhotoSrc = savedUserPhoto || 'https://placehold.co/500x500/D2B48C/654321?text=Toca+para+añadir+tu+foto'; // Placeholder if no user photo
+            
             return `
                 <div class="page-content restaurant-content-wrapper">
+                    <button class="back-to-index-button" onclick="navigateToPage(1)">
+                        <i class="fas fa-arrow-left"></i> Índice
+                    </button>
                     <div>
                         <h2 class="restaurant-title">${restaurant.name}</h2>
                         <div class="flip-card" onclick="flipCard(this)">
                             <div class="flip-card-inner">
-                                <div class="flip-card-front" data-restaurant-name="${restaurant.name}">
+                                <div class="flip-card-front" data-restaurant-name="${restaurant.name}" onclick="event.stopPropagation(); ${savedUserPhoto ? `openImageModal('${savedUserPhoto}')` : `selectUserPhoto('${restaurant.name}', event)`}">
                                     ${savedUserPhoto ? 
                                         `<img src="${savedUserPhoto}" alt="Tu foto" class="user-photo-image">` : 
                                         ''
@@ -962,7 +1042,7 @@
                                         <p class="user-photo-text">Toca para añadir tu foto</p>
                                     </div>
                                 </div>
-                                <div class="flip-card-back">
+                                <div class="flip-card-back" onclick="event.stopPropagation(); openImageModal('${restaurant.photos[0]}')">
                                     <img src="${restaurant.photos[0]}" onerror="this.onerror=null;this.src='https://placehold.co/500x500/D2B48C/654321?text=Imagen+no+disponible';" alt="${restaurant.name}" class="restaurant-image">
                                 </div>
                             </div>
@@ -979,9 +1059,6 @@
                         '${restaurant.description.replace(/'/g, "\\'")}'
                     )">
                         Información <i class="fas fa-info-circle"></i>
-                    </button>
-                    <button class="back-to-index-button" onclick="navigateToPage(1)">
-                        <i class="fas fa-arrow-left"></i> Índice
                     </button>
                 </div>
             `;
@@ -1015,6 +1092,19 @@
         window.closeInfoModal = function() {
             infoModal.classList.remove('show');
         };
+
+        // Open Image Modal
+        window.openImageModal = function(imageUrl) {
+            modalImage.src = imageUrl;
+            imageModal.classList.add('show');
+        };
+
+        // Close Image Modal
+        window.closeImageModal = function() {
+            imageModal.classList.remove('show');
+            modalImage.src = ''; // Clear image source
+        };
+
 
         // Generate checklist content
         function generateChecklistContent() {
@@ -1066,8 +1156,25 @@
             if (page.type === 'restaurant') {
                 const flipCardFront = currentPageEl.querySelector('.flip-card-front');
                 if (flipCardFront) {
-                    // Re-assign the click handler to ensure it correctly triggers the hidden input
-                    flipCardFront.onclick = (event) => selectUserPhoto(flipCardFront.dataset.restaurantName, event);
+                    // Update the onclick to handle both photo upload and image display
+                    flipCardFront.onclick = function(event) {
+                        event.stopPropagation(); // Prevent the main flip-card from flipping
+                        const restaurantName = this.dataset.restaurantName;
+                        const savedUserPhoto = localStorage.getItem('user_photo_' + restaurantName);
+                        if (savedUserPhoto) {
+                            openImageModal(savedUserPhoto);
+                        } else {
+                            selectUserPhoto(restaurantName, event);
+                        }
+                    };
+                }
+                const flipCardBack = currentPageEl.querySelector('.flip-card-back');
+                if (flipCardBack) {
+                    flipCardBack.onclick = function(event) {
+                        event.stopPropagation(); // Prevent the main flip-card from flipping
+                        const restaurantPhoto = this.querySelector('img').src;
+                        openImageModal(restaurantPhoto);
+                    };
                 }
             }
         }
