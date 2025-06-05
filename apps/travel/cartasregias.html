@@ -9,11 +9,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-brown: #8B4513;
-            --light-brown: #D2B48C;
-            --cream: #F5F5DC;
-            --dark-brown: #654321;
-            --orange: #FF8C00;
+            --primary-brown: #8B4513; /* SaddleBrown */
+            --light-brown: #D2B48C; /* Tan */
+            --cream: #F5F5DC; /* Beige */
+            --dark-brown: #654321; /* DarkBrown (custom) */
+            --orange: #FF8C00; /* DarkOrange */
         }
 
         * {
@@ -24,20 +24,24 @@
             font-family: 'Caveat', cursive;
             background: linear-gradient(45deg, var(--light-brown), var(--cream));
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             min-height: 100vh;
             overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .album-container {
-            max-width: 1200px;
-            margin: 0 auto;
+            max-width: 450px;
+            width: 100%;
             background: var(--primary-brown);
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             border: 8px solid var(--dark-brown);
-            height: calc(100vh - 40px);
-            min-height: 600px;
+            height: calc(100vh - 20px);
+            max-height: 800px;
+            min-height: 550px;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -50,9 +54,11 @@
             perspective: 1200px;
             overflow: hidden;
             background: var(--cream);
-            margin: 20px;
+            margin: 15px;
             border-radius: 15px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
         }
 
         .page {
@@ -60,13 +66,12 @@
             width: 100%;
             height: 100%;
             background: var(--cream);
-            border: 2px solid var(--light-brown);
             border-radius: 10px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
             display: flex;
             transform-style: preserve-3d;
             backface-visibility: hidden;
             transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+            overflow: hidden;
         }
 
         .page.flipping-forward {
@@ -79,562 +84,325 @@
 
         .page-content {
             flex: 1;
-            padding: 30px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             height: 100%;
-            overflow: hidden; /* Important for page structure */
+            overflow: hidden;
         }
 
-        .page-left, .page-right {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 1rem;
-        }
-
-        /* Portada */
+        /* Portada Styles */
         .cover-page {
             justify-content: center;
             align-items: center;
             text-align: center;
             background: linear-gradient(135deg, var(--orange), var(--primary-brown));
             color: white;
+            border-radius: inherit;
         }
 
         .cover-title {
             font-family: 'Permanent Marker', cursive;
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
-            line-height: 1.1;
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
         .cover-subtitle {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 600;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             opacity: 0.9;
         }
 
         .cover-image {
-            width: 200px;
-            height: 200px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             object-fit: cover;
-            border: 6px solid white;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 4px solid white;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
 
         /* Restaurant Index Page Styles */
         .restaurant-index-content {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
             text-align: center;
         }
-
         .restaurant-index-header {
             font-family: 'Permanent Marker', cursive;
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: var(--primary-brown);
             margin-bottom: 0.5rem;
         }
-
         .restaurant-index-count {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             color: var(--dark-brown);
             margin-bottom: 1rem;
             font-weight: 600;
         }
-
         .restaurant-list-container {
             flex: 1;
             overflow-y: auto;
-            padding-right: 10px;
+            padding-right: 8px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            padding: 10px;
+            gap: 6px;
+            padding: 8px;
         }
-
-        .restaurant-list-container::-webkit-scrollbar {
-            width: 8px;
-        }
-        .restaurant-list-container::-webkit-scrollbar-track {
-            background: var(--light-brown);
-            border-radius: 4px;
-        }
-        .restaurant-list-container::-webkit-scrollbar-thumb {
-            background: var(--primary-brown);
-            border-radius: 4px;
-        }
+        .restaurant-list-container::-webkit-scrollbar { width: 6px; }
+        .restaurant-list-container::-webkit-scrollbar-track { background: var(--light-brown); border-radius: 3px; }
+        .restaurant-list-container::-webkit-scrollbar-thumb { background: var(--primary-brown); border-radius: 3px; }
 
         .restaurant-list-item {
             display: flex;
             align-items: center;
             background: var(--light-brown);
-            padding: 8px 15px;
+            padding: 8px 12px;
             border-radius: 8px;
-            border: 2px solid var(--primary-brown);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            font-size: 1.2rem;
+            border: 1px solid var(--primary-brown);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            font-size: 1.1rem;
             color: var(--dark-brown);
             font-weight: 600;
             cursor: pointer;
             transition: background-color 0.2s ease;
             text-align: left;
-            gap: 10px;
+            gap: 8px;
         }
-        .restaurant-list-item i {
-            font-size: 1.3rem;
-            flex-shrink: 0;
-        }
-        .restaurant-list-item .fa-circle-check {
-            color: #28a745;
-        }
-        .restaurant-list-item .fa-circle { /* Should be far for regular circle */
-            color: #6c757d;
-        }
+        .restaurant-list-item i { font-size: 1.1rem; flex-shrink: 0; }
+        .restaurant-list-item .fa-circle-check { color: #28a745; }
+        .restaurant-list-item .fa-circle { color: #6c757d; }
+        .restaurant-list-item:hover { background-color: var(--cream); }
 
-
-        .restaurant-list-item:hover {
-            background-color: var(--cream);
-        }
-
-        /* Restaurante */
+        /* Restaurant Page Specific Styles */
         .restaurant-content-wrapper {
             display: flex;
             flex-direction: column;
-            align-items: stretch;
-            height: 100%;
-            position: relative;
-            overflow-y: auto; /* Allow vertical scrolling if content overflows */
-        }
-         .restaurant-content-wrapper::-webkit-scrollbar {
-            width: 8px;
-        }
-        .restaurant-content-wrapper::-webkit-scrollbar-track {
-            background: var(--light-brown);
-            border-radius: 4px;
-        }
-        .restaurant-content-wrapper::-webkit-scrollbar-thumb {
-            background: var(--primary-brown);
-            border-radius: 4px;
-        }
-
-
-        .restaurant-title {
-            font-family: 'Permanent Marker', cursive;
-            font-size: 2.2rem;
-            color: var(--primary-brown);
-            text-align: center;
-            margin-top: 10px;
-            margin-bottom: 0.5rem; /* Reduced slightly */
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-            padding-top: 10px; /* Add padding if back button is very close */
-        }
-
-        .flip-card {
-            flex-shrink: 0;
-            width: 100%;
-            height: 420px; /* Increased height */
-            perspective: 1000px;
-            margin-bottom: 1rem;
-            cursor: pointer;
-        }
-
-        .flip-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-
-        .flip-card.flipped .flip-card-inner {
-            transform: rotateY(180deg);
-        }
-
-        .flip-card-front, .flip-card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 15px;
-            border: 4px solid var(--primary-brown);
-            display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            height: 100%;
+            padding: 20px 10px 15px 10px;
             overflow: hidden;
         }
 
-        .flip-card-back {
-            transform: rotateY(180deg);
+        .restaurant-title {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 2rem;
+            color: var(--primary-brown);
+            text-align: center;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+            margin-top: 10px;
         }
 
-        .flip-card-front {
-            background: linear-gradient(135deg, var(--light-brown), var(--cream));
-            gap: 1rem;
+        .photo-display-area {
+            flex-grow: 1;
+            min-height: 0;
+            width: 90%;
+            max-width: 350px;
+            background-color: var(--light-brown);
+            border: 3px solid var(--primary-brown);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            margin-bottom: 15px;
         }
 
-        .user-photo-image { /* Applies to both user uploaded and official restaurant photos */
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Ensures the image covers the card, might crop */
-            position: absolute;
-            top: 0;
-            left: 0;
+        .photo-display-area img.user-photo-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
         }
-
+        
         .user-photo-placeholder-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(210,180,140,0.8), rgba(245,245,220,0.8));
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(210,180,140,0.3);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: var(--primary-brown);
-            opacity: 0.9;
+            color: var(--dark-brown);
             pointer-events: none;
         }
+        .user-photo-placeholder-icon { font-size: 3rem; margin-bottom: 0.3rem; }
+        .user-photo-text { font-size: 1rem; font-weight: 600; text-align: center; }
+        .user-photo-placeholder-overlay.hidden { display: none; }
 
-        .user-photo-placeholder-overlay.hidden {
-            display: none;
-        }
-
-        .user-photo-placeholder-icon {
-            font-size: 4rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .user-photo-text {
-            font-size: 1.2rem;
-            font-weight: 600;
-            text-align: center;
-        }
 
         .info-button {
             background: var(--orange);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 1rem;
-            font-weight: 600;
+            padding: 12px 30px;
+            border-radius: 9999px;
+            font-size: 1.1rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: auto; 
-            margin-bottom: 1rem;
-            align-self: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
             font-family: 'Caveat', cursive;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            flex-shrink: 0; /* Prevent button from shrinking if content above is too tall */
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-
         .info-button:hover {
-            background: #FF7700;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-        }
-
-        .back-to-index-button {
-            background: var(--dark-brown);
-            color: var(--cream);
-            border: none;
-            padding: 8px 15px;
-            border-radius: 15px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: absolute;
-            top: 15px; /* Adjusted slightly for better spacing from edge if page padding is small */
-            right: 15px;/* Adjusted slightly */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            font-family: 'Caveat', cursive;
-            z-index: 10;
-        }
-
-        .back-to-index-button:hover {
-            background: #4A3522;
+            background: #E67E00;
             transform: translateY(-1px);
-            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
         /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .modal-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
             z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
+        .modal-overlay.show { opacity: 1; visibility: visible; }
 
-        .modal-overlay.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            background: var(--cream);
-            padding: 30px;
-            border-radius: 15px;
+        .modal-content { /* For Info Modal */
+            background: var(--cream); padding: 25px; border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            max-width: 500px;
-            width: 90%;
-            position: relative;
-            transform: translateY(-20px);
-            transition: transform 0.3s ease;
-            border: 4px solid var(--primary-brown);
-            font-family: 'Caveat', cursive;
-            color: var(--dark-brown);
-            text-align: justify;
+            max-width: 90%; width: 380px;
+            position: relative; transform: translateY(-20px); transition: transform 0.3s ease;
+            border: 3px solid var(--primary-brown);
+            font-family: 'Caveat', cursive; color: var(--dark-brown);
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - 40px); 
         }
-
-        .modal-overlay.show .modal-content {
-            transform: translateY(0);
-        }
-
+        .modal-overlay.show .modal-content { transform: translateY(0); }
         .modal-header {
-            font-family: 'Permanent Marker', cursive;
-            font-size: 1.8rem;
-            color: var(--primary-brown);
-            margin-bottom: 15px;
-            text-align: center;
+            font-family: 'Permanent Marker', cursive; font-size: 1.6rem;
+            color: var(--primary-brown); margin-bottom: 15px; text-align: center;
+            flex-shrink: 0;
         }
-
         .modal-body {
-            font-size: 1.2rem;
-            line-height: 1.5;
-            max-height: 300px;
-            overflow-y: auto;
-            margin-bottom: 20px;
-            padding-right: 10px;
+            font-size: 1.1rem; line-height: 1.4; 
+            overflow-y: auto; margin-bottom: 15px; padding-right: 8px; text-align: justify;
+            flex-grow: 1;
         }
-
-        .modal-body::-webkit-scrollbar {
-            width: 8px;
-        }
-        .modal-body::-webkit-scrollbar-track {
-            background: var(--light-brown);
-            border-radius: 4px;
-        }
-        .modal-body::-webkit-scrollbar-thumb {
-            background: var(--primary-brown);
-            border-radius: 4px;
-        }
-
-        .modal-info-details {
-            font-size: 1.1rem;
-            color: #555;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-        .modal-info-details a {
-            color: var(--dark-brown); /* Make links more visible */
-            text-decoration: underline;
-            transition: color 0.2s ease;
-        }
-        .modal-info-details a:hover {
-            color: var(--primary-brown);
-        }
-
-        .modal-social-icons-container {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        .modal-social-icon {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: var(--primary-brown);
-            color: white;
-            text-decoration: none;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-        .modal-social-icon:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-        }
-
-
-        .modal-close-btn {
-            background: var(--orange);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            font-family: 'Caveat', cursive;
-            display: block;
-            margin: 0 auto;
-        }
-
-        .modal-close-btn:hover {
-            background: #FF7700;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-        }
-
-        /* Image Modal Styles */
-        .image-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .modal-body::-webkit-scrollbar { width: 6px; }
+        .modal-body::-webkit-scrollbar-track { background: var(--light-brown); border-radius: 3px; }
+        .modal-body::-webkit-scrollbar-thumb { background: var(--primary-brown); border-radius: 3px; }
+        
+        .modal-official-photo {
             width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1001;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 2px solid var(--light-brown);
         }
 
-        .image-modal-overlay.show {
-            opacity: 1;
-            visibility: visible;
+        .modal-info-details { font-size: 1rem; color: var(--dark-brown); text-align: left; margin-bottom: 0.8rem; }
+        .modal-info-details strong { color: var(--primary-brown); }
+        .modal-info-details a { color: var(--orange); text-decoration: underline; }
+        .modal-info-details a:hover { color: var(--primary-brown); }
+        .modal-social-icons-container { display: flex; justify-content: center; gap: 1rem; margin-top: 1rem; margin-bottom: 0.5rem;}
+        .modal-social-icon {
+            display: flex; align-items: center; justify-content: center;
+            width: 40px; height: 40px; border-radius: 50%;
+            background: var(--primary-brown); color: white; text-decoration: none;
+            font-size: 1rem; transition: all 0.2s ease; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
+        .modal-social-icon:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        .modal-close-btn {
+            background: var(--orange); color: white; border: none;
+            padding: 10px 25px; border-radius: 9999px; font-size: 1rem; font-weight: 600;
+            cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            font-family: 'Caveat', cursive; display: block; margin: 10px auto 0;
+            flex-shrink: 0;
+        }
+        .modal-close-btn:hover { background: #E67E00; transform: translateY(-1px); }
 
+        /* Image Modal - Styles for Robustness */
+        .image-modal-overlay { 
+            z-index: 1001; 
+            background: rgba(0, 0, 0, 0.9); /* Darker background */
+        }
         .image-modal-content {
             position: relative;
-            max-width: 90%;
-            max-height: 90%;
-            display: flex;
+            background-color: rgba(255, 255, 255, 0.95); /* Visible background for the content box */
+            padding: 20px; /* Padding around the image within this box */
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            max-width: 90vw; 
+            max-height: 90vh;
+            display: flex; 
             justify-content: center;
             align-items: center;
+            overflow: hidden; /* CRITICAL: Prevents image from visually overflowing this box */
         }
-
         .image-modal-img {
-            max-width: 100%;
-            max-height: 100%;
+            display: block; /* Remove extra space under image */
+            max-width: 100%; /* Image scales down to fit padding */
+            max-height: 100%; /* Image scales down to fit padding */
             object-fit: contain;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border-radius: 6px; /* Optional rounding for the image itself */
         }
-
         .image-modal-close-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(255, 255, 255, 0.3);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: background-color 0.3s ease;
+            position: absolute; 
+            top: 5px; /* Relative to .image-modal-content padding edge */
+            right: 5px; /* Relative to .image-modal-content padding edge */
+            background: rgba(0,0,0,0.6); /* Darker for visibility */
+            color: white; border: none;
+            border-radius: 50%; width: 35px; height: 35px; font-size: 1.2rem;
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            transition: background-color 0.2s ease;
+            z-index: 10; 
         }
+        .image-modal-close-btn:hover { background: rgba(0,0,0,0.8); }
 
-        .image-modal-close-btn:hover {
-            background: rgba(255, 255, 255, 0.5);
-        }
 
-        /* Responsive */
-        @media (min-width: 900px) { 
-            .page-content {
-                /* Removed flex-direction:row for restaurant page, handled by wrapper */
-                gap: 2rem;
-            }
-            .cover-title { font-size: 4rem; }
-            .restaurant-content-wrapper {
-                 /* justify-content: space-between; /* This might not be ideal with overflow-y: auto */
-            }
-        }
-
-        @media (max-width: 899px) { 
-            body { padding: 10px; }
-            .album-container { height: calc(100vh - 20px); }
-            .page-content { padding: 20px; }
-            .cover-title { font-size: 2.5rem; }
-            .restaurant-title { font-size: 1.8rem; }
-            .navigation { padding: 15px 20px; }
-        }
-
-        @media (max-width: 600px) { 
-            .cover-title { font-size: 2rem; }
-            .cover-subtitle { font-size: 1.4rem; }
-            .restaurant-title { font-size: 1.5rem; }
-            .flip-card { height: 300px; } /* Adjust card height for smaller screens */
-        }
-
-        /* Navigation grid layout */
+        /* Navigation bar at the bottom */
         .navigation {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            align-items: center;
-            padding: 20px 40px;
+            display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+            padding: 10px 15px;
             background: var(--dark-brown);
             border-radius: 0 0 15px 15px;
             width: 100%;
+            flex-shrink: 0;
         }
-
         .nav-btn:first-child { justify-self: start; }
-        .page-indicator { justify-self: center; }
-        .nav-btn:last-child { justify-self: end; }
-
-        .nav-btn, .page-indicator {
-            font-size: 1.3rem;
+        .page-indicator { 
+            justify-self: center; 
+            padding: 5px 0;
+        }
+        .page-indicator.index-link {
+            cursor: pointer;
             color: var(--cream);
         }
-        .nav-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 5px 10px;
-            transition: color 0.2s ease;
+        .page-indicator.index-link:hover {
+            text-decoration: underline;
+            color: var(--orange);
         }
+
+        .nav-btn:last-child { justify-self: end; }
+        .nav-btn, .page-indicator { font-size: 1.1rem; color: var(--cream); }
+        .nav-btn { background: none; border: none; cursor: pointer; padding: 5px 8px; transition: color 0.2s ease; }
         .nav-btn:hover:not(:disabled) { color: var(--orange); }
-        .nav-btn:disabled {
-            color: #a0a0a0;
-            cursor: not-allowed;
-        }
+        .nav-btn:disabled { color: #a0a0a0a0; cursor: not-allowed; }
 
     </style>
 </head>
 <body>
     <div class="album-container">
         <div class="album-book-wrapper">
-            <div id="currentPage" class="page"></div>
+            <div id="currentPage" class="page">
+                <!-- Page content will be injected here -->
+            </div>
         </div>
+
         <div class="navigation">
             <button id="prevBtn" class="nav-btn">
                 <i class="fas fa-chevron-left"></i> Anterior
@@ -646,7 +414,7 @@
         </div>
     </div>
 
-    <input type="file" id="userPhotoInput" accept="image/*" class="hidden" style="display:none;">
+    <input type="file" id="userPhotoInput" accept="image/*" style="display:none;">
 
     <div id="infoModal" class="modal-overlay">
         <div class="modal-content">
@@ -658,7 +426,8 @@
 
     <div id="imageModal" class="image-modal-overlay">
         <div class="image-modal-content">
-            <img id="modalImage" src="" alt="Ampliar imagen" class="image-modal-img">
+            <!-- Added onerror handler -->
+            <img id="modalImage" src="" alt="Ampliar imagen" class="image-modal-img" onerror="this.style.display='none'; console.error('Error al cargar imagen en modal:', this.src);">
             <button class="image-modal-close-btn" onclick="closeImageModal()">
                 <i class="fas fa-times"></i>
             </button>
@@ -666,62 +435,25 @@
     </div>
 
     <script>
-        // Datos de restaurantes (assuming this data remains unchanged from your original)
         const restaurants = [
-            {
-                name: "El Lontananza", type: "Cantina Tradicional", address: "C. Aramberri 102, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Bar+El+Lontananza/@25.6669947,-100.3129528,17z/", coordinates: [25.6669947, -100.3129528], tel: "+52-81-8344-0100", social: "https://www.facebook.com/BarLontananza/", photos: ["https://fastly.4sqi.net/img/general/600x600/7989917_K4eBwF9-d7b_u_W8k_h_N5_b1X6zZ5_h6b_y9lY6.jpg"], description: "Considerada por muchos como la cantina más antigua de Monterrey, con registros que la sitúan desde 1910, o incluso finales del Siglo XIX. Ha sido testigo de casi un siglo de historia regiomontana y se dice que fue visitada por figuras como Fidel Castro y 'Mantequilla' Nápoles. Ofrece un ambiente tranquilo, botanas caseras y cerveza fría."
-            },
-            {
-                name: "El Indio Azteca", type: "Cantina Tradicional", address: "Av. Francisco I. Madero 1101, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Cantina+El+Indio+Azteca/@25.6766468,-100.3168864,17z/", coordinates: [25.6766468, -100.3168864], tel: "+52-81-8375-5146", social: "https://www.facebook.com/CantinaIndioAzteca/", photos: ["https://fastly.4sqi.net/img/general/600x600/5086558_Zg0X_sHk7bFpW2j9P7w9D8y_s_N5_b1X6zZ5_h6b_y9lY6.jpg"], description: "Fundada alrededor de 1920, es otra de las cantinas con más de 100 años de historia en el centro de Monterrey. Aunque tradicionalmente era solo para hombres, ha evolucionado para permitir la entrada de mujeres."
-            },
-            {
-                name: "Bar 1900", type: "Bar Tradicional", address: "Melchor Ocampo 443, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Bar+1900/@25.666697,-100.3090886,17z/", coordinates: [25.666697, -100.3090886], tel: "+52-81-1040-9012", social: "http://www.bar1900mty.com/", photos: ["https://fastly.4sqi.net/img/general/600x600/6249565_tXk_U_M2rP9w1j2y_h_N5_b1X6zZ5_h6b_y9lY6.jpg"], description: "Su nombre indica su antigüedad, antecediendo al año 1900. Ubicado en el Hotel Ancira, se cuenta la leyenda de que fue visitada por Francisco Villa y sus dorados en 1915."
-            },
-            {
-                name: "El Zacatecas Bar", type: "Cantina y Comida Regional", address: "Av. Francisco I. Madero 1070, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/El+Zacatecas+Bar/@25.676571,-100.3163625,17z/", coordinates: [25.676571, -100.3163625], tel: "+52-81-8375-6174", social: "https://www.facebook.com/ElZacatecasBar/", photos: ["https://fastly.4sqi.net/img/general/600x600/9876543_hK9_Z_p2d_q8_i_w7_x_a1_b1X6zZ5_h6b_y9lY6.jpg"], description: "Con más de 75 años de existencia, esta cantina en el centro de Monterrey es famosa por su costilla de puerco adobada, un platillo insignia con un método de preparación único y secreto. Ofrece un ambiente relajado y botanas de cortesía."
-            },
-            {
-                name: "El Victoria", type: "Cantina Tradicional", address: "Av Bernardo Reyes 1211, Industrial, 64440 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Cantina+El+Victoria/@25.6980164,-100.3235332,17z/", coordinates: [25.6980164, -100.3235332], tel: "+52-81-8375-5772", social: "http://www.hotelvictoriamty.com/", photos: ["https://fastly.4sqi.net/img/general/600x600/1234567_aS3_t_Y7g_h_j9_k_l0_m_n1_b1X6zZ5_h6b_y9lY6.jpg"], description: "Iniciada en 1952 como una pequeña cervecería cerca del Mercado Juárez, ha crecido y se ha expandido. Frecuentada por comerciantes y alijadores, ahora ofrece música para bailar y permite la entrada de mujeres."
-            },
-            {
-                name: "El Arbolito", type: "Cantina y Guisos Caseros", address: "Av. Del Estado 300, Tecnológico, 64700 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Cantina+El+Arbolito/@25.6508953,-100.2917737,17z/", coordinates: [25.6508953, -100.2917737], tel: "+52-81-8387-1300", social: "https://www.facebook.com/ElArbolitoMty/", photos: ["https://fastly.4sqi.net/img/general/600x600/7654321_qW1_e_R4t_y_u7_i_o0_p_a1_b1X6zZ5_h6b_y9lY6.jpg"], description: "Abierta desde 1950 en Washington y Venustiano Carranza, es una pequeña cantina famosa por sus guisos hechos en jarros de barro, como cortadillo y picadillo."
-            },
-            {
-                name: "La Oficina", type: "Cantina de Barrio", address: "Jerónimo Treviño 1308, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/La+Oficina/@25.674487,-100.308006,17z/", coordinates: [25.674487, -100.308006], tel: "+52-81-1381-5725", social: "https://www.facebook.com/LaOficinaMty/", photos: ["https://fastly.4sqi.net/img/general/600x600/2345678_fG5_h_j8_k_l1_m_n2_b1X6zZ5_h6b_y9lY6.jpg"], description: "Abrió sus puertas en 1960 en Treviño y Platón Sánchez, en el centro de Monterrey. Es una cantina de barrio frecuentada por parroquianos de la zona y ex vecinos, sirviendo guisos norteños y botanas variadas."
-            },
-            {
-                name: "Piedra Azul Cantina", type: "Cantina con Rock and Roll", address: "Eje Metropolitano 19 4207, Sin Nombre de Col 20, 64500 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Piedra+Azul+Cantina/@25.719602,-100.228578,17z/", coordinates: [25.719602, -100.228578], tel: "+52-81-8370-0000", social: "https://www.facebook.com/PiedraAzulCantina/", photos: ["https://fastly.4sqi.net/img/general/600x600/8765432_zX9_c_V0b_n_m3_a_s4_d_f5_b1X6zZ5_h6b_y9lY6.jpg"], description: "Abrió sus puertas en 1967 en la Av. Guerrero. Originalmente atendida por meseras y frecuentada por trabajadores de la zona industrial, se transformó en una cantina especializada en Rock and Roll."
-            },
-            {
-                name: "Salón Morelos", type: "Bar con Música en Vivo", address: "José María Morelos 937, Barrio Antiguo, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Salon+Morelos/@25.6644265,-100.3090409,17z/", coordinates: [25.6644265, -100.3090409], tel: "+52-81-8343-0822", social: "https://www.facebook.com/salonmorelosmty/", photos: ["https://fastly.4sqi.net/img/general/600x600/3456789_qW1_e_R4t_y_u7_i_o0_p_a1_b1X6zZ5_h6b_y9lY6.jpg"], description: "Conocido por su ambiente festivo y música en vivo, es un lugar ideal para bailar y cantar karaoke."
-            },
-            {
-                name: "Restaurante AL", type: "Clásico Regiomontano", address: "Av. Francisco I. Madero 520, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Restaurante+AL/@25.6781702,-100.3190899,17z/", coordinates: [25.6781702, -100.3190899], tel: "+52-81-8375-3766", social: "http://www.alrestaurant.mx/", photos: ["https://fastly.4sqi.net/img/general/600x600/9876543_hK9_Z_p2d_q8_i_w7_x_a1_b1X6zZ5_h6b_y9lY6.jpg"], description: "Fundado en 1940 por don Guillermo Otero, es un clásico regiomontano con más de 80 años de historia. Su peculiar nombre surgió de un ventarrón que arrancó las letras de su rótulo original 'Alaska', dejando solo la 'A' y la 'L'. Ubicado en Calzada Madero, es famoso por sus desayunos típicos y precios accesibles."
-            },
-            {
-                name: "El Charro", type: "Cocina Tradicional del Noreste", address: "Paseo de los Leones 2850, Cumbres 4º. Sector Secc B, 64610 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/El+Charro/@25.6469612,-100.3665799,17z/", coordinates: [25.6469612, -100.3665799], tel: "+52-81-3271-1495", social: "https://www.facebook.com/restaurantelcharromty/", photos: ["https://fastly.4sqi.net/img/general/600x600/1122334_qW1_e_R4t_y_u7_i_o0_p_a1_b1X6zZ5_h6b_y9lY6.jpg"], description: "Fundado en los años 40, este restaurante al sur de Monterrey es inconfundible por su estructura en forma de sombrero gigante. Lo que comenzó como un parador de paso, hoy es un lugar favorito para saborear la cocina tradicional del noreste, con platillos como asado de puerco y milanesa empanizada."
-            },
-            {
-                name: "Manolín", type: "Cafetería y Restaurante", address: "Av. Francisco I. Madero 1975, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Cafeter%C3%ADa+Manol%C3%ADn/@25.6806509,-100.3340578,17z/", coordinates: [25.6806509, -100.3340578], tel: "+52-81-2261-4682", social: "https://www.facebook.com/RestauranteManolinMty/", photos: ["https://fastly.4sqi.net/img/general/600x600/5566778_zX9_c_V0b_n_m3_a_s4_d_f5_b1X6zZ5_h6b_y9lY6.jpg"], description: "Fundado en 1937 en Francisco I. Madero, Manolín ha sido testigo de casi un siglo de historia local. Es famoso por su café, del que se enamoró el mismísimo Pedro Infante, y su menú incluye desayunos tradicionales."
-            },
-            {
-                name: "Taquería Juárez", type: "Tacos Tradicionales", address: "Galeana Nte 123, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Taquer%C3%ADa+Ju%C3%A1rez/@25.674906,-100.3128919,17z/", coordinates: [25.674906, -100.3128919], tel: "+52-81-8342-1936", social: "https://www.facebook.com/TaqueriaJuarezOficial/", photos: ["https://fastly.4sqi.net/img/general/600x600/9988776_rT7_y_U0i_o_p2_a_s5_d_f6_g_h7_b1X6zZ5_h6b_y9lY6.jpg"], description: "Abierta en 1945, esta taquería se ha mantenido fiel a su estilo con el paso de los años, expandiendo su menú de antojitos sin perder su esencia original. Su cocina sigue a la vista y es un referente de la gastronomía regiomontana."
-            },
-            {
-                name: "La Siberia", type: "Tostadas Icónicas", address: "Calle Colegio Civil 1029, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/La+Siberia/@25.6757134,-100.3217733,17z/", coordinates: [25.6757134, -100.3217733], tel: "+52-81-8375-0369", social: "https://www.lasiberia.mx/", photos: ["https://fastly.4sqi.net/img/general/600x600/4433221_aZ0_x_Y9w_q_s1_d_f2_g_h3_b1X6zZ5_h6b_y9lY6.jpg"], description: "Abrió sus puertas en 1946 y se convirtió en sinónimo de un platillo: la tostada Siberia (pollo, guacamole, crema y tostada). Aunque ha crecido y se ha expandido, la preparación original de este platillo icónico se ha mantenido inalterada."
-            },
-            {
-                name: "Botanero Moritas", type: "Cantina con Botanas Regias", address: "Juan Ignacio Ramón 852 Oriente, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Botanero+Moritas/@25.6687059,-100.3087361,17z/", coordinates: [25.6687059, -100.3087361], tel: "+52-81-8340-2036", social: "https://botaneromoritas.com/", photos: ["https://fastly.4sqi.net/img/general/600x600/6655443_eV8_r_T1y_u_i4_o_p7_a_s8_d_f9_b1X6zZ5_h6b_y9lY6.jpg"], description: "Un clásico de la ciudad con varias sucursales, es una cantina/bar que ofrece excelentes platillos tradicionales de Nuevo León, con un ambiente que combina la comida mexicana tradicional con buenos tragos y cócteles de la casa."
-            },
-            {
-                name: "El Nuevo Aguacate", type: "Cantina Tradicional", address: "Jerónimo Treviño Pte. 2002, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/El+Nuevo+Aguacate/@25.6841328,-100.3117398,17z/", coordinates: [25.6841328, -100.3117398], tel: "+52-81-8346-8751", social: "https://www.facebook.com/elnuevoaguacate/", photos: ["https://fastly.4sqi.net/img/general/600x600/1122334_qW1_e_R4t_y_u7_i_o0_p_a1_b1X6zZ5_h6b_y9lY6.jpg"], description: "Es una cantina con una rica historia y una atmósfera muy particular, muy querida por los regiomontanos. Es conocida por su tradicional 'machacado con huevo', su ambiente bohemio y ser un punto de encuentro para intelectuales y artistas a lo largo de los años."
-            },
-            {
-                name: "El Gran Pastor", type: "Cabrito y Cortes", address: "Gonzalitos 702 esq, Calle Dr. Francisco L. Rocha, San Jerónimo, 64020 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/El+Gran+Pastor/@25.677583,-100.3477169,17z/", coordinates: [25.677583, -100.3477169], tel: "+52-81-8129-4453", social: "https://elgranpastor.com/", photos: ["https://fastly.4sqi.net/img/general/600x600/9988776_rT7_y_U0i_o_p2_a_s5_d_f6_g_h7_b1X6zZ5_h6b_y9lY6.jpg"], description: "Fundado en 1950, este es un ícono regio cuando hablamos de cabrito. Más allá de ser un restaurante, es una institución que ha perfeccionado la preparación de este platillo tan nuevoleonés a lo largo de décadas. Su tradición y el sabor inconfundible de su cabrito lo hacen un referente obligado para locales y visitantes."
-            },
-            {
-                name: "Sanborns (sucursal Morelos)", type: "Cafetería y Restaurante Tradicional", address: "José María Morelos 474, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Sanborns+Morelos/@25.665977,-100.3105741,17z/", coordinates: [25.665977, -100.3105741], tel: "+52-81-8343-1834", social: "https://www.sanborns.com.mx/", photos: ["https://fastly.4sqi.net/img/general/600x600/4433221_aZ0_x_Y9w_q_s1_d_f2_g_h3_b1X6zZ5_h6b_y9lY6.jpg"], description: "Aunque Sanborns es una cadena nacional, la sucursal de la calle Morelos en el centro de Monterrey tiene una historia particularmente significativa y un arraigo que la distingue. Ha sido un punto de encuentro clásico por décadas, un lugar donde generaciones de regiomontanos han desayunado, tomado café y socializado."
-            }
+            { name: "El Lontananza", type: "Cantina Tradicional", address: "C. Aramberri 102, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Bar+El+Lontananza/@25.6669947,-100.3129528,17z/", coordinates: [25.6669947, -100.3129528], tel: "+52-81-8344-0100", social: "https://www.facebook.com/BarLontananza/", photos: ["https://fastly.4sqi.net/img/general/600x600/7989917_K4eBwF9-d7b_u_W8k_h_N5_b1X6zZ5_h6b_y9lY6.jpg"], description: "Considerada por muchos como la cantina más antigua de Monterrey, con registros que la sitúan desde 1910, o incluso finales del Siglo XIX. Ha sido testigo de casi un siglo de historia regiomontana y se dice que fue visitada por figuras como Fidel Castro y 'Mantequilla' Nápoles. Ofrece un ambiente tranquilo, botanas caseras y cerveza fría." },
+            { name: "El Indio Azteca", type: "Cantina Tradicional", address: "Av. Francisco I. Madero 1101, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Cantina+El+Indio+Azteca/@25.6766468,-100.3168864,17z/", coordinates: [25.6766468, -100.3168864], tel: "+52-81-8375-5146", social: "https://www.facebook.com/CantinaIndioAzteca/", photos: ["https://fastly.4sqi.net/img/general/600x600/5086558_Zg0X_sHk7bFpW2j9P7w9D8y_s_N5_b1X6zZ5_h6b_y9lY6.jpg"], description: "Fundada alrededor de 1920, es otra de las cantinas con más de 100 años de historia en el centro de Monterrey. Aunque tradicionalmente era solo para hombres, ha evolucionado para permitir la entrada de mujeres." },
+            { name: "Bar 1900", type: "Bar Tradicional", address: "Melchor Ocampo 443, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Bar+1900/@25.666697,-100.3090886,17z/", coordinates: [25.666697, -100.3090886], tel: "+52-81-1040-9012", social: "http://www.bar1900mty.com/", photos: ["https://fastly.4sqi.net/img/general/600x600/6249565_tXk_U_M2rP9w1j2y_h_N5_b1X6zZ5_h6b_y9lY6.jpg"], description: "Su nombre indica su antigüedad, antecediendo al año 1900. Ubicado en el Hotel Ancira, se cuenta la leyenda de que fue visitada por Francisco Villa y sus dorados en 1915." },
+            { name: "El Zacatecas Bar", type: "Cantina y Comida Regional", address: "Av. Francisco I. Madero 1070, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/El+Zacatecas+Bar/@25.676571,-100.3163625,17z/", coordinates: [25.676571, -100.3163625], tel: "+52-81-8375-6174", social: "https://www.facebook.com/ElZacatecasBar/", photos: ["https://fastly.4sqi.net/img/general/600x600/9876543_hK9_Z_p2d_q8_i_w7_x_a1_b1X6zZ5_h6b_y9lY6.jpg"], description: "Con más de 75 años de existencia, esta cantina en el centro de Monterrey es famosa por su costilla de puerco adobada, un platillo insignia con un método de preparación único y secreto. Ofrece un ambiente relajado y botanas de cortesía." },
+            { name: "El Victoria", type: "Cantina Tradicional", address: "Av Bernardo Reyes 1211, Industrial, 64440 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Cantina+El+Victoria/@25.6980164,-100.3235332,17z/", coordinates: [25.6980164, -100.3235332], tel: "+52-81-8375-5772", social: "http://www.hotelvictoriamty.com/", photos: ["https://fastly.4sqi.net/img/general/600x600/1234567_aS3_t_Y7g_h_j9_k_l0_m_n1_b1X6zZ5_h6b_y9lY6.jpg"], description: "Iniciada en 1952 como una pequeña cervecería cerca del Mercado Juárez, ha crecido y se ha expandido. Frecuentada por comerciantes y alijadores, ahora ofrece música para bailar y permite la entrada de mujeres." },
+            { name: "El Arbolito", type: "Cantina y Guisos Caseros", address: "Av. Del Estado 300, Tecnológico, 64700 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Cantina+El+Arbolito/@25.6508953,-100.2917737,17z/", coordinates: [25.6508953, -100.2917737], tel: "+52-81-8387-1300", social: "https://www.facebook.com/ElArbolitoMty/", photos: ["https://fastly.4sqi.net/img/general/600x600/7654321_qW1_e_R4t_y_u7_i_o0_p_a1_b1X6zZ5_h6b_y9lY6.jpg"], description: "Abierta desde 1950 en Washington y Venustiano Carranza, es una pequeña cantina famosa por sus guisos hechos en jarros de barro, como cortadillo y picadillo." },
+            { name: "La Oficina", type: "Cantina de Barrio", address: "Jerónimo Treviño 1308, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/La+Oficina/@25.674487,-100.308006,17z/", coordinates: [25.674487, -100.308006], tel: "+52-81-1381-5725", social: "https://www.facebook.com/LaOficinaMty/", photos: ["https://fastly.4sqi.net/img/general/600x600/2345678_fG5_h_j8_k_l1_m_n2_b1X6zZ5_h6b_y9lY6.jpg"], description: "Abrió sus puertas en 1960 en Treviño y Platón Sánchez, en el centro de Monterrey. Es una cantina de barrio frecuentada por parroquianos de la zona y ex vecinos, sirviendo guisos norteños y botanas variadas." },
+            { name: "Piedra Azul Cantina", type: "Cantina con Rock and Roll", address: "Eje Metropolitano 19 4207, Sin Nombre de Col 20, 64500 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Piedra+Azul+Cantina/@25.719602,-100.228578,17z/", coordinates: [25.719602, -100.228578], tel: "+52-81-8370-0000", social: "https://www.facebook.com/PiedraAzulCantina/", photos: ["https://fastly.4sqi.net/img/general/600x600/8765432_zX9_c_V0b_n_m3_a_s4_d_f5_b1X6zZ5_h6b_y9lY6.jpg"], description: "Abrió sus puertas en 1967 en la Av. Guerrero. Originalmente atendida por meseras y frecuentada por trabajadores de la zona industrial, se transformó en una cantina especializada en Rock and Roll." },
+            { name: "Salón Morelos", type: "Bar con Música en Vivo", address: "José María Morelos 937, Barrio Antiguo, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Salon+Morelos/@25.6644265,-100.3090409,17z/", coordinates: [25.6644265, -100.3090409], tel: "+52-81-8343-0822", social: "https://www.facebook.com/salonmorelosmty/", photos: ["https://fastly.4sqi.net/img/general/600x600/3456789_qW1_e_R4t_y_u7_i_o0_p_a1_b1X6zZ5_h6b_y9lY6.jpg"], description: "Conocido por su ambiente festivo y música en vivo, es un lugar ideal para bailar y cantar karaoke." },
+            { name: "Restaurante AL", type: "Clásico Regiomontano", address: "Av. Francisco I. Madero 520, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Restaurante+AL/@25.6781702,-100.3190899,17z/", coordinates: [25.6781702, -100.3190899], tel: "+52-81-8375-3766", social: "http://www.alrestaurant.mx/", photos: ["https://fastly.4sqi.net/img/general/600x600/9876543_hK9_Z_p2d_q8_i_w7_x_a1_b1X6zZ5_h6b_y9lY6.jpg"], description: "Fundado en 1940 por don Guillermo Otero, es un clásico regiomontano con más de 80 años de historia. Su peculiar nombre surgió de un ventarrón que arrancó las letras de su rótulo original 'Alaska', dejando solo la 'A' y la 'L'. Ubicado en Calzada Madero, es famoso por sus desayunos típicos y precios accesibles." },
+            { name: "El Charro", type: "Cocina Tradicional del Noreste", address: "Paseo de los Leones 2850, Cumbres 4º. Sector Secc B, 64610 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/El+Charro/@25.6469612,-100.3665799,17z/", coordinates: [25.6469612, -100.3665799], tel: "+52-81-3271-1495", social: "https://www.facebook.com/restaurantelcharromty/", photos: ["https://fastly.4sqi.net/img/general/600x600/1122334_qW1_e_R4t_y_u7_i_o0_p_a1_b1X6zZ5_h6b_y9lY6.jpg"], description: "Fundado en los años 40, este restaurante al sur de Monterrey es inconfundible por su estructura en forma de sombrero gigante. Lo que comenzó como un parador de paso, hoy es un lugar favorito para saborear la cocina tradicional del noreste, con platillos como asado de puerco y milanesa empanizada." },
+            { name: "Manolín", type: "Cafetería y Restaurante", address: "Av. Francisco I. Madero 1975, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Cafeter%C3%ADa+Manol%C3%ADn/@25.6806509,-100.3340578,17z/", coordinates: [25.6806509, -100.3340578], tel: "+52-81-2261-4682", social: "https://www.facebook.com/RestauranteManolinMty/", photos: ["https://fastly.4sqi.net/img/general/600x600/5566778_zX9_c_V0b_n_m3_a_s4_d_f5_b1X6zZ5_h6b_y9lY6.jpg"], description: "Fundado en 1937 en Francisco I. Madero, Manolín ha sido testigo de casi un siglo de historia local. Es famoso por su café, del que se enamoró el mismísimo Pedro Infante, y su menú incluye desayunos tradicionales." },
+            { name: "Taquería Juárez", type: "Tacos Tradicionales", address: "Galeana Nte 123, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Taquer%C3%ADa+Ju%C3%A1rez/@25.674906,-100.3128919,17z/", coordinates: [25.674906, -100.3128919], tel: "+52-81-8342-1936", social: "https://www.facebook.com/TaqueriaJuarezOficial/", photos: ["https://fastly.4sqi.net/img/general/600x600/9988776_rT7_y_U0i_o_p2_a_s5_d_f6_g_h7_b1X6zZ5_h6b_y9lY6.jpg"], description: "Abierta en 1945, esta taquería se ha mantenido fiel a su estilo con el paso de los años, expandiendo su menú de antojitos sin perder su esencia original. Su cocina sigue a la vista y es un referente de la gastronomía regiomontana." },
+            { name: "La Siberia", type: "Tostadas Icónicas", address: "Calle Colegio Civil 1029, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/La+Siberia/@25.6757134,-100.3217733,17z/", coordinates: [25.6757134, -100.3217733], tel: "+52-81-8375-0369", social: "https://www.lasiberia.mx/", photos: ["https://fastly.4sqi.net/img/general/600x600/4433221_aZ0_x_Y9w_q_s1_d_f2_g_h3_b1X6zZ5_h6b_y9lY6.jpg"], description: "Abrió sus puertas en 1946 y se convirtió en sinónimo de un platillo: la tostada Siberia (pollo, guacamole, crema y tostada). Aunque ha crecido y se ha expandido, la preparación original de este platillo icónico se ha mantenido inalterada." },
+            { name: "Botanero Moritas", type: "Cantina con Botanas Regias", address: "Juan Ignacio Ramón 852 Oriente, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Botanero+Moritas/@25.6687059,-100.3087361,17z/", coordinates: [25.6687059, -100.3087361], tel: "+52-81-8340-2036", social: "https://botaneromoritas.com/", photos: ["https://fastly.4sqi.net/img/general/600x600/6655443_eV8_r_T1y_u_i4_o_p7_a_s8_d_f9_b1X6zZ5_h6b_y9lY6.jpg"], description: "Un clásico de la ciudad con varias sucursales, es una cantina/bar que ofrece excelentes platillos tradicionales de Nuevo León, con un ambiente que combina la comida mexicana tradicional con buenos tragos y cócteles de la casa." },
+            { name: "El Nuevo Aguacate", type: "Cantina Tradicional", address: "Jerónimo Treviño Pte. 2002, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/El+Nuevo+Aguacate/@25.6841328,-100.3117398,17z/", coordinates: [25.6841328, -100.3117398], tel: "+52-81-8346-8751", social: "https://www.facebook.com/elnuevoaguacate/", photos: ["https://fastly.4sqi.net/img/general/600x600/1122334_qW1_e_R4t_y_u7_i_o0_p_a1_b1X6zZ5_h6b_y9lY6.jpg"], description: "Es una cantina con una rica historia y una atmósfera muy particular, muy querida por los regiomontanos. Es conocida por su tradicional 'machacado con huevo', su ambiente bohemio y ser un punto de encuentro para intelectuales y artistas a lo largo de los años." },
+            { name: "El Gran Pastor", type: "Cabrito y Cortes", address: "Gonzalitos 702 esq, Calle Dr. Francisco L. Rocha, San Jerónimo, 64020 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/El+Gran+Pastor/@25.677583,-100.3477169,17z/", coordinates: [25.677583, -100.3477169], tel: "+52-81-8129-4453", social: "https://elgranpastor.com/", photos: ["https://fastly.4sqi.net/img/general/600x600/9988776_rT7_y_U0i_o_p2_a_s5_d_f6_g_h7_b1X6zZ5_h6b_y9lY6.jpg"], description: "Fundado en 1950, este es un ícono regio cuando hablamos de cabrito. Más allá de ser un restaurante, es una institución que ha perfeccionado la preparación de este platillo tan nuevoleonés a lo largo de décadas. Su tradición y el sabor inconfundible de su cabrito lo hacen un referente obligado para locales y visitantes." },
+            { name: "Sanborns (sucursal Morelos)", type: "Cafetería y Restaurante Tradicional", address: "José María Morelos 474, Centro, 64000 Monterrey, N.L., México", mapUrl: "https://www.google.com/maps/place/Sanborns+Morelos/@25.665977,-100.3105741,17z/", coordinates: [25.665977, -100.3105741], tel: "+52-81-8343-1834", social: "https://www.sanborns.com.mx/", photos: ["https://fastly.4sqi.net/img/general/600x600/4433221_aZ0_x_Y9w_q_s1_d_f2_g_h3_b1X6zZ5_h6b_y9lY6.jpg"], description: "Aunque Sanborns es una cadena nacional, la sucursal de la calle Morelos en el centro de Monterrey tiene una historia particularmente significativa y un arraigo que la distingue. Ha sido un punto de encuentro clásico por décadas, un lugar donde generaciones de regiomontanos han desayunado, tomado café y socializado." }
         ];
 
         const contentPages = [
@@ -735,21 +467,21 @@
         let isAnimating = false;
         let currentRestaurantForUpload = null;
 
+        // DOM Elements
         const currentPageEl = document.getElementById('currentPage');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
-        const pageIndicator = document.getElementById('pageIndicator');
+        const pageIndicatorEl = document.getElementById('pageIndicator');
         const userPhotoInput = document.getElementById('userPhotoInput');
         const infoModal = document.getElementById('infoModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalBody = document.getElementById('modalBody');
+        const modalTitleEl = document.getElementById('modalTitle');
+        const modalBodyEl = document.getElementById('modalBody');
         const imageModal = document.getElementById('imageModal');
-        const modalImage = document.getElementById('modalImage');
+        const modalImageEl = document.getElementById('modalImage');
 
         userPhotoInput.addEventListener('change', handlePhotoUpload);
 
         window.selectUserPhoto = function(restaurantName, event) {
-            event.stopPropagation();
             currentRestaurantForUpload = restaurantName;
             userPhotoInput.click();
         };
@@ -771,7 +503,7 @@
                 <div class="page-content cover-page">
                     <h1 class="cover-title">Álbum de Restaurantes</h1>
                     <h2 class="cover-subtitle">Tradicionales de Monterrey</h2>
-                    <img src="https://placehold.co/400x400/D2B48C/654321?text=Sabor+Regio" onerror="this.onerror=null;this.src='https://placehold.co/400x400/D2B48C/654321?text=Imagen+no+disponible';" alt="Comida del Noreste" class="cover-image">
+                    <img src="https://placehold.co/150x150/D2B48C/654321?text=Sabor+Regio" onerror="this.onerror=null;this.src='https://placehold.co/150x150/D2B48C/654321?text=Error';" alt="Comida del Noreste" class="cover-image">
                 </div>`;
         }
 
@@ -789,45 +521,34 @@
             }).join('');
             return `
                 <div class="page-content restaurant-index-content">
-                    <h2 class="restaurant-index-header">Restaurantes Tradicionales</h2>
-                    <p class="restaurant-index-count">Has visitado ${completedCount} de ${restaurants.length} restaurantes.</p>
+                    <h2 class="restaurant-index-header">Restaurantes Visitados</h2>
+                    <p class="restaurant-index-count">${completedCount} de ${restaurants.length} completados</p>
                     <div class="restaurant-list-container">${restaurantListItems}</div>
                 </div>`;
         }
 
         function generateRestaurantContent(restaurant) {
             const savedUserPhoto = localStorage.getItem('user_photo_' + restaurant.name);
-            const placeholderIcon = '<i class="fas fa-camera user-photo-placeholder-icon"></i><p class="user-photo-text">Toca para añadir tu foto</p>';
-            // Updated placeholder for official photo
-            const defaultRestaurantPhoto = restaurant.photos && restaurant.photos.length > 0 ? restaurant.photos[0] : 'https://placehold.co/500x420/8B4513/F5F5DC?text=Foto+Oficial';
-            
-            let frontCardContent = savedUserPhoto ? 
-                `<img src="${savedUserPhoto}" alt="Tu foto en ${restaurant.name}" class="user-photo-image">` : 
-                `<div class="user-photo-placeholder-overlay">${placeholderIcon}</div>`;
-            let frontCardOnClick = savedUserPhoto ? 
-                `openImageModal('${savedUserPhoto}')` : 
-                `selectUserPhoto('${restaurant.name.replace(/'/g, "\\'")}', event)`;
+            let photoAreaContent;
+            let photoAreaOnClick;
+
+            if (savedUserPhoto) {
+                photoAreaContent = `<img src="${savedUserPhoto}" alt="Tu foto en ${restaurant.name}" class="user-photo-image">`;
+                photoAreaOnClick = `openImageModal('${savedUserPhoto}')`;
+            } else {
+                photoAreaContent = `
+                    <div class="user-photo-placeholder-overlay">
+                        <i class="fas fa-camera user-photo-placeholder-icon"></i>
+                        <p class="user-photo-text">Toca para añadir tu foto</p>
+                    </div>`;
+                photoAreaOnClick = `selectUserPhoto('${restaurant.name.replace(/'/g, "\\'")}', event)`;
+            }
 
             return `
                 <div class="page-content restaurant-content-wrapper">
-                    <button class="back-to-index-button" onclick="navigateToPage(1, 'backward')">
-                        <i class="fas fa-arrow-left"></i> Índice
-                    </button>
-                    <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;"> {/* Wrapper to help center card content if page is tall */}
-                        <h2 class="restaurant-title">${restaurant.name}</h2>
-                        <div class="flip-card" onclick="flipCard(this)">
-                            <div class="flip-card-inner">
-                                <div class="flip-card-front" data-restaurant-name="${restaurant.name.replace(/'/g, "\\'")}" 
-                                     onclick="event.stopPropagation(); ${frontCardOnClick}">
-                                    ${frontCardContent}
-                                </div>
-                                <div class="flip-card-back" onclick="event.stopPropagation(); openImageModal('${defaultRestaurantPhoto}')">
-                                    <img src="${defaultRestaurantPhoto}" 
-                                         onerror="this.onerror=null;this.src='https://placehold.co/500x420/8B4513/F5F5DC?text=No+Disponible';" 
-                                         alt="Foto de ${restaurant.name}" class="user-photo-image">
-                                </div>
-                            </div>
-                        </div>
+                    <h2 class="restaurant-title">${restaurant.name}</h2>
+                    <div class="photo-display-area" onclick="${photoAreaOnClick}">
+                        ${photoAreaContent}
                     </div>
                     <button class="info-button" onclick="openInfoModal(
                         '${restaurant.name.replace(/'/g, "\\'")}',
@@ -836,26 +557,32 @@
                         '${restaurant.mapUrl.replace(/'/g, "\\'")}',
                         '${restaurant.tel.replace(/'/g, "\\'")}',
                         '${restaurant.social.replace(/'/g, "\\'")}',
-                        '${restaurant.description.replace(/'/g, "\\'").replace(/\n/g, "\\n")}'
+                        '${restaurant.description.replace(/'/g, "\\'").replace(/\n/g, "\\n")}',
+                        '${(restaurant.photos && restaurant.photos.length > 0 ? restaurant.photos[0] : '').replace(/'/g, "\\'")}'
                     )">
                         Información <i class="fas fa-info-circle"></i>
                     </button>
                 </div>`;
         }
 
-        window.openInfoModal = function(name, type, address, mapUrl, tel, social, description) {
-            modalTitle.textContent = name;
+        window.openInfoModal = function(name, type, address, mapUrl, tel, social, description, officialPhotoUrl) {
+            modalTitleEl.textContent = name;
             const formattedDescription = description.replace(/\\n/g, '<br>');
-            modalBody.innerHTML = `
+            let officialPhotoHTML = '';
+            if (officialPhotoUrl && officialPhotoUrl !== 'null' && officialPhotoUrl !== '') {
+                officialPhotoHTML = `<img src="${officialPhotoUrl}" alt="Foto de ${name}" class="modal-official-photo" onerror="this.style.display='none'">`;
+            }
+            modalBodyEl.innerHTML = `
+                ${officialPhotoHTML}
                 <p class="modal-info-details"><strong>Tipo:</strong> ${type}</p>
                 <p class="modal-info-details">
                     <strong>Dirección:</strong> <a href="${mapUrl}" target="_blank" rel="noopener noreferrer">${address}</a>
                 </p>
-                <p>${formattedDescription}</p>
+                <p style="text-align: justify;">${formattedDescription}</p>
                 <div class="modal-social-icons-container">
-                    ${tel !== 'null' && tel !== '' ? `<a href="tel:${tel}" class="modal-social-icon" title="Llamar ${name}"><i class="fas fa-phone"></i></a>` : ''}
+                    ${tel !== 'null' && tel !== '' ? `<a href="tel:${tel}" class="modal-social-icon" title="Llamar a ${name}"><i class="fas fa-phone"></i></a>` : ''}
                     <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="modal-social-icon" title="Ver mapa de ${name}"><i class="fas fa-map-marker-alt"></i></a>
-                    ${social !== 'null' && social !== '' ? `<a href="${social}" target="_blank" rel="noopener noreferrer" class="modal-social-icon" title="Sitio web o red social de ${name}"><i class="fas fa-link"></i></a>` : ''} {/* Changed icon */}
+                    ${social !== 'null' && social !== '' ? `<a href="${social}" target="_blank" rel="noopener noreferrer" class="modal-social-icon" title="Sitio web o red social de ${name}"><i class="fas fa-link"></i></a>` : ''}
                 </div>`;
             infoModal.classList.add('show');
         };
@@ -863,17 +590,22 @@
         window.closeInfoModal = function() { infoModal.classList.remove('show'); };
 
         window.openImageModal = function(imageUrl) {
+            // Reset display style in case it was hidden by onerror
+            modalImageEl.style.display = 'block'; 
             if (!imageUrl || imageUrl.startsWith('https://placehold.co/')) {
-                console.log("Placeholder image clicked or no image, not opening modal.");
-                return;
+                modalImageEl.style.display = 'none'; // Hide if placeholder
+                console.log("Placeholder image or no URL, modal not fully shown.");
+                // Optionally, still show the modal with a "no image" message, or just return
+                return; 
             }
-            modalImage.src = imageUrl;
+            modalImageEl.src = imageUrl;
             imageModal.classList.add('show');
         };
         
         window.closeImageModal = function() {
             imageModal.classList.remove('show');
-            modalImage.src = '';
+            modalImageEl.src = ''; // Clear src to prevent showing old image briefly
+            modalImageEl.style.display = 'block'; // Reset display style for next time
         };
 
         function generateFinalPageContent() {
@@ -881,17 +613,24 @@
                 <div class="page-content cover-page">
                     <h2 class="cover-title">¡Álbum Explorado!</h2>
                     <p class="cover-subtitle">Gracias por recorrer los sabores de Monterrey.</p>
-                    <img src="https://placehold.co/400x400/D2B48C/654321?text=¡Buen+Provecho!" onerror="this.onerror=null;this.src='https://placehold.co/400x400/D2B48C/654321?text=Imagen+no+disponible';" alt="Felicidades" class="cover-image">
+                    <img src="https://placehold.co/150x150/D2B48C/654321?text=¡Buen+Provecho!" onerror="this.onerror=null;this.src='https://placehold.co/150x150/D2B48C/654321?text=Error';" alt="Felicidades" class="cover-image">
                 </div>`;
         }
 
         function renderCurrentPage() {
             const pageData = contentPages[currentPageIndex];
             let contentHTML = '';
-            if (pageData.type === 'cover') contentHTML = generateCoverContent();
-            else if (pageData.type === 'restaurantIndex') contentHTML = generateRestaurantIndexContent();
-            else if (pageData.type === 'restaurant') contentHTML = generateRestaurantContent(pageData.data);
-            else if (pageData.type === 'finalPage') contentHTML = generateFinalPageContent();
+            currentPageEl.innerHTML = ''; 
+
+            if (pageData.type === 'cover') {
+                contentHTML = generateCoverContent();
+            } else if (pageData.type === 'restaurantIndex') {
+                contentHTML = generateRestaurantIndexContent();
+            } else if (pageData.type === 'restaurant') {
+                contentHTML = generateRestaurantContent(pageData.data); 
+            } else if (pageData.type === 'finalPage') {
+                contentHTML = generateFinalPageContent();
+            }
             currentPageEl.innerHTML = contentHTML;
             updateNavigation();
         }
@@ -899,10 +638,16 @@
         function updateNavigation() {
             prevBtn.disabled = currentPageIndex === 0;
             nextBtn.disabled = currentPageIndex === contentPages.length - 1;
-            pageIndicator.textContent = `${currentPageIndex + 1} / ${contentPages.length}`;
-        }
+            pageIndicatorEl.textContent = `${currentPageIndex + 1} / ${contentPages.length}`;
 
-        window.flipCard = function(cardElement) { cardElement.classList.toggle('flipped'); }
+            if (contentPages[currentPageIndex].type === 'restaurant') {
+                pageIndicatorEl.classList.add('index-link');
+                pageIndicatorEl.onclick = () => navigateToPage(1, 'backward');
+            } else {
+                pageIndicatorEl.classList.remove('index-link');
+                pageIndicatorEl.onclick = null;
+            }
+        }
 
         function navigateToPage(newIndex, direction = 'forward') {
             if (isAnimating || newIndex < 0 || newIndex >= contentPages.length) return;
@@ -913,15 +658,15 @@
                 currentPageIndex = newIndex;
                 renderCurrentPage();
                 currentPageEl.style.transform = direction === 'forward' ? 'rotateY(180deg)' : 'rotateY(-180deg)';
-                currentPageEl.classList.remove(animationClass);
-                void currentPageEl.offsetWidth;
+                currentPageEl.classList.remove(animationClass); 
+                void currentPageEl.offsetWidth; 
                 currentPageEl.style.transition = 'transform 0.0s';
                 currentPageEl.style.transform = 'rotateY(0deg)';
                 setTimeout(() => {
                     currentPageEl.style.transition = 'transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1)';
                     isAnimating = false;
                 }, 50);
-            }, 400);
+            }, 400); 
         }
         
         window.navigateToRestaurantPage = function(restaurantName) {
@@ -932,10 +677,12 @@
             }
         }
 
+        // Event Listeners
         prevBtn.addEventListener('click', () => { if (currentPageIndex > 0) navigateToPage(currentPageIndex - 1, 'backward'); });
         nextBtn.addEventListener('click', () => { if (currentPageIndex < contentPages.length - 1) navigateToPage(currentPageIndex + 1, 'forward'); });
         
         window.addEventListener('resize', renderCurrentPage);
+        
         window.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 if (infoModal.classList.contains('show')) closeInfoModal();
@@ -943,7 +690,11 @@
             }
         });
         infoModal.addEventListener('click', function(event) { if (event.target === infoModal) closeInfoModal(); });
-        imageModal.addEventListener('click', function(event) { if (event.target === imageModal) closeImageModal(); });
+        imageModal.addEventListener('click', function(event) { 
+            if (event.target === imageModal) { // Only close if overlay itself is clicked
+                closeImageModal();
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', renderCurrentPage);
     </script>
