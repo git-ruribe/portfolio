@@ -327,15 +327,17 @@
 
         /* Image Modal - Styles for Robustness */
         .image-modal-overlay { 
+            position: fixed; /* o absolute si solo quieres que se centre en el contenedor */
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            display: flex; /* CRUCIAL */
+            align-items: center; /* CRUCIAL */
+            justify-content: center; /* CRUCIAL */
+            z-index: 1001;
+            background: rgba(0,0,0,0.9);
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-            z-index: 1001; 
-            background: rgba(0, 0, 0, 0.9); /* Darker background */
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            transition: opacity 0.3s, visibility 0.3s;
         }
         .image-modal-overlay.show {
             opacity: 1;
