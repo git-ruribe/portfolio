@@ -602,11 +602,12 @@
         window.closeInfoModal = function() { infoModal.classList.remove('show'); };
 
         window.openImageModal = function(imageUrl) {
-            if (!imageUrl || imageUrl === window.location.href || imageUrl.endsWith('.html')) {
+            modalImageEl.style.display = 'block'; 
+            // Solo permitir imágenes con extensión válida
+            if (!imageUrl || !imageUrl.match(/\.(jpg|jpeg|png|gif|webp)$/i) || imageUrl.startsWith('https://placehold.co/')) {
                 modalImageEl.style.display = 'none';
                 return;
             }
-            modalImageEl.style.display = 'block';
             modalImageEl.src = imageUrl;
             imageModal.classList.add('show');
         };
