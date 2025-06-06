@@ -641,7 +641,7 @@
 </head>
 <body>
     <!-- 🍺 BOTÓN ANIMADO DE DONACIÓN -->
-    <button class="beer-donation-btn.attention-grabber" onclick="handleBeerDonation()" title="¡Invítame una cerveza!">
+    <button class="beer-donation-btn attention-grabber" onclick="handleBeerDonation()" title="¡Invítame una cerveza!">
         <div class="beer-icon-container">
             <span class="beer-icon">🍺</span>
             <span class="click-icon">👆</span>
@@ -1383,6 +1383,209 @@ function importPhotos(event) {
                 closeImageModal();
             }
         });
+
+        function handleBeerDonation() {
+            // Aquí puedes integrar con PayPal, Stripe, Mercado Pago, etc.
+            
+            // OPCIÓN 1: PayPal simple
+            const paypalUrl = 'https://www.paypal.me/tuusuario/50'; // Cambia por tu link
+            
+            // OPCIÓN 2: Mercado Pago (más popular en México)
+            const mercadoPagoUrl = 'https://link.mercadopago.com.mx/tulink'; // Cambia por tu link
+            
+            // Modal de donación personalizado
+            showDonationModal();
+        }
+
+        function showDonationModal() {
+            const modal = document.createElement('div');
+            modal.id = 'donationModal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0; left: 0;
+                width: 100vw; height: 100vh;
+                background: rgba(0,0,0,0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 2000;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            `;
+            
+            modal.innerHTML = `
+                <div style="
+                    background: var(--cream);
+                    padding: 30px;
+                    border-radius: 20px;
+                    border: 4px solid var(--primary-brown);
+                    max-width: 90%;
+                    width: 350px;
+                    text-align: center;
+                    font-family: 'Caveat', cursive;
+                    color: var(--dark-brown);
+                    position: relative;
+                    transform: translateY(-30px);
+                    transition: transform 0.3s ease;
+                ">
+                    <h3 style="
+                        font-family: 'Permanent Marker', cursive;
+                        color: var(--primary-brown);
+                        margin-bottom: 15px;
+                        font-size: 1.8rem;
+                    ">¡Gracias por el apoyo! 🍺</h3>
+                    
+                    <p style="
+                        font-size: 1.2rem;
+                        margin-bottom: 20px;
+                        line-height: 1.4;
+                    ">
+                        Si te gusta esta app y te ha ayudado a descubrir 
+                        los sabores de Nuevo León, ¡invítame una cerveza! 
+                    </p>
+                    
+                    <div style="
+                        display: flex;
+                        flex-direction: column;
+                        gap: 12px;
+                        margin-bottom: 20px;
+                    ">
+                        <button onclick="openDonationLink('paypal')" style="
+                            background: #0070ba;
+                            color: white;
+                            border: none;
+                            padding: 12px 20px;
+                            border-radius: 8px;
+                            font-size: 1.1rem;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.2s ease;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 8px;
+                        ">
+                            <i class="fab fa-paypal"></i>
+                            PayPal - $50 MXN
+                        </button>
+                        
+                        <button onclick="openDonationLink('mercadopago')" style="
+                            background: #00a0e0;
+                            color: white;
+                            border: none;
+                            padding: 12px 20px;
+                            border-radius: 8px;
+                            font-size: 1.1rem;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.2s ease;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 8px;
+                        ">
+                            💳 Mercado Pago - $50 MXN
+                        </button>
+                        
+                        <button onclick="showTransferInfo()" style="
+                            background: var(--orange);
+                            color: white;
+                            border: none;
+                            padding: 12px 20px;
+                            border-radius: 8px;
+                            font-size: 1.1rem;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.2s ease;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 8px;
+                        ">
+                            🏦 Transferencia Bancaria
+                        </button>
+                    </div>
+                    
+                    <p style="
+                        font-size: 0.9rem;
+                        color: #666;
+                        margin-bottom: 15px;
+                    ">
+                        ¡Cada donación ayuda a mantener y mejorar la app! 🙏
+                    </p>
+                    
+                    <button onclick="closeDonationModal()" style="
+                        background: #666;
+                        color: white;
+                        border: none;
+                        padding: 8px 20px;
+                        border-radius: 20px;
+                        font-size: 1rem;
+                        cursor: pointer;
+                        font-family: 'Caveat', cursive;
+                    ">
+                        Cerrar
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Animar entrada
+            setTimeout(() => {
+                modal.style.opacity = '1';
+                modal.querySelector('div').style.transform = 'translateY(0)';
+            }, 10);
+            
+            // Cerrar al hacer click fuera
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeDonationModal();
+            });
+        }
+        
+        function openDonationLink(platform) {
+            let url;
+            
+            switch(platform) {
+                case 'paypal':
+                    url = 'https://www.paypal.me/tuusuario/50'; // CAMBIAR POR TU LINK
+                    break;
+                case 'mercadopago':
+                    url = 'https://link.mercadopago.com.mx/tulink'; // CAMBIAR POR TU LINK
+                    break;
+            }
+            
+            if (url) {
+                window.open(url, '_blank');
+                closeDonationModal();
+                
+                // Mostrar mensaje de agradecimiento
+                setTimeout(() => {
+                    showSuccessMessage('¡Gracias por tu apoyo! 🍺🙏');
+                }, 500);
+            }
+        }
+        
+        function showTransferInfo() {
+            alert(`Transferencia Bancaria:
+            
+        Banco: BBVA
+        Cuenta: 1234567890
+        CLABE: 012345678901234567
+        Nombre: Tu Nombre
+        
+        ¡Gracias por tu apoyo! 🍺`); // CAMBIAR POR TUS DATOS REALES
+        }
+        
+        function closeDonationModal() {
+            const modal = document.getElementById('donationModal');
+            if (modal) {
+                modal.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(modal);
+                }, 300);
+            }
+        }
 
         
     </script>
