@@ -541,17 +541,26 @@
         }
         .modal-overlay.show { opacity: 1; visibility: visible; }
 
-        .modal-content { /* For Info Modal */
-            background: var(--cream); padding: 25px; border-radius: 15px;
+        .modal-content { 
+            background: var(--cream); 
+            padding: 25px; 
+            border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            max-width: 90%; width: 380px;
-            position: relative; transform: translateY(-20px); transition: transform 0.3s ease;
+            max-width: 90%; 
+            width: 380px;
+            position: relative; 
+            transform: translateY(-20px); 
+            transition: transform 0.3s ease;
             border: 3px solid var(--primary-brown);
-            font-family: 'Caveat', cursive; color: var(--dark-brown);
+            font-family: 'Caveat', cursive; 
+            color: var(--dark-brown);
             display: flex;
             flex-direction: column;
-            max-height: calc(100vh - 40px); 
+            /* Cambiar estas líneas: */
+            max-height: 85vh; /* Limitar altura máxima */
+            min-height: 200px; /* Altura mínima */
         }
+        
         .modal-overlay.show .modal-content { transform: translateY(0); }
         .modal-header {
             font-family: 'Permanent Marker', cursive; font-size: 1.6rem;
@@ -588,13 +597,29 @@
             font-size: 1rem; transition: all 0.2s ease; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
         .modal-social-icon:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        
         .modal-close-btn {
-            background: var(--orange); color: white; border: none;
-            padding: 10px 25px; border-radius: 9999px; font-size: 1rem; font-weight: 600;
-            cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-            font-family: 'Caveat', cursive; display: block; margin: 10px auto 0;
-            flex-shrink: 0;
+            background: var(--orange); 
+            color: white; 
+            border: none;
+            padding: 8px 12px; 
+            border-radius: 50%; 
+            font-size: 1.2rem; 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+            font-family: 'Caveat', cursive; 
+            /* Posición fija en esquina superior derecha: */
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
         }
+        
         .modal-close-btn:hover { background: #E67E00; transform: translateY(-1px); }
 
         /* Image Modal - Styles for Robustness */
@@ -789,7 +814,9 @@
             <div class="modal-content">
                 <h3 id="modalTitle" class="modal-header"></h3>
                 <div id="modalBody" class="modal-body"></div>
-                <button class="modal-close-btn" onclick="closeInfoModal()">Cerrar</button>
+                <button class="modal-close-btn" onclick="closeInfoModal()">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
         </div>
     
