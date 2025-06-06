@@ -2,7 +2,9 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Sabores Clásicos NL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -20,17 +22,22 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Caveat', cursive;
-            background: linear-gradient(45deg, var(--light-brown), var(--cream));
-            margin: 0;
-            padding: 10px;
-            min-height: 100vh;
-            overflow-x: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+            body {
+                font-family: 'Caveat', cursive;
+                background: linear-gradient(45deg, var(--light-brown), var(--cream));
+                margin: 0;
+                padding: 10px;
+                /* Cambiar estas líneas: */
+                height: 100dvh; /* Dynamic viewport height */
+                min-height: 100dvh;
+                /* Fallback: */
+                height: 100vh;
+                min-height: 100vh;
+                overflow-x: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
 
         /* Botón de donación con animación cíclica */
             .beer-donation-btn {
@@ -269,9 +276,14 @@
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             border: 8px solid var(--dark-brown);
+            /* Cambiar estas líneas: */
+            height: 100dvh; /* Dynamic viewport height para móviles */
+            max-height: 100dvh;
+            min-height: 100dvh;
+            /* Fallback para navegadores que no soportan dvh: */
             height: calc(100vh - 20px);
-            max-height: 800px;
-            min-height: 550px;
+            max-height: calc(100vh - 20px);
+            min-height: calc(100vh - 20px);
             display: flex;
             flex-direction: column;
             position: relative;
@@ -670,12 +682,17 @@
 
         /* Navigation bar at the bottom */
         .navigation {
-            display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+            display: grid; 
+            grid-template-columns: 1fr auto 1fr; 
+            align-items: center;
             padding: 10px 15px;
             background: var(--dark-brown);
             border-radius: 0 0 15px 15px;
             width: 100%;
-            flex-shrink: 0;
+            flex-shrink: 0; /* Muy importante - nunca se encoge */
+            position: relative;
+            z-index: 100; /* Asegurar que esté por encima */
+            min-height: 50px; /* Altura mínima garantizada */
         }
         .nav-btn:first-child { justify-self: start; }
         .page-indicator { 
