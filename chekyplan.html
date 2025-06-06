@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cheky.app - Plan de Acción del Unicornio</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h1 { font-size: 2.5em; text-align: center; border: none; }
+        h2 { font-size: 2em; margin-top: 40px; }
+        h3 { font-size: 1.5em; margin-top: 30px; color: #e67e22; border-color: #e67e22;}
+        .phase {
+            margin-bottom: 40px;
+            padding: 20px;
+            border-left: 5px solid #3498db;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+        }
+        .phase h2 {
+            border: none;
+            margin-top: 0;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #fff;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        input[type="checkbox"] {
+            margin-right: 15px;
+            min-width: 20px;
+            min-height: 20px;
+            cursor: pointer;
+        }
+        label {
+            flex-grow: 1;
+            cursor: pointer;
+        }
+        .completed {
+            text-decoration: line-through;
+            color: #95a5a6;
+            background-color: #fdfdfd;
+        }
+        .completed label {
+            color: #95a5a6;
+        }
+        .week {
+            font-weight: bold;
+            color: #3498db;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+        .header-logo {
+            font-size: 2em;
+            font-weight: bold;
+            color: #3498db;
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            margin: 20px 0 40px 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            width: 0%;
+            height: 25px;
+            background-color: #2ecc71;
+            text-align: center;
+            line-height: 25px;
+            color: white;
+            font-weight: bold;
+            transition: width 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1><span class="header-logo">Cheky.app ✨</span><br>Plan de Acción del Unicornio</h1>
+        <p style="text-align: center;">Tu guía semanal para construir el primer "one-person unicorn" mexicano. ¡A por ello!</p>
+
+        <div class="progress-bar-container">
+            <div id="progressBar" class="progress-bar">0%</div>
+        </div>
+
+        <!-- FASE 1: Fundación y Validación (Primeros 3 Meses) -->
+        <div class="phase" id="phase1">
+            <h2>Fase 1: Fundación y Validación (Junio - Agosto 2025)</h2>
+            <p><strong>Objetivo Principal:</strong> Validar la idea, construir una micro-comunidad y conseguir los primeros 500 usuarios en Monterrey.</p>
+            
+            <h3>Mes 1: Junio 2025</h3>
+            <ul>
+                <li><span class="week">Semana 1 (Jun 1-7):</span><input type="checkbox" id="task1"><label for="task1"><strong>¡YA HECHO!</strong> Crear MVP de Web App (cantinas), dominio cheky.app.</label></li>
+                <li><span class="week">Semana 1 (Jun 1-7):</span><input type="checkbox" id="task2"><label for="task2"><strong>¡CRÍTICO!</strong> Migrar de `localStorage` a una base de datos real (Firebase/Supabase).</label></li>
+                <li><span class="week">Semana 2 (Jun 8-14):</span><input type="checkbox" id="task3"><label for="task3">Implementar autenticación simple (Google/Apple Sign-in).</label></li>
+                <li><span class="week">Semana 3 (Jun 15-21):</span><input type="checkbox" id="task4"><label for="task4">Crear y publicar 3 "Cheky Listas" icónicas de MTY (Aventura, Gastro, Cultura).</label></li>
+                <li><span class="week">Semana 4 (Jun 22-30):</span><input type="checkbox" id="task5"><label for="task5">Lanzamiento "Amigos Extendido". Crear grupo de "Cheky Fundadores" y conseguir 50 usuarios.</label></li>
+            </ul>
+
+            <h3>Mes 2: Julio 2025</h3>
+            <ul>
+                <li><span class="week">Semanas 1-2 (Jul 1-14):</span><input type="checkbox" id="task6"><label for="task6">Hablar con 20+ usuarios. Documentar todo el feedback. Usar IA para resumir hallazgos.</label></li>
+                <li><span class="week">Semanas 3-4 (Jul 15-31):</span><input type="checkbox" id="task7"><label for="task7">Implementar las 2 funcionalidades más solicitadas por los usuarios (ej. perfiles, compartir).</label></li>
+            </ul>
+
+            <h3>Mes 3: Agosto 2025</h3>
+            <ul>
+                <li><span class="week">Semanas 1-2 (Ago 1-14):</span><input type="checkbox" id="task8"><label for="task8">Identificar y contactar a 10 micro-influencers de MTY para el programa de "Curadores Fundadores".</label></li>
+                <li><span class="week">Semanas 3-4 (Ago 15-31):</span><input type="checkbox" id="task9"><label for="task9">Lanzar la primera campaña de marketing local (ej. "Reto del Café") con un negocio partner.</label></li>
+            </ul>
+        </div>
+
+        <!-- FASE 2: Crecimiento y Monetización (6 Meses) -->
+        <div class="phase" id="phase2" style="border-color: #e67e22;">
+            <h2 style="color: #e67e22;">Fase 2: Crecimiento y Monetización (Septiembre 2025 - Febrero 2026)</h2>
+            <p><strong>Objetivo Principal:</strong> Expandir a una segunda ciudad, introducir la monetización y preparar la escala a apps nativas.</p>
+
+            <h3>Mes 4: Septiembre 2025</h3>
+            <ul>
+                <li><span class="week">Semanas 1-4:</span><input type="checkbox" id="task10"><label for="task10">Desarrollar la función "Crear mi propia Cheky Lista" para todos los usuarios.</label></li>
+            </ul>
+            
+            <h3>Mes 5: Octubre 2025</h3>
+            <ul>
+                <li><span class="week">Semanas 1-2:</span><input type="checkbox" id="task11"><label for="task11">Elegir segunda ciudad (ej. CDMX) y usar IA para generar 15 listas iniciales.</label></li>
+                <li><span class="week">Semanas 3-4:</span><input type="checkbox" id="task12"><label for="task12">Reclutar 10 "Curadores Fundadores" en CDMX y lanzar la ciudad en la plataforma.</label></li>
+            </ul>
+
+            <h3>Mes 6: Noviembre 2025</h3>
+            <ul>
+                <li><span class="week">Semanas 1-2:</span><input type="checkbox" id="task13"><label for="task13">Diseñar y desarrollar la funcionalidad de "Magic List" (Generador con IA).</label></li>
+                <li><span class="week">Semanas 3-4:</span><input type="checkbox" id="task14"><label for="task14">Lanzar "Cheky Premium" con Magic List como función estrella. Ofrecer 3 meses gratis a usuarios existentes.</label></li>
+            </ul>
+
+            <h3>Meses 7-9: Diciembre 2025 - Febrero 2026</h3>
+            <ul>
+                <li><span class="week">Dic:</span><input type="checkbox" id="task15"><label for="task15"><strong>INICIO DESARROLLO NATIVO:</strong> Configurar proyecto en React Native y empezar a construir la UI base.</label></li>
+                 <li><span class="week">Ene:</span><input type="checkbox" id="task16"><label for="task16">Implementar funciones core en la app nativa (autenticación, listas, mapas nativos).</label></li>
+                 <li><span class="week">Feb:</span><input type="checkbox" id="task17"><label for="task17">Integrar cámara nativa y sistema de notificaciones push. Preparar para beta.</label></li>
+            </ul>
+        </div>
+        
+        <!-- FASE 3: Escala y Expansión (1 Año) -->
+        <div class="phase" id="phase3" style="border-color: #2ecc71;">
+            <h2 style="color: #2ecc71;">Fase 3: Escala y Expansión (Marzo 2026 - Noviembre 2026)</h2>
+            <p><strong>Objetivo Principal:</strong> Lanzar apps nativas, alcanzar masa crítica de usuarios y probar la expansión internacional.</p>
+            
+            <h3>Mes 10: Marzo 2026</h3>
+            <ul>
+                 <li><span class="week">Semanas 1-2:</span><input type="checkbox" id="task18"><label for="task18">Lanzar Beta Cerrada de las apps nativas (iOS/Android) con los "Fundadores".</label></li>
+                 <li><span class="week">Semanas 3-4:</span><input type="checkbox" id="task19"><label for="task19">Corregir bugs y pulir la UX de las apps nativas basado en el feedback de la beta.</label></li>
+            </ul>
+            
+            <h3>Mes 11: Abril 2026</h3>
+            <ul>
+                <li><span class="week">Semanas 1-4:</span><input type="checkbox" id="task20"><label for="task20"><strong>¡GRAN LANZAMIENTO!</strong> Publicar las apps nativas en la App Store y Google Play. Campaña de comunicación.</label></li>
+            </ul>
+
+            <h3>Mes 12: Mayo 2026</h3>
+            <ul>
+                 <li><span class="week">Semanas 1-4:</span><input type="checkbox" id="task21"><label for="task21">Analizar datos de descarga y uso. Empezar a invertir en campañas de App Install.</label></li>
+            </ul>
+
+            <h3>Meses 13-15: Junio - Agosto 2026</h3>
+            <ul>
+                <li><span class="week">Jun-Jul:</span><input type="checkbox" id="task22"><label for="task22">Desarrollar el dashboard MVP de "Cheky for Business".</label></li>
+                <li><span class="week">Ago:</span><input type="checkbox" id="task23"><label for="task23">Analizar datos de tráfico internacional y seleccionar 1 ciudad para la prueba piloto (ej. Madrid/Austin).</label></li>
+            </ul>
+
+            <h3>Meses 16-18: Septiembre - Noviembre 2026</h3>
+            <ul>
+                <li><span class="week">Sep:</span><input type="checkbox" id="task24"><label for="task24"><strong>LANZAMIENTO INTERNACIONAL SIGILOSO:</strong> Generar contenido con IA y reclutar curadores en la ciudad piloto.</label></li>
+                <li><span class="week">Oct:</span><input type="checkbox" id="task25"><label for="task25">Monitorear la adopción en el mercado internacional. Validar la hipótesis de expansión.</label></li>
+                <li><span class="week">Nov:</span><input type="checkbox" id="task26"><label for="task26">Planificar la estrategia para 2027 basada en los datos. ¡Celebrar los 18 meses de progreso!</label></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const progressBar = document.getElementById('progressBar');
+            const totalTasks = checkboxes.length;
+
+            function updateProgress() {
+                const checkedTasks = document.querySelectorAll('input[type="checkbox"]:checked').length;
+                const percentage = totalTasks > 0 ? Math.round((checkedTasks / totalTasks) * 100) : 0;
+                progressBar.style.width = percentage + '%';
+                progressBar.textContent = percentage + '%';
+            }
+
+            checkboxes.forEach(function(checkbox) {
+                // Load saved state
+                const savedState = localStorage.getItem(checkbox.id);
+                if (savedState === 'true') {
+                    checkbox.checked = true;
+                    checkbox.parentElement.classList.add('completed');
+                }
+
+                // Add event listener
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        this.parentElement.classList.add('completed');
+                        localStorage.setItem(this.id, 'true');
+                    } else {
+                        this.parentElement.classList.remove('completed');
+                        localStorage.setItem(this.id, 'false');
+                    }
+                    updateProgress();
+                });
+            });
+
+            // Initial progress update
+            updateProgress();
+        });
+    </script>
+
+</body>
+</html>
