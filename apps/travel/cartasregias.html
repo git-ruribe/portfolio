@@ -691,17 +691,51 @@
             align-items: center;
             padding: 12px 15px;
             background: var(--dark-brown);
-            border-radius: 0; /* Sin bordes en móvil */
+            border-radius: 0 0 15px 15px; /* Restaurar border-radius */
             width: 100%;
             flex-shrink: 0;
-            position: fixed; /* Posición fija */
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            min-height: 60px; /* Altura generosa para tocar */
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+            position: relative; /* Cambiar de fixed a relative en desktop */
+            bottom: auto; /* Reset bottom */
+            left: auto; /* Reset left */
+            right: auto; /* Reset right */
+            z-index: 100;
+            min-height: 60px;
+            box-shadow: none; /* Quitar sombra en desktop */
         }
+        
+        /* Solo en móvil usar posición fija */
+        @media (max-width: 767px) {
+            .navigation {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 1000;
+                border-radius: 0; /* Sin bordes en móvil */
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+            }
+            
+            .album-book-wrapper {
+                margin: 15px 15px 90px 15px; /* Margen inferior solo en móvil */
+            }
+        }
+        
+        /* En desktop, margen normal */
+        @media (min-width: 768px) {
+            .album-book-wrapper {
+                margin: 15px; /* Margen normal */
+            }
+            
+            .page-content {
+                padding: 20px; /* Padding normal */
+            }
+            
+            .restaurant-content-wrapper {
+                padding: 20px 10px 15px 10px; /* Padding normal */
+            }
+        }
+
+        
         .nav-btn:first-child { justify-self: start; }
         .page-indicator { 
             justify-self: center; 
