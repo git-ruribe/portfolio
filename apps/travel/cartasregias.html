@@ -676,7 +676,7 @@
         <div id="imageModal" class="image-modal-overlay">
             <div class="image-modal-content">
                 <!-- Added onerror handler -->
-                <img id="modalImage" src="" alt="Ampliar imagen" class="image-modal-img" onerror="this.style.display='none'; console.error('Error al cargar imagen en modal:', this.src);">
+                <img id="modalImage" src="" alt="Ampliar imagen" class="image-modal-img">
                 <button class="image-modal-close-btn" onclick="closeImageModal()">
                     <i class="fas fa-times"></i>
                 </button>
@@ -1280,12 +1280,12 @@ function importPhotos(event) {
         window.closeInfoModal = function() { infoModal.classList.remove('show'); };
 
         window.openImageModal = function(imageUrl) {
-            modalImageEl.style.display = 'block'; 
-            // Solo permitir imágenes con extensión válida
-            if (!imageUrl || !imageUrl.match(/\.(jpg|jpeg|png|gif|webp)$/i) || imageUrl.startsWith('https://placehold.co/')) {
-                modalImageEl.style.display = 'none';
+            // Remover la validación problemática de extensiones
+            if (!imageUrl || imageUrl.startsWith('https://placehold.co/')) {
                 return;
             }
+            
+            modalImageEl.style.display = 'block'; 
             modalImageEl.src = imageUrl;
             imageModal.classList.add('show');
         };
