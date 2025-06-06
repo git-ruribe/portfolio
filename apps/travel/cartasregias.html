@@ -432,9 +432,10 @@
             min-height: 0;
             width: 90%;
             max-width: 350px;
-            background-color: var(--light-brown);
-            border: 3px solid var(--primary-brown);
-            border-radius: 15px;
+            /* Quitar el background y border fijo */
+            /* background-color: var(--light-brown); */
+            /* border: 3px solid var(--primary-brown); */
+            /* border-radius: 15px; */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -442,6 +443,27 @@
             cursor: pointer;
             overflow: hidden;
             margin-bottom: 15px;
+        }
+
+        .user-photo-frame {
+            background-color: var(--light-brown);
+            border: 3px solid var(--primary-brown);
+            border-radius: 15px;
+            padding: 8px;
+            max-width: 100%;
+            max-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .user-photo-frame img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            display: block;
         }
 
         .photo-display-area img.user-photo-image {
@@ -1262,7 +1284,10 @@ function importPhotos(event) {
             let photoAreaOnClick;
 
             if (savedUserPhoto) {
-                photoAreaContent = `<img src="${savedUserPhoto}" alt="Tu foto en ${restaurant.name}" class="user-photo-image">`;
+                photoAreaContent = `
+                    <div class="user-photo-frame">
+                        <img src="${savedUserPhoto}" alt="Tu foto en ${restaurant.name}" class="user-photo-image">
+                    </div>`;
                 photoAreaOnClick = `openImageModal('${savedUserPhoto}')`;
             } else {
                 photoAreaContent = `
