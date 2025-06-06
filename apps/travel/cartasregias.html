@@ -405,29 +405,33 @@
         .restaurant-list-item:hover { background-color: var(--cream); }
 
         /* Restaurant Page Specific Styles */
+        /* Contenedor principal del restaurante - layout fijo */
         .restaurant-content-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-start; /* Cambio clave: flex-start en lugar de space-between */
             height: 100%;
             padding: 20px 10px 15px 10px;
             overflow: hidden;
+            position: relative;
         }
-
+        
+        /* Título del restaurante - posición fija */
         .restaurant-title {
             font-family: 'Permanent Marker', cursive;
             font-size: 2rem;
             color: var(--primary-brown);
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px; /* Espacio fijo */
             flex-shrink: 0;
             margin-top: 10px;
+            order: 1; /* Asegurar orden */
         }
-
+        
+        /* Área de foto - ahora adaptativa */
         .photo-display-area {
-            flex-grow: 1;
-            min-height: 0;
+            /* Eliminar flex-grow y min-height fijos */
             width: 90%;
             max-width: 350px;
             background-color: var(--light-brown);
@@ -439,16 +443,39 @@
             position: relative;
             cursor: pointer;
             overflow: hidden;
-            margin-bottom: 15px;
-        }
-
-        .photo-display-area img.user-photo-image {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            border-radius: 12px;
+            margin-bottom: 15px; /* Espacio fijo hacia el botón */
+            order: 2; /* Asegurar orden */
+            
+            /* CLAVE: Altura adaptativa */
+            min-height: 120px; /* Mínimo para placeholder */
+            max-height: 400px; /* Máximo para no romper layout */
         }
         
+        /* Cuando NO hay foto (placeholder) */
+        .photo-display-area:not(:has(.user-photo-image)) {
+            height: 200px; /* Altura fija para placeholder */
+            aspect-ratio: 4/3; /* Proporción estándar */
+        }
+        
+        /* Cuando SÍ hay foto - el contenedor se adapta */
+        .photo-display-area:has(.user-photo-image) {
+            height: auto; /* Altura automática */
+            min-height: 120px;
+            max-height: 350px; /* Limitar para no romper layout */
+        }
+        
+        /* Imagen del usuario - se adapta al contenedor */
+        .photo-display-area img.user-photo-image {
+            width: 100%;
+            height: auto; /* Altura automática para mantener proporción */
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /* Mantener proporción sin recortar */
+            border-radius: 12px;
+            display: block;
+        }
+        
+        /* Placeholder - mantener centrado */
         .user-photo-placeholder-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -460,11 +487,23 @@
             color: var(--dark-brown);
             pointer-events: none;
         }
-        .user-photo-placeholder-icon { font-size: 3rem; margin-bottom: 0.3rem; }
-        .user-photo-text { font-size: 1rem; font-weight: 600; text-align: center; }
-        .user-photo-placeholder-overlay.hidden { display: none; }
-
-
+        
+        .user-photo-placeholder-icon { 
+            font-size: 3rem; 
+            margin-bottom: 0.3rem; 
+        }
+        
+        .user-photo-text { 
+            font-size: 1rem; 
+            font-weight: 600; 
+            text-align: center; 
+        }
+        
+        .user-photo-placeholder-overlay.hidden { 
+            display: none; 
+        }
+        
+        /* Botón de información - posición fija al final */
         .info-button {
             background: var(--orange);
             color: white;
@@ -477,15 +516,84 @@
             transition: all 0.2s ease;
             box-shadow: 0 3px 8px rgba(0,0,0,0.2);
             font-family: 'Caveat', cursive;
-            flex-shrink: 0;
+            flex-shrink: 0; /* No se encoge */
             display: flex;
             align-items: center;
             gap: 8px;
+            order: 3; /* Asegurar orden */
+            margin-top: auto; /* Empujar hacia abajo */
+            margin-bottom: 10px; /* Espacio del fondo */
         }
+        
         .info-button:hover {
             background: #E67E00;
             transform: translateY(-1px);
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        
+        /* Alternativa usando CSS Grid para layout más preciso */
+        .restaurant-content-wrapper.grid-layout {
+            display: grid;
+            grid-template-rows: auto minmax(120px, 1fr) auto auto; /* Título, Foto (adaptativa), Botón, Espacio */
+            grid-template-areas: 
+                "title"
+                "photo" 
+                "button"
+                "spacer";
+            gap: 15px;
+            height: 100%;
+            padding: 20px 10px 15px 10px;
+            align-items: center;
+            justify-items: center;
+        }
+        
+        .restaurant-content-wrapper.grid-layout .restaurant-title {
+            grid-area: title;
+            margin: 0;
+        }
+        
+        .restaurant-content-wrapper.grid-layout .photo-display-area {
+            grid-area: photo;
+            width: 90%;
+            max-width: 350px;
+            height: auto;
+            min-height: 120px;
+            max-height: 350px;
+            margin: 0;
+        }
+        
+        .restaurant-content-wrapper.grid-layout .info-button {
+            grid-area: button;
+            margin: 0;
+        }
+        
+        /* Soporte para :has() - para navegadores que no lo soporten */
+        @supports not (selector(:has(*))) {
+            .photo-display-area.has-photo {
+                height: auto;
+                min-height: 120px;
+                max-height: 350px;
+            }
+            
+            .photo-display-area.no-photo {
+                height: 200px;
+                aspect-ratio: 4/3;
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .photo-display-area {
+                width: 95%;
+                max-width: 320px;
+                min-height: 100px;
+                max-height: 300px;
+            }
+            
+            .restaurant-title {
+                font-size: 1.8rem;
+                margin-bottom: 12px;
+            }
         }
 
         /* Modal Styles */
@@ -1000,6 +1108,65 @@ async function handlePhotoUpload(event) {
     event.target.value = '';
 }
 
+        // Función auxiliar para actualizar clases cuando se añade una foto
+function updatePhotoDisplayClasses() {
+    const photoDisplayArea = document.querySelector('.photo-display-area');
+    if (photoDisplayArea) {
+        const hasImage = photoDisplayArea.querySelector('.user-photo-image');
+        
+        if (hasImage) {
+            photoDisplayArea.classList.remove('no-photo');
+            photoDisplayArea.classList.add('has-photo');
+        } else {
+            photoDisplayArea.classList.remove('has-photo');
+            photoDisplayArea.classList.add('no-photo');
+        }
+    }
+}
+
+        // Modificación de handlePhotoUpload para actualizar las clases
+        async function handlePhotoUploadWithAdaptiveFrame(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+        
+            try {
+                showLoadingIndicator(true);
+                
+                const originalInfo = {
+                    name: file.name,
+                    size: file.size,
+                    sizeKB: Math.round(file.size / 1024),
+                };
+                
+                console.log('Procesando imagen:', originalInfo.name, `(${originalInfo.sizeKB}KB)`);
+                
+                // Comprimir imagen CON filtro vintage automático
+                const processedDataUrl = await compressImageWithVintageFilter(file, 800, 600, 0.8);
+                
+                const processedSize = Math.round(processedDataUrl.length * 0.75);
+                const compressionRatio = Math.round((1 - processedSize / originalInfo.size) * 100);
+                
+                console.log(`✨ Filtro vintage aplicado: ${originalInfo.sizeKB}KB → ${Math.round(processedSize/1024)}KB (${compressionRatio}% reducción)`);
+                
+                // Guardar imagen procesada
+                localStorage.setItem('user_photo_' + currentRestaurantForUpload, processedDataUrl);
+                
+                // Actualizar vista completa (esto ya actualizará las clases)
+                renderCurrentPage();
+                
+                showLoadingIndicator(false);
+                showSuccessMessage(`📸 Foto vintage guardada (${Math.round(processedSize/1024)}KB)`);
+                
+            } catch (error) {
+                console.error('Error al procesar imagen:', error);
+                showLoadingIndicator(false);
+                alert('Error al procesar la imagen. Por favor, intenta con otra imagen.');
+            }
+            
+            event.target.value = '';
+        }
+
+
 // Funciones auxiliares (mantén las que ya tienes del código anterior)
 function showLoadingIndicator(show = true) {
     let loader = document.getElementById('imageLoader');
@@ -1218,10 +1385,12 @@ function importPhotos(event) {
             const savedUserPhoto = localStorage.getItem('user_photo_' + restaurant.name);
             let photoAreaContent;
             let photoAreaOnClick;
+            let photoAreaClass = 'photo-display-area';
 
             if (savedUserPhoto) {
                 photoAreaContent = `<img src="${savedUserPhoto}" alt="Tu foto en ${restaurant.name}" class="user-photo-image">`;
                 photoAreaOnClick = `openImageModal('${savedUserPhoto}')`;
+                photoAreaClass += ' has-photo'; // Clase para navegadores sin :has()
             } else {
                 photoAreaContent = `
                     <div class="user-photo-placeholder-overlay">
@@ -1229,15 +1398,15 @@ function importPhotos(event) {
                         <p class="user-photo-text">Toca para añadir tu foto</p>
                     </div>`;
                 photoAreaOnClick = `selectUserPhoto('${restaurant.name.replace(/'/g, "\\'")}', event)`;
+                photoAreaClass += ' no-photo'; // Clase para navegadores sin :has()
             }
 
             return `
                 <div class="page-content restaurant-content-wrapper">
                     <!-- <div class="beer-icon">🍺</div> -->
-
-                    
+      
                     <h2 class="restaurant-title">${restaurant.name}</h2>
-                    <div class="photo-display-area" onclick="${photoAreaOnClick}">
+                    <div class="${photoAreaClass}" onclick="${photoAreaOnClick}">
                         ${photoAreaContent}
                     </div>
                     <button class="info-button" onclick="openInfoModal(
