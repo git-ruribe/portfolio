@@ -640,6 +640,14 @@
     </style>
 </head>
 <body>
+    <!-- 🍺 BOTÓN ANIMADO DE DONACIÓN -->
+    <button class="beer-donation-btn" onclick="handleBeerDonation()" title="¡Invítame una cerveza!">
+        <div class="beer-icon-container">
+            <span class="beer-icon">🍺</span>
+            <span class="click-icon">👆</span>
+            <span class="happy-icon">😊</span>
+        </div>
+    </button>
     <div class="album-container">
         <div class="album-book-wrapper">
             <div id="currentPage" class="page">
@@ -1226,14 +1234,7 @@ function importPhotos(event) {
             return `
                 <div class="page-content restaurant-content-wrapper">
                     <!-- <div class="beer-icon">🍺</div> -->
-                                <!-- 🍺 BOTÓN ANIMADO DE DONACIÓN -->
-                    <button class="beer-donation-btn" onclick="handleBeerDonation()" title="¡Invítame una cerveza!">
-                        <div class="beer-icon-container">
-                            <span class="beer-icon">🍺</span>
-                            <span class="click-icon">👆</span>
-                            <span class="happy-icon">😊</span>
-                        </div>
-                    </button>
+
                     
                     <h2 class="restaurant-title">${restaurant.name}</h2>
                     <div class="photo-display-area" onclick="${photoAreaOnClick}">
