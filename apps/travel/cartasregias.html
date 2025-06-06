@@ -609,6 +609,40 @@
         }
         .image-modal-close-btn:hover { background: rgba(0,0,0,0.8); }
 
+        .image-modal-action-btn {
+            position: absolute;
+            bottom: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+        
+        .image-modal-delete-btn {
+            right: 70px;
+        }
+        
+        .image-modal-delete-btn:hover {
+            background: #dc3545;
+        }
+        
+        .image-modal-replace-btn {
+            right: 15px;
+        }
+        
+        .image-modal-replace-btn:hover {
+            background: var(--orange);
+        }
+
 
         /* Navigation bar at the bottom */
         .navigation {
@@ -677,10 +711,16 @@
     
         <div id="imageModal" class="image-modal-overlay">
             <div class="image-modal-content">
-                <!-- Added onerror handler -->
                 <img id="modalImage" src="" alt="Ampliar imagen" class="image-modal-img">
                 <button class="image-modal-close-btn" onclick="closeImageModal()">
                     <i class="fas fa-times"></i>
+                </button>
+                <!-- Agregar estos dos botones: -->
+                <button class="image-modal-action-btn image-modal-delete-btn" onclick="deleteCurrentImage()" title="Eliminar foto">
+                    <i class="fas fa-trash"></i>
+                </button>
+                <button class="image-modal-action-btn image-modal-replace-btn" onclick="replaceCurrentImage()" title="Reemplazar foto">
+                    <i class="fas fa-camera"></i>
                 </button>
             </div>
         </div>
@@ -1282,14 +1322,44 @@ function importPhotos(event) {
         window.closeInfoModal = function() { infoModal.classList.remove('show'); };
 
         window.openImageModal = function(imageUrl) {
-            // Remover la validación problemática de extensiones
             if (!imageUrl || imageUrl.startsWith('https://placehold.co/')) {
                 return;
+            }
+            
+            // Encontrar qué restaurante tiene esta imagen
+            currentImageRestaurant = null;
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('user_photo_') && localStorage.getItem(key) === imageUrl) {
+                    currentImageRestaurant = key.replace('user_photo_', '');
+                    break;
+                }
             }
             
             modalImageEl.style.display = 'block'; 
             modalImageEl.src = imageUrl;
             imageModal.classList.add('show');
+        };
+        
+        // Función para eliminar imagen
+        window.deleteCurrentImage = function() {
+            if (!currentImageRestaurant) return;
+            
+            if (confirm('¿Estás seguro de que quieres eliminar esta foto?')) {
+                localStorage.removeItem('user_photo_' + currentImageRestaurant);
+                closeImageModal();
+                renderCurrentPage();
+                showSuccessMessage('📸 Foto eliminada');
+            }
+        };
+        
+        // Función para reemplazar imagen
+        window.replaceCurrentImage = function() {
+            if (!currentImageRestaurant) return;
+            
+            currentRestaurantForUpload = currentImageRestaurant;
+            closeImageModal();
+            userPhotoInput.click();
         };
         
         window.closeImageModal = function() {
