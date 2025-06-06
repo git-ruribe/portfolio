@@ -1734,6 +1734,16 @@ function importPhotos(event) {
                 if (e.target === modal) closeDonationModal();
             });
         }
+
+        function closeDonationModal() {
+            const modal = document.getElementById('donationModal');
+            if (modal) {
+                modal.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(modal);
+                }, 300);
+            }
+        }
         
         // Funciones para los botones del anuncio
         function openRegiaWebsite() {
