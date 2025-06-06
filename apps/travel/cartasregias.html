@@ -32,6 +32,27 @@
             justify-content: center;
         }
 
+        /* Ícono de cerveza en esquina superior derecha */
+        .beer-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 2rem;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            opacity: 0.8;
+            transition: all 0.3s ease;
+            z-index: 10;
+            pointer-events: none;
+            transform: rotate(-10deg);
+            animation: beerFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes beerFloat {
+            0%, 100% { transform: rotate(-10deg) translateY(0px); }
+            50% { transform: rotate(-10deg) translateY(-3px); }
+        }
+
         .album-container {
             max-width: 450px;
             width: 100%;
@@ -995,6 +1016,7 @@ function importPhotos(event) {
 
             return `
                 <div class="page-content restaurant-content-wrapper">
+                    <div class="beer-icon">🍺</div>
                     <h2 class="restaurant-title">${restaurant.name}</h2>
                     <div class="photo-display-area" onclick="${photoAreaOnClick}">
                         ${photoAreaContent}
