@@ -613,7 +613,107 @@ function getFileInfo(file) {
     };
 }
 
-// 4. Función mejorada para manejar la subida de fotos
+// 4. Función mejorada para manejar la subida de fotos (+ filtro)
+//-----------------------------
+        // Función de filtro vintage automático (Sepia + Foto Antigua)
+function applyAutoVintageFilter(imageData) {
+    const data = imageData.data;
+    
+    for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        
+        // 1. Aplicar efecto sepia
+        let newR = Math.min(255, (r * 0.393) + (g * 0.769) + (b * 0.189));
+        let newG = Math.min(255, (r * 0.349) + (g * 0.686) + (b * 0.168));
+        let newB = Math.min(255, (r * 0.272) + (g * 0.534) + (b * 0.131));
+        
+        // 2. Añadir efecto de foto antigua
+        // Agregar sutil ruido vintage
+        const noise = (Math.random() - 0.5) * 15;
+        newR = Math.max(0, Math.min(255, newR + noise));
+        newG = Math.max(0, Math.min(255, newG + noise));
+        newB = Math.max(0, Math.min(255, newB + noise));
+        
+        // 3. Reducir contraste para efecto envejecido
+        newR = newR * 0.85 + 35;
+        newG = newG * 0.85 + 25;
+        newB = newB * 0.85 + 15;
+        
+        // 4. Añadir un toque cálido extra
+        newR = Math.min(255, newR * 1.05);
+        newG = Math.min(255, newG * 1.02);
+        newB = Math.max(0, newB * 0.98);
+        
+        data[i] = newR;
+        data[i + 1] = newG;
+        data[i + 2] = newB;
+        // data[i + 3] mantiene la transparencia original
+    }
+    
+    return imageData;
+}
+
+// Función mejorada de compresión con filtro automático
+function compressImageWithVintageFilter(file, maxWidth = 800, maxHeight = 600, quality = 0.8) {
+    return new Promise((resolve, reject) => {
+        // Validar que es una imagen
+        if (!file.type.startsWith('image/')) {
+            reject(new Error('El archivo no es una imagen'));
+            return;
+        }
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        img.onload = () => {
+            // Calcular nuevas dimensiones manteniendo la proporción
+            let { width, height } = img;
+            
+            // Solo redimensionar si la imagen es más grande que los límites
+            if (width > maxWidth || height > maxHeight) {
+                const ratio = Math.min(maxWidth / width, maxHeight / height);
+                width = width * ratio;
+                height = height * ratio;
+            }
+            
+            // Configurar canvas
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Mejorar calidad de renderizado
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            
+            // Dibujar imagen redimensionada
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // ✨ APLICAR FILTRO VINTAGE AUTOMÁTICAMENTE
+            const imageData = ctx.getImageData(0, 0, width, height);
+            const filteredData = applyAutoVintageFilter(imageData);
+            ctx.putImageData(filteredData, 0, 0);
+            
+            // Convertir a base64 con compresión
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+            
+            // Limpiar memoria
+            URL.revokeObjectURL(img.src);
+            
+            resolve(compressedDataUrl);
+        };
+        
+        img.onerror = () => {
+            reject(new Error('Error al cargar la imagen'));
+        };
+        
+        // Cargar imagen
+        img.src = URL.createObjectURL(file);
+    });
+}
+
+// Función simplificada para manejar la subida de fotos con filtro automático
 async function handlePhotoUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -623,20 +723,25 @@ async function handlePhotoUpload(event) {
         showLoadingIndicator(true);
         
         // Obtener información del archivo original
-        const originalInfo = getFileInfo(file);
-        console.log('Archivo original:', originalInfo);
+        const originalInfo = {
+            name: file.name,
+            size: file.size,
+            sizeKB: Math.round(file.size / 1024),
+        };
         
-        // Comprimir imagen
-        const compressedDataUrl = await compressImage(file, 800, 600, 0.8);
+        console.log('Procesando imagen:', originalInfo.name, `(${originalInfo.sizeKB}KB)`);
         
-        // Calcular tamaño comprimido
-        const compressedSize = Math.round(compressedDataUrl.length * 0.75); // Aproximación
-        const compressionRatio = Math.round((1 - compressedSize / originalInfo.size) * 100);
+        // Comprimir imagen CON filtro vintage automático
+        const processedDataUrl = await compressImageWithVintageFilter(file, 800, 600, 0.8);
         
-        console.log(`Compresión exitosa: ${originalInfo.sizeKB}KB → ${Math.round(compressedSize/1024)}KB (${compressionRatio}% reducción)`);
+        // Calcular tamaño procesado
+        const processedSize = Math.round(processedDataUrl.length * 0.75); // Aproximación
+        const compressionRatio = Math.round((1 - processedSize / originalInfo.size) * 100);
         
-        // Guardar imagen comprimida
-        localStorage.setItem('user_photo_' + currentRestaurantForUpload, compressedDataUrl);
+        console.log(`✨ Filtro vintage aplicado y comprimido: ${originalInfo.sizeKB}KB → ${Math.round(processedSize/1024)}KB (${compressionRatio}% reducción)`);
+        
+        // Guardar imagen procesada
+        localStorage.setItem('user_photo_' + currentRestaurantForUpload, processedDataUrl);
         
         // Actualizar vista
         renderCurrentPage();
@@ -644,8 +749,8 @@ async function handlePhotoUpload(event) {
         // Ocultar indicador de carga
         showLoadingIndicator(false);
         
-        // Opcional: mostrar notificación de éxito
-        showSuccessMessage(`Imagen guardada (${Math.round(compressedSize/1024)}KB)`);
+        // Mostrar mensaje de éxito
+        showSuccessMessage(`📸 Foto vintage guardada (${Math.round(processedSize/1024)}KB)`);
         
     } catch (error) {
         console.error('Error al procesar imagen:', error);
@@ -656,6 +761,90 @@ async function handlePhotoUpload(event) {
     // Limpiar input
     event.target.value = '';
 }
+
+// Funciones auxiliares (mantén las que ya tienes del código anterior)
+function showLoadingIndicator(show = true) {
+    let loader = document.getElementById('imageLoader');
+    
+    if (show) {
+        if (!loader) {
+            loader = document.createElement('div');
+            loader.id = 'imageLoader';
+            loader.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 0; left: 0;
+                    width: 100vw; height: 100vh;
+                    background: rgba(0,0,0,0.8);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 2000;
+                    color: white;
+                    font-family: 'Caveat', cursive;
+                    font-size: 1.2rem;
+                ">
+                    <div style="text-align: center;">
+                        <div style="
+                            width: 40px; height: 40px;
+                            border: 3px solid #f3f3f3;
+                            border-top: 3px solid #FF8C00;
+                            border-radius: 50%;
+                            animation: spin 1s linear infinite;
+                            margin: 0 auto 10px;
+                        "></div>
+                        Aplicando filtro vintage...
+                    </div>
+                </div>
+                <style>
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                </style>
+            `;
+            document.body.appendChild(loader);
+        }
+        loader.style.display = 'flex';
+    } else {
+        if (loader) {
+            loader.style.display = 'none';
+        }
+    }
+}
+
+function showSuccessMessage(message) {
+    const successDiv = document.createElement('div');
+    successDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #28a745;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        z-index: 1500;
+        font-family: 'Caveat', cursive;
+        font-size: 1.1rem;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    `;
+    successDiv.textContent = message;
+    
+    document.body.appendChild(successDiv);
+    
+    // Animar entrada
+    setTimeout(() => successDiv.style.opacity = '1', 100);
+    
+    // Remover después de 3 segundos
+    setTimeout(() => {
+        successDiv.style.opacity = '0';
+        setTimeout(() => document.body.removeChild(successDiv), 300);
+    }, 3000);
+}
+//-----------------------------
 
 // 5. Función para mostrar mensaje de éxito
 function showSuccessMessage(message) {
