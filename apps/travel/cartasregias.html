@@ -301,6 +301,8 @@
             transform-style: preserve-3d;
             backface-visibility: hidden;
             transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
             overflow: hidden;
         }
 
@@ -1436,22 +1438,19 @@ function importPhotos(event) {
 
         function navigateToPage(newIndex, direction = 'forward') {
             if (isAnimating || newIndex < 0 || newIndex >= contentPages.length) return;
+            
             isAnimating = true;
             const animationClass = direction === 'forward' ? 'flipping-forward' : 'flipping-backward';
+            
+            // Aplicar animación
             currentPageEl.classList.add(animationClass);
+            
             setTimeout(() => {
                 currentPageIndex = newIndex;
                 renderCurrentPage();
-                currentPageEl.style.transform = direction === 'forward' ? 'rotateY(180deg)' : 'rotateY(-180deg)';
-                currentPageEl.classList.remove(animationClass); 
-                void currentPageEl.offsetWidth; 
-                currentPageEl.style.transition = 'transform 0.0s';
-                currentPageEl.style.transform = 'rotateY(0deg)';
-                setTimeout(() => {
-                    currentPageEl.style.transition = 'transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1)';
-                    isAnimating = false;
-                }, 50);
-            }, 400); 
+                currentPageEl.classList.remove(animationClass);
+                isAnimating = false;
+            }, 800); // Coincidir con la duración CSS (0.8s)
         }
         
         window.navigateToRestaurantPage = function(restaurantName) {
