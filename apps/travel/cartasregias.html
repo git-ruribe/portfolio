@@ -786,7 +786,7 @@
 </head>
 <body>
     <!-- 🍺 BOTÓN ANIMADO DE DONACIÓN -->
-    <button class="beer-donation-btn attention-grabber" onclick="handleBeerDonation()" title="¡Invítame una cerveza!">
+    <button class="beer-donation-btn attention-grabber" onclick="handleBeerDonation()" title="¡Conoce Cerveza Buena!">
         <div class="beer-icon-container">
             <span class="beer-icon">🍺</span>
             <span class="click-icon">👆</span>
@@ -1567,19 +1567,6 @@ function importPhotos(event) {
             }
         });
 
-        function handleBeerDonation() {
-            // Aquí puedes integrar con PayPal, Stripe, Mercado Pago, etc.
-            
-            // OPCIÓN 1: PayPal simple
-            const paypalUrl = 'https://www.paypal.me/tuusuario/50'; // Cambia por tu link
-            
-            // OPCIÓN 2: Mercado Pago (más popular en México)
-            const mercadoPagoUrl = 'https://link.mercadopago.com.mx/tulink'; // Cambia por tu link
-            
-            // Modal de donación personalizado
-            showDonationModal();
-        }
-
         function showDonationModal() {
             const modal = document.createElement('div');
             modal.id = 'donationModal';
@@ -1587,7 +1574,7 @@ function importPhotos(event) {
                 position: fixed;
                 top: 0; left: 0;
                 width: 100vw; height: 100vh;
-                background: rgba(0,0,0,0.8);
+                background: rgba(0,0,0,0.85);
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -1598,114 +1585,154 @@ function importPhotos(event) {
             
             modal.innerHTML = `
                 <div style="
-                    background: var(--cream);
-                    padding: 30px;
+                    background: linear-gradient(135deg, #2C1810, #4A2C17);
+                    padding: 40px 30px;
                     border-radius: 20px;
-                    border: 4px solid var(--primary-brown);
+                    border: 3px solid #D4AF37;
                     max-width: 90%;
-                    width: 350px;
+                    width: 400px;
                     text-align: center;
-                    font-family: 'Caveat', cursive;
-                    color: var(--dark-brown);
+                    color: #F5F5DC;
                     position: relative;
                     transform: translateY(-30px);
                     transition: transform 0.3s ease;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
                 ">
+                    <!-- Etiqueta de patrocinio -->
+                    <div style="
+                        position: absolute;
+                        top: -8px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        background: #D4AF37;
+                        color: #2C1810;
+                        padding: 4px 15px;
+                        border-radius: 10px;
+                        font-size: 0.8rem;
+                        font-weight: 700;
+                        letter-spacing: 1px;
+                        font-family: 'Caveat', cursive;
+                    ">PATROCINADO</div>
+                    
+                    <!-- Logo ficticio -->
+                    <div style="
+                        width: 80px;
+                        height: 80px;
+                        background: linear-gradient(45deg, #D4AF37, #FFD700);
+                        border-radius: 50%;
+                        margin: 20px auto;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 2.5rem;
+                        border: 3px solid #F5F5DC;
+                        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+                    ">🍺</div>
+                    
                     <h3 style="
                         font-family: 'Permanent Marker', cursive;
-                        color: var(--primary-brown);
-                        margin-bottom: 15px;
+                        color: #D4AF37;
+                        margin-bottom: 10px;
                         font-size: 1.8rem;
-                    ">¡Gracias por el apoyo! 🍺</h3>
+                        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+                    ">Cerveza Buena</h3>
                     
                     <p style="
-                        font-size: 1.2rem;
+                        font-style: italic;
                         margin-bottom: 20px;
+                        font-size: 1rem;
+                        color: #D4AF37;
+                        opacity: 0.9;
+                    ">"El sabor auténtico de Nuevo León"</p>
+                    
+                    <p style="
+                        font-size: 1.1rem;
+                        margin-bottom: 25px;
                         line-height: 1.4;
+                        font-family: 'Caveat', cursive;
                     ">
-                        Si te gusta esta app y te ha ayudado a descubrir 
-                        los sabores de Nuevo León, ¡invítame una cerveza! 
+                        <strong>Cerveza Buena</strong> es una cerveza artesanal 100% regiomontana, 
+                        elaborada con ingredientes locales y el espíritu de nuestras tradiciones.
+                        <br><br>
+                        🌟 <em>Perfecta para acompañar tus aventuras gastronómicas</em>
                     </p>
+                    
+                    <div style="
+                        background: rgba(212, 175, 55, 0.1);
+                        padding: 15px;
+                        border-radius: 10px;
+                        margin-bottom: 20px;
+                        border: 1px solid rgba(212, 175, 55, 0.3);
+                    ">
+                        <p style="
+                            margin: 0;
+                            font-size: 0.95rem;
+                            line-height: 1.3;
+                        ">
+                            <strong>🍻 Estilos disponibles:</strong><br>
+                            • Buena Clara (Lager) • Buena Ámbar (Vienna)<br>
+                            • Buena Negra (Porter) • Buena IPA (Hoppy)
+                        </p>
+                    </div>
                     
                     <div style="
                         display: flex;
                         flex-direction: column;
-                        gap: 12px;
+                        gap: 10px;
                         margin-bottom: 20px;
                     ">
-                        <button onclick="openDonationLink('paypal')" style="
-                            background: #0070ba;
-                            color: white;
+                        <button onclick="openRegiaWebsite()" style="
+                            background: linear-gradient(45deg, #D4AF37, #FFD700);
+                            color: #2C1810;
                             border: none;
-                            padding: 12px 20px;
-                            border-radius: 8px;
+                            padding: 12px 25px;
+                            border-radius: 25px;
                             font-size: 1.1rem;
-                            font-weight: 600;
+                            font-weight: 700;
                             cursor: pointer;
-                            transition: all 0.2s ease;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            gap: 8px;
+                            transition: all 0.3s ease;
+                            font-family: 'Caveat', cursive;
+                            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
                         ">
-                            <i class="fab fa-paypal"></i>
-                            PayPal - $50 MXN
+                            🌐 Visitar Cerveza Buena
                         </button>
                         
-                        <button onclick="openDonationLink('mercadopago')" style="
-                            background: #00a0e0;
-                            color: white;
-                            border: none;
-                            padding: 12px 20px;
-                            border-radius: 8px;
-                            font-size: 1.1rem;
+                        <button onclick="findRegiaStores()" style="
+                            background: transparent;
+                            color: #D4AF37;
+                            border: 2px solid #D4AF37;
+                            padding: 10px 25px;
+                            border-radius: 25px;
+                            font-size: 1rem;
                             font-weight: 600;
                             cursor: pointer;
-                            transition: all 0.2s ease;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            gap: 8px;
+                            transition: all 0.3s ease;
+                            font-family: 'Caveat', cursive;
                         ">
-                            💳 Mercado Pago - $50 MXN
-                        </button>
-                        
-                        <button onclick="showTransferInfo()" style="
-                            background: var(--orange);
-                            color: white;
-                            border: none;
-                            padding: 12px 20px;
-                            border-radius: 8px;
-                            font-size: 1.1rem;
-                            font-weight: 600;
-                            cursor: pointer;
-                            transition: all 0.2s ease;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            gap: 8px;
-                        ">
-                            🏦 Transferencia Bancaria
+                            📍 Puntos de venta en MTY
                         </button>
                     </div>
                     
                     <p style="
-                        font-size: 0.9rem;
-                        color: #666;
+                        font-size: 0.85rem;
+                        color: rgba(245, 245, 220, 0.7);
                         margin-bottom: 15px;
+                        line-height: 1.3;
                     ">
-                        ¡Cada donación ayuda a mantener y mejorar la app! 🙏
+                        Apoya a los productores locales y disfruta<br>
+                        el auténtico sabor regiomontano 🇲🇽
                     </p>
                     
                     <button onclick="closeDonationModal()" style="
-                        background: #666;
+                        background: rgba(100, 100, 100, 0.8);
                         color: white;
                         border: none;
                         padding: 8px 20px;
                         border-radius: 20px;
-                        font-size: 1rem;
+                        font-size: 0.95rem;
                         cursor: pointer;
                         font-family: 'Caveat', cursive;
+                        transition: background 0.2s ease;
                     ">
                         Cerrar
                     </button>
@@ -1726,49 +1753,24 @@ function importPhotos(event) {
             });
         }
         
-        function openDonationLink(platform) {
-            let url;
-            
-            switch(platform) {
-                case 'paypal':
-                    url = 'https://www.paypal.me/tuusuario/50'; // CAMBIAR POR TU LINK
-                    break;
-                case 'mercadopago':
-                    url = 'https://link.mercadopago.com.mx/tulink'; // CAMBIAR POR TU LINK
-                    break;
-            }
-            
-            if (url) {
-                window.open(url, '_blank');
-                closeDonationModal();
-                
-                // Mostrar mensaje de agradecimiento
-                setTimeout(() => {
-                    showSuccessMessage('¡Gracias por tu apoyo! 🍺🙏');
-                }, 500);
-            }
+        // Funciones para los botones del anuncio
+        function openRegiaWebsite() {
+            // Simular sitio web (puedes cambiar por una URL real más adelante)
+            alert('🍺 ¡Próximamente! Cerveza Buena estará disponible en toda la zona metropolitana de Monterrey.');
+            closeDonationModal();
         }
         
-        function showTransferInfo() {
-            alert(`Transferencia Bancaria:
-            
-        Banco: BBVA
-        Cuenta: 1234567890
-        CLABE: 012345678901234567
-        Nombre: Tu Nombre
+        function findRegiaStores() {
+            alert(`📍 Puntos de venta Cerveza Buena:
         
-        ¡Gracias por tu apoyo! 🍺`); // CAMBIAR POR TUS DATOS REALES
-        }
+        🏪 Tiendas de conveniencia selectas
+        🍺 Bares y cantinas del centro de MTY  
+        🛒 Mercados locales de San Pedro
+        🎯 Eventos gastronómicos regionales
         
-        function closeDonationModal() {
-            const modal = document.getElementById('donationModal');
-            if (modal) {
-                modal.style.opacity = '0';
-                setTimeout(() => {
-                    document.body.removeChild(modal);
-                }, 300);
-            }
+        ¡Próximamente en más ubicaciones!`);
         }
+
 
         
     </script>
