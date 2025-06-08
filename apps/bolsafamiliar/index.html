@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💰💰 Bolsa Familiar</title>
+    <title>💰 Bolsa Familiar</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
@@ -620,7 +620,7 @@
             auth.signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                     currentUser = userCredential.user;
-                    loadUserProfile();
+                    Profile();
                 })
                 .catch((error) => {
                     setLoading('login-btn', false);
@@ -630,23 +630,39 @@
         }
 
         function loadUserProfile() {
-            // Para Firebase:
+            console.log("=== DEBUG LOAD USER PROFILE ===");
+            console.log("currentUser:", currentUser);
+            console.log("currentUser.uid:", currentUser.uid);
+            console.log("currentUser.email:", currentUser.email);
+            console.log("currentUser.displayName:", currentUser.displayName);
+            
             database.ref('users/' + currentUser.uid).once('value')
                 .then((snapshot) => {
                     const userData = snapshot.val();
+                    console.log("=== DEBUG USER DATA FROM DB ===");
+                    console.log("userData completo:", userData);
+                    console.log("userData.name:", userData?.name);
+                    console.log("userData.role:", userData?.role);
+                    console.log("userData.email:", userData?.email);
+                    
                     if (!userData) {
                         showError('error-container', 'Usuario no encontrado en la familia. Contacta a un administrador.');
                         logout();
                         return;
                     }
+                    
                     userRole = userData.role;
-                    currentUser.displayName = userData.name;
+                    currentUser.displayName = userData.name; // Aquí es donde se asigna el nombre
+                    console.log("=== DESPUÉS DE ASIGNACIÓN ===");
+                    console.log("userRole:", userRole);
+                    console.log("currentUser.displayName:", currentUser.displayName);
+                    
                     loadFamilyData();
                 })
                 .catch((error) => {
+                    console.error("Error cargando perfil:", error);
                     showError('error-container', 'Error al cargar perfil: ' + error.message);
                 });
-            
         }
 
         function loadFamilyData() {
@@ -689,6 +705,11 @@
         // ========================================
 
         function showMainApp() {
+
+            console.log("=== DEBUG SHOW MAIN APP ===");
+            console.log("currentUser.displayName:", currentUser.displayName);
+            console.log("userRole:", userRole);
+            
             document.getElementById('auth-container').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
             
