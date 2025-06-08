@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💰💰 Bolsa Familiar</title>
+    <title>💰 Bolsa Familiar</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
@@ -762,8 +762,8 @@
 
         function loadMyStats() {
             // Calcular estadísticas del usuario actual
-            const myRequests = familyData.requests.filter(r => r.userId === currentUser.uid);
-            const myExpenses = familyData.expenses.filter(e => e.userId === currentUser.uid);
+            const myRequests = (familyData.requests || []).filter(r => r.userId === currentUser.uid);
+            const myExpenses = (familyData.expenses || []).filter(e => e.userId === currentUser.uid);
             
             const myReceived = myRequests
                 .filter(r => r.status === 'approved')
@@ -805,24 +805,14 @@
             const request = {
                 id: Date.now().toString(),
                 userId: currentUser.uid,
-                userName: currentUser.displayName,
+                userName: userName,
                 amount: amount,
                 reason: reason,
                 status: 'pending',
                 createdAt: new Date().toISOString()
             };
 
-            // Agregar a datos demo
-            familyData.requests.push(request);
-
-            // Limpiar formulario
-            document.getElementById('request-amount').value = '';
-            document.getElementById('request-reason').value = '';
-
-            showSuccess('request-form-messages', 'Solicitud enviada exitosamente');
-            loadMyStats();
-
-            /* Para Firebase:
+            // Para Firebase:
             database.ref('requests').push(request)
                 .then(() => {
                     showSuccess('request-form-messages', 'Solicitud enviada exitosamente');
@@ -833,12 +823,12 @@
                 .catch((error) => {
                     showError('request-form-messages', 'Error al enviar solicitud: ' + error.message);
                 });
-            */
+            
         }
 
         function loadMyRequests() {
             const container = document.getElementById('my-requests-list');
-            const myRequests = familyData.requests.filter(r => r.userId === currentUser.uid);
+            const myRequests = (familyData.requests || []).filter(r => r.userId === currentUser.uid);
 
             if (myRequests.length === 0) {
                 container.innerHTML = '<p style="text-align: center; color: #666;">No tienes solicitudes aún.</p>';
