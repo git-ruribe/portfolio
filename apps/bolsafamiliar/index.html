@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💰 Bolsa Familiar</title>
+    <title>💰1 Bolsa Familiar</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
@@ -631,20 +631,20 @@
         }
 
         function loadUserProfile() {
-            console.log("=== DEBUG LOAD USER PROFILE ===");
-            console.log("currentUser:", currentUser);
-            console.log("currentUser.uid:", currentUser.uid);
-            console.log("currentUser.email:", currentUser.email);
-            console.log("currentUser.displayName:", currentUser.displayName);
+            //console.log("=== DEBUG LOAD USER PROFILE ===");
+            //console.log("currentUser:", currentUser);
+            //console.log("currentUser.uid:", currentUser.uid);
+            //console.log("currentUser.email:", currentUser.email);
+            //console.log("currentUser.displayName:", currentUser.displayName);
             
             database.ref('users/' + currentUser.uid).once('value')
                 .then((snapshot) => {
                     const userData = snapshot.val();
-                    console.log("=== DEBUG USER DATA FROM DB ===");
-                    console.log("userData completo:", userData);
-                    console.log("userData.name:", userData?.name);
-                    console.log("userData.role:", userData?.role);
-                    console.log("userData.email:", userData?.email);
+                    //console.log("=== DEBUG USER DATA FROM DB ===");
+                    //console.log("userData completo:", userData);
+                    //console.log("userData.name:", userData?.name);
+                    //console.log("userData.role:", userData?.role);
+                    //console.log("userData.email:", userData?.email);
                     
                     if (!userData) {
                         showError('error-container', 'Usuario no encontrado en la familia. Contacta a un administrador.');
@@ -654,9 +654,9 @@
                     
                     userRole = userData.role;
                     userName = userData.name;
-                    console.log("=== DESPUÉS DE ASIGNACIÓN ===");
-                    console.log("userRole:", userRole);
-                    console.log("currentUser.displayName:", currentUser.displayName);
+                    //console.log("=== DESPUÉS DE ASIGNACIÓN ===");
+                    //console.log("userRole:", userRole);
+                    //console.log("currentUser.displayName:", currentUser.displayName);
                     
                     loadFamilyData();
                 })
@@ -707,9 +707,9 @@
 
         function showMainApp() {
 
-            console.log("=== DEBUG SHOW MAIN APP ===");
-            console.log("userName:", userName);
-            console.log("userRole:", userRole);
+            //console.log("=== DEBUG SHOW MAIN APP ===");
+            //console.log("userName:", userName);
+            //console.log("userRole:", userRole);
             
             document.getElementById('auth-container').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
@@ -1008,46 +1008,59 @@
         }
 
         function loadPendingRequests() {
-            const container = document.getElementById('pending-requests-list');
-            container.innerHTML = '<div class="loading">Cargando solicitudes pendientes...</div>';
-        
-            // Cargar directamente desde Firebase en tiempo real
-            database.ref('requests').orderByChild('status').equalTo('pending').once('value')
-                .then((snapshot) => {
-                    const pendingRequests = [];
-                    snapshot.forEach((childSnapshot) => {
-                        const request = childSnapshot.val();
-                        request.id = childSnapshot.key; // Agregar el ID
-                        pendingRequests.push(request);
-                    });
-        
-                    if (pendingRequests.length === 0) {
-                        container.innerHTML = '<p style="text-align: center; color: #666;">No hay solicitudes pendientes.</p>';
-                        return;
-                    }
-        
-                    // Ordenar por fecha más reciente
-                    pendingRequests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        
-                    container.innerHTML = pendingRequests.map(request => `
-                        <div class="request-item">
-                            <div class="request-info">
-                                <strong>${request.userName}</strong> solicita <strong>${formatCurrency(request.amount)}</strong>
-                                <br>${request.reason}
-                                <br><small>${formatDate(request.createdAt)}</small>
-                            </div>
-                            <div class="request-actions">
-                                <button class="btn btn-success" onclick="approveRequest('${request.id}')">✓ Aprobar</button>
-                                <button class="btn btn-danger" onclick="rejectRequest('${request.id}')">✗ Rechazar</button>
-                            </div>
-                        </div>
-                    `).join('');
-                })
-                .catch((error) => {
-                    console.error('Error cargando solicitudes pendientes:', error);
-                    container.innerHTML = '<p style="text-align: center; color: #dc3545;">Error al cargar solicitudes</p>';
-                });
-        }
+    const container = document.getElementById('pending-requests-list');
+    container.innerHTML = '<div class="loading">Cargando solicitudes pendientes...</div>';
+
+    console.log("=== DEBUG PENDING REQUESTS ===");
+    
+    // Primero cargar TODAS las solicitudes para debug
+    database.ref('requests').once('value')
+        .then((snapshot) => {
+            console.log("Todas las solicitudes:", snapshot.val());
+            
+            // Ahora filtrar las pendientes
+            return database.ref('requests').orderByChild('status').equalTo('pending').once('value');
+        })
+        .then((snapshot) => {
+            console.log("Solicitudes pendientes raw:", snapshot.val());
+            
+            const pendingRequests = [];
+            snapshot.forEach((childSnapshot) => {
+                const request = childSnapshot.val();
+                request.id = childSnapshot.key;
+                console.log("Solicitud pendiente encontrada:", request);
+                pendingRequests.push(request);
+            });
+
+            console.log("Array de solicitudes pendientes:", pendingRequests);
+
+            if (pendingRequests.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">No hay solicitudes pendientes.</p>';
+                return;
+            }
+
+            // Ordenar por fecha más reciente
+            pendingRequests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            container.innerHTML = pendingRequests.map(request => `
+                <div class="request-item">
+                    <div class="request-info">
+                        <strong>${request.userName}</strong> solicita <strong>${formatCurrency(request.amount)}</strong>
+                        <br>${request.reason}
+                        <br><small>${formatDate(request.createdAt)}</small>
+                    </div>
+                    <div class="request-actions">
+                        <button class="btn btn-success" onclick="approveRequest('${request.id}')">✓ Aprobar</button>
+                        <button class="btn btn-danger" onclick="rejectRequest('${request.id}')">✗ Rechazar</button>
+                    </div>
+                </div>
+            `).join('');
+        })
+        .catch((error) => {
+            console.error('Error cargando solicitudes pendientes:', error);
+            container.innerHTML = '<p style="text-align: center; color: #dc3545;">Error al cargar solicitudes</p>';
+        });
+}
 
         function approveRequest(requestId) {
             // Primero obtener la solicitud actual
