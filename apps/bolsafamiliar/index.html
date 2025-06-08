@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💰 Bolsa Familiar</title>
+    <title>💰💰 Bolsa Familiar</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
@@ -614,26 +614,9 @@
 
             setLoading('login-btn', true);
 
-            // Demo login
-            setTimeout(() => {
-                if (email.includes('admin') || email.includes('papa') || email.includes('mama')) {
-                    currentUser = {
-                        uid: 'demo-admin',
-                        email: email,
-                        displayName: 'Papá Admin'
-                    };
-                } else {
-                    currentUser = {
-                        uid: 'demo-member',
-                        email: email,
-                        displayName: 'Hijo 1'
-                    };
-                }
-                loadUserProfile();
-                setLoading('login-btn', false);
-            }, 1000);
 
-            /* Código para Firebase Auth:
+
+            //Código para Firebase Auth:
             auth.signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                     currentUser = userCredential.user;
@@ -643,24 +626,11 @@
                     setLoading('login-btn', false);
                     showError('error-container', getFirebaseErrorMessage(error.code));
                 });
-            */
+            
         }
 
         function loadUserProfile() {
-            // Demo: simular carga desde base de datos
-            const userData = demoData.users[currentUser.uid];
-            if (!userData) {
-                showError('error-container', 'Usuario no encontrado en la familia. Contacta a un administrador.');
-                logout();
-                return;
-            }
-            
-            userRole = userData.role;
-            currentUser.displayName = userData.name;
-            familyData = demoData;
-            showMainApp();
-
-            /* Para Firebase:
+            // Para Firebase:
             database.ref('users/' + currentUser.uid).once('value')
                 .then((snapshot) => {
                     const userData = snapshot.val();
@@ -676,11 +646,11 @@
                 .catch((error) => {
                     showError('error-container', 'Error al cargar perfil: ' + error.message);
                 });
-            */
+            
         }
 
         function loadFamilyData() {
-            /* Para Firebase:
+            // Para Firebase:
             Promise.all([
                 database.ref('familySettings').once('value'),
                 database.ref('users').once('value'),
@@ -697,11 +667,11 @@
             }).catch((error) => {
                 showError('error-container', 'Error al cargar datos familiares: ' + error.message);
             });
-            */
+            
         }
 
         function logout() {
-            // auth.signOut(); // Para Firebase
+            auth.signOut(); // Para Firebase
             currentUser = null;
             userRole = null;
             familyData = {};
@@ -1332,7 +1302,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             // Verificar si el usuario ya está autenticado (Firebase)
-            /*
+            
             auth.onAuthStateChanged((user) => {
                 if (user) {
                     currentUser = user;
@@ -1343,11 +1313,7 @@
                     document.getElementById('main-app').style.display = 'none';
                 }
             });
-            */
-
-            // Para demo, mostrar login
-            document.getElementById('auth-container').style.display = 'block';
-            document.getElementById('main-app').style.display = 'none';
+            
         });
 
         // Auto-refresh de datos cada 30 segundos (para Firebase)
