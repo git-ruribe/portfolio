@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💰2 Bolsa Familiar</title>
+    <title>💰3 Bolsa Familiar</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
@@ -1009,7 +1009,7 @@
 
         function loadPendingRequests() {
             const container = document.getElementById('pending-requests-list');
-            const pendingRequests = familyData.requests.filter(r => r.status === 'pending');
+            const pendingRequests = (familyData.requests || []).filter(r => r.status === 'pending');
 
             if (pendingRequests.length === 0) {
                 container.innerHTML = '<p style="text-align: center; color: #666;">No hay solicitudes pendientes.</p>';
@@ -1032,76 +1032,72 @@
         }
 
         function approveRequest(requestId) {
-            const request = familyData.requests.find(r => r.id === requestId);
-            if (!request) return;
-
-            if (request.amount > familyData.familySettings.currentBalance) {
-                alert('No hay suficiente balance en la bolsa familiar para aprobar esta solicitud.');
-                return;
-            }
-
-            request.status = 'approved';
-            request.approvedAt = new Date().toISOString();
-            request.approvedBy = currentUser.uid;
-            
-            familyData.familySettings.currentBalance -= request.amount;
-            
-            document.getElementById('family-balance').textContent = 
-                formatCurrency(familyData.familySettings.currentBalance);
-                
-            loadPendingRequests();
-            loadFamilyStats();
-            loadHomeData();
-
-            /* Para Firebase:
-            const updates = {
-                [`requests/${requestId}/status`]: 'approved',
-                [`requests/${requestId}/approvedAt`]: firebase.database.ServerValue.TIMESTAMP,
-                [`requests/${requestId}/approvedBy`]: currentUser.uid,
-                'familySettings/currentBalance': familyData.familySettings.currentBalance
-            };
-            
-            database.ref().update(updates)
+            // Primero obtener la solicitud actual
+            database.ref('requests/' + requestId).once('value')
+                .then((requestSnapshot) => {
+                    const request = requestSnapshot.val();
+                    if (!request) {
+                        alert('Solicitud no encontrada.');
+                        return;
+                    }
+        
+                    // Verificar balance disponible
+                    return database.ref('familySettings/currentBalance').once('value')
+                        .then((balanceSnapshot) => {
+                            const currentBalance = balanceSnapshot.val() || 0;
+                            
+                            if (request.amount > currentBalance) {
+                                alert('No hay suficiente balance en la bolsa familiar para aprobar esta solicitud.');
+                                return;
+                            }
+        
+                            // Calcular nuevo balance
+                            const newBalance = currentBalance - request.amount;
+        
+                            // Hacer todas las actualizaciones en una sola transacción
+                            const updates = {
+                                [`requests/${requestId}/status`]: 'approved',
+                                [`requests/${requestId}/approvedAt`]: new Date().toISOString(),
+                                [`requests/${requestId}/approvedBy`]: currentUser.uid,
+                                'familySettings/currentBalance': newBalance
+                            };
+        
+                            return database.ref().update(updates);
+                        });
+                })
                 .then(() => {
-                    loadPendingRequests();
-                    loadFamilyStats();
-                    loadHomeData();
+                    // Recargar datos
+                    loadFamilyData();
+                })
+                .catch((error) => {
+                    console.error('Error al aprobar solicitud:', error);
+                    alert('Error al aprobar la solicitud: ' + error.message);
                 });
-            */
         }
 
         function rejectRequest(requestId) {
             if (!confirm('¿Estás seguro de rechazar esta solicitud?')) return;
-
-            const request = familyData.requests.find(r => r.id === requestId);
-            if (!request) return;
-
-            request.status = 'rejected';
-            request.rejectedAt = new Date().toISOString();
-            request.rejectedBy = currentUser.uid;
-            
-            loadPendingRequests();
-            loadFamilyStats();
-
-            /* Para Firebase:
+        
             const updates = {
                 [`requests/${requestId}/status`]: 'rejected',
-                [`requests/${requestId}/rejectedAt`]: firebase.database.ServerValue.TIMESTAMP,
+                [`requests/${requestId}/rejectedAt`]: new Date().toISOString(),
                 [`requests/${requestId}/rejectedBy`]: currentUser.uid
             };
-            
+        
             database.ref().update(updates)
                 .then(() => {
-                    loadPendingRequests();
-                    loadFamilyStats();
+                    loadFamilyData();
+                })
+                .catch((error) => {
+                    console.error('Error al rechazar solicitud:', error);
+                    alert('Error al rechazar la solicitud: ' + error.message);
                 });
-            */
         }
 
         function loadFamilyStats() {
-            const totalSpent = familyData.expenses.reduce((sum, exp) => sum + exp.amount, 0);
-            const totalRequests = familyData.requests.length;
-            const pendingAmount = familyData.requests
+            const totalSpent = (familyData.expenses || []).reduce((sum, exp) => sum + exp.amount, 0);
+            const totalRequests = (familyData.requests || []).length;
+            const pendingAmount = (familyData.requests || [])
                 .filter(r => r.status === 'pending')
                 .reduce((sum, r) => sum + r.amount, 0);
             const familyMembers = Object.keys(familyData.users).length;
