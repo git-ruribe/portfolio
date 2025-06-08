@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflexión: La Ascensión del Señor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff; /* Light blue background */
+        }
+        .gradient-text {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .card {
+            background-color: white;
+            border-radius: 1rem; /* More rounded corners */
+            padding: 1.5rem; /* p-6 */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+        .question-option {
+            display: block;
+            padding: 0.75rem 1rem; /* py-3 px-4 */
+            margin-bottom: 0.5rem; /* mb-2 */
+            border: 1px solid #e5e7eb; /* border-gray-200 */
+            border-radius: 0.5rem; /* rounded-lg */
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .question-option:hover {
+            background-color: #e0f2fe; /* Light sky blue on hover */
+            border-color: #38bdf8; /* Sky blue border on hover */
+        }
+        .question-option.selected {
+            background-color: #bae6fd; /* Sky blue for selected */
+            border-color: #0ea5e9; /* Darker sky blue border for selected */
+            font-weight: 600;
+        }
+        .correct {
+            background-color: #dcfce7 !important; /* Light green for correct */
+            border-color: #22c55e !important; /* Green border for correct */
+        }
+        .incorrect {
+            background-color: #fee2e2 !important; /* Light red for incorrect */
+            border-color: #ef4444 !important; /* Red border for incorrect */
+        }
+        .quiz-button {
+            background-color: #38bdf8; /* Sky blue */
+            color: white;
+            padding: 0.75rem 1.5rem; /* py-3 px-6 */
+            border-radius: 0.5rem; /* rounded-lg */
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        .quiz-button:hover {
+            background-color: #0ea5e9; /* Darker sky blue on hover */
+        }
+        .header-icon {
+            width: 3rem; /* w-12 */
+            height: 3rem; /* h-12 */
+            margin-right: 0.75rem; /* mr-3 */
+        }
+        /* Custom animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        .content-section {
+            opacity: 0; /* Start hidden for animation */
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl">
+
+        <header class="text-center mb-8 md:mb-12 fade-in">
+            <div class="flex items-center justify-center mb-4">
+                <svg class="header-icon text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75" /> </svg>
+                <h1 class="text-3xl md:text-4xl font-bold gradient-text bg-gradient-to-r from-sky-500 to-indigo-600">
+                    La Ascensión del Señor: Un Nuevo Comienzo
+                </h1>
+            </div>
+            <p class="text-lg text-gray-600">Reflexionando el Evangelio y la Homilía</p>
+        </header>
+
+        <section id="evangelio" class="card content-section">
+            <h2 class="text-2xl font-semibold mb-4 text-sky-700">Evangelio según San Lucas (Lc 24, 46-53)</h2>
+            <blockquote class="border-l-4 border-sky-500 pl-4 italic text-gray-700 space-y-2">
+                <p>"En aquel tiempo Jesús se apareció a sus discípulos y les dijo: Está escrito que el Mesías tenía que padecer y había de resucitar de entre los muertos el tercer día, y que en su nombre se había de predicar a todas las naciones, comenzando por Jerusalén, la necesidad de volverse a Dios y el perdón de los pecados."</p>
+                <p>"Ustedes son testigos de esto. Ahora yo les voy a enviar al que mi padre les prometió. Permanezcan, pues, en la ciudad hasta que reciban la fuerza de lo alto."</p>
+                <p>"Después salió con ellos fuera de la ciudad, hacia un lugar cercano a Betania, levantando las manos los bendijo. Y mientras los bendecía, se fué apartando de ellos y elevándose al cielo."</p>
+                <p>"Ellos después de adorarlo, regresaron a Jerusalén llenos de gozo y permanecían constantemente en el Templo, alabando a Dios."</p>
+                <p class="font-semibold">Palabra del Señor. <span class="font-normal">Gloria a ti, Señor Jesús.</span></p>
+            </blockquote>
+        </section>
+
+        <section id="homilia" class="card content-section" style="animation-delay: 0.2s;">
+            <h2 class="text-2xl font-semibold mb-6 text-indigo-700">Mensajes Clave de la Homilía</h2>
+            
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-sky-600">🕊️ La Ascensión: Manifestación y Nuevo Inicio</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1 pl-4">
+                        <li>Última aparición de Jesús resucitado: muestra que Él es Dios.</li>
+                        <li>El hombre puede entrar al cielo gracias a Jesús.</li>
+                        <li>Comienzo de la Iglesia peregrina (que se consolida en Pentecostés).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-sky-600">💖 Presencia Continua de Jesús</h3>
+                    <p class="text-gray-700 mb-2">Jesús no se va, ¡sigue presente! ¿Cómo?</p>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-sky-50 p-4 rounded-lg border border-sky-200">
+                            <h4 class="font-semibold text-sky-700">En la Eucaristía:</h4>
+                            <p class="text-sm text-gray-600">La forma más importante, donde nos reunimos con Él.</p>
+                        </div>
+                        <div class="bg-sky-50 p-4 rounded-lg border border-sky-200">
+                            <h4 class="font-semibold text-sky-700">Otras formas:</h4>
+                            <p class="text-sm text-gray-600">Sacramentos, Su Palabra, enseñanzas de la Iglesia, en cada bautizado y en la comunidad.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-sky-600">🚀 Un Llamado para Nosotros</h3>
+                     <ul class="list-disc list-inside text-gray-700 space-y-1 pl-4">
+                        <li>Recomenzar: pedir perdón, perdonar, caminar juntos.</li>
+                        <li>Atentos a las necesidades de los demás.</li>
+                        <li>Buscar a Dios, especialmente en la Eucaristía.</li>
+                        <li>Poner la mirada en la eternidad, pero actuar en la tierra.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-sky-600">👀 Presencia Invisible pero Real</h3>
+                    <p class="text-gray-700">"Yo estaré con ustedes todos los días hasta el fin del mundo."</p>
+                    <p class="text-gray-700 mt-1"><span class="font-semibold">Analogía:</span> Como la Eucaristía, la Hostia desaparece de nuestra vista al comulgar, pero está más presente y fuerte DENTRO de nosotros.</p>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-sky-600">📣 Ser Testigos: ¡Es Hora de Actuar!</h3>
+                    <p class="text-gray-700 mb-2">Jesús se hace visible a través de nosotros, sus discípulos.</p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1 pl-4">
+                        <li>No solo contar, sino MANIFESTAR con nuestra vida.</li>
+                        <li>El testigo habla con su forma de ser.</li>
+                        <li>La fiesta de la ascensión nos invita a tener nuestra mirada fija en el cielo, donde reside Cristo a la derecha del Padre.</li>
+                        <li>Nuestra mirada en el cielo, pero las manos y el esfuerzo en esta tierra que sigue teniendo necesidad de la manifestación de los hijos de Dios.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="cuento" class="card content-section" style="animation-delay: 0.3s;">
+            <h2 class="text-2xl font-semibold mb-4 text-purple-700">📖 Cuentan que... La Historia de Cristina y María</h2>
+            <div class="bg-purple-50 p-6 rounded-lg border border-purple-200 text-gray-700 space-y-3">
+                <p>Había una señora llamada Cristina que, desde su ventana, observaba el mundo. Un día, vio a su vecina María llorando desconsoladamente por la reciente muerte de su esposo. Al principio, Cristina dudó, pero luego sintió que debía actuar.</p>
+                <p>Se acercó a María, la escuchó y le ofreció consuelo y apoyo. Cristina comprendió que <span class="font-semibold">ser testigo no es solo ver, sino sobre todo actuar y ofrecer ayuda.</span></p>
+                <p>Esta experiencia le enseñó que todos tenemos la responsabilidad de observar, escuchar y actuar cuando alguien necesita ayuda, transformando así nuestro mundo con pequeñas acciones.</p>
+            </div>
+        </section>
+
+
+        <section id="cuestionario" class="card content-section" style="animation-delay: 0.4s;">
+            <h2 class="text-2xl font-semibold mb-6 text-emerald-700">📝 Pon a Prueba tu Conocimiento</h2>
+            <form id="quizForm" class="space-y-6">
+                <div class="question-container">
+                    <p class="text-lg font-medium mb-2">1. ¿Qué significa principalmente la Ascensión de Jesús según la homilía?</p>
+                    <div>
+                        <label class="question-option">
+                            <input type="radio" name="q1" value="a" class="sr-only"> a) Que Jesús se fue para siempre.
+                        </label>
+                        <label class="question-option">
+                            <input type="radio" name="q1" value="b" class="sr-only"> b) Es la última aparición de Jesús resucitado y el inicio de una nueva etapa para la Iglesia.
+                        </label>
+                        <label class="question-option">
+                            <input type="radio" name="q1" value="c" class="sr-only"> c) Que solo los apóstoles podían ver a Jesús.
+                        </label>
+                        <label class="question-option">
+                            <input type="radio" name="q1" value="d" class="sr-only"> d) Que debemos dejar de ir a la Iglesia.
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question-container">
+                    <p class="text-lg font-medium mb-2">2. ¿De qué manera principal sigue Jesús presente entre nosotros después de su Ascensión?</p>
+                    <div>
+                        <label class="question-option">
+                            <input type="radio" name="q2" value="a" class="sr-only"> a) Solo en los recuerdos.
+                        </label>
+                        <label class="question-option">
+                            <input type="radio" name="q2" value="b" class="sr-only"> b) En la Eucaristía y otros sacramentos, su Palabra y la comunidad.
+                        </label>
+                        <label class="question-option">
+                            <input type="radio" name="q2" value="c" class="sr-only"> c) Únicamente en el cielo.
+                        </label>
+                        <label class="question-option">
+                            <input type="radio" name="q2" value="d" class="sr-only"> d) A través de visiones y sueños.
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question-container">
+                    <p class="text-lg font-medium mb-2">3. Según la homilía, ¿qué implica ser "testigo" de Jesús?</p>
+                    <div>
+                        <label class="question-option">
+                            <input type="radio" name="q3" value="a" class="sr-only"> a) Solo contar historias sobre Jesús.
+                        </label>
+                        <label class="question-option">
+                            <input type="radio" name="q3" value="b" class="sr-only"> b) Ver milagros extraordinarios todos los días.
+                        </label>
+                        <label class="question-option">
+                            <input type="radio" name="q3" value="c" class="sr-only"> c) Manifestar la presencia de Jesús con nuestra forma de ser y actuar, ayudando a los demás.
+                        </label>
+                        <label class="question-option">
+                            <input type="radio" name="q3" value="d" class="sr-only"> d) Tener un canal de YouTube sobre religión.
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question-container">
+                    <p class="text-lg font-medium mb-2">4. La historia de Cristina y María nos enseña que ser testigo es:</p>
+                    <div>
+                        <label class="question-option">
+                            <input type="radio" name="q4" value="a" class="sr-only"> a) Observar los problemas de los demás desde lejos.
+                        </label>
+                        <label class="question-option">
+                            <input type="radio" name="q4" value="b" class="sr-only"> b) Actuar, ofrecer ayuda y consuelo a quien lo necesita.
+                        </label>
+                        <label class="question-option">
+                            <input type="radio" name="q4" value="c" class="sr-only"> c) Llorar junto con los que sufren sin hacer nada más.
+                        </label>
+                        <label class="question-option">
+                            <input type="radio" name="q4" value="d" class="sr-only"> d) Esperar a que alguien más ayude.
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question-container">
+                    <p class="text-lg font-medium mb-2">5. ¿Cuál es la invitación principal de la fiesta de la Ascensión para nosotros hoy?</p>
+                    <div>
+                        <label class="question-option">
+                            <input type="radio" name="q5" value="a" class="sr-only"> a) Mirar solo al cielo y olvidarnos de los problemas de la tierra.
+                        </label>
+                        <label class="question-option">
+                            <input type="radio" name="q5" value="b" class="sr-only"> b) Dejar de esforzarnos porque Jesús ya hizo todo.
+                        </label>
+                        <label class="question-option">
+                            <input type="radio" name="q5" value="c" class="sr-only"> c) Tener la mirada en el cielo, pero las manos y el esfuerzo en la tierra, siendo testigos del amor de Dios.
+                        </label>
+                        <label class="question-option">
+                            <input type="radio" name="q5" value="d" class="sr-only"> d) Celebrar una fiesta y luego seguir igual que antes.
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="quiz-button w-full md:w-auto">Evaluar Cuestionario</button>
+            </form>
+
+            <div id="quizResult" class="mt-8 p-6 rounded-lg hidden">
+                </div>
+        </section>
+        
+        <footer class="text-center mt-12 py-6 border-t border-gray-300 content-section" style="animation-delay: 0.6s;">
+            <p class="text-gray-600">&copy; <span id="currentYear"></span> Reflexiones para el Alma Joven. Inspirado en la Ascensión del Señor.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // JavaScript for animations and quiz
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate sections on load
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach((section, index) => {
+                section.style.animationDelay = (index * 0.15) + 's'; // Stagger animation
+                section.classList.add('fade-in');
+            });
+            
+            // Set current year in footer
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+            // Quiz functionality
+            const quizForm = document.getElementById('quizForm');
+            const quizResultDiv = document.getElementById('quizResult');
+            const correctAnswers = {
+                q1: 'b',
+                q2: 'b',
+                q3: 'c',
+                q4: 'b',
+                q5: 'c'
+            };
+
+            // Handle option selection styling
+            const questionOptions = document.querySelectorAll('.question-option');
+            questionOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove 'selected' from sibling options
+                    const groupName = this.querySelector('input[type="radio"]').name;
+                    document.querySelectorAll(`input[name="${groupName}"]`).forEach(radio => {
+                        radio.parentElement.classList.remove('selected');
+                    });
+                    // Add 'selected' to clicked option
+                    this.classList.add('selected');
+                    this.querySelector('input[type="radio"]').checked = true;
+                });
+            });
+
+            quizForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                let score = 0;
+                const totalQuestions = Object.keys(correctAnswers).length;
+                let resultHTML = '<h3 class="text-xl font-semibold mb-4">Resultados:</h3>';
+                
+                const questions = quizForm.querySelectorAll('.question-container');
+
+                questions.forEach((question, index) => {
+                    const questionNumber = `q${index + 1}`;
+                    const selectedOption = question.querySelector(`input[name="${questionNumber}"]:checked`);
+                    const options = question.querySelectorAll('.question-option');
+
+                    options.forEach(optLabel => {
+                        optLabel.classList.remove('correct', 'incorrect'); // Reset previous styles
+                        optLabel.style.pointerEvents = 'none'; // Disable further clicks
+                        const radioValue = optLabel.querySelector('input').value;
+                        if (radioValue === correctAnswers[questionNumber]) {
+                            optLabel.classList.add('correct');
+                        }
+                    });
+                    
+                    if (selectedOption) {
+                        const userAnswer = selectedOption.value;
+                        const optionLabel = selectedOption.parentElement;
+                        if (userAnswer === correctAnswers[questionNumber]) {
+                            score++;
+                        } else {
+                            optionLabel.classList.add('incorrect');
+                        }
+                    } else {
+                        // Mark unanswered questions by highlighting the correct answer
+                         options.forEach(optLabel => {
+                            const radioValue = optLabel.querySelector('input').value;
+                            if (radioValue === correctAnswers[questionNumber]) {
+                                // No additional styling needed if it's already marked as correct
+                            }
+                        });
+                         resultHTML += `<p class="text-red-600">Pregunta ${index + 1}: No respondida. La respuesta correcta está marcada en verde.</p>`;
+                    }
+                });
+
+                const percentage = (score / totalQuestions) * 100;
+                let feedbackMessage = '';
+                if (percentage === 100) {
+                    feedbackMessage = '¡Excelente! Todas tus respuestas son correctas. Has comprendido muy bien el mensaje. 🎉';
+                    quizResultDiv.className = 'mt-8 p-6 rounded-lg bg-green-100 border border-green-300 text-green-800';
+                } else if (percentage >= 70) {
+                    feedbackMessage = '¡Muy bien! Has acertado la mayoría. Sigue reflexionando. 👍';
+                    quizResultDiv.className = 'mt-8 p-6 rounded-lg bg-yellow-100 border border-yellow-300 text-yellow-800';
+                } else {
+                    feedbackMessage = 'Sigue esforzándote. Te animo a repasar la homilía para afianzar los conceptos. 😊';
+                    quizResultDiv.className = 'mt-8 p-6 rounded-lg bg-red-100 border border-red-300 text-red-800';
+                }
+
+                resultHTML += `<p class="text-lg font-bold mt-4">Tu puntuación: ${score} de ${totalQuestions} (${percentage.toFixed(0)}%)</p>`;
+                resultHTML += `<p class="mt-2">${feedbackMessage}</p>`;
+                
+                quizResultDiv.innerHTML = resultHTML;
+                quizResultDiv.classList.remove('hidden');
+                quizResultDiv.scrollIntoView({ behavior: 'smooth' });
+
+                // Disable submit button after evaluation
+                quizForm.querySelector('button[type="submit"]').disabled = true;
+                quizForm.querySelector('button[type="submit"]').classList.add('opacity-50', 'cursor-not-allowed');
+            });
+        });
+    </script>
+</body>
+</html>
