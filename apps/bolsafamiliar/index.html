@@ -1236,7 +1236,7 @@
         // ========================================
 
         function formatCurrency(amount) {
-            return ' + amount.toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 });'
+            return '$' + amount.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); 
         }
 
         function formatDate(dateString) {
