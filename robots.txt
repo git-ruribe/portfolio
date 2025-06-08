@@ -1,0 +1,30 @@
+# Archivo robots.txt para bloquear completamente la indexación del sitio
+# Coloca este archivo en la raíz de tu dominio: https://tudominio.com/robots.txt
+
+User-agent: *
+Disallow: /
+
+# Bloqueo específico para los principales bots de búsqueda
+User-agent: Googlebot
+Disallow: /
+
+User-agent: Bingbot
+Disallow: /
+
+User-agent: Slurp
+Disallow: /
+
+User-agent: DuckDuckBot
+Disallow: /
+
+User-agent: Baiduspider
+Disallow: /
+
+User-agent: YandexBot
+Disallow: /
+
+User-agent: facebookexternalhit
+Disallow: /
+
+# Sin sitemap (comentado porque no queremos indexación)
+# Sitemap: https://tudominio.com/sitemap.xml
