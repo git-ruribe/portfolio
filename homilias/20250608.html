@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflexionando la Solemnidad de Pentecostés</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff; /* bg-f0f9ff */
+            line-height: 1.6;
+        }
+        .header-icon {
+            color: #0ea5e9; /* text-sky-500 */
+        }
+        .gradient-text {
+            background-image: linear-gradient(to right, #0ea5e9, #4f46e5); /* from-sky-500 to-indigo-600 */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 24px; /* p-6 */
+            margin-bottom: 24px; /* mb-6 */
+        }
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        .fade-in-section.delay-1 { animation-delay: 0.2s; }
+        .fade-in-section.delay-2 { animation-delay: 0.4s; }
+        .fade-in-section.delay-3 { animation-delay: 0.6s; }
+        .fade-in-section.delay-4 { animation-delay: 0.8s; }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .question-option {
+            display: block;
+            background-color: #f0f9ff; /* bg-sky-50 */
+            padding: 12px 16px; /* p-3 px-4 */
+            border-radius: 8px; /* rounded-lg */
+            margin-bottom: 8px; /* mb-2 */
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            border: 1px solid transparent;
+        }
+        .question-option:hover {
+            background-color: #e0f2fe; /* bg-sky-100 */
+            border-color: #a7f3d0; /* border-emerald-300 */
+        }
+        .question-option.selected {
+            background-color: #e0f2fe; /* bg-sky-100 */
+            border-color: #34d399; /* border-emerald-500 */
+            box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.5);
+        }
+        .question-option.correct {
+            background-color: #d1fae5; /* bg-emerald-100 */
+            border-color: #34d399; /* border-emerald-500 */
+        }
+        .question-option.incorrect {
+            background-color: #fee2e2; /* bg-red-100 */
+            border-color: #ef4444; /* border-red-500 */
+        }
+        .quiz-button {
+            background-image: linear-gradient(to right, #0ea5e9, #4f46e5); /* from-sky-500 to-indigo-600 */
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .quiz-button:hover {
+            opacity: 0.9;
+        }
+        .quiz-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <header class="text-center mb-10 fade-in-section">
+        <svg class="header-icon mx-auto mb-4" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+            <path d="M2 17l10 5 10-5"></path>
+            <path d="M2 12l10 5 10-5"></path>
+        </svg>
+        <h1 class="text-3xl md:text-4xl font-bold mb-2 gradient-text">Reflexionando la Solemnidad de Pentecostés</h1>
+        <p class="text-lg text-gray-600">Reflexionando el Evangelio y la Homilía del Día de Pentecostés</p>
+    </header>
+
+    <main class="max-w-4xl mx-auto">
+
+        <section id="evangelio" class="card fade-in-section delay-1">
+            <h2 class="text-2xl font-semibold mb-4 text-sky-700">Evangelio según San Juan (20, 19-23)</h2>
+            <blockquote class="border-l-4 border-sky-500 pl-4 italic text-gray-700 space-y-2">
+                <p>Al anochecer del día de la resurrección, estando cerradas las puertas de la casa donde se hallaban los discípulos por miedo a los judíos, se presentó Jesús en medio de ellos y les dijo:</p>
+                <p>La paz esté con ustedes. Dicho esto, les mostró las manos y el costado.</p>
+                <p>Los discípulos vieron al Señor, se llenaron de alegría y de nuevo Jesús les dijo:</p>
+                <p>La paz esté con ustedes. Como el Padre me ha enviado, así también los envío yo.</p>
+                <p>Después de decir esto, sopló sobre ellos y les dijo:</p>
+                <p>Reciban al Espíritu Santo.</p>
+                <p>A los que les perdonen los pecados les quedarán perdonados y a los que no se los perdonen les quedarán sin perdón.</p>
+            </blockquote>
+            <p class="mt-4 text-gray-700 font-medium">Palabra del Señor. Gloria a ti, Señor Jesús.</p>
+        </section>
+
+        <section id="homilia" class="card fade-in-section delay-2">
+            <h2 class="text-2xl font-semibold mb-6 text-indigo-700">Mensajes Clave de la Homilía</h2>
+
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold mb-2 text-sky-600">🕊️ Pentecostés: No Solo un Recuerdo, Sino una Realidad Viva</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-1 pl-4">
+                    <li>La solemnidad de Pentecostés celebra el **descenso del Espíritu Santo** sobre los Apóstoles, transformando sus vidas.</li>
+                    <li>Este evento no es solo memoria, sino una **realidad viva** que sigue actuando hoy en la Iglesia y en cada uno de nosotros.</li>
+                    <li>Marca el **nacimiento de la Iglesia** y nos enseña cómo el Espíritu Santo actúa en nuestras vidas, aunque no siempre seamos conscientes.</li>
+                </ul>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold mb-2 text-sky-600">🔗 El Miedo como Obstáculo y la Paz de Jesús</h3>
+                <div class="grid md:grid-cols-2 gap-4 text-gray-700">
+                    <div>
+                        <p class="font-semibold">El Miedo de los Discípulos:</p>
+                        <ul class="list-disc list-inside space-y-1 pl-4">
+                            <li>Los discípulos estaban **encerrados por miedo** a los judíos, temiendo terminar como Jesús en la cruz.</li>
+                            <li>No solo estaban físicamente encerrados, sino también **emocionalmente**, lo que les impedía compartir la noticia de la Resurrección.</li>
+                            <li>El miedo puede **bloquear, paralizar y aislar** (Papa Francisco).</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="font-semibold">La Paz que Transforma:</p>
+                        <ul class="list-disc list-inside space-y-1 pl-4">
+                            <li>Jesús se hace presente sin abrir puertas y lo primero que dice es: **"La paz esté con ustedes"** (repetido dos veces).</li>
+                            <li>Este saludo apacigua sus corazones y les infunde confianza.</li>
+                            <li>El soplo de Jesús les da el **Espíritu Santo**, transformando el miedo en valentía, el encierro en misión y la tristeza en gozo.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold mb-2 text-sky-600">🌟 La Acción Liberadora del Espíritu Santo</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-1 pl-4">
+                    <li>El Espíritu Santo no solo consuela, sino que **impulsa a la acción** y nos da una nueva identidad como hijos de Dios.</li>
+                    <li>Nos capacita para **perdonar, amar y servir** a los demás sin esperar nada a cambio.</li>
+                    <li>Nos **libera de las "prisiones"** que construimos en nuestra vida (resentimientos, mortificaciones, problemas, prisas).</li>
+                    <li>Recibir al Espíritu Santo es **salir de nuestras zonas de confort** para ser testigos del amor de Dios.</li>
+                </ul>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold mb-2 text-sky-600">✨ Vivir Guiados por el Espíritu</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-1 pl-4">
+                    <li>Es crucial **dar espacio al Espíritu Santo** en nuestro corazón, quitando todo aquello que lo llena y no permite que Él entre.</li>
+                    <li>Él nos dará el **valor** para enfrentar miedos, la **sabiduría** para discernir la voluntad de Dios y la **fortaleza** para vivir como discípulos.</li>
+                    <li>No se trata solo de pedir al Espíritu Santo, sino de **dejarnos guiar** por Él, porque solo así somos verdaderos hijos de Dios.</li>
+                </ul>
+            </div>
+
+            <div class="bg-gradient-to-r from-sky-100 to-indigo-100 p-6 rounded-lg text-center mt-8">
+                <p class="italic text-lg text-gray-800">
+                    "El Espíritu Santo es como un viento invisible. No se ve, pero transforma todo a su paso. Si somos capaces de abrir nuestro corazón, él nos va a guiar, nos va a consolar y nos va a dar fuerza para vivir con amor, con fe y siempre con muchísima esperanza."
+                </p>
+            </div>
+        </section>
+
+        <section id="cuento" class="card fade-in-section delay-3">
+            <h2 class="text-2xl font-semibold mb-4 text-purple-700">📖 Cuentan que... El Viento que Guía el Corazón</h2>
+            <div class="bg-purple-50 p-6 rounded-lg border border-purple-200 text-gray-700 space-y-3">
+                <p>En un pueblo de colinas vivía un joven llamado Tomás, inteligente y trabajador, con muchos planes y deseos de éxito y viajes. Sin embargo, a pesar de sus logros, Tomás sentía un gran vacío en su corazón, algo que no lograba llenar, aunque ayudaba en la iglesia e iba a misa. Le faltaba algo que no sabía cómo encontrar.</p>
+                <p>Una tarde, un viento fuerte lo llevó a refugiarse en una pequeña y desconocida capilla. Dentro, el silencio era solo interrumpido por el crujido de los árboles y el susurro del viento. Allí encontró al Padre Elías, quien le preguntó si el viento lo había asustado. Tomás respondió que el viento parecía haberlo empujado a la capilla. El padre asintió y explicó que "a veces el viento sopla donde quiere, así es también el Espíritu Santo. Invisible, pero muy poderoso. No siempre lo vemos, pero si prestamos atención, lo vamos a sentir actuar en nuestra vida."</p>
+                <p>Tomás, curioso, preguntó cómo saber si el Espíritu Santo estaba en él si no sentía nada. El Padre Elías encendió una vela y le dijo que no siempre se siente como una emoción fuerte. "A veces es una idea buena que nace de tu corazón. A veces es un deseo de ayudar, de perdonar, o simplemente de rezar. Cuando escuchas esa voz suave que te invita a hacer el bien, a buscar la verdad, a vivir con amor y con alegría, es el Espíritu Santo que está ahí." Tomás recordó entonces todas las veces que había sentido deseos de ser más paciente o de ayudar, pero no había hecho caso. El padre concluyó que el Espíritu nunca se cansa y siempre vuelve, pero depende de nosotros abrir la puerta. Aunque a veces dudaba, Tomás sentía una paz interior que lo guiaba, como un viento suave que no se ve, pero mueve todo.</p>
+                <p class="mt-4">
+                    <span class="font-semibold">Moraleja:</span> El Espíritu Santo es como ese viento invisible; no siempre lo vemos, pero su presencia se manifiesta en la paz, la inspiración para el bien, y la fuerza para superar nuestros miedos y dudas. Es nuestra decisión abrir el corazón y dejarnos guiar por Él.
+                </p>
+            </div>
+        </section>
+
+        <section id="cuestionario" class="card fade-in-section delay-4">
+            <h2 class="text-2xl font-semibold mb-6 text-emerald-700">📝 Pon a Prueba tu Conocimiento</h2>
+            <form id="quizForm">
+                <div class="question-container mb-6">
+                    <p class="text-lg font-medium mb-2 text-gray-800">1. ¿Cuál era la principal emoción que sentían los discípulos en el momento en que Jesús se les apareció después de la resurrección?</p>
+                    <label class="question-option">
+                        <input type="radio" name="q1" value="a" class="sr-only">
+                        <span>a) Alegría desbordante</span>
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q1" value="b" class="sr-only">
+                        <span>b) Miedo y encierro</span>
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q1" value="c" class="sr-only">
+                        <span>c) Confusión</span>
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q1" value="d" class="sr-only">
+                        <span>d) Ansiedad por la misión</span>
+                    </label>
+                </div>
+
+                <div class="question-container mb-6">
+                    <p class="text-lg font-medium mb-2 text-gray-800">2. ¿Qué les dice Jesús a sus discípulos en el Evangelio, dos veces, para tranquilizarlos?</p>
+                    <label class="question-option">
+                        <input type="radio" name="q2" value="a" class="sr-only">
+                        <span>a) "La paz esté con ustedes"</span>
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q2" value="b" class="sr-only">
+                        <span>b) "No tengan miedo"</span>
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q2" value="c" class="sr-only">
+                        <span>c) "Reciban mi amor"</span>
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q2" value="d" class="sr-only">
+                        <span>d) "Salgan y prediquen"</span>
+                    </label>
+                </div>
+
+                <div class="question-container mb-6">
+                    <p class="text-lg font-medium mb-2 text-gray-800">3. Según la homilía, ¿qué transformación principal ocurre en los discípulos después de que Jesús sopla sobre ellos y les infunde el Espíritu Santo?</p>
+                    <label class="question-option">
+                        <input type="radio" name="q3" value="a" class="sr-only">
+                        <span>a) De la duda a la certeza</span>
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q3" value="b" class="sr-only">
+                        <span>b) Del encierro a la alegría</span>
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q3" value="c" class="sr-only">
+                        <span>c) Del miedo a la valentía, el encierro a la misión y la tristeza al gozo</span>
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q3" value="d" class="sr-only">
+                        <span>d) De la incomprensión a la sabiduría</span>
+                    </label>
+                </div>
+
+                <div class="question-container mb-6">
+                    <p class="text-lg font-medium mb-2 text-gray-800">4. ¿Qué nos capacita el Espíritu Santo para hacer, según los mensajes clave de la homilía?</p>
+                    <label class="question-option">
+                        <input type="radio" name="q4" value="a" class="sr-only">
+                        <span>a) Alcanzar el éxito material</span>
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q4" value="b" class="sr-only">
+                        <span>b) Perdonar, amar y servir a los demás sin esperar nada a cambio</span>
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q4" value="c" class="sr-only">
+                        <span>c) Mantenernos en nuestra zona de confort</span>
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q4" value="d" class="sr-only">
+                        <span>d) Sentir emociones fuertes y visibles</span>
+                    </label>
+                </div>
+
+                <div class="question-container mb-6">
+                    <p class="text-lg font-medium mb-2 text-gray-800">5. En el cuento de Tomás, ¿cómo describe el Padre Elías la presencia y acción del Espíritu Santo?</p>
+                    <label class="question-option">
+                        <input type="radio" name="q5" value="a" class="sr-only">
+                        <span>a) Como una emoción siempre fuerte y visible</span>
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q5" value="b" class="sr-only">
+                        <span>b) Como una fuerza que te empuja a salir del pueblo</span>
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q5" value="c" class="sr-only">
+                        <span>c) Como un viento invisible pero poderoso, una voz suave que invita al bien, la verdad, el amor y la alegría</span>
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q5" value="d" class="sr-only">
+                        <span>d) Como una luz brillante que elimina toda duda de inmediato</span>
+                    </label>
+                </div>
+
+                <button type="submit" id="submitQuiz" class="quiz-button w-full md:w-auto">Evaluar Cuestionario</button>
+            </form>
+
+            <div id="quizResult" class="mt-8 p-6 rounded-lg hidden"></div>
+        </section>
+
+    </main>
+
+    <footer class="text-center mt-10 p-6 border-t border-gray-300 text-gray-600">
+        <p>&copy; <span id="currentYear"></span> Reflexiones para el Alma Joven. Inspirado en la Solemnidad de Pentecostés.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set current year in footer
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+            // Quiz logic
+            const quizForm = document.getElementById('quizForm');
+            const quizResult = document.getElementById('quizResult');
+            const submitQuizButton = document.getElementById('submitQuiz');
+            const questionContainers = document.querySelectorAll('.question-container');
+
+            const correctAnswers = {
+                q1: 'b',
+                q2: 'a',
+                q3: 'c',
+                q4: 'b',
+                q5: 'c'
+            };
+
+            // Add click listener to options for visual selection
+            questionContainers.forEach(container => {
+                container.querySelectorAll('label.question-option').forEach(option => {
+                    option.addEventListener('click', () => {
+                        // Remove 'selected' from siblings
+                        container.querySelectorAll('label.question-option').forEach(sibling => {
+                            sibling.classList.remove('selected');
+                        });
+                        // Add 'selected' to clicked option
+                        option.classList.add('selected');
+                    });
+                });
+            });
+
+            quizForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                let score = 0;
+                let totalQuestions = Object.keys(correctAnswers).length;
+
+                quizResult.innerHTML = ''; // Clear previous results
+                quizResult.classList.remove('hidden'); // Show results div
+
+                questionContainers.forEach(container => {
+                    const questionName = container.querySelector('input[type="radio"]').name;
+                    const userAnswer = quizForm.elements[questionName].value;
+                    const correctAnswer = correctAnswers[questionName];
+
+                    // Reset classes before marking
+                    container.querySelectorAll('label.question-option').forEach(option => {
+                        option.classList.remove('correct', 'incorrect', 'selected');
+                    });
+
+                    if (userAnswer === correctAnswer) {
+                        score++;
+                        // Mark the correct option green
+                        container.querySelector(`input[value="${userAnswer}"]`).closest('label').classList.add('correct');
+                    } else {
+                        // Mark user's incorrect answer red (if selected)
+                        if (userAnswer) {
+                            container.querySelector(`input[value="${userAnswer}"]`).closest('label').classList.add('incorrect');
+                        }
+                        // Always mark the correct answer green
+                        container.querySelector(`input[value="${correctAnswer}"]`).closest('label').classList.add('correct');
+                    }
+
+                    // Disable all options after evaluation
+                    container.querySelectorAll('input[type="radio"]').forEach(radio => {
+                        radio.disabled = true;
+                    });
+                });
+
+                const percentage = (score / totalQuestions) * 100;
+                let feedbackMessage = '';
+
+                if (percentage === 100) {
+                    feedbackMessage = '¡Excelente! Has captado todos los mensajes clave de la homilía.';
+                    quizResult.classList.add('bg-green-100', 'text-green-800');
+                    quizResult.classList.remove('bg-red-100', 'text-red-800', 'bg-yellow-100', 'text-yellow-800');
+                } else if (percentage >= 60) {
+                    feedbackMessage = '¡Muy bien! Has comprendido la mayoría de los puntos importantes. Sigue repasando.';
+                    quizResult.classList.add('bg-yellow-100', 'text-yellow-800');
+                    quizResult.classList.remove('bg-red-100', 'text-red-800', 'bg-green-100', 'text-green-800');
+                } else {
+                    feedbackMessage = 'Sigue esforzándote. Te animamos a repasar el Evangelio y los mensajes clave de la homilía.';
+                    quizResult.classList.add('bg-red-100', 'text-red-800');
+                    quizResult.classList.remove('bg-green-100', 'text-green-800', 'bg-yellow-100', 'text-yellow-800');
+                }
+
+                quizResult.innerHTML = `
+                    <p class="text-xl font-bold mb-2">Tu puntuación: ${score} de ${totalQuestions} (${percentage.toFixed(0)}%)</p>
+                    <p class="text-lg">${feedbackMessage}</p>
+                `;
+
+                // Disable the submit button
+                submitQuizButton.disabled = true;
+            });
+        });
+    </script>
+</body>
+</html>
