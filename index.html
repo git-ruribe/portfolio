@@ -11,14 +11,25 @@
         /* Tus estilos generales para el portafolio */
         body { font-family: sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; color: #333; }
         header { text-align: center; margin-bottom: 40px; }
-        h1, h2 { color: #007bff; }
-        #portfolio-grid {
+        h1, h2 { color: #0056b3; } /* Tono de azul ligeramente más oscuro */
+        main { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* --- NUEVO: Estilo para los títulos de sección --- */
+        .section-title {
+            font-size: 2em;
+            margin-top: 50px;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #007bff;
+            display: inline-block;
+        }
+        
+        /* Estilo de la rejilla que ahora se aplicará a cada sección */
+        .portfolio-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 25px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px 0;
+            padding-bottom: 20px; /* Espacio después de la última fila de tarjetas */
         }
         .portfolio-item {
             background-color: #fff;
@@ -27,10 +38,11 @@
             overflow: hidden;
             text-align: center;
             padding-bottom: 20px;
-            transition: transform 0.2s ease-in-out;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
         .portfolio-item:hover {
             transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
         }
         .portfolio-item img {
             width: 100%;
@@ -39,7 +51,7 @@
             border-bottom: 1px solid #eee;
             display: block;
         }
-        .portfolio-item h2 {
+        .portfolio-item h3 { /* Cambiado de h2 a h3 por semántica */
             margin: 15px 0 8px;
             font-size: 1.4em;
             color: #333;
@@ -48,13 +60,14 @@
             text-decoration: none;
             color: inherit;
         }
-        .portfolio-item a:hover h2 {
+        .portfolio-item a:hover h3 {
             color: #007bff;
         }
         .portfolio-item .category {
             font-size: 0.9em;
             color: #666;
             margin-bottom: 10px;
+            font-weight: bold; /* Darle más peso al estatus */
         }
         .portfolio-item p {
             padding: 0 15px;
@@ -84,7 +97,7 @@
         <p>Explora algunas de mis aplicaciones y experimentos.</p>
     </header>
 
-    <main id="portfolio-grid">
+    <main id="portfolio-container">
         <p id="loading-message">Cargando proyectos...</p>
         <p id="error-message" style="color: red; display: none;">No se pudieron cargar los proyectos. Inténtalo de nuevo más tarde.</p>
     </main>
@@ -97,21 +110,21 @@
     <script>
         // --- Firebase Configuration (¡¡¡IMPORTANTE: REEMPLAZA ESTO CON TUS PROPIOS VALORES!!!) ---
         const firebaseConfig = {
-          apiKey: "AIzaSyB2Jo2pqMfAOC-h9M9qrV4t-3adq8f-B9A",
-          authDomain: "appszoo.firebaseapp.com",
-          projectId: "appszoo",
-          storageBucket: "appszoo.firebasestorage.app",
-          messagingSenderId: "489054092246",
-          appId: "1:489054092246:web:07a78ff4d5abd0c9414277"
+            apiKey: "AIzaSyB2Jo2pqMfAOC-h9M9qrV4t-3adq8f-B9A",
+            authDomain: "appszoo.firebaseapp.com",
+            projectId: "appszoo",
+            storageBucket: "appszoo.firebasestorage.app",
+            messagingSenderId: "489054092246",
+            appId: "1:489054092246:web:07a78ff4d5abd0c9414277"
         };
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const projectsCollection = db.collection('portfolioProjects'); // Misma colección que en admin.html
+        const projectsCollection = db.collection('portfolioProjects'); 
 
         // --- DOM Elements ---
-        const portfolioGrid = document.getElementById('portfolio-grid');
+        const portfolioContainer = document.getElementById('portfolio-container');
         const loadingMessage = document.getElementById('loading-message');
         const errorMessage = document.getElementById('error-message');
 
@@ -119,33 +132,82 @@
         async function loadAndDisplayPortfolio() {
             try {
                 const snapshot = await projectsCollection.orderBy('nombre').get();
-                const projects = snapshot.docs.map(doc => ({
+                const allProjects = snapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
                 }));
 
-                portfolioGrid.innerHTML = ''; // Limpiar mensaje de carga
+                loadingMessage.style.display = 'none';
 
-                if (projects.length === 0) {
-                    portfolioGrid.innerHTML = '<p>Aún no hay proyectos en el portafolio.</p>';
+                if (allProjects.length === 0) {
+                    portfolioContainer.innerHTML = '<p>Aún no hay proyectos en el portafolio.</p>';
                     return;
                 }
 
-                projects.forEach(project => {
-                    const projectCard = document.createElement('div');
-                    projectCard.classList.add('portfolio-item');
+                // --- 1. Agrupar proyectos por estatus ---
+                const projectsByStatus = {
+                    'Producción': [],
+                    'MVP': [],
+                    'Prototipo': [],
+                    'Experimento': [],
+                    'Idea': [],
+                    'Otros': [] // Para proyectos sin estatus o con uno no listado
+                };
 
-                    projectCard.innerHTML = `
-                        <a href="${project.direccion}" target="_blank">
-                            <img src="${project.imagenBase64}" alt="${project.nombre}">
-                            <h2>${project.nombre}</h2>
-                        </a>
-                        <p class="category">${project.categoria} - ${project.estatus}</p>
-                        <p>${project.descripcion}</p>
-                    `;
-                    portfolioGrid.appendChild(projectCard);
+                allProjects.forEach(project => {
+                    const status = project.estatus;
+                    if (projectsByStatus.hasOwnProperty(status)) {
+                        projectsByStatus[status].push(project);
+                    } else {
+                        projectsByStatus['Otros'].push(project);
+                    }
                 });
-                loadingMessage.style.display = 'none';
+                
+                // Limpiar el contenedor principal antes de agregar las secciones
+                portfolioContainer.innerHTML = '';
+
+                // --- 2. Definir el orden de las secciones ---
+                const sectionOrder = ['Producción', 'MVP', 'Prototipo', 'Experimento', 'Idea', 'Otros'];
+
+                // --- 3. Renderizar cada sección y sus tarjetas ---
+                sectionOrder.forEach(status => {
+                    const projectsInSection = projectsByStatus[status];
+                    
+                    // Solo crear la sección si tiene proyectos
+                    if (projectsInSection.length > 0) {
+                        
+                        // Crear el título de la sección
+                        const sectionTitle = document.createElement('h2');
+                        sectionTitle.textContent = status;
+                        sectionTitle.classList.add('section-title');
+                        portfolioContainer.appendChild(sectionTitle);
+
+                        // Crear el contenedor de la rejilla para esta sección
+                        const sectionGrid = document.createElement('div');
+                        sectionGrid.classList.add('portfolio-grid');
+                        
+                        // Crear y añadir cada tarjeta de proyecto a la rejilla de la sección
+                        projectsInSection.forEach(project => {
+                            const projectCard = document.createElement('div');
+                            projectCard.classList.add('portfolio-item');
+
+                            // La información de 'estatus' se muestra en la categoría, como antes.
+                            projectCard.innerHTML = `
+                                <a href="${project.direccion}" target="_blank">
+                                    <img src="${project.imagenBase64}" alt="Imagen de ${project.nombre}">
+                                    <h3>${project.nombre}</h3>
+                                </a>
+                                <p class="category">${project.categoria || 'Sin Categoría'} - <strong>${project.estatus || 'N/A'}</strong></p>
+                                <p>${project.descripcion}</p>
+                            `;
+                            sectionGrid.appendChild(projectCard);
+                        });
+
+                        // Añadir la rejilla completa de la sección al contenedor principal
+                        portfolioContainer.appendChild(sectionGrid);
+                    }
+                });
+
             } catch (error) {
                 console.error('Error al cargar el portafolio desde Firestore:', error);
                 loadingMessage.style.display = 'none';
