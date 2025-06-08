@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💰 Bolsa Familiar</title>
+    <title>💰2 Bolsa Familiar</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
@@ -873,7 +873,7 @@
             const expense = {
                 id: Date.now().toString(),
                 userId: currentUser.uid,
-                userName: currentUser.displayName,
+                userName: userName,
                 amount: amount,
                 category: category,
                 description: description,
@@ -882,15 +882,7 @@
 
             familyData.expenses.push(expense);
 
-            // Limpiar formulario
-            document.getElementById('expense-amount').value = '';
-            document.getElementById('expense-description').value = '';
-
-            showSuccess('expense-form-messages', 'Gasto registrado exitosamente');
-            loadMyExpenses();
-            loadMyStats();
-
-            /* Para Firebase:
+            // Para Firebase:
             database.ref('expenses').push(expense)
                 .then(() => {
                     showSuccess('expense-form-messages', 'Gasto registrado exitosamente');
@@ -902,12 +894,12 @@
                 .catch((error) => {
                     showError('expense-form-messages', 'Error al registrar gasto: ' + error.message);
                 });
-            */
+            
         }
 
         function loadMyExpenses() {
             const container = document.getElementById('my-expenses-list');
-            const myExpenses = familyData.expenses.filter(e => e.userId === currentUser.uid);
+            const myExpenses = (familyData.expenses || []).filter(e => e.userId === currentUser.uid);
 
             if (myExpenses.length === 0) {
                 container.innerHTML = '<p style="text-align: center; color: #666;">No has registrado gastos aún.</p>';
