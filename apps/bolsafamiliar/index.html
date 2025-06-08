@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💰1 Bolsa Familiar</title>
+    <title>💰 Bolsa Familiar</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
@@ -326,6 +326,24 @@
                 width: 100%;
                 justify-content: flex-end;
             }
+
+            .realtime-indicator {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #28a745;
+                color: white;
+                padding: 8px 12px;
+                border-radius: 5px;
+                font-size: 12px;
+                z-index: 1000;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .realtime-indicator.show {
+                opacity: 1;
+            }
         }
     </style>
 </head>
@@ -549,49 +567,6 @@
         let userName = null;
         let familyData = {};
 
-        // Datos de ejemplo para demo (se reemplazará con Firebase)
-        let demoData = {
-            familySettings: {
-                currentBalance: 1500,
-                weeklyBudget: 2000,
-                lastBudgetUpdate: "2025-06-08T10:00:00Z"
-            },
-            users: {
-                'demo-admin': { 
-                    name: 'Papá Admin', 
-                    email: 'papa@familia.com',
-                    role: 'admin' 
-                },
-                'demo-member': { 
-                    name: 'Hijo 1', 
-                    email: 'hijo1@familia.com',
-                    role: 'member' 
-                }
-            },
-            requests: [
-                {
-                    id: '1',
-                    userId: 'demo-member',
-                    userName: 'Hijo 1',
-                    amount: 200,
-                    reason: 'Útiles escolares',
-                    status: 'pending',
-                    createdAt: new Date().toISOString()
-                }
-            ],
-            expenses: [
-                {
-                    id: '1',
-                    userId: 'demo-member',
-                    userName: 'Hijo 1',
-                    amount: 50,
-                    category: 'comida',
-                    description: 'Almuerzo escuela',
-                    createdAt: new Date().toISOString()
-                }
-            ]
-        };
-
         // ========================================
         // FUNCIONES DE AUTENTICACIÓN
         // ========================================
@@ -667,31 +642,133 @@
         }
 
         function loadFamilyData() {
-            // Para Firebase:
-            Promise.all([
-                database.ref('familySettings').once('value'),
-                database.ref('users').once('value'),
-                database.ref('requests').once('value'),
-                database.ref('expenses').once('value')
-            ]).then(([settingsSnapshot, usersSnapshot, requestsSnapshot, expensesSnapshot]) => {
-                familyData = {
-                    familySettings: settingsSnapshot.val() || {},
-                    users: usersSnapshot.val() || {},
-                    requests: requestsSnapshot.val() ? Object.values(requestsSnapshot.val()) : [],
-                    expenses: expensesSnapshot.val() ? Object.values(expensesSnapshot.val()) : []
-                };
-                showMainApp();
-            }).catch((error) => {
-                showError('error-container', 'Error al cargar datos familiares: ' + error.message);
-            });
+            console.log("=== Configurando listeners en tiempo real ===");
             
+            // Listener para configuraciones familiares
+            database.ref('familySettings').on('value', (snapshot) => {
+                const settings = snapshot.val() || {};
+                familyData.familySettings = settings;
+                
+                console.log("📊 Settings actualizados:", settings);
+                
+                // Actualizar UI en tiempo real
+                if (document.getElementById('main-app').style.display !== 'none') {
+                    updateHomeDisplay();
+                    updateBudgetDisplay();
+                }
+            });
+
+            // Listener para solicitudes
+            database.ref('requests').on('value', (snapshot) => {
+                const requestsData = snapshot.val() || {};
+                familyData.requests = Object.keys(requestsData).map(key => ({
+                    id: key,
+                    ...requestsData[key]
+                }));
+                
+                console.log("📝 Solicitudes actualizadas:", familyData.requests.length);
+                showRealtimeUpdate('📝 Solicitudes actualizadas');
+                
+                // Actualizar UI si estamos en las pestañas relevantes
+                if (document.getElementById('main-app').style.display !== 'none') {
+                    updateRequestsDisplay();
+                    updateStatsDisplay();
+                }
+            });
+
+            // Listener para gastos
+            database.ref('expenses').on('value', (snapshot) => {
+                const expensesData = snapshot.val() || {};
+                familyData.expenses = Object.keys(expensesData).map(key => ({
+                    id: key,
+                    ...expensesData[key]
+                }));
+                
+                console.log("💳 Gastos actualizados:", familyData.expenses.length);
+                showRealtimeUpdate('💳 Gastos actualizados');
+                
+                // Actualizar UI si estamos en las pestañas relevantes
+                if (document.getElementById('main-app').style.display !== 'none') {
+                    updateExpensesDisplay();
+                    updateStatsDisplay();
+                }
+            });
+
+            // Listener para usuarios (por si se agregan nuevos miembros)
+            database.ref('users').on('value', (snapshot) => {
+                familyData.users = snapshot.val() || {};
+                console.log("👥 Usuarios actualizados");
+                
+                if (document.getElementById('main-app').style.display !== 'none') {
+                    updateStatsDisplay();
+                }
+            });
+
+            // Mostrar la app una vez configurados los listeners
+            showMainApp();
+        }
+
+        function updateHomeDisplay() {
+            const balance = familyData.familySettings.currentBalance || 0;
+            const weeklyBudget = familyData.familySettings.weeklyBudget || 0;
+            
+            document.getElementById('family-balance').textContent = formatCurrency(balance);
+            document.getElementById('weekly-budget-display').textContent = weeklyBudget.toLocaleString();
+            
+            loadMyStats();
+        }
+
+        function updateBudgetDisplay() {
+            const lastUpdate = familyData.familySettings?.lastBudgetUpdate;
+            document.getElementById('last-budget-update').textContent = 
+                lastUpdate ? formatDate(lastUpdate) : 'Nunca';
+                
+            const weeklyBudget = familyData.familySettings?.weeklyBudget || 0;
+            document.getElementById('weekly-budget').placeholder = `Actual: $${weeklyBudget.toLocaleString()}`;
+        }
+
+        function updateRequestsDisplay() {
+            // Actualizar "Mis Solicitudes" si la pestaña está activa
+            if (document.getElementById('requests-tab').classList.contains('active')) {
+                loadMyRequests();
+            }
+            
+            // Actualizar "Solicitudes Pendientes" si la pestaña admin está activa
+            if (document.getElementById('admin-tab').classList.contains('active')) {
+                loadPendingRequests();
+            }
+        }
+
+        function updateExpensesDisplay() {
+            // Actualizar "Mis Gastos" si la pestaña está activa
+            if (document.getElementById('expenses-tab').classList.contains('active')) {
+                loadMyExpenses();
+            }
+        }
+
+        function updateStatsDisplay() {
+            // Actualizar estadísticas en tiempo real
+            loadMyStats();
+            
+            // Si estamos en admin, actualizar estadísticas familiares
+            if (userRole === 'admin' && document.getElementById('admin-tab').classList.contains('active')) {
+                loadFamilyStats();
+            }
         }
 
         function logout() {
-            auth.signOut(); // Para Firebase
+            // Detener todos los listeners
+            database.ref('familySettings').off();
+            database.ref('requests').off();
+            database.ref('expenses').off();
+            database.ref('users').off();
+            
+            auth.signOut();
             currentUser = null;
             userRole = null;
+            userName = null;
             familyData = {};
+            
             document.getElementById('auth-container').style.display = 'block';
             document.getElementById('main-app').style.display = 'none';
             
@@ -742,7 +819,10 @@
             if (tabName === 'home') loadHomeData();
             if (tabName === 'requests') loadMyRequests();
             if (tabName === 'expenses') loadMyExpenses();
-            if (tabName === 'admin' && userRole === 'admin') loadAdminData();
+            if (tabName === 'admin' && userRole === 'admin') {
+                console.log("Cargando datos de admin..."); // Debug temporal
+                loadAdminData();
+            }
         }
 
         function loadData() {
@@ -750,7 +830,38 @@
         }
 
         function loadHomeData() {
-            // Cargar balance familiar
+            // Cargar balance y presupuesto directamente desde Firebase
+            database.ref('familySettings').once('value')
+                .then((snapshot) => {
+                    const settings = snapshot.val() || {};
+                    console.log("=== DEBUG FAMILY SETTINGS ===");
+                    console.log("Settings desde Firebase:", settings);
+                    
+                    const balance = settings.currentBalance || 0;
+                    const weeklyBudget = settings.weeklyBudget || 0;
+                    
+                    console.log("Balance:", balance);
+                    console.log("Weekly budget:", weeklyBudget);
+                    
+                    document.getElementById('family-balance').textContent = formatCurrency(balance);
+                    document.getElementById('weekly-budget-display').textContent = weeklyBudget.toLocaleString();
+                    
+                    // Actualizar familyData para otras funciones
+                    if (!familyData.familySettings) {
+                        familyData.familySettings = {};
+                    }
+                    familyData.familySettings.currentBalance = balance;
+                    familyData.familySettings.weeklyBudget = weeklyBudget;
+                    familyData.familySettings.lastBudgetUpdate = settings.lastBudgetUpdate;
+                    
+                    loadMyStats();
+                })
+                .catch((error) => {
+                    console.error('Error cargando configuración familiar:', error);
+                });
+        }
+
+        function updateHomeDisplay() {
             const balance = familyData.familySettings.currentBalance || 0;
             const weeklyBudget = familyData.familySettings.weeklyBudget || 0;
             
@@ -803,7 +914,6 @@
             }
 
             const request = {
-                id: Date.now().toString(),
                 userId: currentUser.uid,
                 userName: userName,
                 amount: amount,
@@ -812,18 +922,16 @@
                 createdAt: new Date().toISOString()
             };
 
-            // Para Firebase:
             database.ref('requests').push(request)
                 .then(() => {
                     showSuccess('request-form-messages', 'Solicitud enviada exitosamente');
                     document.getElementById('request-amount').value = '';
                     document.getElementById('request-reason').value = '';
-                    loadMyStats();
+                    // ¡Ya no necesitas llamadas manuales! Los listeners se encargan
                 })
                 .catch((error) => {
                     showError('request-form-messages', 'Error al enviar solicitud: ' + error.message);
                 });
-            
         }
 
         function loadMyRequests() {
@@ -871,7 +979,6 @@
             }
 
             const expense = {
-                id: Date.now().toString(),
                 userId: currentUser.uid,
                 userName: userName,
                 amount: amount,
@@ -880,21 +987,16 @@
                 createdAt: new Date().toISOString()
             };
 
-            familyData.expenses.push(expense);
-
-            // Para Firebase:
             database.ref('expenses').push(expense)
                 .then(() => {
                     showSuccess('expense-form-messages', 'Gasto registrado exitosamente');
                     document.getElementById('expense-amount').value = '';
                     document.getElementById('expense-description').value = '';
-                    loadMyExpenses();
-                    loadMyStats();
+                    // ¡Los listeners actualizarán todo automáticamente!
                 })
                 .catch((error) => {
                     showError('expense-form-messages', 'Error al registrar gasto: ' + error.message);
                 });
-            
         }
 
         function loadMyExpenses() {
@@ -971,36 +1073,22 @@
                 return;
             }
 
-            familyData.familySettings.weeklyBudget = budget;
-            familyData.familySettings.currentBalance = budget;
-            familyData.familySettings.lastBudgetUpdate = new Date().toISOString();
-            
-            document.getElementById('family-balance').textContent = formatCurrency(budget);
-            document.getElementById('weekly-budget-display').textContent = budget.toLocaleString();
-            document.getElementById('last-budget-update').textContent = formatDate(familyData.familySettings.lastBudgetUpdate);
-            
-            showSuccess('budget-form-messages', 'Presupuesto semanal establecido exitosamente');
-            loadFamilyStats();
-
-            /* Para Firebase:
             const updates = {
                 'familySettings/weeklyBudget': budget,
                 'familySettings/currentBalance': budget,
-                'familySettings/lastBudgetUpdate': firebase.database.ServerValue.TIMESTAMP
+                'familySettings/lastBudgetUpdate': new Date().toISOString()
             };
             
             database.ref().update(updates)
                 .then(() => {
                     showSuccess('budget-form-messages', 'Presupuesto semanal establecido exitosamente');
-                    loadHomeData();
-                    loadFamilyStats();
+                    document.getElementById('weekly-budget').value = '';
+                    // ¡Ya no necesitas loadFamilyData()! Los listeners se encargan
                 })
                 .catch((error) => {
                     showError('budget-form-messages', 'Error al establecer presupuesto: ' + error.message);
                 });
-            */
         }
-
         function loadAdminData() {
             loadPendingRequests();
             loadFamilyStats();
@@ -1008,31 +1096,10 @@
         }
 
         function loadPendingRequests() {
-    const container = document.getElementById('pending-requests-list');
-    container.innerHTML = '<div class="loading">Cargando solicitudes pendientes...</div>';
-
-    console.log("=== DEBUG PENDING REQUESTS ===");
-    
-    // Primero cargar TODAS las solicitudes para debug
-    database.ref('requests').once('value')
-        .then((snapshot) => {
-            console.log("Todas las solicitudes:", snapshot.val());
+            const container = document.getElementById('pending-requests-list');
             
-            // Ahora filtrar las pendientes
-            return database.ref('requests').orderByChild('status').equalTo('pending').once('value');
-        })
-        .then((snapshot) => {
-            console.log("Solicitudes pendientes raw:", snapshot.val());
-            
-            const pendingRequests = [];
-            snapshot.forEach((childSnapshot) => {
-                const request = childSnapshot.val();
-                request.id = childSnapshot.key;
-                console.log("Solicitud pendiente encontrada:", request);
-                pendingRequests.push(request);
-            });
-
-            console.log("Array de solicitudes pendientes:", pendingRequests);
+            // Filtrar las solicitudes pendientes de los datos ya cargados
+            const pendingRequests = (familyData.requests || []).filter(r => r.status === 'pending');
 
             if (pendingRequests.length === 0) {
                 container.innerHTML = '<p style="text-align: center; color: #666;">No hay solicitudes pendientes.</p>';
@@ -1055,13 +1122,8 @@
                     </div>
                 </div>
             `).join('');
-        })
-        .catch((error) => {
-            console.error('Error cargando solicitudes pendientes:', error);
-            container.innerHTML = '<p style="text-align: center; color: #dc3545;">Error al cargar solicitudes</p>';
-        });
-}
-
+        }
+        
         function approveRequest(requestId) {
             // Primero obtener la solicitud actual
             database.ref('requests/' + requestId).once('value')
@@ -1096,14 +1158,6 @@
                             return database.ref().update(updates);
                         });
                 })
-                .then(() => {
-                    // Recargar datos
-                    loadFamilyData();
-                    // Recargar específicamente las solicitudes pendientes
-                    if (document.getElementById('admin-tab').classList.contains('active')) {
-                        setTimeout(() => loadPendingRequests(), 500);
-                    }
-                })
                 .catch((error) => {
                     console.error('Error al aprobar solicitud:', error);
                     alert('Error al aprobar la solicitud: ' + error.message);
@@ -1121,11 +1175,7 @@
         
             database.ref().update(updates)
                 .then(() => {
-                    loadFamilyData();
-                    // Recargar específicamente las solicitudes pendientes
-                    if (document.getElementById('admin-tab').classList.contains('active')) {
-                        setTimeout(() => loadPendingRequests(), 500);
-                    }
+
                 })
                 .catch((error) => {
                     console.error('Error al rechazar solicitud:', error);
@@ -1235,9 +1285,13 @@
         }
 
         function loadLastBudgetUpdate() {
-            const lastUpdate = familyData.familySettings.lastBudgetUpdate;
+            const lastUpdate = familyData.familySettings?.lastBudgetUpdate;
             document.getElementById('last-budget-update').textContent = 
                 lastUpdate ? formatDate(lastUpdate) : 'Nunca';
+                
+            // También cargar el presupuesto actual en el campo
+            const weeklyBudget = familyData.familySettings?.weeklyBudget || 0;
+            document.getElementById('weekly-budget').placeholder = `Actual: $${weeklyBudget.toLocaleString()}`;
         }
 
         // ========================================
@@ -1354,6 +1408,18 @@
             });
             
         });
+
+        function showRealtimeUpdate(message) {
+            const indicator = document.createElement('div');
+            indicator.className = 'realtime-indicator show';
+            indicator.textContent = message;
+            document.body.appendChild(indicator);
+            
+            setTimeout(() => {
+                indicator.classList.remove('show');
+                setTimeout(() => indicator.remove(), 300);
+            }, 2000);
+        }
 
         // Auto-refresh de datos cada 30 segundos (para Firebase)
         /*
