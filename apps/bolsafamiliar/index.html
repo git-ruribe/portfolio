@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💰 Bolsa Familiar</title>
+    <title>💰💰 Bolsa Familiar</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
@@ -546,6 +546,7 @@
         // ========================================
         let currentUser = null;
         let userRole = null;
+        let userName = null;
         let familyData = {};
 
         // Datos de ejemplo para demo (se reemplazará con Firebase)
@@ -652,7 +653,7 @@
                     }
                     
                     userRole = userData.role;
-                    currentUser.displayName = userData.name; // Aquí es donde se asigna el nombre
+                    userName = userData.name;
                     console.log("=== DESPUÉS DE ASIGNACIÓN ===");
                     console.log("userRole:", userRole);
                     console.log("currentUser.displayName:", currentUser.displayName);
@@ -707,14 +708,14 @@
         function showMainApp() {
 
             console.log("=== DEBUG SHOW MAIN APP ===");
-            console.log("currentUser.displayName:", currentUser.displayName);
+            console.log("userName:", userName);
             console.log("userRole:", userRole);
             
             document.getElementById('auth-container').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
             
             document.getElementById('user-greeting').textContent = 
-                `Hola, ${currentUser.displayName}! (${userRole === 'admin' ? 'Administrador' : 'Miembro'})`;
+                `Hola, ${userName}! (${userRole === 'admin' ? 'Administrador' : 'Miembro'})`;
             
             // Mostrar/ocultar elementos de admin
             const adminElements = document.querySelectorAll('.admin-only');
