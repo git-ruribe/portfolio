@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💰3 Bolsa Familiar</title>
+    <title>💰 Bolsa Familiar</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
@@ -1009,26 +1009,44 @@
 
         function loadPendingRequests() {
             const container = document.getElementById('pending-requests-list');
-            const pendingRequests = (familyData.requests || []).filter(r => r.status === 'pending');
-
-            if (pendingRequests.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #666;">No hay solicitudes pendientes.</p>';
-                return;
-            }
-
-            container.innerHTML = pendingRequests.map(request => `
-                <div class="request-item">
-                    <div class="request-info">
-                        <strong>${request.userName}</strong> solicita <strong>${formatCurrency(request.amount)}</strong>
-                        <br>${request.reason}
-                        <br><small>${formatDate(request.createdAt)}</small>
-                    </div>
-                    <div class="request-actions">
-                        <button class="btn btn-success" onclick="approveRequest('${request.id}')">✓ Aprobar</button>
-                        <button class="btn btn-danger" onclick="rejectRequest('${request.id}')">✗ Rechazar</button>
-                    </div>
-                </div>
-            `).join('');
+            container.innerHTML = '<div class="loading">Cargando solicitudes pendientes...</div>';
+        
+            // Cargar directamente desde Firebase en tiempo real
+            database.ref('requests').orderByChild('status').equalTo('pending').once('value')
+                .then((snapshot) => {
+                    const pendingRequests = [];
+                    snapshot.forEach((childSnapshot) => {
+                        const request = childSnapshot.val();
+                        request.id = childSnapshot.key; // Agregar el ID
+                        pendingRequests.push(request);
+                    });
+        
+                    if (pendingRequests.length === 0) {
+                        container.innerHTML = '<p style="text-align: center; color: #666;">No hay solicitudes pendientes.</p>';
+                        return;
+                    }
+        
+                    // Ordenar por fecha más reciente
+                    pendingRequests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        
+                    container.innerHTML = pendingRequests.map(request => `
+                        <div class="request-item">
+                            <div class="request-info">
+                                <strong>${request.userName}</strong> solicita <strong>${formatCurrency(request.amount)}</strong>
+                                <br>${request.reason}
+                                <br><small>${formatDate(request.createdAt)}</small>
+                            </div>
+                            <div class="request-actions">
+                                <button class="btn btn-success" onclick="approveRequest('${request.id}')">✓ Aprobar</button>
+                                <button class="btn btn-danger" onclick="rejectRequest('${request.id}')">✗ Rechazar</button>
+                            </div>
+                        </div>
+                    `).join('');
+                })
+                .catch((error) => {
+                    console.error('Error cargando solicitudes pendientes:', error);
+                    container.innerHTML = '<p style="text-align: center; color: #dc3545;">Error al cargar solicitudes</p>';
+                });
         }
 
         function approveRequest(requestId) {
@@ -1068,6 +1086,10 @@
                 .then(() => {
                     // Recargar datos
                     loadFamilyData();
+                    // Recargar específicamente las solicitudes pendientes
+                    if (document.getElementById('admin-tab').classList.contains('active')) {
+                        setTimeout(() => loadPendingRequests(), 500);
+                    }
                 })
                 .catch((error) => {
                     console.error('Error al aprobar solicitud:', error);
@@ -1087,6 +1109,10 @@
             database.ref().update(updates)
                 .then(() => {
                     loadFamilyData();
+                    // Recargar específicamente las solicitudes pendientes
+                    if (document.getElementById('admin-tab').classList.contains('active')) {
+                        setTimeout(() => loadPendingRequests(), 500);
+                    }
                 })
                 .catch((error) => {
                     console.error('Error al rechazar solicitud:', error);
