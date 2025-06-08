@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bolsa Familiar</title>
+    <title>Bolsa Familiar 🎒</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
@@ -530,21 +530,19 @@
     // CONFIGURACIÓN DE FIREBASE
     // ========================================
     
-    // REEMPLAZA ESTA CONFIGURACIÓN CON LA TUYA
-    const firebaseConfig = {
-        // apiKey: "tu-api-key",
-        // authDomain: "tu-proyecto.firebaseapp.com",
-        // databaseURL: "https://tu-proyecto-default-rtdb.firebaseio.com",
-        // projectId: "tu-proyecto",
-        // storageBucket: "tu-proyecto.appspot.com",
-        // messagingSenderId: "123456789",
-        // appId: "tu-app-id"
-    };
+      const firebaseConfig = {
+        apiKey: "AIzaSyCpQzAPZntCwtSjKgov-3NRqIcjAO3tdgo",
+        authDomain: "family-funds-flow.firebaseapp.com",
+        projectId: "family-funds-flow",
+        storageBucket: "family-funds-flow.firebasestorage.app",
+        messagingSenderId: "940869685424",
+        appId: "1:940869685424:web:2bcf1c068824f72f43eb75"
+      };
 
     // Inicializar Firebase (descomenta cuando tengas la configuración)
-    // firebase.initializeApp(firebaseConfig);
-    // const auth = firebase.auth();
-    // const database = firebase.database();
+     firebase.initializeApp(firebaseConfig);
+     const auth = firebase.auth();
+     const database = firebase.database();
 
     // ========================================
     // VARIABLES GLOBALES
