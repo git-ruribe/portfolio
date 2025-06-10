@@ -65,7 +65,7 @@
                                   cursor-pointer">
                 </div>
                  <div class="flex-shrink-0">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">&nbsp;</label> <button id="switchCamButton" class="hidden w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">&nbsp;</label> <button id="switchCamButton" class="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
                         Cambiar Cámara
                     </button>
                 </div>
@@ -295,6 +295,7 @@
                     switchCamButton.classList.remove('hidden');
                     console.log(`Se encontraron ${videoDevices.length} cámaras.`);
                 } else {
+                    switchCamButton.classList.add('hidden'); 
                     console.log("Solo se encontró una cámara, el botón de cambio permanecerá oculto.");
                 }
             } catch (err) {
