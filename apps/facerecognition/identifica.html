@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reconocimiento Facial con Webcam</title>
+    <title>📸 Reconocimiento Facial con Webcam</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
     <style>
@@ -52,20 +52,21 @@
         <div class="controls-status mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
             <div class="flex flex-col sm:flex-row gap-4 mb-4">
                 <div class="flex-1">
-                     <label for="jsonFileInput" class="block text-sm font-medium text-gray-700 mb-1">
+                    <label for="jsonFileInput" class="block text-sm font-medium text-gray-700 mb-1">
                         Cargar archivo <code>face_recognition_data.json</code>:
                     </label>
                     <input type="file" id="jsonFileInput" accept=".json"
-                           class="block w-full text-sm text-gray-500
-                                  file:mr-4 file:py-2 file:px-4
-                                  file:rounded-lg file:border-0
-                                  file:text-sm file:font-semibold
-                                  file:bg-blue-50 file:text-blue-700
-                                  hover:file:bg-blue-100
-                                  cursor-pointer">
+                            class="block w-full text-sm text-gray-500
+                                     file:mr-4 file:py-2 file:px-4
+                                     file:rounded-lg file:border-0
+                                     file:text-sm file:font-semibold
+                                     file:bg-blue-50 file:text-blue-700
+                                     hover:file:bg-blue-100
+                                     cursor-pointer">
                 </div>
-                 <div class="flex-shrink-0">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">&nbsp;</label> <button id="switchCamButton" class="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                   <div class="flex-shrink-0">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">&nbsp;</label>
+                    <button id="switchCamButton" class="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
                         Cambiar Cámara
                     </button>
                 </div>
@@ -89,7 +90,7 @@
         const jsonFileInputElement = document.getElementById('jsonFileInput');
         const statusTextElement = document.getElementById('statusText');
         const loaderElement = document.getElementById('loader');
-        const switchCamButton = document.getElementById('switchCamButton'); // <<< CAMBIO: Referencia al nuevo botón
+        const switchCamButton = document.getElementById('switchCamButton');
 
         // Constantes y variables globales
         const MODEL_URL = 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@0.22.2/weights';
@@ -98,7 +99,7 @@
         let modelsAreLoaded = false;
         let streamGlob = null;
         let recognitionInterval = null;
-        let currentFacingMode = 'user'; // <<< CAMBIO: Variable para rastrear la cámara actual ('user' o 'environment')
+        let currentFacingMode = 'user'; // 'user' para cámara frontal, 'environment' para trasera
 
         // --- 1. Funciones de Carga y Configuración ---
 
@@ -136,8 +137,8 @@
         }
 
         /**
-         * <<< CAMBIO: La función ahora acepta 'facingMode' como parámetro.
          * Inicia la webcam y la muestra en el elemento de video.
+         * También gestiona la visibilidad del botón de cambio de cámara.
          * @param {string} facingMode - 'user' para la cámara frontal, 'environment' para la trasera.
          */
         async function startWebcam(facingMode) {
@@ -152,27 +153,46 @@
                 }
                 
                 const constraints = {
-                    video: { facingMode: { exact: facingMode } }, // <<< CAMBIO: Usa el parámetro
+                    video: { facingMode: { exact: facingMode } },
                     audio: false
                 };
                 streamGlob = await navigator.mediaDevices.getUserMedia(constraints);
                 
                 videoElement.srcObject = streamGlob;
-                currentFacingMode = facingMode; // <<< CAMBIO: Actualiza el estado actual
-                videoElement.onloadedmetadata = () => {
+                currentFacingMode = facingMode; // Actualiza el estado actual
+                videoElement.onloadedmetadata = async () => { // Usar async aquí
                     videoElement.play();
                     updateStatus("Webcam activa. 🎥 Carga tu archivo JSON para reconocer.", false, 'success');
                     faceapi.matchDimensions(canvasElement, videoElement, true);
+
+                    // --- CAMBIO CLAVE AQUÍ ---
+                    // Después de que la webcam se haya iniciado y los permisos se hayan otorgado,
+                    // re-evalúa y ajusta la visibilidad del botón.
+                    try {
+                        const devices = await navigator.mediaDevices.enumerateDevices();
+                        const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                        if (videoDevices.length > 1) {
+                            switchCamButton.classList.remove('hidden'); // Muestra el botón
+                            console.log(`Se encontraron ${videoDevices.length} cámaras después de iniciar la webcam.`);
+                        } else {
+                            switchCamButton.classList.add('hidden'); // Oculta si solo hay una
+                            console.log("Solo se encontró una cámara, el botón de cambio permanecerá oculto.");
+                        }
+                    } catch (err) {
+                        console.error("Error enumerando dispositivos después de iniciar la webcam, el botón de cambio podría no mostrarse correctamente.", err);
+                        switchCamButton.classList.add('hidden'); // Asegura que se oculte en caso de error
+                    }
                 }
             } catch (err) {
                 console.error("Error al acceder a la webcam:", err);
                 let errorMessage = "Error al acceder a la webcam. 🚫 Verifica permisos y conexión.";
                 if (err.name === "NotAllowedError") {
-                     errorMessage = "Permiso para la webcam denegado. Por favor, habilítalo.";
+                    errorMessage = "Permiso para la webcam denegado. Por favor, habilítalo.";
                 } else if (err.name === "NotFoundError" || err.name === "OverconstrainedError") {
-                     errorMessage = `No se encontró una cámara ${facingMode === 'user' ? 'frontal' : 'posterior'}.`;
+                    errorMessage = `No se encontró una cámara ${facingMode === 'user' ? 'frontal' : 'posterior'}.`;
                 }
                 updateStatus(errorMessage, false, 'error');
+                switchCamButton.classList.add('hidden'); // Oculta el botón si hay un error con la cámara
             }
         }
 
@@ -276,38 +296,22 @@
             faceapi.matchDimensions(canvasElement, videoElement, true);
         });
 
-        // <<< CAMBIO: Event listener para el botón de cambiar cámara
         switchCamButton.addEventListener('click', () => {
             const newFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
             updateStatus(`Cambiando a cámara ${newFacingMode === 'user' ? 'frontal' : 'posterior'}...`, true, 'info');
             startWebcam(newFacingMode);
         });
 
-        // <<< CAMBIO: La función de inicialización ahora revisa las cámaras disponibles
         async function initializeApp() {
             await loadModels();
-            
-            // Revisa si hay múltiples cámaras y muestra el botón si es necesario
-            try {
-                const devices = await navigator.mediaDevices.enumerateDevices();
-                const videoDevices = devices.filter(device => device.kind === 'videoinput');
-                if (videoDevices.length > 1) {
-                    switchCamButton.classList.remove('hidden');
-                    console.log(`Se encontraron ${videoDevices.length} cámaras.`);
-                } else {
-                    switchCamButton.classList.add('hidden'); 
-                    console.log("Solo se encontró una cámara, el botón de cambio permanecerá oculto.");
-                }
-            } catch (err) {
-                console.error("Error enumerando dispositivos, no se mostrará el botón de cambio de cámara.", err);
-            }
-
-            await startWebcam(currentFacingMode); // Inicia con la cámara frontal por defecto
+            // Inicia la webcam con la cámara frontal por defecto.
+            // La lógica para mostrar/ocultar el botón de cambio se moverá dentro de startWebcam
+            await startWebcam(currentFacingMode);
         }
 
+        // Al cargar el DOM, inicializa la aplicación
         document.addEventListener('DOMContentLoaded', initializeApp);
 
     </script>
 </body>
 </html>
-
