@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeforeIdie.app</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom CSS to override/extend Tailwind for specific elements */
+        body {
+            font-family: 'Inter', sans-serif;
+            @apply bg-gray-50 text-gray-800;
+        }
+
+        .hero-bg {
+            background-color: #e0f7fa; /* Un color claro y llamativo */
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem); /* Responsive font size */
+            @apply font-extrabold text-teal-800 mb-4 leading-tight;
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1.2rem, 3.5vw, 1.8rem); /* Responsive font size */
+            @apply text-teal-600 font-semibold mb-8;
+        }
+
+        .visual-container img,
+        .visual-container video {
+            @apply max-w-full h-auto rounded-xl shadow-lg;
+        }
+
+        #waitlist-form input {
+            @apply p-3 border border-teal-200 rounded-lg flex-grow text-base text-gray-700 focus:ring-2 focus:ring-teal-400 focus:border-transparent;
+        }
+
+        #waitlist-form button {
+            @apply bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-lg cursor-pointer text-base transition-colors duration-300 shadow-md;
+        }
+
+        .form-message {
+            @apply mt-3 text-sm text-green-700;
+        }
+
+        .benefit-card {
+            @apply bg-white p-6 m-4 rounded-xl shadow-lg flex-1 min-w-[280px] max-w-sm flex flex-col items-center text-center;
+        }
+
+        .benefit-card img {
+            @apply w-20 h-20 mb-4; /* Adjust icon size */
+        }
+
+        .benefit-card h3 {
+            @apply text-xl font-bold text-teal-700 mb-2;
+        }
+
+        footer {
+            @apply bg-gray-900 text-white text-sm py-6 text-center;
+        }
+
+        /* Responsive adjustments for benefit cards */
+        @media (max-width: 768px) {
+            .benefit-card {
+                flex-basis: calc(50% - 32px); /* Two cards per row on medium screens */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .benefit-card {
+                flex-basis: 100%; /* One card per row on small screens */
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <header class="hero-bg py-20 px-4 text-center rounded-b-3xl">
+        <div class="max-w-4xl mx-auto">
+            <h1>BeforeIdie.app</h1>
+            <p class="subtitle">Colecciona tus sueños. Planifica tu vida.</p>
+            <div class="visual-container mb-12">
+                <!-- Placeholder para tu imagen o video impactante -->
+                <!-- Reemplaza el src con la URL de tu imagen o video -->
+                <img src="https://placehold.co/800x450/26A69A/FFFFFF?text=Tu%20Imagen%20Impactante" alt="Imagen Inspiradora de Experiencias">
+                <!-- O si es un video: -->
+                <!-- <video controls src="https://placehold.co/800x450/26A69A/FFFFFF?text=Tu%20Video%20Impactante.mp4" class="max-w-full h-auto rounded-xl shadow-lg"></video> -->
+            </div>
+            <form id="waitlist-form" class="flex flex-col sm:flex-row justify-center items-center gap-4 max-w-xl mx-auto">
+                <input type="email" placeholder="Tu correo electrónico" required class="w-full sm:w-auto">
+                <button type="submit">¡Quiero Ser Parte!</button>
+                <p class="form-message w-full sm:w-auto"></p>
+            </form>
+        </div>
+    </header>
+
+    <section class="benefits py-16 px-4 bg-white rounded-t-3xl mt-8">
+        <div class="container flex flex-wrap justify-center gap-8">
+            <div class="benefit-card">
+                <!-- Icono de Placeholder, reemplázalo con uno real -->
+                <img src="https://placehold.co/80x80/26A69A/FFFFFF?text=Icono" alt="Icono Capturar">
+                <h3>Captura tus Anhelos</h3>
+                <p>Guarda cada experiencia que deseas vivir, grande o pequeña.</p>
+            </div>
+            <div class="benefit-card">
+                <!-- Icono de Placeholder, reemplázalo con uno real -->
+                <img src="https://placehold.co/80x80/26A69A/FFFFFF?text=Icono" alt="Icono Planificar">
+                <h3>Planifica con Intención</h3>
+                <p>Organiza los detalles y haz realidad tus sueños.</p>
+            </div>
+            <div class="benefit-card">
+                <!-- Icono de Placeholder, reemplázalo con uno real -->
+                <img src="https://placehold.co/80x80/26A69A/FFFFFF?text=Icono" alt="Icono Recordar">
+                <h3>Revive tus Momentos</h3>
+                <p>Atesora los recuerdos de cada experiencia completada.</p>
+            </div>
+            <div class="benefit-card">
+                <!-- Icono de Placeholder, reemplázalo con uno real -->
+                <img src="https://placehold.co/80x80/26A69A/FFFFFF?text=Icono" alt="Icono Inspirar">
+                <h3>Inspírate Sin Fin</h3>
+                <p>Descubre nuevas ideas y mantén viva tu motivación.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 text-white text-sm py-6 text-center rounded-t-2xl mt-8">
+        <p>&copy; 2023 BeforeIdie.app. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('waitlist-form');
+            const formMessage = document.querySelector('.form-message');
+
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Previene el envío por defecto del formulario
+                    const emailInput = form.querySelector('input[type="email"]');
+                    const email = emailInput.value;
+
+                    // Validación básica del email
+                    if (email && email.includes('@') && email.includes('.')) {
+                        console.log('Correo registrado:', email);
+                        formMessage.textContent = '¡Gracias por registrarte! Te mantendremos informado sobre el lanzamiento.';
+                        formMessage.style.color = 'green';
+                        emailInput.value = ''; // Limpiar el campo
+                    } else {
+                        formMessage.textContent = 'Por favor, introduce un correo electrónico válido.';
+                        formMessage.style.color = 'red';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
