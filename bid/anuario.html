@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflexión sobre la Vida</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+```
+    body {
+        font-family: 'Georgia', serif;
+        background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+        color: #e8e8e8;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    /* Entrada inicial */
+    .entry-screen {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 2rem;
+        background: radial-gradient(circle at center, rgba(255,255,255,0.03) 0%, transparent 70%);
+        position: relative;
+    }
+
+    .entry-screen::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="0.5" fill="rgba(255,255,255,0.02)"/><circle cx="75" cy="75" r="0.3" fill="rgba(255,255,255,0.01)"/><circle cx="50" cy="10" r="0.4" fill="rgba(255,255,255,0.015)"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grain)"/></svg>');
+        pointer-events: none;
+    }
+
+    .entry-title {
+        font-size: 4rem;
+        font-weight: 300;
+        text-align: center;
+        margin-bottom: 4rem;
+        color: #f8f8f8;
+        text-shadow: 0 0 40px rgba(255,255,255,0.2);
+        letter-spacing: 3px;
+        line-height: 1.2;
+        position: relative;
+        z-index: 1;
+    }
+
+    .birth-input-container {
+        background: rgba(255,255,255,0.05);
+        padding: 4rem 3rem;
+        border-radius: 24px;
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+        position: relative;
+        z-index: 1;
+    }
+
+    .birth-input {
+        font-size: 2.2rem;
+        padding: 1.8rem;
+        background: rgba(255,255,255,0.08);
+        border: 2px solid rgba(255,255,255,0.15);
+        border-radius: 16px;
+        color: #fff;
+        text-align: center;
+        width: 220px;
+        margin-bottom: 2.5rem;
+        backdrop-filter: blur(10px);
+        transition: all 0.4s ease;
+        font-family: inherit;
+    }
+
+    .birth-input:focus {
+        outline: none;
+        border-color: rgba(255,255,255,0.4);
+        box-shadow: 0 0 30px rgba(255,255,255,0.15);
+        background: rgba(255,255,255,0.12);
+    }
+
+    .birth-input::placeholder {
+        color: rgba(255,255,255,0.5);
+    }
+
+    .continue-btn {
+        background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.1);
+        padding: 1.3rem 4rem;
+        font-size: 1.3rem;
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        font-family: inherit;
+        letter-spacing: 1px;
+    }
+
+    .continue-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+        border-color: rgba(255,255,255,0.2);
+    }
+
+    /* Vista principal de años */
+    .timeline-view {
+        display: none;
+        min-height: 100vh;
+    }
+
+    .timeline-header {
+        text-align: center;
+        padding: 3rem 2rem 4rem 2rem;
+        position: sticky;
+        top: 0;
+        background: rgba(15, 15, 35, 0.95);
+        backdrop-filter: blur(15px);
+        z-index: 100;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .timeline-title {
+        font-size: 3rem;
+        font-weight: 300;
+        color: #f8f8f8;
+        margin-bottom: 1rem;
+        letter-spacing: 2px;
+    }
+
+    .timeline-subtitle {
+        font-size: 1.3rem;
+        color: #a0a0a0;
+        font-style: italic;
+        letter-spacing: 1px;
+    }
+
+    .timeline-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 2rem 4rem 2rem;
+    }
+
+    .year-section {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding: 2.5rem;
+        background: rgba(255,255,255,0.02);
+        border-radius: 20px;
+        border-left: 4px solid rgba(255,255,255,0.15);
+        cursor: pointer;
+        transition: all 0.4s ease;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .year-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .year-section:hover::before {
+        left: 100%;
+    }
+
+    .year-section:hover {
+        background: rgba(255,255,255,0.06);
+        transform: translateX(15px);
+        border-left-color: rgba(255,255,255,0.3);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .year-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #fff;
+        min-width: 120px;
+        text-align: center;
+        margin-right: 3rem;
+        text-shadow: 0 0 20px rgba(255,255,255,0.3);
+    }
+
+    .year-content {
+        flex: 1;
+    }
+
+    .year-text {
+        font-size: 1.4rem;
+        line-height: 1.7;
+        color: #e0e0e0;
+        margin-bottom: 0.5rem;
+    }
+
+    .year-age {
+        font-size: 1rem;
+        color: #999;
+        font-style: italic;
+    }
+
+    /* Modal */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.85);
+        backdrop-filter: blur(10px);
+        z-index: 1000;
+        animation: fadeIn 0.4s ease;
+    }
+
+    .modal-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+        padding: 4rem;
+        border-radius: 24px;
+        width: 90%;
+        max-width: 700px;
+        box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .modal-title {
+        font-size: 2.2rem;
+        margin-bottom: 2.5rem;
+        color: #fff;
+        text-align: center;
+        letter-spacing: 1px;
+    }
+
+    .modal-textarea {
+        width: 100%;
+        height: 220px;
+        padding: 2rem;
+        font-size: 1.2rem;
+        background: rgba(255,255,255,0.08);
+        border: 2px solid rgba(255,255,255,0.15);
+        border-radius: 16px;
+        color: #fff;
+        resize: vertical;
+        font-family: inherit;
+        margin-bottom: 2.5rem;
+        line-height: 1.6;
+    }
+
+    .modal-textarea:focus {
+        outline: none;
+        border-color: rgba(255,255,255,0.4);
+        background: rgba(255,255,255,0.12);
+    }
+
+    .modal-textarea::placeholder {
+        color: rgba(255,255,255,0.4);
+        font-style: italic;
+    }
+
+    .modal-buttons {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .modal-btn {
+        padding: 1.2rem 3rem;
+        border: none;
+        border-radius: 16px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: inherit;
+        letter-spacing: 0.5px;
+    }
+
+    .save-btn {
+        background: linear-gradient(135deg, #48bb78, #38a169);
+        color: white;
+    }
+
+    .delete-btn {
+        background: linear-gradient(135deg, #f56565, #e53e3e);
+        color: white;
+    }
+
+    .cancel-btn {
+        background: rgba(255,255,255,0.08);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .modal-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    }
+
+    .save-btn:hover {
+        background: linear-gradient(135deg, #68d391, #48bb78);
+    }
+
+    .delete-btn:hover {
+        background: linear-gradient(135deg, #fc8181, #f56565);
+    }
+
+    .cancel-btn:hover {
+        background: rgba(255,255,255,0.15);
+        border-color: rgba(255,255,255,0.3);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Responsivo */
+    @media (max-width: 768px) {
+        .entry-title {
+            font-size: 2.8rem;
+            margin-bottom: 3rem;
+        }
+        
+        .birth-input-container {
+            padding: 3rem 2rem;
+        }
+        
+        .birth-input {
+            width: 100%;
+            max-width: 200px;
+        }
+        
+        .timeline-title {
+            font-size: 2.2rem;
+        }
+        
+        .year-section {
+            flex-direction: column;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .year-number {
+            margin-right: 0;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+        
+        .modal-content {
+            width: 95%;
+            padding: 2.5rem;
+        }
+        
+        .modal-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .modal-btn {
+            width: 200px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .entry-title {
+            font-size: 2.2rem;
+            padding: 0 1rem;
+        }
+        
+        .timeline-container {
+            padding: 0 1rem 4rem 1rem;
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <!-- Pantalla de entrada -->
+    <div class="entry-screen" id="entryScreen">
+        <h1 class="entry-title">¿En qué año naciste?</h1>
+        <div class="birth-input-container">
+            <input type="number" class="birth-input" id="birthYearInput" placeholder="1990" min="1900" max="2024">
+            <br>
+            <button class="continue-btn" onclick="startJourney()">Comenzar Reflexión</button>
+        </div>
+    </div>
+
+```
+<!-- Vista de línea de tiempo -->
+<div class="timeline-view" id="timelineView">
+    <div class="timeline-header">
+        <h1 class="timeline-title">Tu Viaje a Través del Tiempo</h1>
+        <p class="timeline-subtitle">Cada año es una página en el libro de tu vida</p>
+    </div>
+    <div class="timeline-container" id="timelineContainer">
+        <!-- Los años se generarán dinámicamente aquí -->
+    </div>
+</div>
+
+<!-- Modal para editar -->
+<div class="modal" id="editModal">
+    <div class="modal-content">
+        <h2 class="modal-title" id="modalTitle">Editar Año</h2>
+        <textarea class="modal-textarea" id="modalTextarea" placeholder="Escribe tus reflexiones sobre este año de tu vida..."></textarea>
+        <div class="modal-buttons">
+            <button class="modal-btn save-btn" onclick="saveYear()">Guardar</button>
+            <button class="modal-btn delete-btn" onclick="deleteYear()">Borrar</button>
+            <button class="modal-btn cancel-btn" onclick="closeModal()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let birthYear = null;
+    let currentYear = new Date().getFullYear();
+    let currentEditingYear = null;
+    let yearData = {};
+
+    // Variables de almacenamiento en memoria
+    let appData = {
+        birthYear: null,
+        yearData: {}
+    };
+
+    // Cargar datos guardados (en memoria durante la sesión)
+    function loadData() {
+        yearData = appData.yearData || {};
+        birthYear = appData.birthYear || null;
+        
+        if (birthYear) {
+            const input = document.getElementById('birthYearInput');
+            if (input) {
+                input.value = birthYear;
+            }
+        }
+    }
+
+    // Guardar datos (en memoria durante la sesión)
+    function saveData() {
+        appData.birthYear = birthYear;
+        appData.yearData = yearData;
+    }
+
+    // Iniciar el viaje
+    function startJourney() {
+        const input = document.getElementById('birthYearInput');
+        const year = parseInt(input.value);
+        
+        if (!year || year < 1900 || year > currentYear) {
+            alert('Por favor, ingresa un año válido entre 1900 y ' + currentYear);
+            return;
+        }
+        
+        birthYear = year;
+        saveData();
+        
+        document.getElementById('entryScreen').style.display = 'none';
+        document.getElementById('timelineView').style.display = 'block';
+        
+        generateTimeline();
+    }
+
+    // Generar la línea de tiempo
+    function generateTimeline() {
+        const container = document.getElementById('timelineContainer');
+        container.innerHTML = '';
+        
+        for (let year = birthYear; year <= birthYear + 130; year++) {
+            const yearSection = createYearSection(year);
+            container.appendChild(yearSection);
+        }
+    }
+
+    // Crear sección de año
+    function createYearSection(year) {
+        const section = document.createElement('div');
+        section.className = 'year-section';
+        section.onclick = () => openModal(year);
+        
+        const yearNumber = document.createElement('div');
+        yearNumber.className = 'year-number';
+        yearNumber.textContent = year;
+        
+        const content = document.createElement('div');
+        content.className = 'year-content';
+        
+        const yearText = document.createElement('div');
+        yearText.className = 'year-text';
+        
+        const ageText = document.createElement('div');
+        ageText.className = 'year-age';
+        
+        // Determinar el texto según el año
+        const age = year - birthYear;
+        let displayText = '';
+        
+        if (yearData[year]) {
+            displayText = yearData[year];
+        } else {
+            if (year === birthYear) {
+                displayText = 'Naciste';
+            } else if (year <= currentYear) {
+                displayText = `Cumpliste ${age} años`;
+            } else {
+                displayText = `Cumplirás ${age} años`;
+            }
+        }
+        
+        yearText.textContent = displayText;
+        if (age > 0) {
+            ageText.textContent = `${age} años`;
+        }
+        
+        content.appendChild(yearText);
+        if (age > 0) {
+            content.appendChild(ageText);
+        }
+        
+        section.appendChild(yearNumber);
+        section.appendChild(content);
+        
+        return section;
+    }
+
+    // Abrir modal
+    function openModal(year) {
+        currentEditingYear = year;
+        const modal = document.getElementById('editModal');
+        const title = document.getElementById('modalTitle');
+        const textarea = document.getElementById('modalTextarea');
+        
+        const age = year - birthYear;
+        title.textContent = `Año ${year}${age > 0 ? ` - ${age} años` : ''}`;
+        textarea.value = yearData[year] || '';
+        
+        modal.style.display = 'block';
+        setTimeout(() => textarea.focus(), 100);
+    }
+
+    // Cerrar modal
+    function closeModal() {
+        document.getElementById('editModal').style.display = 'none';
+        currentEditingYear = null;
+    }
+
+    // Guardar año
+    function saveYear() {
+        const textarea = document.getElementById('modalTextarea');
+        const text = textarea.value.trim();
+        
+        if (text) {
+            yearData[currentEditingYear] = text;
+        } else {
+            delete yearData[currentEditingYear];
+        }
+        
+        saveData();
+        generateTimeline();
+        closeModal();
+    }
+
+    // Borrar año
+    function deleteYear() {
+        if (confirm('¿Estás seguro de que quieres borrar la reflexión de este año?')) {
+            delete yearData[currentEditingYear];
+            saveData();
+            generateTimeline();
+            closeModal();
+        }
+    }
+
+    // Inicializar la aplicación cuando el DOM esté listo
+    document.addEventListener('DOMContentLoaded', function() {
+        // Cargar datos al iniciar
+        loadData();
+
+        // Agregar event listeners
+        const birthInput = document.getElementById('birthYearInput');
+        if (birthInput) {
+            birthInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    startJourney();
+                }
+            });
+        }
+
+        const modal = document.getElementById('editModal');
+        if (modal) {
+            modal.onclick = function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            }
+        }
+
+        // Manejar teclas globales
+        document.addEventListener('keydown', function(e) {
+            const modal = document.getElementById('editModal');
+            if (modal && modal.style.display === 'block') {
+                if (e.key === 'Escape') {
+                    closeModal();
+                }
+                if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                    saveYear();
+                }
+            }
+        });
+
+        // Si ya hay un año de nacimiento guardado, mostrar directamente la línea de tiempo
+        if (birthYear) {
+            const entryScreen = document.getElementById('entryScreen');
+            const timelineView = document.getElementById('timelineView');
+            if (entryScreen && timelineView) {
+                entryScreen.style.display = 'none';
+                timelineView.style.display = 'block';
+                generateTimeline();
+            }
+        }
+    });
+</script>
+```
+
+</body>
+</html>
