@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oware - Juego de Mesa Africano</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #f0e6d2;
+            background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+            overflow: hidden;
+        }
+        .font-serif {
+            font-family: 'Merriweather', serif;
+        }
+        .game-board {
+            background-color: #8b5a2b;
+            border: 8px solid #654321;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3), inset 0 0 15px rgba(0,0,0,0.4);
+            position: relative;
+        }
+        .pit {
+            background-color: #d2b48c;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: center;
+            justify-content: center;
+            gap: 4px;
+            position: relative;
+        }
+        .pit.active-pit:hover {
+            background-color: #e6cfa1;
+            cursor: pointer;
+            transform: scale(1.05);
+        }
+        .seed {
+            width: 12px;
+            height: 12px;
+            background-color: #4a2c2a;
+            border-radius: 50%;
+            box-shadow: 0 2px 2px rgba(0,0,0,0.4);
+            transition: opacity 0.3s ease;
+        }
+        @media (min-width: 640px) {
+            .seed {
+                width: 16px;
+                height: 16px;
+            }
+        }
+        .seed-count {
+            position: absolute;
+            bottom: -22px;
+            left: 0;
+            right: 0;
+            margin: auto;
+            background: rgba(255,255,255,0.7);
+            border-radius: 4px;
+            padding: 1px 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #333;
+            width: fit-content;
+        }
+        .player-score, .status-message {
+            background: #fff8e1;
+            border: 2px solid #b9936c;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .active-player {
+            border-color: #e53e3e;
+            transform: scale(1.05);
+            box-shadow: 0 6px 10px rgba(229, 62, 62, 0.4);
+        }
+        .capture-animation {
+            animation: capture-pulse 0.7s ease-in-out;
+        }
+        @keyframes capture-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); background-color: #f6e05e; }
+            100% { transform: scale(1); }
+        }
+        #flying-seed {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #f6e05e;
+            border: 2px solid #4a2c2a;
+            border-radius: 50%;
+            box-shadow: 0 0 15px 5px rgba(246, 224, 94, 0.7);
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0;
+            transition: top 0.2s ease-out, left 0.2s ease-out, opacity 0.1s ease-in;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div id="game-container" class="w-full max-w-4xl mx-auto">
+        <h1 class="text-4xl md:text-5xl text-center font-serif text-[#654321] mb-4 drop-shadow-lg">Oware</h1>
+
+        <div class="grid grid-cols-3 gap-2 md:gap-4 items-center mb-4 text-center">
+            <div id="player-2-score-display" class="player-score p-2 md:p-4 rounded-lg">
+                <h2 class="text-sm md:text-xl font-bold text-gray-700">Jugador 2 (Rival)</h2>
+                <p class="text-xl md:text-3xl font-serif font-bold text-gray-900">0</p>
+            </div>
+            <div id="status-message" class="status-message p-3 md:p-4 rounded-lg text-base md:text-xl font-bold text-gray-800"></div>
+            <div id="player-1-score-display" class="player-score p-2 md:p-4 rounded-lg">
+                <h2 class="text-sm md:text-xl font-bold text-gray-700">Jugador 1 (Tú)</h2>
+                <p class="text-xl md:text-3xl font-serif font-bold text-gray-900">0</p>
+            </div>
+        </div>
+
+        <div id="board" class="game-board grid grid-cols-6 gap-2 md:gap-4 p-4 rounded-2xl">
+            <div class="pit rounded-full aspect-square" data-index="11"></div>
+            <div class="pit rounded-full aspect-square" data-index="10"></div>
+            <div class="pit rounded-full aspect-square" data-index="9"></div>
+            <div class="pit rounded-full aspect-square" data-index="8"></div>
+            <div class="pit rounded-full aspect-square" data-index="7"></div>
+            <div class="pit rounded-full aspect-square" data-index="6"></div>
+            <div class="pit rounded-full aspect-square" data-index="0"></div>
+            <div class="pit rounded-full aspect-square" data-index="1"></div>
+            <div class="pit rounded-full aspect-square" data-index="2"></div>
+            <div class="pit rounded-full aspect-square" data-index="3"></div>
+            <div class="pit rounded-full aspect-square" data-index="4"></div>
+            <div class="pit rounded-full aspect-square" data-index="5"></div>
+            <div id="flying-seed"></div>
+        </div>
+        
+        <div class="text-center mt-6">
+            <button id="reset-button" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-transform transform hover:scale-105">
+                Reiniciar Juego
+            </button>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- ELEMENTOS DEL DOM ---
+        const boardElement = document.getElementById('board');
+        const pits = document.querySelectorAll('.pit');
+        const resetButton = document.getElementById('reset-button');
+        const messageElement = document.getElementById('status-message');
+        const p1ScoreElement = document.querySelector('#player-1-score-display p');
+        const p2ScoreElement = document.querySelector('#player-2-score-display p');
+        const p1ScoreDisplay = document.getElementById('player-1-score-display');
+        const p2ScoreDisplay = document.getElementById('player-2-score-display');
+        const flyingSeed = document.getElementById('flying-seed');
+
+        // --- ESTADO DEL JUEGO ---
+        let boardState;
+        let scores;
+        let currentPlayer;
+        let gameOver;
+        let isAnimating = false;
+
+        const PLAYER_1_PITS = [0, 1, 2, 3, 4, 5];
+        const PLAYER_2_PITS = [6, 7, 8, 9, 10, 11];
+        const ANIMATION_SPEED = 250; // ms por movimiento de hoyo
+
+        // --- INICIALIZACIÓN ---
+        function initGame() {
+            boardState = Array(12).fill(4);
+            scores = [0, 0];
+            currentPlayer = 1;
+            gameOver = false;
+            isAnimating = false;
+            boardElement.style.pointerEvents = 'auto';
+            updateUI();
+            messageElement.textContent = 'Turno del Jugador 1';
+            messageElement.classList.remove('win-message');
+        }
+
+        // --- RENDERIZADO DE LA UI ---
+
+        /**
+         * Actualiza un único hoyo en la UI.
+         * @param {number} index - El índice del hoyo a actualizar.
+         */
+        function updatePitUI(index) {
+            const pit = document.querySelector(`.pit[data-index='${index}']`);
+            if (!pit) return;
+            const seedCount = boardState[index];
+            
+            pit.innerHTML = '';
+            for (let i = 0; i < seedCount; i++) {
+                const seedElement = document.createElement('div');
+                seedElement.classList.add('seed');
+                pit.appendChild(seedElement);
+            }
+            
+            const countElement = document.createElement('span');
+            countElement.classList.add('seed-count');
+            countElement.textContent = seedCount;
+            pit.appendChild(countElement);
+
+            pit.classList.remove('active-pit');
+            if (!gameOver && !isAnimating && currentPlayer === 1 && PLAYER_1_PITS.includes(index) && seedCount > 0) {
+                pit.classList.add('active-pit');
+            }
+        }
+        
+        /**
+         * Actualiza toda la interfaz de usuario.
+         */
+        function updateUI() {
+            p1ScoreElement.textContent = scores[0];
+            p2ScoreElement.textContent = scores[1];
+            pits.forEach((_, index) => updatePitUI(index));
+            
+            p1ScoreDisplay.classList.remove('active-player');
+            p2ScoreDisplay.classList.remove('active-player');
+            if (!gameOver) {
+                if (currentPlayer === 1) p1ScoreDisplay.classList.add('active-player');
+                else p2ScoreDisplay.classList.add('active-player');
+            }
+        }
+
+        // --- LÓGICA DE ANIMACIÓN ---
+        
+        /**
+         * Una simple función de espera asíncrona.
+         * @param {number} ms - Milisegundos a esperar.
+         */
+        const delay = ms => new Promise(res => setTimeout(res, ms));
+
+        /**
+         * Ejecuta la animación de siembra de forma secuencial.
+         * @param {number[]} sowQueue - Un array de los índices de los hoyos a sembrar.
+         * @param {number} startIndex - El hoyo de partida.
+         */
+        async function executeSowAnimation(sowQueue, startIndex) {
+            isAnimating = true;
+            boardElement.style.pointerEvents = 'none';
+            updateUI(); // Quita los highlights de 'active-pit'
+
+            const startPitElement = document.querySelector(`.pit[data-index='${startIndex}']`);
+            const boardRect = boardElement.getBoundingClientRect();
+
+            // Posiciona la semilla voladora en el centro del hoyo de partida
+            const startRect = startPitElement.getBoundingClientRect();
+            flyingSeed.style.left = `${startRect.left - boardRect.left + startRect.width / 2}px`;
+            flyingSeed.style.top = `${startRect.top - boardRect.top + startRect.height / 2}px`;
+            flyingSeed.style.opacity = '1';
+
+            await delay(ANIMATION_SPEED);
+
+            for (const targetIndex of sowQueue) {
+                const targetPitElement = document.querySelector(`.pit[data-index='${targetIndex}']`);
+                const targetRect = targetPitElement.getBoundingClientRect();
+                
+                // Mueve la semilla voladora al siguiente hoyo
+                flyingSeed.style.left = `${targetRect.left - boardRect.left + targetRect.width / 2}px`;
+                flyingSeed.style.top = `${targetRect.top - boardRect.top + targetRect.height / 2}px`;
+                
+                await delay(ANIMATION_SPEED);
+                
+                // Actualiza el estado y la UI del hoyo de destino
+                boardState[targetIndex]++;
+                updatePitUI(targetIndex);
+            }
+            
+            // Oculta la semilla voladora al final
+            flyingSeed.style.opacity = '0';
+            isAnimating = false;
+            boardElement.style.pointerEvents = 'auto';
+        }
+
+        // --- LÓGICA DEL JUEGO ---
+
+        async function handleTurn(startIndex) {
+            if (gameOver || isAnimating || boardState[startIndex] === 0) return;
+
+            if ((currentPlayer === 1 && !PLAYER_1_PITS.includes(startIndex)) ||
+                (currentPlayer === 2 && !PLAYER_2_PITS.includes(startIndex))) {
+                return;
+            }
+            
+            messageElement.textContent = `Jugador ${currentPlayer} está sembrando...`;
+            
+            let seedsInHand = boardState[startIndex];
+            boardState[startIndex] = 0;
+            updatePitUI(startIndex);
+
+            // 1. Calcular la secuencia de siembra ANTES de la animación
+            const sowQueue = [];
+            let currentIndex = startIndex;
+            for (let i = 0; i < seedsInHand; i++) {
+                currentIndex = (currentIndex + 1) % 12;
+                if (currentIndex === startIndex) { // Salta el hoyo de inicio
+                    currentIndex = (currentIndex + 1) % 12;
+                }
+                sowQueue.push(currentIndex);
+            }
+            
+            // 2. Ejecutar la animación
+            await executeSowAnimation(sowQueue, startIndex);
+            
+            const lastSownIndex = sowQueue.length > 0 ? sowQueue[sowQueue.length - 1] : startIndex;
+
+            // 3. Lógica de Captura (después de que la animación termine)
+            let captureIndex = lastSownIndex;
+            let capturedSeedsTotal = 0;
+
+            const opponentPits = currentPlayer === 1 ? PLAYER_2_PITS : PLAYER_1_PITS;
+
+            while (opponentPits.includes(captureIndex) && [2, 3].includes(boardState[captureIndex])) {
+                const capturedInPit = boardState[captureIndex];
+                capturedSeedsTotal += capturedInPit;
+                scores[currentPlayer - 1] += capturedInPit;
+                boardState[captureIndex] = 0;
+                
+                const capturedPitElement = document.querySelector(`.pit[data-index='${captureIndex}']`);
+                capturedPitElement.classList.add('capture-animation');
+                setTimeout(() => capturedPitElement.classList.remove('capture-animation'), 700);
+
+                updatePitUI(captureIndex);
+                captureIndex = (captureIndex + 11) % 12; // Moverse al hoyo anterior
+            }
+            
+            if (capturedSeedsTotal > 0) {
+                 messageElement.textContent = `¡Jugador ${currentPlayer} captura ${capturedSeedsTotal} semillas!`;
+                 updateUI();
+            }
+
+            // 4. Comprobar fin del juego y cambiar de turno
+            await delay(capturedSeedsTotal > 0 ? 800 : 100);
+            if (checkEndGame()) return;
+            switchPlayer();
+        }
+
+        function switchPlayer() {
+            currentPlayer = currentPlayer === 1 ? 2 : 1;
+            if (!gameOver) {
+                messageElement.textContent = `Turno del Jugador ${currentPlayer}`;
+                updateUI();
+                if (currentPlayer === 2) {
+                    setTimeout(computerTurn, 1000); // Pausa para el turno del rival
+                }
+            }
+        }
+
+        function computerTurn() {
+            const validMoves = PLAYER_2_PITS.filter(index => boardState[index] > 0);
+            if (validMoves.length > 0) {
+                const move = validMoves[Math.floor(Math.random() * validMoves.length)];
+                handleTurn(move);
+            } else {
+                checkEndGame();
+            }
+        }
+
+        function checkEndGame() {
+            const WINNING_SCORE = 25;
+            if (scores[0] >= WINNING_SCORE || scores[1] >= WINNING_SCORE) {
+                endGame();
+                return true;
+            }
+
+            const p1HasMoves = PLAYER_1_PITS.some(i => boardState[i] > 0);
+            const p2HasMoves = PLAYER_2_PITS.some(i => boardState[i] > 0);
+            
+            if (!p1HasMoves || !p2HasMoves) {
+                endGame(true); // Terminar por falta de movimientos
+                return true;
+            }
+            return false;
+        }
+
+        function endGame(byStalemate = false) {
+            gameOver = true;
+            isAnimating = true; // Previene más acciones
+            boardElement.style.pointerEvents = 'none';
+            
+            if (byStalemate) {
+                const remainingSeeds = boardState.reduce((a, b) => a + b, 0);
+                // La regla común es que el jugador que todavía tiene movimientos captura todo lo restante
+                 const p1HasMoves = PLAYER_1_PITS.some(i => boardState[i] > 0);
+                 if (p1HasMoves) {
+                     scores[0] += remainingSeeds;
+                 } else {
+                     scores[1] += remainingSeeds;
+                 }
+                 boardState.fill(0);
+            }
+            
+            updateUI();
+            p1ScoreDisplay.classList.remove('active-player');
+            p2ScoreDisplay.classList.remove('active-player');
+            
+            let winnerMessage;
+            if (scores[0] > scores[1]) {
+                winnerMessage = "¡El Jugador 1 Gana!";
+                p1ScoreDisplay.classList.add('active-player');
+            } else if (scores[1] > scores[0]) {
+                winnerMessage = "¡El Jugador 2 Gana!";
+                p2ScoreDisplay.classList.add('active-player');
+            } else {
+                winnerMessage = "¡Es un empate!";
+            }
+            
+            messageElement.textContent = winnerMessage;
+        }
+
+        // --- EVENT LISTENERS ---
+        pits.forEach(pit => {
+            pit.addEventListener('click', () => {
+                if (currentPlayer === 1) { // Solo permitir clics del jugador humano
+                    const index = parseInt(pit.dataset.index, 10);
+                    handleTurn(index);
+                }
+            });
+        });
+
+        resetButton.addEventListener('click', initGame);
+
+        // --- INICIAR JUEGO ---
+        initGame();
+    });
+    </script>
+</body>
+</html>
