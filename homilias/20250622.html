@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homilía: ¿Quién dices que soy yo?</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Estilos personalizados y de componentes */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff; /* bg-sky-50 en Tailwind v3, equivalente a tu solicitud */
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem; /* p-6 */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+        
+        .header-icon {
+            width: 4rem; /* 64px */
+            height: 4rem; /* 64px */
+            margin: 0 auto 1rem; /* centrado y margen inferior */
+        }
+
+        .gradient-text {
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+
+        /* Animación de aparición */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in-section {
+            animation: fadeIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        /* Estilos del Cuestionario */
+        .question-option {
+            display: block;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb; /* border-gray-200 */
+            border-radius: 0.5rem; /* rounded-lg */
+            margin-bottom: 0.5rem; /* mb-2 */
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .question-option:hover {
+            border-color: #3b82f6; /* border-blue-500 */
+            background-color: #eff6ff; /* bg-blue-50 */
+        }
+
+        .question-option.selected {
+            border-color: #3b82f6; /* border-blue-500 */
+            background-color: #dbeafe; /* bg-blue-100 */
+            font-weight: 600;
+        }
+        
+        /* Estilos para resultados del quiz */
+        .question-option.correct {
+            border-color: #16a34a; /* border-green-600 */
+            background-color: #f0fdf4; /* bg-green-50 */
+            color: #15803d; /* text-green-700 */
+        }
+        
+        .question-option.incorrect {
+            border-color: #dc2626; /* border-red-600 */
+            background-color: #fef2f2; /* bg-red-50 */
+            color: #b91c1c; /* text-red-700 */
+        }
+
+        .quiz-button {
+            background-color: #16a34a; /* bg-emerald-600 */
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem; /* rounded-lg */
+            transition: background-color 0.2s;
+        }
+
+        .quiz-button:hover {
+            background-color: #15803d; /* bg-emerald-700 */
+        }
+
+        .quiz-button:disabled {
+            background-color: #9ca3af; /* bg-gray-400 */
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto px-4 py-8 md:py-12 max-w-4xl">
+
+        <header class="text-center mb-10">
+            <svg class="header-icon text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 11.25a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm0 3.75v.008" />
+            </svg>
+            <h1 class="text-3xl md:text-4xl font-bold gradient-text bg-gradient-to-r from-sky-500 to-indigo-600 mb-2">
+                Y tú, ¿quién dices que soy yo?
+            </h1>
+            <p class="text-lg text-gray-600">
+                Reflexionando el Evangelio y la Homilía del XII Domingo del Tiempo Ordinario
+            </p>
+        </header>
+
+        <section id="evangelio" class="card fade-in-section" style="animation-delay: 0.2s;">
+            <h2 class="text-2xl font-semibold mb-4 text-sky-700">Evangelio según San Lucas (9, 18-24)</h2>
+            <blockquote class="border-l-4 border-sky-500 pl-4 italic text-gray-700 space-y-2">
+                <p>Un día en que Jesús acompañado de sus discípulos había ido a un lugar solitario para orar, les preguntó: "¿Quién dice la gente que soy yo?"</p>
+                <p>Ellos contestaron: "Unos dicen que eres Juan el Bautista, otros que Elías y otros que alguno de los antiguos profetas que ha resucitado".</p>
+                <p>Él les dijo: "Y ustedes, ¿quién dicen que soy yo?". Respondió Pedro: "El Mesías de Dios".</p>
+                <p>Él les ordenó severamente que no lo dijeran a nadie. Después les dijo: "Es necesario que el Hijo del Hombre sufra mucho, que sea rechazado por los ancianos, los sumos sacerdotes y los escribas, que sea entregado a la muerte y que resucite al tercer día".</p>
+                <p>Luego, dirigiéndose a la multitud, les dijo: "Si alguno quiere acompañarme, que no se busque a sí mismo, que tome su cruz de cada día y luego me siga. Pues el que quiera conservar para sí mismo su vida, la perderá, pero el que la pierda por mi causa, ese la encontrará".</p>
+            </blockquote>
+            <p class="mt-4 font-semibold text-gray-800">Palabra del Señor. <span class="font-normal text-gray-600">Gloria a ti, Señor Jesús.</span></p>
+        </section>
+
+        <section id="homilia" class="card fade-in-section" style="animation-delay: 0.4s;">
+            <h2 class="text-2xl font-semibold mb-6 text-indigo-700">Mensajes Clave de la Homilía</h2>
+            
+            <div class="space-y-8">
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-sky-600">🤔 La pregunta que lo cambia todo</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1 pl-4">
+                        <li>Jesús no pregunta qué dice un libro o un maestro, te pregunta a ti: "Y tú, ¿quién dices que soy yo?".</li>
+                        <li>Es la pregunta más importante de nuestra fe, porque define nuestra relación personal con Dios.</li>
+                        <li>La respuesta que Jesús espera no es teórica (lo que aprendiste en catecismo), sino una que nazca de tu propia experiencia con Él.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-sky-600">🧠 Saber vs. Conocer ❤️</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-bold text-lg text-center mb-2">Saber de Jesús (con la cabeza)</h4>
+                             <p class="text-sm text-center text-gray-600">Es tener información, datos, conocer su historia. Es la respuesta "de libro" o aprendida.</p>
+                        </div>
+                        <div class="bg-sky-50 p-4 rounded-lg">
+                            <h4 class="font-bold text-lg text-center mb-2">Conocer a Jesús (con el corazón)</h4>
+                            <p class="text-sm text-center text-gray-600">Es haberlo encontrado, sentir su presencia, su perdón y su amor en tu vida diaria, en la oración y en los momentos difíciles.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-sky-600">✝️ Una respuesta que se vive</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1 pl-4">
+                        <li>Cuando de verdad conoces a Jesús, tu respuesta se vuelve personal: "Tú eres <strong>mi</strong> salvador, <strong>mi</strong> fortaleza, <strong>mi</strong> amigo".</li>
+                        <li>Este conocimiento se construye día a día a través de la oración, los sacramentos, el silencio y reconociendo a Jesús en los demás.</li>
+                        <li>Jesús no busca gente perfecta, sino corazones sinceros dispuestos a seguirlo, incluso después de caer, como San Pedro.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gradient-to-r from-sky-100 to-indigo-100 p-6 rounded-lg text-center">
+                    <p class="text-xl italic text-indigo-800">"Jesús no busca respuestas perfectas, busca corazones sinceros."</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="cuento" class="card fade-in-section" style="animation-delay: 0.6s;">
+            <h2 class="text-2xl font-semibold mb-4 text-purple-700">📖 Cuentan que... Un Retrato desde el Corazón</h2>
+            <div class="bg-purple-50 p-6 rounded-lg border border-purple-200 text-gray-700 space-y-3">
+                <p>Había un joven llamado Tomás, muy conocedor de la fe, que participaba en todo en su parroquia. Un día, su párroco pidió a los jóvenes dibujar a Jesús tal como lo veían en su corazón, sin copiar de ninguna imagen existente.</p>
+                <p>Tomás, seguro de su conocimiento, dibujó un Jesús majestuoso y lejano, sentado en un trono dorado. En cambio, una chica llamada Clara dibujó a Jesús de forma sencilla, arrodillado, lavando los pies de una anciana, con una mirada tierna y cercana.</p>
+                <p>El sacerdote eligió el dibujo de Clara como el que mejor representaba al Jesús del Evangelio, explicando que ese era el Jesús que sirve y ama. Tomás comprendió la moraleja: <span class="font-semibold">sabía muchas cosas sobre Jesús, pero aún no lo conocía de verdad en su corazón.</span> Se dio cuenta de que no se puede amar a quien no se conoce, y el verdadero conocimiento de Jesús viene de caminar con Él, de hablarle y de escucharlo en la vida diaria.</p>
+            </div>
+            <img src="dibujoClara.png" alt="Ilustración de Jesús lavando los pies de una anciana, representando el servicio y el amor humilde." class="mt-4 rounded-lg shadow-md mx-auto w-full max-w-md h-auto">
+        </section>
+
+        <section id="cuestionario" class="card fade-in-section" style="animation-delay: 0.8s;">
+            <h2 class="text-2xl font-semibold mb-6 text-emerald-700">📝 Pon a Prueba tu Conocimiento</h2>
+            <form id="quizForm" class="space-y-6">
+                
+                <div class="question-container">
+                    <p class="text-lg font-medium mb-3">1. ¿Cuál es la pregunta fundamental que, según la homilía, define nuestra relación con Dios?</p>
+                    <div data-question="q1">
+                        <label class="question-option"><input type="radio" name="q1" value="a" class="sr-only"> ¿Quién dice la gente que soy yo?</label>
+                        <label class="question-option"><input type="radio" name="q1" value="b" class="sr-only"> Y ustedes, ¿quién dicen que soy yo?</label>
+                        <label class="question-option"><input type="radio" name="q1" value="c" class="sr-only"> ¿Quieres acompañarme?</label>
+                        <label class="question-option"><input type="radio" name="q1" value="d" class="sr-only"> ¿Qué has aprendido en el catecismo?</label>
+                    </div>
+                </div>
+
+                <div class="question-container">
+                    <p class="text-lg font-medium mb-3">2. Según la homilía, ¿por qué pudo San Pedro responder "Tú eres el Mesías"?</p>
+                    <div data-question="q2">
+                        <label class="question-option"><input type="radio" name="q2" value="a" class="sr-only"> Porque había estudiado mucho las escrituras.</label>
+                        <label class="question-option"><input type="radio" name="q2" value="b" class="sr-only"> Porque ya tenía una relación viva y una experiencia personal con Jesús.</label>
+                        <label class="question-option"><input type="radio" name="q2" value="c" class="sr-only"> Porque era el más inteligente de los apóstoles.</label>
+                        <label class="question-option"><input type="radio" name="q2" value="d" class="sr-only"> Porque Jesús se lo sopló en secreto.</label>
+                    </div>
+                </div>
+
+                <div class="question-container">
+                    <p class="text-lg font-medium mb-3">3. ¿Cuál es la principal diferencia entre "saber de Jesús" y "conocer a Jesús"?</p>
+                    <div data-question="q3">
+                        <label class="question-option"><input type="radio" name="q3" value="a" class="sr-only"> No hay ninguna diferencia, son lo mismo.</label>
+                        <label class="question-option"><input type="radio" name="q3" value="b" class="sr-only"> Saber es para los sacerdotes y conocer es para los laicos.</label>
+                        <label class="question-option"><input type="radio" name="q3" value="c" class="sr-only"> Saber es tener información (cabeza), conocer es tener un encuentro personal (corazón).</label>
+                        <label class="question-option"><input type="radio" name="q3" value="d" class="sr-only"> Saber es leer la Biblia y conocer es ir a Misa.</label>
+                    </div>
+                </div>
+                
+                <div class="question-container">
+                    <p class="text-lg font-medium mb-3">4. En el cuento, ¿por qué el dibujo de Clara era un mejor retrato de Jesús que el de Tomás?</p>
+                    <div data-question="q4">
+                        <label class="question-option"><input type="radio" name="q4" value="a" class="sr-only"> Porque Clara dibujaba técnicamente mejor.</label>
+                        <label class="question-option"><input type="radio" name="q4" value="b" class="sr-only"> Porque usó colores más vivos y bonitos.</label>
+                        <label class="question-option"><input type="radio" name="q4" value="c" class="sr-only"> Porque su dibujo mostraba un Jesús distante y poderoso, como debe ser.</label>
+                        <label class="question-option"><input type="radio" name="q4" value="d" class="sr-only"> Porque mostraba un Jesús cercano, humilde y sirviendo a los demás, reflejando un conocimiento del corazón.</label>
+                    </div>
+                </div>
+
+                <div class="question-container">
+                    <p class="text-lg font-medium mb-3">5. ¿Qué nos invita a hacer la homilía para poder responder a la pregunta de Jesús?</p>
+                    <div data-question="q5">
+                        <label class="question-option"><input type="radio" name="q5" value="a" class="sr-only"> Memorizar la respuesta correcta del catecismo.</label>
+                        <label class="question-option"><input type="radio" name="q5" value="b" class="sr-only"> Esperar a ser perfectos para poder acercarnos a Él.</label>
+                        <label class="question-option"><input type="radio" name="q5" value="c" class="sr-only"> Buscarlo en la oración, los sacramentos, el silencio y en los demás para tener un encuentro personal.</label>
+                        <label class="question-option"><input type="radio" name="q5" value="d" class="sr-only"> Preguntarle a otras personas qué es lo que ellas piensan.</label>
+                    </div>
+                </div>
+
+                <div class="flex justify-center mt-8">
+                    <button type="submit" class="quiz-button w-full md:w-auto">Evaluar Cuestionario</button>
+                </div>
+            </form>
+
+            <div id="quizResult" class="mt-8 p-6 rounded-lg hidden"></div>
+        </section>
+
+        <footer class="text-center mt-12 pt-6 border-t border-gray-300">
+            <p class="text-sm text-gray-500">&copy; <span id="currentYear"></span> Reflexiones para el Alma Joven. Inspirado en la homilía sobre "¿Quién dices que soy yo?".</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // --- Lógica del Cuestionario ---
+            const quizForm = document.getElementById('quizForm');
+            const resultDiv = document.getElementById('quizResult');
+            const correctAnswers = {
+                q1: 'b',
+                q2: 'b',
+                q3: 'c',
+                q4: 'd',
+                q5: 'c'
+            };
+            const totalQuestions = Object.keys(correctAnswers).length;
+
+            // Manejar selección visual de opciones
+            quizForm.addEventListener('click', function(e) {
+                if (e.target.matches('input[type="radio"]')) {
+                    const questionDiv = e.target.closest('[data-question]');
+                    // Quitar la clase 'selected' de las otras opciones de la misma pregunta
+                    questionDiv.querySelectorAll('.question-option').forEach(opt => opt.classList.remove('selected'));
+                    // Añadir 'selected' a la etiqueta padre del radio seleccionado
+                    e.target.parentElement.classList.add('selected');
+                }
+            });
+
+            quizForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                let score = 0;
+                const formData = new FormData(quizForm);
+                const userAnswers = {};
+
+                // Calcular puntaje y guardar respuestas del usuario
+                for (const [question, correctAnswer] of Object.entries(correctAnswers)) {
+                    const userAnswer = formData.get(question);
+                    userAnswers[question] = userAnswer;
+                    if (userAnswer === correctAnswer) {
+                        score++;
+                    }
+                }
+
+                // Mostrar resultados
+                for (const [question, correctAnswer] of Object.entries(correctAnswers)) {
+                    const options = quizForm.elements[question];
+                    options.forEach(option => {
+                        const label = option.parentElement;
+                        const isCorrect = option.value === correctAnswer;
+                        const isUserChoice = option.value === userAnswers[question];
+                        
+                        option.disabled = true; // Deshabilitar opción
+
+                        if (isCorrect) {
+                            label.classList.remove('selected');
+                            label.classList.add('correct');
+                        } else if (isUserChoice && !isCorrect) {
+                            label.classList.remove('selected');
+                            label.classList.add('incorrect');
+                        }
+                    });
+                }
+                
+                // Generar mensaje de retroalimentación
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let feedbackMessage = '';
+                let feedbackClass = '';
+
+                if (percentage === 100) {
+                    feedbackMessage = '¡Excelente! Has comprendido a fondo los mensajes de la homilía.';
+                    feedbackClass = 'bg-green-100 text-green-800';
+                } else if (percentage >= 60) {
+                    feedbackMessage = '¡Muy bien! Tienes una buena comprensión del tema. Repasa las respuestas para afianzar los conceptos.';
+                    feedbackClass = 'bg-blue-100 text-blue-800';
+                } else {
+                    feedbackMessage = 'Sigue esforzándote. Te animamos a releer los mensajes clave y el Evangelio para profundizar tu comprensión.';
+                    feedbackClass = 'bg-yellow-100 text-yellow-800';
+                }
+                
+                resultDiv.innerHTML = `
+                    <h3 class="text-2xl font-bold text-center mb-4">Resultados</h3>
+                    <p class="text-xl text-center mb-4">Tu puntuación: <strong>${score} de ${totalQuestions} (${percentage}%)</strong></p>
+                    <div class="p-4 rounded-md text-center ${feedbackClass}">
+                        <p>${feedbackMessage}</p>
+                    </div>
+                `;
+                resultDiv.classList.remove('hidden');
+
+                // Deshabilitar botón de envío
+                const submitButton = quizForm.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                submitButton.textContent = 'Cuestionario Evaluado';
+                
+                // Mover vista a los resultados
+                resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+
+            // --- Lógica del Pie de Página ---
+            const currentYearSpan = document.getElementById('currentYear');
+            if (currentYearSpan) {
+                currentYearSpan.textContent = new Date().getFullYear();
+            }
+        });
+    </script>
+
+</body>
+</html>
