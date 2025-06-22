@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor de Dibujos 3D</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #111;
+            color: white;
+            overflow: hidden;
+        }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .ui-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-box {
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            background-color: rgba(30, 30, 30, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            width: 350px;
+        }
+        #dashboard-container {
+            text-align: center;
+        }
+        .hidden {
+            display: none !important;
+        }
+        input, select, button {
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #555;
+            background-color: #333;
+            color: white;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        button {
+            cursor: pointer;
+            background-color: #007bff;
+            border-color: #007bff;
+            margin-top: 20px;
+        }
+        /* ESTILO PARA EL NUEVO BOTÓN "MENÚ" */
+        .corner-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 3; /* Aseguramos que esté por encima de todo */
+            width: auto; /* Ancho automático basado en el contenido */
+            margin-top: 0;
+        }
+        h2, h3 {
+            margin-top: 0;
+            text-align: center;
+        }
+        #error-message {
+            color: #ff4d4d;
+            text-align: center;
+            height: 20px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="bg"></canvas>
+
+    <button id="show-dashboard-button" class="corner-button hidden">Menú</button>
+
+    <div id="login-container" class="ui-container">
+        <div class="modal-box">
+            <h2>Iniciar Sesión</h2>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Contraseña" required>
+            <div id="error-message"></div>
+            <button id="login-button">Entrar</button>
+        </div>
+    </div>
+    
+    <div id="dashboard-container" class="ui-container hidden">
+         <div class="modal-box">
+            <h3>Visor 3D</h3>
+            <p id="welcome-message" style="font-size: 18px;"></p>
+            <select id="drawing-selector">
+                <option value="">Cargando dibujos...</option>
+            </select>
+            <button id="logout-button">Cerrar Sesión</button>
+        </div>
+    </div>
+
+    <script type="module">
+        // Imports y Configuración de Firebase y Three.js (sin cambios)
+        import * as THREE from 'https://unpkg.com/three@0.127.0/build/three.module.js';
+        import { OrbitControls } from 'https://unpkg.com/three@0.127.0/examples/jsm/controls/OrbitControls.js';
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.7/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.6.7/firebase-auth.js";
+        import { getDatabase, ref, onChildAdded, get, off, onChildRemoved } from "https://www.gstatic.com/firebasejs/9.6.7/firebase-database.js";
+
+        const firebaseConfig = {
+        apiKey: "AIzaSyAeimFiXVtxCMJXS8jnSMkzczSEU_r-1ag",
+        authDomain: "first5k.firebaseapp.com",
+        databaseURL: "https://first5k-default-rtdb.firebaseio.com",
+        projectId: "first5k",
+        storageBucket: "first5k.appspot.com",
+        messagingSenderId: "812715743859",
+        appId: "1:812715743859:web:11c55c3cc0b23c9ed12806",
+        measurementId: "G-2SSB99XXWH"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.querySelector('#bg'), antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.position.set(0, 0.5, 2);
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(5, 10, 7.5);
+        scene.add(ambientLight, directionalLight);
+        const drawingAnchorNode = new THREE.Group();
+        scene.add(drawingAnchorNode);
+        function animate() { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); }
+        animate();
+        window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
+
+        // --- LÓGICA DE LA APLICACIÓN (CON CAMBIOS) ---
+        const loginContainer = document.getElementById('login-container');
+        const dashboardContainer = document.getElementById('dashboard-container');
+        const showDashboardButton = document.getElementById('show-dashboard-button'); // Nuevo botón
+        const loginButton = document.getElementById('login-button');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const errorMessage = document.getElementById('error-message');
+        const drawingSelector = document.getElementById('drawing-selector');
+        const logoutButton = document.getElementById('logout-button');
+        const welcomeMessage = document.getElementById('welcome-message');
+        let currentDrawingListeners = [];
+
+        loginButton.addEventListener('click', () => { signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value).catch(error => errorMessage.textContent = "Email o contraseña incorrectos."); });
+        logoutButton.addEventListener('click', () => signOut(auth));
+        
+        // --- Lógica del nuevo botón "Menú" ---
+        showDashboardButton.addEventListener('click', () => {
+            dashboardContainer.classList.remove('hidden');
+            showDashboardButton.classList.add('hidden');
+        });
+
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                loginContainer.classList.add('hidden');
+                dashboardContainer.classList.remove('hidden'); // Al iniciar sesión, siempre mostramos el dashboard
+                showDashboardButton.classList.add('hidden'); // Y el botón "Menú" debe estar oculto
+                errorMessage.textContent = '';
+                const aliasRef = ref(db, `3Ddrawings/users/${user.uid}/alias`);
+                get(aliasRef).then(snapshot => { welcomeMessage.textContent = `Hola, ${snapshot.val() || 'Artista'}`; });
+                fetchUserDrawings(user.uid);
+            } else {
+                loginContainer.classList.remove('hidden');
+                dashboardContainer.classList.add('hidden');
+                showDashboardButton.classList.add('hidden');
+                clearDrawing();
+            }
+        });
+        
+        async function fetchUserDrawings(uid) {
+            // ... (Esta función no necesita cambios)
+            const indexPath = `3Ddrawings/user_drawings_index/${uid}`;
+            const indexRef = ref(db, indexPath);
+            const indexSnapshot = await get(indexRef);
+            drawingSelector.innerHTML = '';
+            if (!indexSnapshot.exists()) {
+                const option = document.createElement('option');
+                option.textContent = 'Aún no tienes dibujos';
+                drawingSelector.appendChild(option);
+                drawingSelector.disabled = true;
+                return;
+            }
+            drawingSelector.disabled = false;
+            const defaultOption = document.createElement('option');
+            defaultOption.value = "";
+            defaultOption.textContent = 'Selecciona un dibujo...';
+            drawingSelector.appendChild(defaultOption);
+            const drawingIDs = Object.keys(indexSnapshot.val());
+            for (const id of drawingIDs) {
+                const metadataPath = `3Ddrawings/drawings/${id}/metadata`;
+                const metadataRef = ref(db, metadataPath);
+                const metadataSnapshot = await get(metadataRef);
+                if (metadataSnapshot.exists()) {
+                    const metadata = metadataSnapshot.val();
+                    const option = document.createElement('option');
+                    option.value = id;
+                    option.textContent = metadata.drawingName;
+                    drawingSelector.appendChild(option);
+                }
+            }
+        }
+        
+        // --- CAMBIO CLAVE EN LA SELECCIÓN DE DIBUJO ---
+        drawingSelector.addEventListener('change', (event) => {
+            const drawingID = event.target.value;
+            loadDrawing(drawingID);
+
+            if (drawingID) {
+                // Si se selecciona un dibujo válido, ocultamos el dashboard y mostramos el botón "Menú"
+                dashboardContainer.classList.add('hidden');
+                showDashboardButton.classList.remove('hidden');
+            }
+        });
+
+        // El resto de la lógica de Three.js y Firebase se queda igual
+        function loadDrawing(drawingID) {
+            clearDrawing();
+            if (!drawingID) return;
+            const spheresPath = `3Ddrawings/drawings/${drawingID}/spheres`;
+            const spheresRef = ref(db, spheresPath);
+            const listener = onChildAdded(spheresRef, (snapshot) => {
+                const sphereData = snapshot.val();
+                const sphereID = snapshot.key;
+                if (sphereData) addSphereToScene(sphereData, sphereID);
+            });
+            const removeListener = onChildRemoved(spheresRef, (snapshot) => {
+                const sphereID = snapshot.key;
+                removeSphereFromScene(sphereID);
+            });
+            currentDrawingListeners.push({ref: spheresRef, listener: listener, eventType: 'child_added'});
+            currentDrawingListeners.push({ref: spheresRef, listener: removeListener, eventType: 'child_removed'});
+        }
+        function addSphereToScene(data, id) {
+            const geometry = new THREE.SphereGeometry(0.025, 16, 16);
+            const color = new THREE.Color("#" + (data.color || "FFFFFF"));
+            const material = new THREE.MeshStandardMaterial({ color: color });
+            const sphere = new THREE.Mesh(geometry, material);
+            sphere.position.set(data.x, data.y, data.z);
+            sphere.name = id;
+            drawingAnchorNode.add(sphere);
+        }
+        function removeSphereFromScene(id) {
+            const objectToRemove = drawingAnchorNode.getObjectByName(id);
+            if (objectToRemove) drawingAnchorNode.remove(objectToRemove);
+        }
+        function clearDrawing() {
+            while(drawingAnchorNode.children.length > 0) { drawingAnchorNode.remove(drawingAnchorNode.children[0]); }
+            currentDrawingListeners.forEach(item => off(item.ref, item.eventType, item.listener));
+            currentDrawingListeners = [];
+        }
+    </script>
+</body>
+</html>
