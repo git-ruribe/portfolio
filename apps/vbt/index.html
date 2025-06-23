@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador de Bicep Curls</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Analizador de Movimiento de Muñeca</h1>
+        <p>Sube tu archivo <code>WristMotion.csv</code> de Sensor Logger para analizar las repeticiones de Bicep Curls.</p>
+        
+        <div class="upload-section">
+            <input type="file" id="csvFileInput" accept=".csv">
+            <label for="csvFileInput" class="upload-button">Seleccionar Archivo</label>
+        </div>
+        
+        <div id="status"></div>
+
+        <div class="results-container" id="resultsContainer" style="display:none;">
+            <h2>Resultados del Análisis</h2>
+            <table id="resultsTable">
+                <thead>
+                    <tr>
+                        <th>Rep #</th>
+                        <th>Inicio (s)</th>
+                        <th>Fin (s)</th>
+                        <th>Vel. Máx. Subida (rad/s)</th>
+                        <th>Vel. Prom. Subida (rad/s)</th>
+                        <th>Vel. Máx. Bajada (rad/s)</th>
+                        <th>Vel. Prom. Bajada (rad/s)</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
