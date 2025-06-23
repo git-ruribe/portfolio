@@ -5,19 +5,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultsBody = document.getElementById('resultsBody');
 
     // --- PARÁMETROS CLAVE PARA LA DETECCIÓN ---
-    // Umbral de velocidad angular (rad/s) para iniciar una repetición.
-    // Un valor negativo indica el inicio de la fase de subida (concéntrica).
+
+    // Umbral de velocidad angular (rad/s) para iniciar una repetición de subida.
     const CONCENTRIC_THRESHOLD = -1.5; 
     
-    // Umbral para considerar que el movimiento ha terminado y se ha vuelto al reposo.
-    const IDLE_THRESHOLD = 0.5;
+    // Umbral de velocidad para considerar que el movimiento se ha detenido.
+    const IDLE_VELOCITY_THRESHOLD = 0.5;
+
+    // Umbral del vector de gravedad en el eje Z para confirmar que el brazo está en reposo (extendido hacia abajo).
+    // El valor es negativo porque la parte superior del reloj apunta hacia arriba.
+    const IDLE_GRAVITY_Z_THRESHOLD = -0.8;
 
     fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) {
             statusDiv.textContent = `Cargando y procesando ${file.name}...`;
             resultsContainer.style.display = 'none';
-            resultsBody.innerHTML = ''; // Limpiar resultados anteriores
+            resultsBody.innerHTML = '';
             
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -49,14 +53,16 @@ document.addEventListener('DOMContentLoaded', () => {
             return rowData;
         });
 
-        // --- ALGORITMO DE DETECCIÓN DE REPETICIONES ---
-        let state = 'IDLE'; // Posibles estados: IDLE, CONCENTRIC, ECCENTRIC
+        // --- ALGORITMO DE DETECCIÓN MEJORADO ---
+        let state = 'IDLE'; // Estados: IDLE, CONCENTRIC, ECCENTRIC
         const repetitions = [];
         let currentRep = {};
         let concentricData = [];
         let eccentricData = [];
 
-        for (const point of data) {
+        for (let i = 1; i < data.length; i++) {
+            const point = data[i];
+            const prevPoint = data[i-1];
             const rotX = point.rotationRateX;
 
             if (state === 'IDLE') {
@@ -66,35 +72,37 @@ document.addEventListener('DOMContentLoaded', () => {
                     concentricData.push(rotX);
                 }
             } else if (state === 'CONCENTRIC') {
-                if (rotX >= 0) { // Transición de subida a bajada
+                // La transición ocurre cuando la velocidad cruza de negativa a positiva.
+                if (prevPoint.rotationRateX < 0 && rotX >= 0) {
                     state = 'ECCENTRIC';
                     eccentricData.push(rotX);
                     
-                    // Calcular métricas de la fase concéntrica
+                    // Calcular métricas de la fase concéntrica (subida)
                     const concentricVels = concentricData.map(v => Math.abs(v));
                     currentRep.concentricMax = Math.max(...concentricVels);
                     currentRep.concentricAvg = concentricVels.reduce((a, b) => a + b, 0) / concentricVels.length;
-                    concentricData = []; // Resetear para la próxima repetición
+                    concentricData = [];
                 } else {
                     concentricData.push(rotX);
                 }
             } else if (state === 'ECCENTRIC') {
-                if (Math.abs(rotX) < IDLE_THRESHOLD) { // La repetición termina
+                // La repetición termina solo si la velocidad es baja Y el brazo ha vuelto a la posición inicial.
+                if (Math.abs(rotX) < IDLE_VELOCITY_THRESHOLD && point.gravityZ < IDLE_GRAVITY_Z_THRESHOLD) {
                     state = 'IDLE';
                     currentRep.end = point.seconds_elapsed;
 
-                    // Calcular métricas de la fase excéntrica
+                    // Calcular métricas de la fase excéntrica (bajada)
                     const eccentricVels = eccentricData.map(v => Math.abs(v));
                     if (eccentricVels.length > 0) {
                         currentRep.eccentricMax = Math.max(...eccentricVels);
                         currentRep.eccentricAvg = eccentricVels.reduce((a, b) => a + b, 0) / eccentricVels.length;
-                    } else { // Si no hubo datos, poner 0
+                    } else {
                         currentRep.eccentricMax = 0;
                         currentRep.eccentricAvg = 0;
                     }
                     
                     repetitions.push(currentRep);
-                    eccentricData = []; // Resetear
+                    eccentricData = [];
                 } else {
                     eccentricData.push(rotX);
                 }
@@ -110,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         resultsContainer.style.display = 'block';
-        resultsBody.innerHTML = ''; // Limpiar de nuevo por si acaso
+        resultsBody.innerHTML = '';
 
         repetitions.forEach((rep, index) => {
             const row = document.createElement('tr');
@@ -120,8 +128,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${rep.end.toFixed(2)}</td>
                 <td>${rep.concentricMax.toFixed(2)}</td>
                 <td>${rep.concentricAvg.toFixed(2)}</td>
-                <td>${rep.eccentricMax.toFixed(2)}</td>
-                <td>${rep.eccentricAvg.toFixed(2)}</td>
+                <td>${(rep.eccentricMax || 0).toFixed(2)}</td>
+                <td>${(rep.eccentricAvg || 0).toFixed(2)}</td>
             `;
             resultsBody.appendChild(row);
         });
