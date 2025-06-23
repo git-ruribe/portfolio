@@ -3,39 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analizador de Bicep Curls</title>
+    <title>Herramienta de Calibración de Repeticiones</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Importamos la librería Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Analizador de Movimiento de Muñeca</h1>
-        <p>Sube tu archivo <code>WristMotion.csv</code> de Sensor Logger para analizar las repeticiones de Bicep Curls.</p>
-        
-        <div class="upload-section">
-            <input type="file" id="csvFileInput" accept=".csv">
-            <label for="csvFileInput" class="upload-button">Seleccionar Archivo</label>
-        </div>
-        
-        <div id="status"></div>
+    <div class="main-container">
+        <header>
+            <h1>Herramienta de Calibración de Repeticiones</h1>
+            <p>Sube tu archivo CSV de Sensor Logger y ajusta los parámetros para detectar repeticiones visualmente.</p>
+            <div class="upload-section">
+                <input type="file" id="csvFileInput" accept=".csv">
+                <label for="csvFileInput" class="upload-button">Seleccionar Archivo</label>
+            </div>
+            <div id="status">Selecciona un archivo para comenzar.</div>
+        </header>
 
-        <div class="results-container" id="resultsContainer" style="display:none;">
-            <h2>Resultados del Análisis</h2>
-            <table id="resultsTable">
-                <thead>
-                    <tr>
-                        <th>Rep #</th>
-                        <th>Inicio (s)</th>
-                        <th>Fin (s)</th>
-                        <th>Vel. Máx. Subida (rad/s)</th>
-                        <th>Vel. Prom. Subida (rad/s)</th>
-                        <th>Vel. Máx. Bajada (rad/s)</th>
-                        <th>Vel. Prom. Bajada (rad/s)</th>
-                    </tr>
-                </thead>
-                <tbody id="resultsBody">
-                </tbody>
-            </table>
+        <div class="dashboard" id="dashboard" style="display:none;">
+            <!-- Contenedor del Gráfico -->
+            <div class="chart-container">
+                <canvas id="sensorChart"></canvas>
+            </div>
+
+            <!-- Panel de Controles de Calibración -->
+            <div class="controls-panel">
+                <h3>Parámetros de Detección</h3>
+                
+                <div class="control-group">
+                    <label for="peakColumn">Señal para Picos:</label>
+                    <select id="peakColumn">
+                        <option value="rotationRateX">rotationRateX</option>
+                        <option value="rotationRateY">rotationRateY</option>
+                        <option value="rotationRateZ">rotationRateZ</option>
+                        <option value="accelerationX">accelerationX</option>
+                        <option value="accelerationY">accelerationY</option>
+                        <option value="accelerationZ">accelerationZ</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="peakThreshold">Umbral del Pico (<span id="peakThresholdValue">-2.5</span>)</label>
+                    <input type="range" id="peakThreshold" min="-10" max="0" step="0.1" value="-2.5">
+                </div>
+
+                <div class="control-group">
+                    <label for="minTime">Tiempo Mínimo entre Reps (<span id="minTimeValue">1.5</span> s)</label>
+                    <input type="range" id="minTime" min="0.5" max="5" step="0.1" value="1.5">
+                </div>
+                 
+                <div class="control-group">
+                    <label for="idleThreshold">Umbral de Reposo (<span id="idleThresholdValue">0.5</span> rad/s)</label>
+                    <input type="range" id="idleThreshold" min="0.1" max="2" step="0.05" value="0.5">
+                </div>
+            </div>
+
+            <!-- Tabla de Resultados -->
+            <div class="results-container">
+                <h2>Resultados del Análisis</h2>
+                <table id="resultsTable">
+                    <thead>
+                        <tr>
+                            <th>Rep #</th>
+                            <th>Inicio (s)</th>
+                            <th>Fin (s)</th>
+                            <th>Duración (s)</th>
+                            <th>Vel. Máx. Subida (rad/s)</th>
+                            <th>Vel. Máx. Bajada (rad/s)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBody"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
