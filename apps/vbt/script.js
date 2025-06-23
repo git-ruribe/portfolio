@@ -5,16 +5,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultsBody = document.getElementById('resultsBody');
 
     // --- PARÁMETROS CLAVE PARA LA DETECCIÓN ---
-
-    // Umbral de velocidad angular (rad/s) para iniciar una repetición de subida.
-    const CONCENTRIC_THRESHOLD = -1.5; 
+    const ROTATION_RATE_COLUMN = 'rotationRateX';
     
-    // Umbral de velocidad para considerar que el movimiento se ha detenido.
-    const IDLE_VELOCITY_THRESHOLD = 0.5;
+    // Umbral (negativo) para que un punto sea considerado un pico potencial.
+    const PEAK_THRESHOLD = -2.0; 
+    
+    // Tiempo mínimo (en segundos) que debe pasar entre dos repeticiones.
+    const MIN_TIME_BETWEEN_REPS = 1.0; 
 
-    // Umbral del vector de gravedad en el eje Z para confirmar que el brazo está en reposo (extendido hacia abajo).
-    // El valor es negativo porque la parte superior del reloj apunta hacia arriba.
-    const IDLE_GRAVITY_Z_THRESHOLD = -0.8;
+    // Umbral de velocidad para definir cuándo el movimiento está "detenido" (inicio/fin de rep).
+    const IDLE_SPEED_THRESHOLD = 0.5;
 
     fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function analyzeData(csvData) {
+        // 1. Parsear el CSV
         const lines = csvData.trim().split('\n');
         const headers = lines[0].split(',').map(h => h.trim());
         const data = lines.slice(1).map(line => {
@@ -53,61 +54,86 @@ document.addEventListener('DOMContentLoaded', () => {
             return rowData;
         });
 
-        // --- ALGORITMO DE DETECCIÓN MEJORADO ---
-        let state = 'IDLE'; // Estados: IDLE, CONCENTRIC, ECCENTRIC
-        const repetitions = [];
-        let currentRep = {};
-        let concentricData = [];
-        let eccentricData = [];
-
-        for (let i = 1; i < data.length; i++) {
-            const point = data[i];
-            const prevPoint = data[i-1];
-            const rotX = point.rotationRateX;
-
-            if (state === 'IDLE') {
-                if (rotX < CONCENTRIC_THRESHOLD) {
-                    state = 'CONCENTRIC';
-                    currentRep = { start: point.seconds_elapsed };
-                    concentricData.push(rotX);
-                }
-            } else if (state === 'CONCENTRIC') {
-                // La transición ocurre cuando la velocidad cruza de negativa a positiva.
-                if (prevPoint.rotationRateX < 0 && rotX >= 0) {
-                    state = 'ECCENTRIC';
-                    eccentricData.push(rotX);
-                    
-                    // Calcular métricas de la fase concéntrica (subida)
-                    const concentricVels = concentricData.map(v => Math.abs(v));
-                    currentRep.concentricMax = Math.max(...concentricVels);
-                    currentRep.concentricAvg = concentricVels.reduce((a, b) => a + b, 0) / concentricVels.length;
-                    concentricData = [];
-                } else {
-                    concentricData.push(rotX);
-                }
-            } else if (state === 'ECCENTRIC') {
-                // La repetición termina solo si la velocidad es baja Y el brazo ha vuelto a la posición inicial.
-                if (Math.abs(rotX) < IDLE_VELOCITY_THRESHOLD && point.gravityZ < IDLE_GRAVITY_Z_THRESHOLD) {
-                    state = 'IDLE';
-                    currentRep.end = point.seconds_elapsed;
-
-                    // Calcular métricas de la fase excéntrica (bajada)
-                    const eccentricVels = eccentricData.map(v => Math.abs(v));
-                    if (eccentricVels.length > 0) {
-                        currentRep.eccentricMax = Math.max(...eccentricVels);
-                        currentRep.eccentricAvg = eccentricVels.reduce((a, b) => a + b, 0) / eccentricVels.length;
-                    } else {
-                        currentRep.eccentricMax = 0;
-                        currentRep.eccentricAvg = 0;
-                    }
-                    
-                    repetitions.push(currentRep);
-                    eccentricData = [];
-                } else {
-                    eccentricData.push(rotX);
+        // 2. Encontrar los índices de todos los picos negativos que superen el umbral
+        let peakIndices = [];
+        for (let i = 1; i < data.length - 1; i++) {
+            const prev = data[i - 1][ROTATION_RATE_COLUMN];
+            const current = data[i][ROTATION_RATE_COLUMN];
+            const next = data[i + 1][ROTATION_RATE_COLUMN];
+            
+            if (current < prev && current < next && current < PEAK_THRESHOLD) {
+                peakIndices.push(i);
+            }
+        }
+        
+        // 3. Filtrar picos que estén demasiado juntos en el tiempo
+        let distinctPeakIndices = [];
+        if (peakIndices.length > 0) {
+            distinctPeakIndices.push(peakIndices[0]);
+            let lastPeakTime = data[peakIndices[0]].seconds_elapsed;
+            
+            for (let i = 1; i < peakIndices.length; i++) {
+                const currentIndex = peakIndices[i];
+                const currentTime = data[currentIndex].seconds_elapsed;
+                if (currentTime - lastPeakTime > MIN_TIME_BETWEEN_REPS) {
+                    distinctPeakIndices.push(currentIndex);
+                    lastPeakTime = currentTime;
                 }
             }
         }
+
+        // 4. Para cada pico, encontrar el inicio y el fin de la repetición
+        const repetitions = [];
+        for (const peakIndex of distinctPeakIndices) {
+            let rep = {};
+
+            // Buscar hacia atrás para encontrar el inicio de la repetición
+            let startIndex = peakIndex;
+            while (startIndex > 0 && Math.abs(data[startIndex][ROTATION_RATE_COLUMN]) > IDLE_SPEED_THRESHOLD) {
+                startIndex--;
+            }
+            rep.start = data[startIndex].seconds_elapsed;
+
+            // Buscar hacia adelante para encontrar el fin de la repetición
+            let endIndex = peakIndex;
+            while (endIndex < data.length - 1 && Math.abs(data[endIndex][ROTATION_RATE_COLUMN]) > IDLE_SPEED_THRESHOLD) {
+                endIndex++;
+            }
+            // Asegurarnos de que el fin sea después del inicio
+            if (endIndex <= startIndex) {
+                endIndex = data.length -1;
+            }
+            rep.end = data[endIndex].seconds_elapsed;
+            
+            // 5. Calcular las métricas para el segmento de esta repetición
+            const repData = data.slice(startIndex, endIndex + 1);
+            let concentricData = [];
+            let eccentricData = [];
+            
+            repData.forEach(point => {
+                if (point[ROTATION_RATE_COLUMN] < 0) {
+                    concentricData.push(Math.abs(point[ROTATION_RATE_COLUMN]));
+                } else if (point[ROTATION_RATE_COLUMN] > 0) {
+                    eccentricData.push(Math.abs(point[ROTATION_RATE_COLUMN]));
+                }
+            });
+
+            if (concentricData.length > 0) {
+                rep.concentricMax = Math.max(...concentricData);
+                rep.concentricAvg = concentricData.reduce((a, b) => a + b, 0) / concentricData.length;
+            }
+
+            if (eccentricData.length > 0) {
+                rep.eccentricMax = Math.max(...eccentricData);
+                rep.eccentricAvg = eccentricData.reduce((a, b) => a + b, 0) / eccentricData.length;
+            }
+
+            // Solo añadir si la repetición tiene datos válidos
+            if (rep.concentricMax) {
+                repetitions.push(rep);
+            }
+        }
+
         return repetitions;
     }
 
@@ -126,8 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${index + 1}</td>
                 <td>${rep.start.toFixed(2)}</td>
                 <td>${rep.end.toFixed(2)}</td>
-                <td>${rep.concentricMax.toFixed(2)}</td>
-                <td>${rep.concentricAvg.toFixed(2)}</td>
+                <td>${(rep.concentricMax || 0).toFixed(2)}</td>
+                <td>${(rep.concentricAvg || 0).toFixed(2)}</td>
                 <td>${(rep.eccentricMax || 0).toFixed(2)}</td>
                 <td>${(rep.eccentricAvg || 0).toFixed(2)}</td>
             `;
