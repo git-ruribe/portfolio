@@ -6,15 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- PARÁMETROS DE DETECCIÓN (AJUSTABLES) ---
     const ROTATION_RATE_COLUMN = 'rotationRateX';
+    const TIME_COLUMN = 'seconds_elapsed';
+    const GRAVITY_Z_COLUMN = 'gravityZ';
     
-    // Umbral de velocidad (rad/s) para iniciar una repetición.
-    const START_REP_THRESHOLD = -2.0; 
-    
-    // Umbral de velocidad para considerar que el movimiento se ha detenido.
-    const END_REP_VELOCITY_THRESHOLD = 0.8;
-
-    // Umbral del vector de gravedad en el eje Z para confirmar que el brazo está en reposo (extendido hacia abajo).
-    const END_REP_GRAVITY_Z_THRESHOLD = -0.8;
+    const PEAK_THRESHOLD = -2.0; // Velocidad mínima para ser un pico
+    const MIN_SECONDS_BETWEEN_REPS = 1.0; // Distancia mínima entre picos
+    const IDLE_SPEED_THRESHOLD = 0.5; // Velocidad para considerar "reposo"
 
     fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
@@ -42,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function analyzeData(csvData) {
-        // 1. Parsear el CSV a un array de objetos
+        // 1. Parsear datos
         const lines = csvData.trim().split('\n');
         const headers = lines[0].split(',').map(h => h.trim());
         const data = lines.slice(1).map(line => {
@@ -54,69 +51,84 @@ document.addEventListener('DOMContentLoaded', () => {
             return rowData;
         });
 
-        // --- ALGORITMO DE DETECCIÓN FINAL ---
-        let state = 'IDLE'; // Estados: IDLE, IN_REP
-        const repetitions = [];
-        let currentRepData = [];
-        
-        for (let i = 0; i < data.length; i++) {
-            const point = data[i];
-            const rotX = point[ROTATION_RATE_COLUMN];
-            const gravityZ = point.gravityZ;
-
-            if (state === 'IDLE') {
-                if (rotX < START_REP_THRESHOLD) {
-                    state = 'IN_REP';
-                    currentRepData.push(point);
-                }
-            } else if (state === 'IN_REP') {
-                currentRepData.push(point);
-
-                // Condición de finalización: velocidad baja Y brazo en posición de reposo
-                if (Math.abs(rotX) < END_REP_VELOCITY_THRESHOLD && gravityZ < END_REP_GRAVITY_Z_THRESHOLD) {
-                    
-                    // --- Procesar la repetición completada ---
-                    const repMetrics = processRepetitionSegment(currentRepData);
-                    if (repMetrics) {
-                        repetitions.push(repMetrics);
-                    }
-                    
-                    // Resetear para la siguiente repetición
-                    currentRepData = [];
-                    state = 'IDLE';
-                }
+        // 2. Encontrar picos de velocidad de subida
+        let peakIndices = [];
+        for (let i = 1; i < data.length - 1; i++) {
+            const current = data[i][ROTATION_RATE_COLUMN];
+            const prev = data[i - 1][ROTATION_RATE_COLUMN];
+            const next = data[i + 1][ROTATION_RATE_COLUMN];
+            if (current < prev && current < next && current < PEAK_THRESHOLD) {
+                peakIndices.push(i);
             }
         }
         
-        // Si el archivo termina y todavía estamos en una repetición, la procesamos
-        if (currentRepData.length > 0) {
-            const repMetrics = processRepetitionSegment(currentRepData);
-            if (repMetrics) {
-                repetitions.push(repMetrics);
+        // 3. Filtrar picos para obtener uno por repetición
+        let distinctPeakIndices = [];
+        if (peakIndices.length > 0) {
+            let lastPeakIndex = peakIndices[0];
+            for (let i = 1; i < peakIndices.length; i++) {
+                let currentPeakIndex = peakIndices[i];
+                if (data[currentPeakIndex][TIME_COLUMN] - data[lastPeakIndex][TIME_COLUMN] < MIN_SECONDS_BETWEEN_REPS) {
+                    // Si dos picos están muy juntos, nos quedamos con el más fuerte (el más negativo)
+                    if (data[currentPeakIndex][ROTATION_RATE_COLUMN] < data[lastPeakIndex][ROTATION_RATE_COLUMN]) {
+                        lastPeakIndex = currentPeakIndex;
+                    }
+                } else {
+                    distinctPeakIndices.push(lastPeakIndex);
+                    lastPeakIndex = currentPeakIndex;
+                }
             }
+            distinctPeakIndices.push(lastPeakIndex);
+        }
+
+        // 4. Segmentar y analizar cada repetición
+        const repetitions = [];
+        for (let i = 0; i < distinctPeakIndices.length; i++) {
+            const peakIndex = distinctPeakIndices[i];
+            
+            // Buscar hacia atrás para encontrar el inicio
+            let startIndex = peakIndex;
+            while (startIndex > 0 && Math.abs(data[startIndex - 1][ROTATION_RATE_COLUMN]) > IDLE_SPEED_THRESHOLD) {
+                startIndex--;
+            }
+
+            // Buscar hacia adelante para encontrar el fin
+            let endIndex = peakIndex;
+            // Primero, encontrar el punto más bajo del brazo (gravityZ más negativo) después del pico
+            let lowestPointIndex = peakIndex;
+            for (let j = peakIndex + 1; j < (distinctPeakIndices[i+1] || data.length); j++) {
+                if (data[j][GRAVITY_Z_COLUMN] < data[lowestPointIndex][GRAVITY_Z_COLUMN]) {
+                    lowestPointIndex = j;
+                }
+            }
+            // Ahora, encontrar el punto de reposo después de que el brazo haya bajado
+            endIndex = lowestPointIndex;
+            while (endIndex < data.length - 1 && Math.abs(data[endIndex + 1][ROTATION_RATE_COLUMN]) > IDLE_SPEED_THRESHOLD) {
+                endIndex++;
+            }
+            
+            const rep = processSegment(data.slice(startIndex, endIndex + 1));
+            if (rep) repetitions.push(rep);
         }
 
         return repetitions;
     }
 
-    function processRepetitionSegment(repData) {
-        if (!repData || repData.length < 2) return null;
+    function processSegment(segmentData) {
+        if (!segmentData || segmentData.length < 2) return null;
 
         const rep = {
-            start: repData[0].seconds_elapsed,
-            end: repData[repData.length - 1].seconds_elapsed
+            start: segmentData[0][TIME_COLUMN],
+            end: segmentData[segmentData.length - 1][TIME_COLUMN]
         };
 
         let concentricVels = [];
         let eccentricVels = [];
-
-        repData.forEach(point => {
+        
+        segmentData.forEach(point => {
             const rotX = point[ROTATION_RATE_COLUMN];
-            if (rotX < 0) {
-                concentricVels.push(Math.abs(rotX));
-            } else if (rotX > 0) {
-                eccentricVels.push(Math.abs(rotX));
-            }
+            if (rotX < 0) concentricVels.push(Math.abs(rotX));
+            else if (rotX > 0) eccentricVels.push(Math.abs(rotX));
         });
 
         if (concentricVels.length > 0) {
@@ -129,18 +141,16 @@ document.addEventListener('DOMContentLoaded', () => {
             rep.eccentricAvg = eccentricVels.reduce((a, b) => a + b, 0) / eccentricVels.length;
         }
 
-        return rep;
+        return (rep.concentricMax && rep.eccentricMax) ? rep : null; // Solo valida repeticiones completas
     }
-
+    
     function displayResults(repetitions) {
         if (repetitions.length === 0) {
             statusDiv.textContent = 'No se detectaron repeticiones. Prueba ajustar los umbrales en el código.';
             return;
         }
-
         resultsContainer.style.display = 'block';
         resultsBody.innerHTML = '';
-
         repetitions.forEach((rep, index) => {
             const row = document.createElement('tr');
             row.innerHTML = `
