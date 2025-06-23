@@ -1,108 +1,137 @@
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: #f0f2f5;
+    background-color: #f4f7f9;
     color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
     margin: 0;
-}
-
-.main-container {
-    width: 95%;
-    max-width: 1400px;
-    margin: 20px auto;
-}
-
-header {
-    background-color: #fff;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-sizing: border-box;
+}
+
+.container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 900px;
     text-align: center;
-    margin-bottom: 20px;
+}
+
+h1 {
+    color: #1a2533;
+    margin-top: 0;
+}
+
+p {
+    color: #5a6b7d;
+    line-height: 1.6;
+}
+
+code {
+    background-color: #eef2f5;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;
+}
+
+.upload-section {
+    margin: 30px 0;
+}
+
+#csvFileInput {
+    display: none;
 }
 
 .upload-button {
     background-color: #007aff;
     color: white;
-    padding: 10px 20px;
-    border-radius: 6px;
+    padding: 12px 24px;
+    border-radius: 8px;
     cursor: pointer;
     font-weight: 500;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s ease-in-out;
     display: inline-block;
 }
-.upload-button:hover { background-color: #0056b3; }
-#csvFileInput { display: none; }
-#status { margin-top: 10px; color: #666; }
 
-.dashboard {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
-    gap: 20px;
+.upload-button:hover {
+    background-color: #0056b3;
 }
 
-@media (min-width: 1200px) {
-    .dashboard {
-        grid-template-columns: 3fr 1fr;
-        grid-template-areas:
-            "chart controls"
-            "results controls";
-    }
-    .chart-container { grid-area: chart; }
-    .results-container { grid-area: results; }
-    .controls-panel { grid-area: controls; }
+#status {
+    margin-top: 15px;
+    font-style: italic;
+    color: #888;
 }
 
-.chart-container, .controls-panel, .results-container {
-    background-color: #fff;
-    padding: 20px;
+.controls-container {
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 20px;
+    margin-top: 30px;
+    text-align: center;
 }
 
-h2, h3 {
-    margin-top: 0;
-    color: #1a2533;
-    border-bottom: 1px solid #eef2f5;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
+.slider-control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
 }
 
-.controls-panel .control-group {
-    margin-bottom: 20px;
+#sensitivitySlider {
+    width: 200px;
 }
 
-.controls-panel label {
-    display: block;
-    font-weight: 500;
-    margin-bottom: 8px;
+#sensitivityValue {
+    font-weight: bold;
+    min-width: 40px;
+}
+
+.explanation {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 10px;
+}
+
+.results-container {
+    margin-top: 20px;
     text-align: left;
 }
 
-.controls-panel input[type="range"] {
-    width: 100%;
-}
-
-.controls-panel select {
-    width: 100%;
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
+.table-wrapper {
+    overflow-x: auto; /* Permite scroll horizontal en la tabla */
+    margin-top: 20px;
 }
 
 #resultsTable {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
 }
 
 #resultsTable th, #resultsTable td {
     border: 1px solid #ddd;
-    padding: 10px;
+    padding: 12px;
     text-align: center;
+    white-space: nowrap; /* Evita que el texto se parta en varias líneas */
 }
 
 #resultsTable th {
-    background-color: #f8f9fa;
+    background-color: #f2f2f2;
     font-weight: 600;
+    color: #333;
+    position: sticky; /* Fija los encabezados al hacer scroll */
+    top: 0;
+}
+
+#resultsTable tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#resultsTable tr:hover {
+    background-color: #f1f1f1;
 }
