@@ -1,167 +1,151 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- ELEMENTOS DEL DOM ---
+    // Referencias a elementos del DOM
     const fileInput = document.getElementById('csvFileInput');
     const statusDiv = document.getElementById('status');
-    const dashboard = document.getElementById('dashboard');
+    const controlsContainer = document.getElementById('controlsContainer');
+    const slider = document.getElementById('sensitivitySlider');
+    const sliderValueSpan = document.getElementById('sensitivityValue');
+    const resultsContainer = document.getElementById('resultsContainer');
     const resultsBody = document.getElementById('resultsBody');
-    const chartCanvas = document.getElementById('sensorChart');
 
-    // --- CONTROLES DE CALIBRACIÓN ---
-    const peakColumnSelect = document.getElementById('peakColumn');
-    const peakThresholdSlider = document.getElementById('peakThreshold');
-    const minTimeSlider = document.getElementById('minTime');
-    const idleThresholdSlider = document.getElementById('idleThreshold');
-    
-    // --- LABELS PARA MOSTRAR VALORES ---
-    const peakThresholdValue = document.getElementById('peakThresholdValue');
-    const minTimeValue = document.getElementById('minTimeValue');
-    const idleThresholdValue = document.getElementById('idleThresholdValue');
-    
-    let chartInstance = null;
-    let fullData = []; // Almacenará los datos del CSV para no tener que releerlos
+    // Variable global para almacenar los datos parseados
+    let parsedData = [];
 
-    // --- MANEJADORES DE EVENTOS ---
-    fileInput.addEventListener('change', handleFileSelect);
-    peakColumnSelect.addEventListener('change', runAnalysis);
-    peakThresholdSlider.addEventListener('input', () => {
-        peakThresholdValue.textContent = peakThresholdSlider.value;
-    });
-    peakThresholdSlider.addEventListener('change', runAnalysis);
-    minTimeSlider.addEventListener('input', () => {
-        minTimeValue.textContent = minTimeSlider.value;
-    });
-    minTimeSlider.addEventListener('change', runAnalysis);
-    idleThresholdSlider.addEventListener('input', () => {
-        idleThresholdValue.textContent = idleThresholdSlider.value;
-    });
-    idleThresholdSlider.addEventListener('change', runAnalysis);
+    // --- PARÁMETROS DE DETECCIÓN ---
+    const MIN_TIME_BETWEEN_REPS = 1.0; 
+    const IDLE_SPEED_THRESHOLD = 1.0; 
 
-
-    function handleFileSelect(event) {
+    // Evento para cargar el archivo
+    fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
-        if (!file) return;
-
-        statusDiv.textContent = `Cargando ${file.name}...`;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            fullData = parseCSV(e.target.result);
-            if(fullData.length > 0) {
-                dashboard.style.display = 'grid';
-                statusDiv.textContent = 'Archivo cargado. Ajusta los parámetros.';
-                runAnalysis();
-            } else {
-                statusDiv.textContent = 'No se pudieron leer datos del archivo.';
-            }
-        };
-        reader.readAsText(file);
-    }
-
-    function parseCSV(csvData) {
-        try {
-            const lines = csvData.trim().split('\n');
-            const headers = lines[0].split(',').map(h => h.trim());
-            return lines.slice(1).map(line => {
-                const values = line.split(',');
-                const rowData = {};
-                headers.forEach((header, index) => {
-                    rowData[header] = parseFloat(values[index]);
-                });
-                return rowData;
-            });
-        } catch (error) {
-            console.error("Error parsing CSV:", error);
-            return [];
+        if (file) {
+            statusDiv.textContent = `Cargando ${file.name}...`;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    parsedData = parseCSVAndCalcMagnitudes(e.target.result);
+                    controlsContainer.style.display = 'block';
+                    runAnalysis(); 
+                } catch (error) {
+                    statusDiv.textContent = `Error al procesar el archivo: ${error.message}`;
+                    console.error(error);
+                }
+            };
+            reader.readAsText(file);
         }
-    }
+    });
 
-    function runAnalysis() {
-        if (fullData.length === 0) return;
-
-        const params = {
-            peakColumn: peakColumnSelect.value,
-            peakThreshold: parseFloat(peakThresholdSlider.value),
-            minTimeBetweenReps: parseFloat(minTimeSlider.value),
-            idleSpeedThreshold: parseFloat(idleThresholdSlider.value)
-        };
-        
-        const repetitions = detectRepetitions(fullData, params);
-        displayResults(repetitions);
-        updateChart(fullData, params, repetitions);
-    }
+    // Evento para re-analizar cuando el slider cambia
+    slider.addEventListener('input', () => {
+        sliderValueSpan.textContent = parseFloat(slider.value).toFixed(1);
+        if (parsedData.length > 0) {
+            runAnalysis();
+        }
+    });
     
-    function detectRepetitions(data, params) {
-        // --- ALGORITMO DE DETECCIÓN DE PICOS Y SEGMENTACIÓN ---
+    // Función para parsear el CSV y calcular las magnitudes
+    function parseCSVAndCalcMagnitudes(csvData) {
+        const lines = csvData.trim().split('\n');
+        const headers = lines[0].split(',').map(h => h.trim());
+        return lines.slice(1).map(line => {
+            const values = line.split(',');
+            const rowData = {};
+            headers.forEach((header, index) => {
+                rowData[header] = parseFloat(values[index]);
+            });
 
-        // 1. Encontrar índices de picos que superen el umbral
+            // Calcular magnitud de rotación
+            const rx = rowData.rotationRateX || 0;
+            const ry = rowData.rotationRateY || 0;
+            const rz = rowData.rotationRateZ || 0;
+            rowData.rotationMagnitude = Math.sqrt(rx*rx + ry*ry + rz*rz);
+
+            // *** NUEVO CÁLCULO DE MAGNITUD DE ACELERACIÓN ***
+            const ax = rowData.accelerationX || 0;
+            const ay = rowData.accelerationY || 0;
+            const az = rowData.accelerationZ || 0;
+            rowData.accelerationMagnitude = Math.sqrt(ax*ax + ay*ay + az*az);
+            
+            return rowData;
+        });
+    }
+
+    // Función principal que ejecuta el análisis
+    function runAnalysis() {
+        const peakThreshold = parseFloat(slider.value);
+        const repetitions = findRepetitions(parsedData, peakThreshold);
+        displayResults(repetitions);
+        statusDiv.textContent = `Análisis completado. Se detectaron ${repetitions.length} repeticiones.`;
+    }
+
+    // Algoritmo de detección de picos usando la magnitud de rotación
+    function findRepetitions(data, peakThreshold) {
         let peakIndices = [];
         for (let i = 1; i < data.length - 1; i++) {
-            const current = data[i][params.peakColumn];
-            const prev = data[i - 1][params.peakColumn];
-            const next = data[i + 1][params.peakColumn];
-            // Para picos negativos
-            if (current < prev && current < next && current < params.peakThreshold) {
+            if (data[i].rotationMagnitude > data[i - 1].rotationMagnitude &&
+                data[i].rotationMagnitude > data[i + 1].rotationMagnitude &&
+                data[i].rotationMagnitude > peakThreshold) {
                 peakIndices.push(i);
             }
         }
-
-        // 2. Filtrar picos para mantener solo el más fuerte en un intervalo de tiempo
+        
         let distinctPeakIndices = [];
-        let i = 0;
-        while (i < peakIndices.length) {
-            let currentPeakIndex = peakIndices[i];
-            let nextIndex = i + 1;
-            
-            // Agrupar picos cercanos
-            while (nextIndex < peakIndices.length && 
-                   (data[peakIndices[nextIndex]][`seconds_elapsed`] - data[currentPeakIndex][`seconds_elapsed`] < params.minTimeBetweenReps)) {
-                // Mantener solo el pico más fuerte (el valor más bajo)
-                if (data[peakIndices[nextIndex]][params.peakColumn] < data[currentPeakIndex][params.peakColumn]) {
-                    currentPeakIndex = peakIndices[nextIndex];
+        if (peakIndices.length > 0) {
+            let lastPeakIndex = peakIndices[0];
+            for (let i = 1; i < peakIndices.length; i++) {
+                if (data[peakIndices[i]].rotationMagnitude > data[lastPeakIndex].rotationMagnitude) {
+                    lastPeakIndex = peakIndices[i];
                 }
-                nextIndex++;
+                if (data[peakIndices[i]].seconds_elapsed - data[peakIndices[i-1]].seconds_elapsed > MIN_TIME_BETWEEN_REPS) {
+                    distinctPeakIndices.push(lastPeakIndex);
+                    lastPeakIndex = peakIndices[i];
+                }
             }
-            distinctPeakIndices.push(currentPeakIndex);
-            i = nextIndex;
+            distinctPeakIndices.push(lastPeakIndex);
         }
 
-        // 3. Segmentar cada repetición y calcular métricas
         const repetitions = [];
         for (const peakIndex of distinctPeakIndices) {
+            let rep = {};
+
             let startIndex = peakIndex;
-            while (startIndex > 0 && Math.abs(data[startIndex-1][params.peakColumn]) > params.idleSpeedThreshold) {
+            while (startIndex > 0 && data[startIndex].rotationMagnitude > IDLE_SPEED_THRESHOLD) {
                 startIndex--;
             }
+            rep.start = data[startIndex].seconds_elapsed;
 
             let endIndex = peakIndex;
-            while (endIndex < data.length - 1 && Math.abs(data[endIndex+1][params.peakColumn]) > params.idleSpeedThreshold) {
+            while (endIndex < data.length - 1 && (data[endIndex].rotationMagnitude > IDLE_SPEED_THRESHOLD || data[endIndex].seconds_elapsed - data[startIndex].seconds_elapsed < 1.0)) {
                 endIndex++;
             }
-
+            rep.end = data[endIndex].seconds_elapsed;
+            
             const repData = data.slice(startIndex, endIndex + 1);
-            if (repData.length > 1) {
-                const metrics = processSegment(repData, params.peakColumn);
-                if (metrics) repetitions.push(metrics);
+            let rotData = [];
+            let accelData = [];
+            
+            repData.forEach(point => {
+                rotData.push(Math.abs(point.rotationMagnitude));
+                accelData.push(point.accelerationMagnitude);
+            });
+
+            if (rotData.length > 0) {
+                rep.rotationMax = Math.max(...rotData);
+                rep.rotationAvg = rotData.reduce((a, b) => a + b, 0) / rotData.length;
             }
+
+            if (accelData.length > 0) {
+                rep.accelerationMax = Math.max(...accelData);
+                rep.accelerationAvg = accelData.reduce((a, b) => a + b, 0) / accelData.length;
+            }
+
+            if (rep.rotationMax) repetitions.push(rep);
         }
         return repetitions;
     }
 
-    function processSegment(segmentData, peakColumn) {
-        let concentricVels = [], eccentricVels = [];
-        segmentData.forEach(p => {
-            if (p[peakColumn] < 0) concentricVels.push(Math.abs(p[peakColumn]));
-            if (p[peakColumn] > 0) eccentricVels.push(Math.abs(p[peakColumn]));
-        });
-
-        return {
-            start: segmentData[0].seconds_elapsed,
-            end: segmentData[segmentData.length - 1].seconds_elapsed,
-            concentricMax: concentricVels.length > 0 ? Math.max(...concentricVels) : 0,
-            eccentricMax: eccentricVels.length > 0 ? Math.max(...eccentricVels) : 0,
-        };
-    }
-
     function displayResults(repetitions) {
+        resultsContainer.style.display = repetitions.length > 0 ? 'block' : 'none';
         resultsBody.innerHTML = '';
         repetitions.forEach((rep, index) => {
             const row = document.createElement('tr');
@@ -169,82 +153,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${index + 1}</td>
                 <td>${rep.start.toFixed(2)}</td>
                 <td>${rep.end.toFixed(2)}</td>
-                <td>${(rep.end - rep.start).toFixed(2)}</td>
-                <td>${rep.concentricMax.toFixed(2)}</td>
-                <td>${rep.eccentricMax.toFixed(2)}</td>
+                <td>${(rep.rotationMax || 0).toFixed(2)}</td>
+                <td>${(rep.rotationAvg || 0).toFixed(2)}</td>
+                <td>${(rep.accelerationMax || 0).toFixed(2)}</td>
+                <td>${(rep.accelerationAvg || 0).toFixed(2)}</td>
             `;
             resultsBody.appendChild(row);
-        });
-    }
-
-    function updateChart(data, params, repetitions) {
-        if (chartInstance) {
-            chartInstance.destroy();
-        }
-
-        const labels = data.map(p => p.seconds_elapsed);
-        const peakData = data.map(p => p[params.peakColumn]);
-        
-        // Crear bandas de fondo para cada repetición detectada
-        const backgroundColors = [];
-        if(repetitions.length > 0) {
-            const colors = ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)'];
-            repetitions.forEach((rep, i) => {
-                backgroundColors.push({
-                    type: 'box',
-                    xMin: rep.start,
-                    xMax: rep.end,
-                    yMin: -Infinity,
-                    yMax: Infinity,
-                    backgroundColor: colors[i % 2],
-                    borderColor: 'transparent'
-                });
-            });
-        }
-
-        chartInstance = new Chart(chartCanvas, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: params.peakColumn,
-                    data: peakData,
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1,
-                    pointRadius: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        type: 'linear',
-                        title: {
-                            display: true,
-                            text: 'Segundos Transcurridos'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Valor del Sensor (rad/s)'
-                        }
-                    }
-                },
-                plugins: {
-                    annotation: {
-                        annotations: backgroundColors
-                    },
-                    legend: {
-                        display: true
-                    },
-                    title: {
-                        display: true,
-                        text: 'Visualización de Datos del Sensor'
-                    }
-                }
-            }
         });
     }
 });
