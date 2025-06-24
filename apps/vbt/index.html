@@ -1,294 +1,349 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Análisis con Corrección de Drift Avanzada</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        #message-box { transition: opacity 0.3s ease-in-out; }
-        input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 8px; background: #ddd; border-radius: 5px; outline: none; opacity: 0.7; transition: opacity .2s; }
-        input[type="range"]:hover { opacity: 1; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: #3b82f6; border-radius: 50%; cursor: pointer; }
-        input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; background: #3b82f6; border-radius: 50%; cursor: pointer; }
-    </style>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Análisis de Movimiento con Métricas Completas</title>
+   <script src="https://cdn.tailwindcss.com"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+   <style>
+       body { font-family: 'Inter', sans-serif; }
+       #message-box { transition: opacity 0.3s ease-in-out; }
+       input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 8px; background: #ddd; border-radius: 5px; outline: none; opacity: 0.7; transition: opacity .2s; }
+       input[type="range"]:hover { opacity: 1; }
+       input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: #3b82f6; border-radius: 50%; cursor: pointer; }
+       input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; background: #3b82f6; border-radius: 50%; cursor: pointer; }
+   </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
 
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
-        <header class="text-center mb-8">
-            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">Análisis Comparativo de Velocidad y Desplazamiento</h1>
-            <p class="mt-2 text-lg text-gray-600">Ajusta los parámetros para clasificar los movimientos en tiempo real.</p>
-        </header>
+   <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+       <header class="text-center mb-8">
+           <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">Análisis Comparativo de Velocidad y Desplazamiento</h1>
+           <p class="mt-2 text-lg text-gray-600">Ajusta los parámetros para clasificar los movimientos en tiempo real.</p>
+       </header>
 
-        <main>
-            <!-- File Upload Section -->
-            <div id="upload-container" class="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-md border border-gray-200 text-center mb-8">
-                <label for="csv-file" class="cursor-pointer block">
-                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 hover:border-blue-500 transition-colors">
-                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                        <span class="mt-2 block text-sm font-medium text-gray-900">Haz clic para seleccionar un archivo</span>
-                    </div>
-                </label>
-                <input type="file" id="csv-file" class="hidden" accept=".csv">
-                <p id="file-name" class="mt-4 text-sm text-gray-600"></p>
-            </div>
-            
-            <!-- Controls Section -->
-            <div id="controls-container" class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md border border-gray-200 mb-8 hidden">
-                <h2 class="text-xl font-semibold mb-4 text-center">Parámetros de Detección</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
-                    <div>
-                        <label for="window-slider" class="block text-sm font-medium text-gray-700">Tamaño Ventana (s): <span id="window-value" class="font-bold text-blue-600">0.20</span></label>
-                        <input type="range" id="window-slider" min="0.05" max="0.4" step="0.01" value="0.2" class="mt-2">
-                    </div>
-                    <div>
-                        <label for="threshold-slider" class="block text-sm font-medium text-gray-700">Umbral Desv. Estándar: <span id="threshold-value" class="font-bold text-blue-600">0.022</span></label>
-                        <input type="range" id="threshold-slider" min="0.005" max="0.05" step="0.001" value="0.022" class="mt-2">
-                    </div>
+       <main>
+           <!-- File Upload Section -->
+           <div id="upload-container" class="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-md border border-gray-200 text-center mb-8">
+               <label for="csv-file" class="cursor-pointer block">
+                   <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 hover:border-blue-500 transition-colors">
+                       <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                       <span class="mt-2 block text-sm font-medium text-gray-900">Haz clic para seleccionar un archivo</span>
+                   </div>
+               </label>
+               <input type="file" id="csv-file" class="hidden" accept=".csv">
+               <p id="file-name" class="mt-4 text-sm text-gray-600"></p>
+           </div>
+           
+           <!-- Controls Section -->
+           <div id="controls-container" class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md border border-gray-200 mb-8 hidden">
+               <h2 class="text-xl font-semibold mb-4 text-center">Parámetros de Detección</h2>
+               <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                   <div>
+                       <label for="window-slider" class="block text-sm font-medium text-gray-700">Tamaño Ventana (s): <span id="window-value" class="font-bold text-blue-600">0.20</span></label>
+                       <input type="range" id="window-slider" min="0.05" max="0.4" step="0.01" value="0.2" class="mt-2">
+                   </div>
+                   <div>
+                       <label for="threshold-slider" class="block text-sm font-medium text-gray-700">Umbral Desv. Estándar: <span id="threshold-value" class="font-bold text-blue-600">0.022</span></label>
+                       <input type="range" id="threshold-slider" min="0.005" max="0.05" step="0.001" value="0.022" class="mt-2">
+                   </div>
+               </div>
+               <div class="mt-4 pt-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8">
+                   <div class="flex items-center">
+                       <input id="advanced-correction-toggle" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                       <label for="advanced-correction-toggle" class="ml-2 block text-sm font-medium text-gray-900">Corrección de Drift Avanzada</label>
+                   </div>
+                   <div class="flex items-center">
+                       <input id="zero-crossing-toggle" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                       <label for="zero-crossing-toggle" class="ml-2 block text-sm font-medium text-gray-900">Dividir al cruzar el cero</label>
+                   </div>
+                   <div class="flex items-center">
+                       <input id="displacement-filter-toggle" type="checkbox" checked class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                       <label for="displacement-filter-toggle" class="ml-2 block text-sm font-medium text-gray-900">Descartar < 5 cm</label>
+                   </div>
+               </div>
+           </div>
+
+           <div id="loading" class="hidden text-center my-8"><p class="text-lg font-medium text-gray-700">Procesando datos...</p></div>
+           
+           <div id="charts-container" class="mt-2 grid grid-cols-1 lg:grid-cols-1 gap-8 hidden">
+               <div class="bg-white p-4 rounded-xl shadow-md border border-gray-200" style="height: 60vh;"><canvas id="chart-z-vel"></canvas></div>
+               <div class="bg-white p-4 rounded-xl shadow-md border border-gray-200" style="height: 60vh;"><canvas id="chart-z-accel"></canvas></div>
+           </div>
+
+           <div id="events-table-container" class="mt-8 max-w-full mx-auto bg-white p-6 rounded-xl shadow-md border border-gray-200 hidden">
+                <h2 class="text-xl font-semibold mb-4 text-center">Eventos Detectados</h2>
+                <div class="overflow-x-auto">
+                   <table class="min-w-full divide-y divide-gray-200">
+                       <thead class="bg-gray-50">
+                           <tr>
+                               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Inicio (s)</th>
+                               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fin (s)</th>
+                               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duración (s)</th>
+                               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Desplazamiento (m)</th>
+                               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vel. Prom. (m/s)</th>
+                               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vel. Máx. (m/s)</th>
+                           </tr>
+                       </thead>
+                       <tbody id="events-tbody" class="bg-white divide-y divide-gray-200"></tbody>
+                   </table>
                 </div>
-                <div class="mt-4 pt-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8">
-                    <div class="flex items-center">
-                        <input id="advanced-correction-toggle" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                        <label for="advanced-correction-toggle" class="ml-2 block text-sm font-medium text-gray-900">Corrección de Drift Avanzada</label>
-                    </div>
-                    <div class="flex items-center">
-                        <input id="zero-crossing-toggle" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                        <label for="zero-crossing-toggle" class="ml-2 block text-sm font-medium text-gray-900">Dividir al cruzar el cero</label>
-                    </div>
-                    <div class="flex items-center">
-                        <input id="displacement-filter-toggle" type="checkbox" checked class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                        <label for="displacement-filter-toggle" class="ml-2 block text-sm font-medium text-gray-900">Descartar &lt; 5 cm</label>
-                    </div>
-                </div>
-            </div>
+           </div>
+       </main>
+   </div>
 
-            <div id="loading" class="hidden text-center my-8"><p class="text-lg font-medium text-gray-700">Procesando datos...</p></div>
-            
-            <div id="charts-container" class="mt-2 grid grid-cols-1 lg:grid-cols-1 gap-8 hidden">
-                <div class="bg-white p-4 rounded-xl shadow-md border border-gray-200" style="height: 60vh;"><canvas id="chart-z-vel"></canvas></div>
-                <div class="bg-white p-4 rounded-xl shadow-md border border-gray-200" style="height: 60vh;"><canvas id="chart-z-accel"></canvas></div>
-            </div>
+   <script>
+       // --- Element Selection ---
+       const fileInput = document.getElementById('csv-file'),
+             fileNameDisplay = document.getElementById('file-name'),
+             loadingIndicator = document.getElementById('loading'),
+             chartsContainer = document.getElementById('charts-container'),
+             controlsContainer = document.getElementById('controls-container'),
+             eventsTableContainer = document.getElementById('events-table-container'),
+             eventsTbody = document.getElementById('events-tbody'),
+             windowSlider = document.getElementById('window-slider'),
+             windowValue = document.getElementById('window-value'),
+             thresholdSlider = document.getElementById('threshold-slider'),
+             thresholdValue = document.getElementById('threshold-value'),
+             advancedCorrectionToggle = document.getElementById('advanced-correction-toggle'),
+             zeroCrossingToggle = document.getElementById('zero-crossing-toggle'),
+             displacementFilterToggle = document.getElementById('displacement-filter-toggle');
+       
+       // --- Global State ---
+       let charts = {}, rawData = null;
+       const G_TO_MS2 = 9.80665;
+       const MIN_DISPLACEMENT = 0.05; // 5 cm
 
-            <div id="events-table-container" class="mt-8 max-w-5xl mx-auto bg-white p-6 rounded-xl shadow-md border border-gray-200 hidden">
-                 <h2 class="text-xl font-semibold mb-4 text-center">Eventos Detectados</h2>
-                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Inicio (s)</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fin (s)</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Desplazamiento 1 (m)</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Desplazamiento 2 (m)</th></tr></thead>
-                        <tbody id="events-tbody" class="bg-white divide-y divide-gray-200"></tbody>
-                    </table>
-                 </div>
-            </div>
-        </main>
-    </div>
+       // --- Event Listeners ---
+       fileInput.addEventListener('change', (e) => {
+           if (e.target.files.length) {
+               fileNameDisplay.textContent = `Archivo: ${e.target.files[0].name}`;
+               loadingIndicator.classList.remove('hidden');
+               [chartsContainer, controlsContainer, eventsTableContainer].forEach(el => el.classList.add('hidden'));
+               Object.values(charts).forEach(chart => chart.destroy());
+               parseCSV(e.target.files[0]);
+           }
+       });
 
-    <script>
-        const fileInput = document.getElementById('csv-file'),
-              fileNameDisplay = document.getElementById('file-name'),
-              loadingIndicator = document.getElementById('loading'),
-              chartsContainer = document.getElementById('charts-container'),
-              controlsContainer = document.getElementById('controls-container'),
-              eventsTableContainer = document.getElementById('events-table-container'),
-              eventsTbody = document.getElementById('events-tbody'),
-              windowSlider = document.getElementById('window-slider'),
-              windowValue = document.getElementById('window-value'),
-              thresholdSlider = document.getElementById('threshold-slider'),
-              thresholdValue = document.getElementById('threshold-value'),
-              advancedCorrectionToggle = document.getElementById('advanced-correction-toggle'),
-              zeroCrossingToggle = document.getElementById('zero-crossing-toggle'),
-              displacementFilterToggle = document.getElementById('displacement-filter-toggle');
-        
-        let charts = {}, rawData = null;
-        const G_TO_MS2 = 9.80665;
-        const MIN_DISPLACEMENT = 0.05;
+       [windowSlider, thresholdSlider, advancedCorrectionToggle, zeroCrossingToggle, displacementFilterToggle].forEach(el => {
+           el.addEventListener('input', () => {
+               if (el.type === 'range') {
+                   const displayEl = el.id === 'window-slider' ? windowValue : thresholdValue;
+                   displayEl.textContent = parseFloat(el.value).toFixed(el.step.length > 3 ? 3 : 2);
+               }
+               analyzeAndDraw();
+           });
+       });
 
-        // --- Event Listeners ---
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length) {
-                fileNameDisplay.textContent = `Archivo: ${e.target.files[0].name}`;
-                loadingIndicator.classList.remove('hidden');
-                [chartsContainer, controlsContainer, eventsTableContainer].forEach(el => el.classList.add('hidden'));
-                Object.values(charts).forEach(chart => chart.destroy());
-                parseCSV(e.target.files[0]);
-            }
-        });
+       // --- Data Processing ---
+       function parseCSV(file) {
+           Papa.parse(file, {
+               header: true,
+               skipEmptyLines: true,
+               transformHeader: h => h.trim(),
+               complete: r => {
+                   if (r.errors.length === 0) {
+                       processRawData(r.data);
+                   } else {
+                       console.error("Error al parsear CSV:", r.errors);
+                       loadingIndicator.classList.add('hidden');
+                       fileNameDisplay.textContent = "Error al leer el archivo.";
+                   }
+               }
+           });
+       }
+       
+       function processRawData(data) {
+           let processed = { times: [], worldAccelZ: [], velocityWithDrift: [] };
+           if (data.length === 0) return;
+           
+           const COL = {T: 'seconds_elapsed', AX: 'accelerationX', AY: 'accelerationY', AZ: 'accelerationZ', QW: 'quaternionW', QX: 'quaternionX', QY: 'quaternionY', QZ: 'quaternionZ'};
+           let velZ = 0;
+           let lastTime = parseFloat(data[0][COL.T]);
+           if (isNaN(lastTime)) {
+                console.error("La primera marca de tiempo no es válida.");
+                loadingIndicator.classList.add('hidden');
+                return;
+           }
 
-        [windowSlider, thresholdSlider, advancedCorrectionToggle, zeroCrossingToggle, displacementFilterToggle].forEach(el => {
-            el.addEventListener('input', () => {
-                if (el.type === 'range') {
-                    const displayEl = el.id === 'window-slider' ? windowValue : thresholdValue;
-                    displayEl.textContent = parseFloat(el.value).toFixed(el.step.length > 3 ? 3 : 2);
-                }
-                analyzeAndDraw();
-            });
-        });
+           data.forEach(row => {
+               const time = parseFloat(row[COL.T]), accelX = parseFloat(row[COL.AX]), quatW = parseFloat(row[COL.QW]);
+               if (isNaN(time) || isNaN(accelX) || isNaN(quatW)) return;
+               
+               const accelDevice = { x: accelX*G_TO_MS2, y: parseFloat(row[COL.AY])*G_TO_MS2, z: parseFloat(row[COL.AZ])*G_TO_MS2 };
+               const quat = { w: quatW, x: parseFloat(row[COL.QX]), y: parseFloat(row[COL.QY]), z: parseFloat(row[COL.QZ]) };
+               
+               const worldAccel = rotateVectorByQuaternion(accelDevice, quat);
+               const correctedWorldAccelZ = -worldAccel.z;
+               const dt = time - lastTime;
+               if(dt >= 0) velZ += correctedWorldAccelZ * dt;
+               
+               processed.times.push(time);
+               processed.worldAccelZ.push(correctedWorldAccelZ);
+               processed.velocityWithDrift.push(velZ);
+               lastTime = time;
+           });
+           
+           rawData = processed;
+           createZCharts();
+           analyzeAndDraw();
+           loadingIndicator.classList.add('hidden');
+           [chartsContainer, controlsContainer, eventsTableContainer].forEach(el => el.classList.remove('hidden'));
+       }
 
-        // --- Data Processing ---
-        function parseCSV(file) {
-            Papa.parse(file, { header: true, skipEmptyLines: true, transformHeader: h => h.trim(), complete: r => { if (r.errors.length === 0) processRawData(r.data); } });
-        }
-        
-        function processRawData(data) {
-            let processed = { times: [], worldAccelZ: [], velocityWithDrift: [] };
-            if (data.length === 0) return;
-            
-            const COL = {T: 'seconds_elapsed', AX: 'accelerationX', AY: 'accelerationY', AZ: 'accelerationZ', QW: 'quaternionW', QX: 'quaternionX', QY: 'quaternionY', QZ: 'quaternionZ'};
-            let velZ = 0;
-            let lastTime = parseFloat(data[0][COL.T]);
-            if (isNaN(lastTime)) return;
+       function analyzeAndDraw() {
+           if (!rawData) return;
+           
+           const { times, worldAccelZ, velocityWithDrift } = rawData;
+           const windowSizeSec = parseFloat(windowSlider.value), stdThreshold = parseFloat(thresholdSlider.value);
+           const useAdvancedCorrection = advancedCorrectionToggle.checked, useZeroCrossingRule = zeroCrossingToggle.checked, useDisplacementFilter = displacementFilterToggle.checked;
 
-            data.forEach(row => {
-                const time = parseFloat(row[COL.T]), accelX = parseFloat(row[COL.AX]), quatW = parseFloat(row[COL.QW]);
-                if (isNaN(time) || isNaN(accelX) || isNaN(quatW)) return;
-                const accelDevice = { x: accelX*G_TO_MS2, y: parseFloat(row[COL.AY])*G_TO_MS2, z: parseFloat(row[COL.AZ])*G_TO_MS2 };
-                const quat = { w: quatW, x: parseFloat(row[COL.QX]), y: parseFloat(row[COL.QY]), z: parseFloat(row[COL.QZ]) };
-                const worldAccel = rotateVectorByQuaternion(accelDevice, quat);
-                const correctedWorldAccelZ = -worldAccel.z;
-                const dt = time - lastTime;
-                if(dt >= 0) velZ += correctedWorldAccelZ * dt;
-                
-                processed.times.push(time);
-                processed.worldAccelZ.push(correctedWorldAccelZ);
-                processed.velocityWithDrift.push(velZ); 
-                lastTime = time;
-            });
-            
-            rawData = processed;
-            createZCharts();
-            analyzeAndDraw();
-            loadingIndicator.classList.add('hidden');
-            [chartsContainer, controlsContainer, eventsTableContainer].forEach(el => el.classList.remove('hidden'));
-        }
+           // 1. Detectar periodos de movimiento usando una ventana deslizante sobre la velocidad con drift.
+           const samplingFreq = (times.length > 1) ? (times.length - 1) / (times[times.length - 1] - times[0]) : 0;
+           const windowSizePoints = parseInt(windowSizeSec * samplingFreq);
+           let isInMotion = Array(times.length).fill(0);
+           for (let i = 0; i <= velocityWithDrift.length - windowSizePoints; i++) {
+               if (standardDeviation(velocityWithDrift.slice(i, i + windowSizePoints)) > stdThreshold) {
+                   for (let j = 0; j < windowSizePoints; j++) isInMotion[i + j] = 1;
+               }
+           }
+           
+           // 2. Encontrar "macro eventos" (bloques continuos de movimiento).
+           let macroEvents = [], currentEventStart = -1;
+           for (let i = 0; i < isInMotion.length; i++) {
+               if (isInMotion[i] === 1 && currentEventStart === -1) { currentEventStart = i; }
+               else if (isInMotion[i] === 0 && currentEventStart !== -1) { macroEvents.push({ start: currentEventStart, end: i }); currentEventStart = -1; }
+           }
+           if (currentEventStart !== -1) macroEvents.push({ start: currentEventStart, end: isInMotion.length });
 
-        function analyzeAndDraw() {
-            if (!rawData) return;
-            
-            const { times, worldAccelZ, velocityWithDrift } = rawData;
-            const windowSizeSec = parseFloat(windowSlider.value), stdThreshold = parseFloat(thresholdSlider.value);
-            const useAdvancedCorrection = advancedCorrectionToggle.checked, useZeroCrossingRule = zeroCrossingToggle.checked, useDisplacementFilter = displacementFilterToggle.checked;
+           // 3. Calcular la velocidad corregida para cada macro evento.
+           let correctedVelocity = Array(times.length).fill(0);
+           macroEvents.forEach(event => {
+               let eventVelocity;
+               if (useAdvancedCorrection) {
+                   // Corrección avanzada: integra y luego elimina la tendencia lineal del error.
+                   const accelSegment = worldAccelZ.slice(event.start, event.end);
+                   const timeSegment = times.slice(event.start, event.end);
+                   const velocityWithDrift = cumulativeTrapz(accelSegment, timeSegment);
+                   const driftError = velocityWithDrift[velocityWithDrift.length - 1] || 0;
+                   const ramp = Array.from({length: velocityWithDrift.length}, (_, i) => (driftError * i) / (velocityWithDrift.length - 1 || 1));
+                   eventVelocity = velocityWithDrift.map((v, i) => v - ramp[i]);
+               } else {
+                   // Corrección simple (ZUPT): integra desde cero para el segmento.
+                   eventVelocity = cumulativeTrapz(worldAccelZ.slice(event.start, event.end), times.slice(event.start, event.end));
+               }
+               // Colocar el segmento de velocidad calculado en el array principal.
+               for (let i = 0; i < eventVelocity.length; i++) {
+                   correctedVelocity[event.start + i] = eventVelocity[i];
+               }
+           });
 
-            // 1. Detect motion periods
-            const samplingFreq = (times.length > 1) ? (times.length - 1) / (times[times.length - 1] - times[0]) : 0;
-            const windowSizePoints = parseInt(windowSizeSec * samplingFreq);
-            let isInMotion = Array(times.length).fill(0);
-            for (let i = 0; i <= velocityWithDrift.length - windowSizePoints; i++) {
-                if (standardDeviation(velocityWithDrift.slice(i, i + windowSizePoints)) > stdThreshold) {
-                    for (let j = 0; j < windowSizePoints; j++) isInMotion[i + j] = 1;
-                }
-            }
-            
-            // 2. Find macro events (continuous motion blocks)
-            let macroEvents = [], currentEventStart = -1;
-            for (let i = 0; i < isInMotion.length; i++) {
-                if (isInMotion[i] === 1 && currentEventStart === -1) { currentEventStart = i; } 
-                else if (isInMotion[i] === 0 && currentEventStart !== -1) { macroEvents.push({ start: currentEventStart, end: i }); currentEventStart = -1; }
-            }
-            if (currentEventStart !== -1) macroEvents.push({ start: currentEventStart, end: isInMotion.length });
+           // 4. Segmentar en eventos finales (opcionalmente dividiendo en cruces por cero).
+           let finalEvents = [];
+           if (useZeroCrossingRule) {
+               macroEvents.forEach(event => {
+                   let currentStart = event.start;
+                   for (let i = event.start + 1; i < event.end; i++) {
+                       if (correctedVelocity[i-1] * correctedVelocity[i] < 0) { // Cruce por cero detectado
+                           finalEvents.push({ start: currentStart, end: i }); 
+                           currentStart = i; 
+                       }
+                   }
+                   finalEvents.push({ start: currentStart, end: event.end }); // Añadir el último segmento
+               });
+           } else { finalEvents = macroEvents; }
 
-            // 3. Calculate corrected velocity
-            let correctedVelocity = Array(times.length).fill(0);
-            macroEvents.forEach(event => {
-                let eventVelocity;
-                if (useAdvancedCorrection) {
-                    // Advanced Detrending
-                    const accelSegment = worldAccelZ.slice(event.start, event.end);
-                    const timeSegment = times.slice(event.start, event.end);
-                    const velocityWithDrift = cumulativeTrapz(accelSegment, timeSegment);
-                    const driftError = velocityWithDrift[velocityWithDrift.length - 1] || 0;
-                    const ramp = Array.from({length: velocityWithDrift.length}, (_, i) => (driftError * i) / (velocityWithDrift.length - 1 || 1));
-                    eventVelocity = velocityWithDrift.map((v, i) => v - ramp[i]);
-                } else {
-                    // Simple ZUPT (integrate from 0 for the segment)
-                    eventVelocity = cumulativeTrapz(worldAccelZ.slice(event.start, event.end), times.slice(event.start, event.end));
-                }
-                // Place the calculated velocity segment into the main array
-                for (let i = 0; i < eventVelocity.length; i++) {
-                    correctedVelocity[event.start + i] = eventVelocity[i];
-                }
-            });
+           // 5. Clasificar, filtrar y calcular métricas para los eventos finales.
+           const backgroundColors = Array(times.length).fill('rgba(0,0,0,0)');
+           let classifiedEvents = [];
+           finalEvents.forEach(event => {
+               if (event.start >= event.end -1) return;
 
-            // 4. Segment into final events (with optional zero-crossing rule)
-            let finalEvents = [];
-            if (useZeroCrossingRule) {
-                macroEvents.forEach(event => {
-                    let currentStart = event.start;
-                    for (let i = event.start + 1; i < event.end; i++) {
-                        if (correctedVelocity[i-1] * correctedVelocity[i] < 0) { finalEvents.push({ start: currentStart, end: i }); currentStart = i; }
-                    }
-                    finalEvents.push({ start: currentStart, end: event.end });
-                });
-            } else { finalEvents = macroEvents; }
+               const timeSegment = times.slice(event.start, event.end);
+               const velSegment = correctedVelocity.slice(event.start, event.end);
+               const displacement = trapezoidalIntegration(velSegment, timeSegment);
+               
+               if (useDisplacementFilter && Math.abs(displacement) < MIN_DISPLACEMENT) return;
 
-            // 5. Classify and filter events
-            const backgroundColors = Array(times.length).fill('rgba(0,0,0,0)');
-            let classifiedEvents = [];
-            finalEvents.forEach(event => {
-                if (event.start >= event.end) return;
+               const startTime = times[event.start];
+               const endTime = times[event.end - 1];
+               const duration = endTime - startTime;
+               if (duration <= 0) return;
 
-                const timeSegment = times.slice(event.start, event.end);
-                const velSegment1 = correctedVelocity.slice(event.start, event.end);
-                const displacement1 = trapezoidalIntegration(velSegment1, timeSegment);
-                
-                if (useDisplacementFilter && Math.abs(displacement1) < MIN_DISPLACEMENT) return;
+               const avgVelocity = displacement / duration;
+               const maxVelocity = velSegment.length > 0 ? Math.max(...velSegment.map(v => Math.abs(v))) : 0;
+               const type = displacement > 0 ? 'Subida' : 'Bajada';
+               const color = type === 'Subida' ? 'rgba(74, 222, 128, 0.3)' : 'rgba(248, 113, 113, 0.3)';
+               for(let i = event.start; i < event.end; i++) backgroundColors[i] = color;
+               
+               classifiedEvents.push({
+                   type,
+                   startTime,
+                   endTime,
+                   duration,
+                   displacement,
+                   avgVelocity,
+                   maxVelocity
+               });
+           });
+           
+           updateVelocityChart(correctedVelocity, backgroundColors);
+           displayEvents(classifiedEvents);
+       }
+       
+       // --- Charting and Display ---
+       function createZCharts() {
+           charts['z-accel'] = createChart('chart-z-accel', 'Aceleración Corregida - Eje Z', [{ label: 'Aceleración (m/s²)', data: rawData.worldAccelZ, borderColor: 'rgba(59, 130, 246, 1)', borderWidth: 2 }]);
+           charts['z-vel'] = createChart('chart-z-vel', 'Velocidad - Eje Z', [ { label: 'Velocidad Corregida (m/s)', data: [], borderColor: 'rgba(30, 64, 175, 1)', borderWidth: 2, fill: true }, { label: 'Velocidad Original (con drift)', data: rawData.velocityWithDrift, borderColor: 'rgba(150, 150, 150, 0.7)', borderDash: [5, 5], borderWidth: 1.5 }]);
+       }
 
-                const accelSegment = worldAccelZ.slice(event.start, event.end);
-                const velSegment2 = cumulativeTrapz(accelSegment, timeSegment);
-                const displacement2 = trapezoidalIntegration(velSegment2, timeSegment);
-                const type = displacement1 > 0 ? 'Subida' : 'Bajada';
-                const color = type === 'Subida' ? 'rgba(74, 222, 128, 0.3)' : 'rgba(248, 113, 113, 0.3)';
-                for(let i = event.start; i < event.end; i++) backgroundColors[i] = color;
-                
-                classifiedEvents.push({type, startTime: times[event.start], endTime: times[event.end - 1], displacement1, displacement2});
-            });
-            
-            updateVelocityChart(correctedVelocity, backgroundColors);
-            displayEvents(classifiedEvents);
-        }
-        
-        function createZCharts() {
-            charts['z-accel'] = createChart('chart-z-accel', 'Aceleración Corregida - Eje Z', [{ label: 'Aceleración (m/s²)', data: rawData.worldAccelZ, borderColor: 'rgba(59, 130, 246, 1)', borderWidth: 2 }]);
-            charts['z-vel'] = createChart('chart-z-vel', 'Velocidad - Eje Z', [ { label: 'Velocidad Corregida (m/s)', data: [], borderColor: 'rgba(30, 64, 175, 1)', borderWidth: 2, fill: true }, { label: 'Velocidad Original (con drift)', data: rawData.velocityWithDrift, borderColor: 'rgba(150, 150, 150, 0.7)', borderDash: [5, 5], borderWidth: 1.5 }]);
-        }
-
-        function updateVelocityChart(correctedVelocity, backgroundColors) {
-            const chart = charts['z-vel'];
-            if(chart) {
-                chart.data.labels = rawData.times.map(t => t.toFixed(2));
-                chart.data.datasets[0].data = correctedVelocity;
-                chart.data.datasets[0].backgroundColor = backgroundColors;
-                chart.update('none');
-            }
-        }
-        
-        function displayEvents(events) {
-            eventsTbody.innerHTML = '';
-            events.forEach(event => {
-                const row = document.createElement('tr');
-                const typeColor = event.type === 'Subida' ? 'text-green-600' : 'text-red-600';
-                row.innerHTML = `<td class="px-6 py-4 whitespace-nowrap text-sm font-semibold ${typeColor}">${event.type}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${event.startTime.toFixed(3)}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${event.endTime.toFixed(3)}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${event.displacement1.toFixed(4)}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${event.displacement2.toFixed(4)}</td>`;
-                eventsTbody.appendChild(row);
-            });
-        }
-        
-        const standardDeviation = (arr) => { if (arr.length < 2) return 0; const mean = arr.reduce((a, v) => a + v, 0) / arr.length; return Math.sqrt(arr.map(x => (x - mean) ** 2).reduce((a, b) => a + b) / arr.length); };
-        const trapezoidalIntegration = (y, x) => { let sum = 0; if (y.length < 2) return 0; for (let i = 0; i < y.length - 1; i++) sum += (y[i] + y[i + 1]) / 2 * (x[i + 1] - x[i]); return sum; };
-        const cumulativeTrapz = (y, x) => { let integral = [0]; let sum = 0; if (y.length < 2) return [0]; for (let i = 0; i < y.length - 1; i++) { sum += (y[i] + y[i + 1]) / 2 * (x[i + 1] - x[i]); integral.push(sum); } return integral; };
-        function rotateVectorByQuaternion(vec, q) { const p = { w: 0, x: vec.x, y: vec.y, z: vec.z }, qConj = { w: q.w, x: -q.x, y: -q.y, z: -q.z }; const qp = quaternionMultiply(q, p); return quaternionMultiply(qp, qConj); }
-        function quaternionMultiply(q1, q2) { return { w: q1.w*q2.w-q1.x*q2.x-q1.y*q2.y-q1.z*q2.z, x: q1.w*q2.x+q1.x*q2.w+q1.y*q2.z-q1.z*q2.y, y: q1.w*q2.y-q1.x*q2.z+q1.y*q2.w+q1.z*q2.x, z: q1.w*q2.z+q1.x*q2.y-q1.y*q2.x+q1.z*q2.w }; }
-        function createChart(canvasId, title, datasetsConfig) {
-            const ctx = document.getElementById(canvasId).getContext('2d');
-            const datasets = datasetsConfig.map(config => ({
-                label: config.label, data: config.data, borderColor: config.borderColor, backgroundColor: config.backgroundColor || 'rgba(0,0,0,0)',
-                borderWidth: config.borderWidth, pointRadius: 0, tension: 0.1, fill: config.fill || false, borderDash: config.borderDash || []
-            }));
-            return new Chart(ctx, { type: 'line', data: { labels: rawData ? rawData.times.map(t=>t.toFixed(2)) : [], datasets: datasets },
-                options: { responsive: true, maintainAspectRatio: false, animation: {duration:0}, plugins: {title:{display:true, text:title, font:{size:18}}, legend:{display:true, position: 'top'}}, interaction: {intersect:false, mode:'index'}, scales: {x:{title:{display:true, text:'Tiempo (s)'}, ticks:{maxTicksLimit:20, autoSkip:true, maxRotation:0}}, y:{title:{display:true, text:'Unidades SI'}}}
-            }});
-        }
-    </script>
+       function updateVelocityChart(correctedVelocity, backgroundColors) {
+           const chart = charts['z-vel'];
+           if(chart) {
+               chart.data.labels = rawData.times.map(t => t.toFixed(2));
+               chart.data.datasets[0].data = correctedVelocity;
+               chart.data.datasets[0].backgroundColor = backgroundColors;
+               chart.update('none');
+           }
+       }
+       
+       function displayEvents(events) {
+           eventsTbody.innerHTML = '';
+           events.forEach(event => {
+               const row = document.createElement('tr');
+               const typeColor = event.type === 'Subida' ? 'text-green-600' : 'text-red-600';
+               row.innerHTML = `
+                   <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold ${typeColor}">${event.type}</td>
+                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${event.startTime.toFixed(3)}</td>
+                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${event.endTime.toFixed(3)}</td>
+                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${event.duration.toFixed(3)}</td>
+                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${event.displacement.toFixed(4)}</td>
+                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${event.avgVelocity.toFixed(4)}</td>
+                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${event.maxVelocity.toFixed(4)}</td>`;
+               eventsTbody.appendChild(row);
+           });
+       }
+       
+       // --- Utility Functions ---
+       const standardDeviation = (arr) => { if (arr.length < 2) return 0; const mean = arr.reduce((a, v) => a + v, 0) / arr.length; return Math.sqrt(arr.map(x => (x - mean) ** 2).reduce((a, b) => a + b) / arr.length); };
+       const trapezoidalIntegration = (y, x) => { let sum = 0; if (y.length < 2) return 0; for (let i = 0; i < y.length - 1; i++) sum += (y[i] + y[i + 1]) / 2 * (x[i + 1] - x[i]); return sum; };
+       const cumulativeTrapz = (y, x) => { let integral = [0]; let sum = 0; if (y.length < 2) return [0]; for (let i = 0; i < y.length - 1; i++) { sum += (y[i] + y[i + 1]) / 2 * (x[i + 1] - x[i]); integral.push(sum); } return integral; };
+       function rotateVectorByQuaternion(vec, q) { const p = { w: 0, x: vec.x, y: vec.y, z: vec.z }, qConj = { w: q.w, x: -q.x, y: -q.y, z: -q.z }; const qp = quaternionMultiply(q, p); const res = quaternionMultiply(qp, qConj); return {x: res.x, y: res.y, z: res.z}; }
+       function quaternionMultiply(q1, q2) { return { w: q1.w*q2.w-q1.x*q2.x-q1.y*q2.y-q1.z*q2.z, x: q1.w*q2.x+q1.x*q2.w+q1.y*q2.z-q1.z*q2.y, y: q1.w*q2.y-q1.x*q2.z+q1.y*q2.w+q1.z*q2.x, z: q1.w*q2.z+q1.x*q2.y-q1.y*q2.x+q1.z*q2.w }; }
+       function createChart(canvasId, title, datasetsConfig) {
+           const ctx = document.getElementById(canvasId).getContext('2d');
+           const datasets = datasetsConfig.map(config => ({
+               label: config.label, data: config.data, borderColor: config.borderColor, backgroundColor: config.backgroundColor || 'rgba(0,0,0,0)',
+               borderWidth: config.borderWidth, pointRadius: 0, tension: 0.1, fill: config.fill || false, borderDash: config.borderDash || []
+           }));
+           return new Chart(ctx, { type: 'line', data: { labels: rawData ? rawData.times.map(t=>t.toFixed(2)) : [], datasets: datasets },
+               options: { responsive: true, maintainAspectRatio: false, animation: {duration:0}, plugins: {title:{display:true, text:title, font:{size:18}}, legend:{display:true, position: 'top'}}, interaction: {intersect:false, mode:'index'}, scales: {x:{title:{display:true, text:'Tiempo (s)'}, ticks:{maxTicksLimit:20, autoSkip:true, maxRotation:0}}, y:{title:{display:true, text:'Unidades SI'}}}
+           }});
+       }
+   </script>
 </body>
 </html>
