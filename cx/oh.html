@@ -1,0 +1,363 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Label } from 'recharts';
+
+// --- Funciones de Ayuda ---
+const formatCurrency = (value) => {
+  if (isNaN(value) || value === null) return '$0';
+  return new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: 'MXN',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value);
+};
+
+// Calcula el Valor Presente Neto (VPN) de un flujo de caja
+const calculateNPV = (cashflow, rate) => {
+  let npv = 0;
+  cashflow.forEach((cf, year) => {
+    npv += cf / Math.pow(1 + rate, year + 1);
+  });
+  return npv;
+};
+
+// Calcula el Costo Anual Equivalente (CAE)
+const calculateEAC = (npv, rate, n) => {
+  if (rate === 0) return n > 0 ? npv / n : 0;
+  if (n <= 0) return 0;
+  const numerator = rate * Math.pow(1 + rate, n);
+  const denominator = Math.pow(1 + rate, n) - 1;
+  if (denominator === 0) return 0;
+  return npv * (numerator / denominator);
+};
+
+
+// --- Componente Principal de la Aplicación ---
+export default function App() {
+  const [inputs, setInputs] = useState({
+    // Camión Nuevo
+    newTruckCost: 4000000,
+    newTruckLifespan: 10,
+    newTruckSalvage: 800000,
+    newTruckMaintBase: 100000,
+    newTruckMaintIncrease: 0.15, // 15%
+    
+    // Overhaul
+    overhaulCost: 1200000,
+    overhaulLifeExtension: 7,
+    overhaulSalvage: 300000,
+    overhaulMaintReduction: 0.5, // 50%
+    currentTruckAge: 5,
+    
+    // Parámetros Financieros y Operativos
+    discountRate: 0.12, // 12%
+    downtimeCostPerDay: 15000,
+    downtimeDaysBase: 3,
+    downtimeDaysIncrease: 1.2, // 1.2 días por año
+    analysisHorizon: 20,
+  });
+
+  const [results, setResults] = useState({
+    analysisTable: [],
+    recommendation: "",
+    eacNew: 0,
+    eacOverhaul: 0,
+    optimalOverhaulYear: 0,
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    // Permitir valores decimales para porcentajes
+    const parsedValue = (name.includes('Increase') || name.includes('Reduction') || name.includes('Rate')) 
+      ? parseFloat(value) 
+      : parseInt(value, 10);
+    setInputs(prev => ({ ...prev, [name]: isNaN(parsedValue) ? 0 : parsedValue }));
+  };
+
+  useEffect(() => {
+    // --- Lógica Central de Cálculo ---
+    const {
+        newTruckCost, newTruckLifespan, newTruckSalvage, newTruckMaintBase, newTruckMaintIncrease,
+        overhaulCost, overhaulLifeExtension, overhaulSalvage, overhaulMaintReduction, currentTruckAge,
+        discountRate, downtimeCostPerDay, downtimeDaysBase, downtimeDaysIncrease, analysisHorizon
+    } = inputs;
+
+    // --- Escenario 1: Análisis de Camión Nuevo ---
+    const newTruckAnnualCosts = [];
+    for (let i = 1; i <= newTruckLifespan; i++) {
+        const maintCost = newTruckMaintBase * Math.pow(1 + newTruckMaintIncrease, i - 1);
+        // Suponemos que un camión nuevo tiene menos tiempo de inactividad al principio
+        const downtimeCost = (downtimeDaysBase * (i/2)) * downtimeCostPerDay; 
+        newTruckAnnualCosts.push(maintCost + downtimeCost);
+    }
+    
+    const newTruckCashFlows = [-newTruckCost, ...newTruckAnnualCosts.map(c => -c)];
+    newTruckCashFlows[newTruckLifespan] += newTruckSalvage;
+    
+    const newTruckNPV = newTruckCashFlows.reduce((acc, val, i) => acc + val / Math.pow(1 + discountRate, i), 0);
+    const newTruckEAC = -calculateEAC(newTruckNPV, discountRate, newTruckLifespan);
+
+
+    // --- Escenario 2: Análisis de Mantener y Hacer Overhaul ---
+    let optimalOverhaulYear = -1;
+    let minEacOverhaul = Infinity;
+
+    // Iterar para encontrar el año óptimo para el overhaul
+    for (let yearOfOverhaul = currentTruckAge; yearOfOverhaul <= analysisHorizon - overhaulLifeExtension; yearOfOverhaul++) {
+        let currentCosts = [];
+        
+        // Costos antes del overhaul
+        for (let i = currentTruckAge; i < yearOfOverhaul; i++) {
+            const maintCost = newTruckMaintBase * Math.pow(1 + newTruckMaintIncrease, i);
+            const downtimeCost = (downtimeDaysBase + (downtimeDaysIncrease * i)) * downtimeCostPerDay;
+            currentCosts.push(-(maintCost + downtimeCost));
+        }
+
+        // Costo del overhaul
+        currentCosts.push(-overhaulCost);
+
+        // Costos después del overhaul
+        const baseMaintPostOverhaul = newTruckMaintBase * Math.pow(1 + newTruckMaintIncrease, yearOfOverhaul) * (1 - overhaulMaintReduction);
+        for (let i = 1; i <= overhaulLifeExtension; i++) {
+            const maintCost = baseMaintPostOverhaul * Math.pow(1 + newTruckMaintIncrease, i - 1);
+            const downtimeCost = (downtimeDaysBase + (downtimeDaysIncrease * i)) * downtimeCostPerDay * (1 - overhaulMaintReduction);
+            currentCosts.push(-(maintCost + downtimeCost));
+        }
+        
+        // Añadir valor de rescate al final
+        currentCosts[currentCosts.length - 1] += overhaulSalvage;
+
+        const npvThisOption = currentCosts.reduce((acc, val, i) => acc + val / Math.pow(1 + discountRate, i), 0);
+        const totalLife = (yearOfOverhaul - currentTruckAge) + overhaulLifeExtension;
+        const eacThisOption = -calculateEAC(npvThisOption, discountRate, totalLife);
+
+        if (eacThisOption < minEacOverhaul) {
+            minEacOverhaul = eacThisOption;
+            optimalOverhaulYear = yearOfOverhaul;
+        }
+    }
+
+
+    // --- Generar Datos para la Tabla Año por Año ---
+    const analysisData = [];
+    let cumulativeNpvNew = 0;
+    let cumulativeNpvKeep = 0;
+    let hasBeenOverhauled = false;
+    
+    for (let year = 1; year <= analysisHorizon; year++) {
+        const absoluteYear = currentTruckAge + year - 1;
+
+        // Cálculos para Camión Nuevo (para la tabla)
+        let costNewThisYear = 0;
+        if (year === 1) costNewThisYear += newTruckCost;
+        if (year <= newTruckLifespan) {
+           costNewThisYear += newTruckMaintBase * Math.pow(1 + newTruckMaintIncrease, year - 1);
+           costNewThisYear += (downtimeDaysBase * (year/2)) * downtimeCostPerDay;
+        }
+        if (year === newTruckLifespan) costNewThisYear -= newTruckSalvage;
+        const npvNewThisYear = costNewThisYear / Math.pow(1 + discountRate, year);
+        cumulativeNpvNew += npvNewThisYear;
+
+        // Cálculos para Mantener Camión (para la tabla)
+        let costKeepThisYear = 0;
+        if (absoluteYear === optimalOverhaulYear && !hasBeenOverhauled) {
+            costKeepThisYear += overhaulCost;
+            hasBeenOverhauled = true;
+        }
+
+        if (!hasBeenOverhauled) {
+             costKeepThisYear += newTruckMaintBase * Math.pow(1 + newTruckMaintIncrease, absoluteYear);
+             costKeepThisYear += (downtimeDaysBase + (downtimeDaysIncrease * absoluteYear)) * downtimeCostPerDay;
+        } else {
+            const yearsSinceOverhaul = absoluteYear - optimalOverhaulYear + 1;
+            if (yearsSinceOverhaul > 0 && yearsSinceOverhaul <= overhaulLifeExtension) {
+                const baseMaintPostOverhaul = newTruckMaintBase * Math.pow(1 + newTruckMaintIncrease, optimalOverhaulYear) * (1 - overhaulMaintReduction);
+                costKeepThisYear += baseMaintPostOverhaul * Math.pow(1 + newTruckMaintIncrease, yearsSinceOverhaul - 1);
+                costKeepThisYear += (downtimeDaysBase + (downtimeDaysIncrease * yearsSinceOverhaul)) * downtimeCostPerDay * (1 - overhaulMaintReduction);
+            }
+        }
+        
+        if (hasBeenOverhauled && (absoluteYear - optimalOverhaulYear + 1) === overhaulLifeExtension) {
+            costKeepThisYear -= overhaulSalvage;
+        }
+
+        const npvKeepThisYear = costKeepThisYear / Math.pow(1 + discountRate, year);
+        cumulativeNpvKeep += npvKeepThisYear;
+
+        analysisData.push({
+            yearLabel: `Año ${year} (Abs. ${absoluteYear})`,
+            costNew: year > newTruckLifespan ? 0 : costNewThisYear,
+            costKeep: costKeepThisYear,
+            cumulativeNpvNew,
+            cumulativeNpvKeep,
+        });
+    }
+
+    // --- Generar Recomendación ---
+    let recommendationText = `Basado en el Costo Anual Equivalente (CAE), la opción más económica es `;
+    if (newTruckEAC < minEacOverhaul) {
+        recommendationText += `comprar un camión nuevo.`;
+    } else {
+        recommendationText += `realizar un overhaul. El año óptimo para el overhaul es al final del año ${optimalOverhaulYear} de antigüedad del camión.`;
+    }
+    const crossoverData = analysisData.find(d => d.cumulativeNpvKeep > d.cumulativeNpvNew);
+    if(crossoverData) {
+        recommendationText += ` El costo acumulado de mantener el camión supera al de comprar uno nuevo en el ${crossoverData.yearLabel}.`
+    }
+
+
+    setResults({
+        analysisTable: analysisData,
+        recommendation: recommendationText,
+        eacNew: newTruckEAC,
+        eacOverhaul: minEacOverhaul,
+        optimalOverhaulYear
+    });
+
+  }, [inputs]);
+  
+  const inputFields = [
+      { category: 'Datos del Camión Nuevo', fields: [
+          { name: 'newTruckCost', label: 'Costo de Adquisición ($)' },
+          { name: 'newTruckLifespan', label: 'Vida Útil Estimada (Años)' },
+          { name: 'newTruckSalvage', label: 'Valor de Rescate ($)' },
+          { name: 'newTruckMaintBase', label: 'Mantenimiento Base Anual ($)' },
+          { name: 'newTruckMaintIncrease', label: 'Incremento Anual Mantenimiento (%)', step: 0.01 },
+      ]},
+      { category: 'Datos del Overhaul', fields: [
+          { name: 'overhaulCost', label: 'Costo Total del Overhaul ($)' },
+          { name: 'overhaulLifeExtension', label: 'Extensión de Vida Útil (Años)' },
+          { name: 'overhaulSalvage', label: 'Valor de Rescate Post-Overhaul ($)' },
+          { name: 'overhaulMaintReduction', label: 'Reducción Mantenimiento Post-Overhaul (%)', step: 0.01 },
+          { name: 'currentTruckAge', label: 'Antigüedad Actual del Camión (Años)' },
+      ]},
+      { category: 'Parámetros Financieros y Operativos', fields: [
+          { name: 'discountRate', label: 'Tasa de Descuento / Costo de Oportunidad (%)', step: 0.01 },
+          { name: 'downtimeCostPerDay', label: 'Costo por Día de Inactividad ($)' },
+          { name: 'downtimeDaysBase', label: 'Días Inactividad Base (por año)' },
+          { name: 'downtimeDaysIncrease', label: 'Incr. Días Inactividad (por año)', step: 0.1 },
+          { name: 'analysisHorizon', label: 'Horizonte de Análisis (Años)' },
+      ]},
+  ];
+
+  return (
+    <div className="bg-slate-100 min-h-screen font-sans p-4 sm:p-6 lg:p-8">
+      <div className="max-w-screen-xl mx-auto">
+        <header className="mb-8 text-center">
+          <h1 className="text-3xl sm:text-4xl font-bold text-slate-800">Análisis Económico: Comprar vs. Overhaul</h1>
+          <p className="text-slate-600 mt-2 text-lg">Herramienta interactiva para la toma de decisiones de inversión en activos de transporte.</p>
+        </header>
+
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+          {/* --- Panel de Entradas --- */}
+          <div className="xl:col-span-1 flex flex-col gap-6">
+            {inputFields.map(category => (
+                <div key={category.category} className="bg-white p-6 rounded-xl shadow-md">
+                    <h2 className="text-xl font-bold text-slate-700 border-b pb-2 mb-4">{category.category}</h2>
+                    <div className="space-y-4">
+                        {category.fields.map(field => (
+                            <div key={field.name}>
+                                <label htmlFor={field.name} className="block text-sm font-medium text-slate-600">{field.label}</label>
+                                <input
+                                    type="number"
+                                    id={field.name}
+                                    name={field.name}
+                                    value={inputs[field.name]}
+                                    onChange={handleInputChange}
+                                    step={field.step || 1}
+                                    className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
+          </div>
+
+          {/* --- Panel de Resultados --- */}
+          <div className="xl:col-span-3 flex flex-col gap-8">
+            {/* Resumen Ejecutivo */}
+            <div className="bg-white p-6 rounded-xl shadow-lg border-l-4 border-indigo-500">
+                <h2 className="text-2xl font-bold text-slate-800">Resumen Ejecutivo</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-center">
+                    <div className="bg-indigo-50 p-4 rounded-lg">
+                        <h3 className="text-sm font-semibold text-indigo-800">CAE Camión Nuevo</h3>
+                        <p className="text-2xl font-bold text-indigo-600">{formatCurrency(results.eacNew)}</p>
+                    </div>
+                    <div className="bg-teal-50 p-4 rounded-lg">
+                        <h3 className="text-sm font-semibold text-teal-800">CAE Opción Overhaul</h3>
+                        <p className="text-2xl font-bold text-teal-600">{formatCurrency(results.eacOverhaul)}</p>
+                    </div>
+                </div>
+                <p className="mt-5 text-slate-700 bg-slate-50 p-4 rounded-md text-center font-medium">{results.recommendation}</p>
+            </div>
+
+            {/* Gráficas */}
+            <div className="bg-white p-6 rounded-xl shadow-md">
+                <h2 className="text-xl font-bold text-slate-700 mb-6">Visualización de Costos</h2>
+                <div className="h-96 mb-8">
+                    <h3 className="text-center font-semibold text-slate-600 mb-2">Costo Acumulado (Valor Presente Neto)</h3>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={results.analysisTable} margin={{ top: 5, right: 20, left: 40, bottom: 20 }}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="yearLabel" angle={-20} textAnchor="end" height={50} />
+                            <YAxis tickFormatter={formatCurrency}>
+                                <Label value="Costo Acumulado (VPN)" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} offset={-25} />
+                            </YAxis>
+                            <Tooltip formatter={(value) => formatCurrency(value)} />
+                            <Legend verticalAlign="top" />
+                            <Line type="monotone" dataKey="cumulativeNpvNew" name="Comprar Nuevo" stroke="#4f46e5" strokeWidth={3} dot={false} />
+                            <Line type="monotone" dataKey="cumulativeNpvKeep" name="Mantener/Overhaul" stroke="#14b8a6" strokeWidth={3} dot={false} />
+                        </LineChart>
+                    </ResponsiveContainer>
+                </div>
+                 <div className="h-96">
+                     <h3 className="text-center font-semibold text-slate-600 mb-2">Costo Anual (Flujo de Caja)</h3>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={results.analysisTable} margin={{ top: 5, right: 20, left: 40, bottom: 20 }}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="yearLabel" angle={-20} textAnchor="end" height={50} />
+                            <YAxis tickFormatter={formatCurrency} />
+                            <Tooltip formatter={(value) => formatCurrency(value)} />
+                            <Legend verticalAlign="top" />
+                            <Bar dataKey="costNew" name="Comprar Nuevo" fill="#818cf8" />
+                            <Bar dataKey="costKeep" name="Mantener/Overhaul" fill="#5eead4" />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+            </div>
+            
+            {/* Tabla Detallada */}
+            <div className="bg-white p-6 rounded-xl shadow-md">
+                <h2 className="text-xl font-bold text-slate-700 mb-4">Tabla de Análisis Detallado</h2>
+                <div className="overflow-x-auto max-h-96">
+                    <table className="w-full text-sm text-left text-slate-500">
+                        <thead className="text-xs text-slate-700 uppercase bg-slate-50 sticky top-0">
+                            <tr>
+                                <th scope="col" className="px-6 py-3">Año</th>
+                                <th scope="col" className="px-6 py-3">Costo Anual (Nuevo)</th>
+                                <th scope="col" className="px-6 py-3">Costo Anual (Mantener)</th>
+                                <th scope="col" className="px-6 py-3">VPN Acum. (Nuevo)</th>
+                                <th scope="col" className="px-6 py-3">VPN Acum. (Mantener)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {results.analysisTable.map((row, index) => (
+                                <tr key={index} className="bg-white border-b hover:bg-slate-50">
+                                    <th scope="row" className="px-6 py-4 font-medium text-slate-900 whitespace-nowrap">{row.yearLabel}</th>
+                                    <td className="px-6 py-4">{formatCurrency(row.costNew)}</td>
+                                    <td className="px-6 py-4">{formatCurrency(row.costKeep)}</td>
+                                    <td className="px-6 py-4 font-semibold text-indigo-700">{formatCurrency(row.cumulativeNpvNew)}</td>
+                                    <td className="px-6 py-4 font-semibold text-teal-700">{formatCurrency(row.cumulativeNpvKeep)}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
