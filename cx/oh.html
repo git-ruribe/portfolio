@@ -52,7 +52,6 @@
                          <div class="space-y-4">
                             <p class="text-sm font-bold text-gray-700">Parámetros del Activo Nuevo</p>
                             <div><label for="newAssetCost" class="block text-sm font-medium text-slate-600">Costo de Adquisición (USD)</label><input type="number" id="newAssetCost" value="120000" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"></div>
-                            <div><label for="newAssetSalvage" class="block text-sm font-medium text-slate-600">Valor de Rescate (al final de vida útil)</label><input type="number" id="newAssetSalvage" value="25000" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"></div>
                             <hr/>
                             <p class="text-sm font-bold text-teal-700">Estrategia de Overhaul</p>
                             <div><label for="overhaulDecisionYears" class="block text-sm font-medium text-slate-600">Años de uso antes del 1er Overhaul</label><input type="number" id="overhaulDecisionYears" value="7" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm"></div>
@@ -62,9 +61,11 @@
                              <hr/>
                              <p class="text-sm font-bold text-indigo-700">Estrategia de Reemplazo Acelerado</p>
                              <div><label for="replaceDecisionYears" class="block text-sm font-medium text-slate-600">Años de uso antes de Reemplazar</label><input type="number" id="replaceDecisionYears" value="7" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></div>
+                             <div><label for="replaceSalvageValue" class="block text-sm font-medium text-slate-600">Valor de Rescate (Acelerado)</label><input type="number" id="replaceSalvageValue" value="40000" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></div>
                              <hr/>
                              <p class="text-sm font-bold text-orange-700">Estrategia de Reemplazo Estándar</p>
                              <div><label for="standardLifeYears" class="block text-sm font-medium text-slate-600">Años de uso antes de Reemplazar</label><input type="number" id="standardLifeYears" value="10" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"></div>
+                             <div><label for="standardSalvageValue" class="block text-sm font-medium text-slate-600">Valor de Rescate (Estándar)</label><input type="number" id="standardSalvageValue" value="25000" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"></div>
                              <hr/>
                              <p class="text-sm font-bold text-gray-700">Parámetros Globales</p>
                              <div><label for="discountRate" class="block text-sm font-medium text-slate-600">Tasa de Descuento Anual (%)</label><input type="number" id="discountRate" value="12" step="0.1" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"></div>
@@ -123,16 +124,14 @@
         document.addEventListener('DOMContentLoaded', () => {
             let cumulativeChartInstance = null;
             let annualChartInstance = null;
-            const LS_KEY = 'assetAnalysisState_v1';
+            const LS_KEY = 'assetAnalysisState_v2'; // Changed key to avoid conflicts
 
             // --- LOCAL STORAGE FUNCTIONS ---
             function saveState() {
                 const state = {};
-                // Save simple inputs
                 document.querySelectorAll('#inputs-panel input[type="number"]').forEach(input => {
                     state[input.id] = input.value;
                 });
-                // Save dynamic table inputs
                 state.annualNewMaint = Array.from(document.querySelectorAll('.annual-maint-new')).map(el => el.value);
                 state.annualNewDowntime = Array.from(document.querySelectorAll('.annual-downtime-new')).map(el => el.value);
                 state.annualOverhaulMaint = Array.from(document.querySelectorAll('.annual-maint-overhaul')).map(el => el.value);
@@ -146,14 +145,13 @@
                 if (!savedState) return null;
                 
                 const state = JSON.parse(savedState);
-                // Load simple inputs
                 for (const [key, value] of Object.entries(state)) {
                     const input = document.getElementById(key);
                     if (input) {
                         input.value = value;
                     }
                 }
-                return state; // Return full state for table rendering
+                return state;
             }
 
 
@@ -182,10 +180,8 @@
                     for (let i = 1; i <= horizon + buffer; i++) {
                         const savedMaintValue = config.savedMaint?.[i-1];
                         const savedDowntimeValue = config.savedDowntime?.[i-1];
-
                         const maint = savedMaintValue !== undefined ? savedMaintValue : config.defaultMaint * Math.pow(config.maintFactor, i - 1);
                         const downtime = savedDowntimeValue !== undefined ? savedDowntimeValue : config.defaultDowntime + (i * config.downtimeFactor);
-                        
                         html += `<tr><td>${i}</td><td><input type="number" class="annual-maint-${config.classPrefix}" value="${Math.round(maint)}"></td><td><input type="number" step="0.1" class="annual-downtime-${config.classPrefix}" value="${parseFloat(downtime).toFixed(1)}"></td></tr>`;
                     }
                     html += `</tbody></table>`;
@@ -201,7 +197,7 @@
             }
             
             function calculateStrategyCashFlows(inputs, annualCosts) {
-                const { analysisHorizon, downtimeCostPerDay, newAssetCost, newAssetSalvage, overhaulCost, overhaulSalvage } = inputs;
+                const { analysisHorizon, downtimeCostPerDay, newAssetCost, overhaulCost, overhaulSalvage } = inputs;
                 const { newMaint, newDowntime, overhaulMaint, overhaulDowntime } = annualCosts;
 
                 const calcFlows = (cycleConfig) => {
@@ -211,7 +207,6 @@
                     let assetState = 'NEW'; // NEW, OVERHAULED
 
                     for (let year = 1; year <= analysisHorizon; year++) {
-                        // Determine op cost based on state
                         if (assetState === 'NEW') {
                             cashFlows[year] -= getOpCost(newMaint, newDowntime, yearInCycle, downtimeCostPerDay);
                         } else { // OVERHAULED
@@ -219,14 +214,13 @@
                         }
                         yearInCycle++;
 
-                        // Check for end-of-cycle event
                         if (assetState === 'NEW' && yearInCycle === cycleConfig.yearsAsNew) {
                             if (cycleConfig.action === 'OVERHAUL') {
                                 cashFlows[year] -= overhaulCost;
                                 assetState = 'OVERHAULED';
                                 yearInCycle = 0;
                             } else { // REPLACE
-                                cashFlows[year] += newAssetSalvage; 
+                                cashFlows[year] += cycleConfig.salvageValue;
                                 cashFlows[year] -= newAssetCost;
                                 yearInCycle = 0;
                             }
@@ -248,12 +242,14 @@
 
                 const acceleratedReplaceFlows = calcFlows({
                     yearsAsNew: inputs.replaceDecisionYears,
-                    action: 'REPLACE'
+                    action: 'REPLACE',
+                    salvageValue: inputs.replaceSalvageValue
                 });
 
                 const standardReplaceFlows = calcFlows({
                     yearsAsNew: inputs.standardLifeYears,
-                    action: 'REPLACE'
+                    action: 'REPLACE',
+                    salvageValue: inputs.standardSalvageValue
                 });
 
                 return { overhaulStrategyFlows, acceleratedReplaceFlows, standardReplaceFlows };
@@ -262,13 +258,14 @@
             function runAnalysis() {
                 const inputs = {
                     newAssetCost: parseFloat(document.getElementById('newAssetCost').value) || 0,
-                    newAssetSalvage: parseFloat(document.getElementById('newAssetSalvage').value) || 0,
                     overhaulDecisionYears: parseInt(document.getElementById('overhaulDecisionYears').value) || 1,
                     replaceDecisionYears: parseInt(document.getElementById('replaceDecisionYears').value) || 1,
                     standardLifeYears: parseInt(document.getElementById('standardLifeYears').value) || 1,
                     overhaulCost: parseFloat(document.getElementById('overhaulCost').value) || 0,
                     overhaulLifeExtension: parseInt(document.getElementById('overhaulLifeExtension').value) || 1,
                     overhaulSalvage: parseFloat(document.getElementById('overhaulSalvage').value) || 0,
+                    replaceSalvageValue: parseFloat(document.getElementById('replaceSalvageValue').value) || 0,
+                    standardSalvageValue: parseFloat(document.getElementById('standardSalvageValue').value) || 0,
                     discountRate: (parseFloat(document.getElementById('discountRate').value) || 0) / 100,
                     downtimeCostPerDay: parseFloat(document.getElementById('downtimeCostPerDay').value) || 0,
                     analysisHorizon: parseInt(document.getElementById('analysisHorizon').value) || 1,
@@ -354,11 +351,6 @@
                 runAnalysis();
                 saveState();
             });
-            document.getElementById('analysisHorizon').addEventListener('change', () => { 
-                // We don't need to re-render tables on horizon change anymore, just re-analyze.
-                runAnalysis();
-                saveState();
-             });
         });
     </script>
 
