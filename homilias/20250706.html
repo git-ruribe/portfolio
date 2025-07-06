@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflexionando la Misión y la Verdadera Alegría</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff; /* bg-sky-50 */
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 1rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem; /* p-6 */
+            margin-bottom: 1.5rem; /* mb-6 */
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .gradient-text {
+            background-image: linear-gradient(to right, #0ea5e9, #4f46e5); /* from-sky-500 to-indigo-600 */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header-icon {
+            color: #0ea5e9; /* text-sky-500 */
+        }
+        .question-option {
+            display: block;
+            background-color: #f8fafc; /* bg-slate-50 */
+            padding: 0.75rem 1rem; /* py-3 px-4 */
+            border-radius: 0.5rem; /* rounded-lg */
+            border: 1px solid #e2e8f0; /* border-slate-200 */
+            margin-bottom: 0.75rem; /* mb-3 */
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            font-weight: 500;
+            color: #334155; /* text-slate-800 */
+        }
+        .question-option:hover {
+            background-color: #e0f2fe; /* bg-sky-100 */
+            border-color: #7dd3fc; /* border-sky-300 */
+        }
+        .question-option.selected {
+            background-color: #bfdbfe; /* bg-blue-200 */
+            border-color: #60a5fa; /* border-blue-400 */
+        }
+        .question-option.correct {
+            background-color: #d1fae5; /* bg-emerald-100 */
+            border-color: #34d399; /* border-emerald-400 */
+        }
+        .question-option.incorrect {
+            background-color: #fee2e2; /* bg-red-100 */
+            border-color: #f87171; /* border-red-400 */
+        }
+        .quiz-button {
+            background-color: #10b981; /* bg-emerald-500 */
+            color: white;
+            padding: 0.75rem 1.5rem; /* py-3 px-6 */
+            border-radius: 0.5rem; /* rounded-lg */
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        .quiz-button:hover {
+            background-color: #059669; /* bg-emerald-600 */
+        }
+        .quiz-button:disabled {
+            background-color: #6ee7b7; /* bg-emerald-300 */
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <header class="text-center mb-10 animation-delay-0">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4 header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+        </svg>
+        <h1 class="text-3xl md:text-4xl font-bold gradient-text mb-2">Reflexionando la Misión y la Verdadera Alegría</h1>
+        <p class="text-lg text-gray-600">Reflexionando el Evangelio y la Homilía del 7 de Julio de 2025</p>
+    </header>
+
+    <main class="max-w-4xl mx-auto">
+
+        <section id="evangelio" class="card" style="animation-delay: 0.2s;">
+            <h2 class="text-2xl font-semibold mb-4 text-sky-700">Evangelio según San Lucas (Lc 10, 1-12. 17-20)</h2>
+            <blockquote class="border-l-4 border-sky-500 pl-4 italic text-gray-700 space-y-2">
+                <p>En aquel tiempo, Jesús designó a otros 72 discípulos y los mandó por delante de dos en dos a todos los pueblos y lugares a donde pensaba ir y les dijo:</p>
+                <p>"La cosecha es mucha y los trabajadores pocos. Rueguen, por lo tanto, al dueño de la mies que envíe trabajadores a sus campos. Pónganse en camino. Yo los envío como corderos en medio de lobos. No lleven ni dinero, ni morral, ni sandalias y no se detengan a saludar a nadie por el camino.</p>
+                <p>Cuando entren en una casa digan que la paz reine en esta casa y si ahí hay gente amante de la paz, el deseo de paz de ustedes se cumplirá. Si no, no se cumplirá. Quédense en esa casa. Coman y beban de lo que tengan porque el trabajador tiene derecho a su salario. No anden de casa en casa. En cualquier ciudad donde entren y los reciban, coman lo que les den. Curen a los enfermos que haya y díganles, ‘Ya se acerca a ustedes el reino de Dios.’</p>
+                <p>Pero si entran en una ciudad y no los reciben, salgan por las calles y digan: ‘Hasta el polvo de esta ciudad que se nos ha pegado a los pies, nos lo sacudimos en señal de protesta contra ustedes. De todos modos sepan que el reino de Dios está cerca.’ Yo les digo que en el día del juicio, Sodoma será tratada con menos rigor que esa ciudad.</p>
+                <p>Los 72 discípulos regresaron llenos de alegría y le dijeron a Jesús: ‘Señor, hasta los demonios se nos someten en tu nombre.’ Él les contestó: ‘Vi a Satanás caer del cielo como el rayo. A ustedes les he dado el poder para aplastar serpientes y escorpiones y para vencer toda la fuerza del enemigo y nada les podrá hacer daño. Pero no se alegren de que los demonios se les sometan. Alégrense más bien de que sus nombres están escritos en el cielo.’</p>
+            </blockquote>
+            <p class="text-right mt-4 text-gray-800 font-medium">Palabra del Señor. Gloria a ti, Señor Jesús.</p>
+        </section>
+
+        <section id="homilia" class="card" style="animation-delay: 0.4s;">
+            <h2 class="text-2xl font-semibold mb-6 text-indigo-700">Mensajes Clave de la Homilía</h2>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold mb-2 text-sky-600">🐑 Enviados como Corderos: Humildad y Amor</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-1 pl-4">
+                    <li>El camino del discípulo nunca es fácil, encontrará oposición e incomprensión.</li>
+                    <li>Nuestra misión debe hacerse con <span class="font-semibold">humildad, mansedumbre y sin agresión</span>.</li>
+                    <li>No buscamos imponer, sino <span class="font-semibold">proponer con amor</span>.</li>
+                    <li>La fuerza no proviene de estrategias humanas o certezas arrogantes, sino de la <span class="font-semibold">confianza en Dios</span>.</li>
+                </ul>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold mb-2 text-sky-600">🎒 Viajar Ligeros: Desapego Material</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-gray-700 mb-2">Jesús insiste en la austeridad porque el evangelio se predica desde la <span class="font-semibold">confianza en la providencia de Dios</span>, no desde la abundancia de medios.</p>
+                        <p class="text-gray-700">Nos invita a <span class="font-semibold">viajar ligeros de equipaje</span>, sin dejarnos atrapar por las cosas materiales o la supuesta seguridad que nos dan las posesiones.</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-700 mb-2">Mientras el mundo nos grita "acumula, protege, asegura tu futuro", Jesús nos dice: <span class="font-semibold">"Confía, suelta, comparte."</span></p>
+                        <p class="text-gray-700">El apego excesivo a las cosas no solo impide nuestra generosidad, sino que también nos impide avanzar en el camino del discípulo.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold mb-2 text-sky-600">🤝 Protagonistas de la Misión: Hacer el Bien</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-1 pl-4">
+                    <li>Dios nos capacita a cada uno para <span class="font-semibold">hacer el bien a quienes nos rodean</span>.</li>
+                    <li>No somos espectadores, sino <span class="font-semibold">protagonistas de la misión de Dios</span> en el mundo.</li>
+                    <li>Jesús elige a personas comunes y corrientes, pidiéndoles solo <span class="font-semibold">disponibilidad y mucha fe</span>.</li>
+                    <li>A veces una palabra de consuelo, una ayuda concreta o un gesto de reconciliación pueden <span class="font-semibold">cambiar totalmente la vida de alguien</span>.</li>
+                </ul>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold mb-2 text-sky-600">✨ La Verdadera Alegría: Nombres Escritos en el Cielo</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-1 pl-4">
+                    <li>La verdadera alegría no está en el éxito visible o los logros espectaculares, sino en <span class="font-semibold">saber que pertenecemos a Dios</span>.</li>
+                    <li>Lo más importante es <span class="font-semibold">serle fieles y vivir como enviados de Él</span>.</li>
+                    <li>Debemos alegrarnos de que nuestros nombres están <span class="font-semibold">escritos en el cielo</span>.</li>
+                    <li>La felicidad nace al dar buen testimonio, caminar con fe, vivir con sencillez y saber que, aun siendo cordero en medio de lobos, <span class="font-semibold">estamos en manos de Dios</span>.</li>
+                </ul>
+            </div>
+
+            <div class="bg-gradient-to-r from-sky-100 to-indigo-100 p-6 rounded-lg text-center text-gray-800 font-semibold italic mt-8">
+                "Lo que vale no es acumular en la tierra, sino tener nuestro nombre escrito en el cielo."
+            </div>
+        </section>
+
+        <section id="cuento" class="card" style="animation-delay: 0.6s;">
+            <h2 class="text-2xl font-semibold mb-4 text-purple-700">📖 Cuentan que... Rosa y la Verdadera Paz</h2>
+            <div class="bg-purple-50 p-6 rounded-lg border border-purple-200 text-gray-700 space-y-3">
+                <p>Rosa, una secretaria con 15 años de experiencia, llevaba una vida monótona y cronometrada. A pesar de tener un buen sueldo, vivía obsesionada con aparentar más de lo que ganaba, comprando objetos y marcas que no necesitaba, creyendo que la harían sentir mejor consigo misma. Sin embargo, esta búsqueda constante la dejaba con dolor de cabeza y mal humor.</p>
+                <p>Un día, mientras buscaba un camino diferente, conoció a una anciana en un parque. La mujer, con una sonrisa serena, le compartió una gran verdad: <span class="font-semibold">"No hay agenda que aguante cuando el alma está agotada."</span> La anciana le explicó que había aprendido a soltar el deseo de control, la necesidad de aparentar y la idea de que el valor personal reside en lo que se posee. Había comenzado a vivir con menos cosas, pero con más paz, caminando con Dios en lugar de correr tras lo material.</p>
+                <p>La mujer le recordó a Rosa las palabras de Jesús: "Los envío como corderos en medio de lobos". Vivir con fe, sin apegos y sin malicia en este mundo es difícil, pero es el único camino hacia la verdadera alegría. Cuando uno da buen testimonio, elige hacer el bien sin importar quién lo vea, y se desprende del exceso, es cuando el reino de Dios comienza. La felicidad no está en llegar primero, sino en <span class="font-semibold">llegar con el corazón en paz</span>. Rosa, impactada, regresó a casa y, por primera vez, sintió que le sobraban cosas materiales y le faltaba algo más profundo. Tomó una libreta y escribió: "Señor, quiero ser feliz, pero no por tener más, sino por vivir mejor. Hoy comienzo a soltar." Y en ese momento, su nombre comenzó a escribirse en el cielo.</p>
+            </div>
+        </section>
+
+        <section id="cuestionario" class="card" style="animation-delay: 0.8s;">
+            <h2 class="text-2xl font-semibold mb-6 text-emerald-700">📝 Pon a Prueba tu Conocimiento</h2>
+            <form id="quizForm">
+                <div class="question-container mb-6">
+                    <p class="text-lg font-medium mb-2">1. Según el Evangelio, ¿cómo envía Jesús a sus discípulos?</p>
+                    <label class="question-option">
+                        <input type="radio" name="q1" value="a" class="sr-only">
+                        Con armamento y recursos.
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q1" value="b" class="sr-only">
+                        Como corderos en medio de lobos.
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q1" value="c" class="sr-only">
+                        En grupos grandes y ruidosos.
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q1" value="d" class="sr-only">
+                        Para que impongan su mensaje con autoridad.
+                    </label>
+                </div>
+
+                <div class="question-container mb-6">
+                    <p class="text-lg font-medium mb-2">2. ¿Por qué Jesús les pide a sus discípulos no llevar dinero, morral ni sandalias?</p>
+                    <label class="question-option">
+                        <input type="radio" name="q2" value="a" class="sr-only">
+                        Para confiar en la providencia de Dios y predicar desde la austeridad.
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q2" value="b" class="sr-only">
+                        Porque no tenían suficientes recursos.
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q2" value="c" class="sr-only">
+                        Para que pidieran limosna.
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q2" value="d" class="sr-only">
+                        Para que se vieran más humildes.
+                    </label>
+                </div>
+
+                <div class="question-container mb-6">
+                    <p class="text-lg font-medium mb-2">3. ¿Cuál es el punto clave de la misión que Jesús les encarga a sus discípulos, además de sanar y anunciar la paz?</p>
+                    <label class="question-option">
+                        <input type="radio" name="q3" value="a" class="sr-only">
+                        Acumular riquezas para la comunidad.
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q3" value="b" class="sr-only">
+                        Construir grandes templos.
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q3" value="c" class="sr-only">
+                        Proclamar que el reino de Dios está cerca.
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q3" value="d" class="sr-only">
+                        Demostrar su poder sobre la naturaleza.
+                    </label>
+                </div>
+
+                <div class="question-container mb-6">
+                    <p class="text-lg font-medium mb-2">4. ¿De qué se alegraron inicialmente los 72 discípulos a su regreso?</p>
+                    <label class="question-option">
+                        <input type="radio" name="q4" value="a" class="sr-only">
+                        De haber recibido mucho dinero.
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q4" value="b" class="sr-only">
+                        De que los demonios se les sometían en el nombre de Jesús.
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q4" value="c" class="sr-only">
+                        De haber comido bien en todas las casas.
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q4" value="d" class="sr-only">
+                        De la fama que habían ganado.
+                    </label>
+                </div>
+
+                <div class="question-container mb-6">
+                    <p class="text-lg font-medium mb-2">5. Según Jesús, ¿cuál es la verdadera alegría de todo discípulo?</p>
+                    <label class="question-option">
+                        <input type="radio" name="q5" value="a" class="sr-only">
+                        El éxito y los logros espectaculares.
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q5" value="b" class="sr-only">
+                        Acumular bienes materiales.
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q5" value="c" class="sr-only">
+                        Que sus nombres estén escritos en el cielo.
+                    </label>
+                    <label class="question-option">
+                        <input type="radio" name="q5" value="d" class="sr-only">
+                        El reconocimiento de las personas.
+                    </label>
+                </div>
+
+                <button type="submit" class="quiz-button w-full md:w-auto">Evaluar Cuestionario</button>
+            </form>
+
+            <div id="quizResult" class="mt-8 p-6 rounded-lg hidden text-gray-800">
+                </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center mt-10 pt-6 border-t border-gray-300 text-gray-600">
+        <p>&copy; <span id="currentYear"></span> Reflexiones para el Alma Joven. Inspirado en la Misión y la Verdadera Alegría.</p>
+    </footer>
+
+    <script>
+        // Set current year in footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        const quizForm = document.getElementById('quizForm');
+        const quizResult = document.getElementById('quizResult');
+        const quizQuestions = document.querySelectorAll('.question-container');
+        const submitButton = quizForm.querySelector('button[type="submit"]');
+
+        const correctAnswers = {
+            q1: 'b',
+            q2: 'a',
+            q3: 'c',
+            q4: 'b',
+            q5: 'c'
+        };
+
+        // Add event listeners for visual selection
+        quizQuestions.forEach(questionDiv => {
+            const options = questionDiv.querySelectorAll('.question-option');
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    // Remove 'selected' from siblings
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    // Add 'selected' to clicked option
+                    option.classList.add('selected');
+                });
+            });
+        });
+
+        quizForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            let score = 0;
+            let totalQuestions = Object.keys(correctAnswers).length;
+            let resultsHTML = '<h3 class="text-xl font-bold mb-4">Resultados del Cuestionario:</h3>';
+            let allAnswered = true;
+
+            quizQuestions.forEach((questionDiv, index) => {
+                const questionName = `q${index + 1}`;
+                const selectedOption = questionDiv.querySelector(`input[name="${questionName}"]:checked`);
+                const correctValue = correctAnswers[questionName];
+
+                const questionText = questionDiv.querySelector('p').textContent;
+                resultsHTML += `<p class="font-semibold mt-4">${questionText}</p>`;
+
+                // Disable all options and show correct/incorrect
+                const options = questionDiv.querySelectorAll('.question-option');
+                options.forEach(option => {
+                    const input = option.querySelector('input');
+                    input.disabled = true; // Disable input after submission
+
+                    if (input.value === correctValue) {
+                        option.classList.add('correct');
+                        if (selectedOption && selectedOption.value === correctValue) {
+                            score++;
+                        }
+                    } else if (selectedOption && selectedOption.value === input.value) {
+                        option.classList.add('incorrect');
+                    }
+                });
+
+                if (!selectedOption) {
+                    allAnswered = false;
+                    resultsHTML += `<p class="text-red-600">No respondiste esta pregunta. La respuesta correcta era: <span class="font-medium">${questionDiv.querySelector(`input[value="${correctValue}"]`).parentNode.textContent.trim()}</span></p>`;
+                } else if (selectedOption.value === correctValue) {
+                    resultsHTML += `<p class="text-emerald-600">¡Correcto!</p>`;
+                } else {
+                    resultsHTML += `<p class="text-red-600">Incorrecto. La respuesta correcta era: <span class="font-medium">${questionDiv.querySelector(`input[value="${correctValue}"]`).parentNode.textContent.trim()}</span></p>`;
+                }
+            });
+
+            const percentage = (score / totalQuestions) * 100;
+            let feedbackMessage = '';
+
+            if (percentage === 100) {
+                feedbackMessage = "¡Excelente! Has captado todos los mensajes clave.";
+            } else if (percentage >= 60) {
+                feedbackMessage = "¡Muy Bien! Tienes un buen entendimiento. Sigue repasando.";
+            } else {
+                feedbackMessage = "Sigue esforzándote. Repasa la homilía para reforzar tus conocimientos.";
+            }
+
+            quizResult.innerHTML = `
+                ${resultsHTML}
+                <p class="text-xl font-bold mt-6">Tu puntuación: ${score} de ${totalQuestions} (${percentage.toFixed(0)}%)</p>
+                <p class="text-lg mt-2">${feedbackMessage}</p>
+            `;
+            quizResult.classList.remove('hidden'); // Show results
+            submitButton.disabled = true; // Disable submit button after first attempt
+        });
+    </script>
+</body>
+</html>
