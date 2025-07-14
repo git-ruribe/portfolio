@@ -299,10 +299,39 @@ const appId = firebaseConfig.appId;
                     where('followUpDate', '>=', getStartOfToday()),
                     where('followUpDate', '<=', getEndOfToday())
                 );
-                unsubscribeFollowUp = onSnapshot(q, (snapshot) => {
-                    const contacts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    renderFollowUpList(contacts);
-                });
+                // ...
+unsubscribeFollowUp = onSnapshot(q, 
+    // Función para cuando todo va bien
+    (snapshot) => {
+        const contacts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderFollowUpList(contacts);
+    }, 
+    // Función para cuando hay un ERROR
+    (error) => {
+        console.error(error); // Mantenemos el error en consola por si acaso
+        const contentArea = document.getElementById('content-area');
+
+        // Extraemos el enlace del mensaje de error
+        const errorMessage = error.toString();
+        const urlMatch = errorMessage.match(/https:\/\/[^`]+/);
+
+        if (urlMatch) {
+            const createIndexUrl = urlMatch[0];
+            contentArea.innerHTML = `
+                <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-lg shadow-md">
+                    <h3 class="font-bold">¡Acción Requerida!</h3>
+                    <p class="mt-2">La base de datos necesita un índice para esta consulta. Por favor, abre el siguiente enlace en tu navegador para crearlo:</p>
+                    <a href="${createIndexUrl}" target="_blank" class="block break-all text-blue-600 hover:underline mt-4">${createIndexUrl}</a>
+                    <p class="mt-4 text-sm">Una vez creado (puede tardar unos minutos), recarga esta página.</p>
+                </div>
+            `;
+        } else {
+            contentArea.innerHTML = `<p class="text-red-500">Ocurrió un error inesperado: ${errorMessage}</p>`;
+        }
+    }
+);
+// ...
+
             } else {
                 const q = query(
                     collection(db, `/artifacts/${appId}/users/${userId}/contacts`),
