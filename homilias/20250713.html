@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homilía: El Buen Samaritano</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff; /* bg-sky-50 */
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem; /* p-6 */
+            margin-bottom: 1.5rem; /* mb-6 */
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        .gradient-text {
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header-icon {
+            width: 4rem; /* w-16 */
+            height: 4rem; /* h-16 */
+            margin: 0 auto 1rem; /* mx-auto mb-4 */
+        }
+        .quiz-button {
+            background-color: #0c4a6e; /* bg-sky-900 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .quiz-button:hover {
+            background-color: #075985; /* bg-sky-800 */
+            transform: translateY(-2px);
+        }
+        .question-option {
+            display: block;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb; /* border-gray-200 */
+            border-radius: 0.5rem; /* rounded-lg */
+            margin-bottom: 0.5rem; /* mb-2 */
+            cursor: pointer;
+            transition: border-color 0.3s, background-color 0.3s;
+        }
+        .question-option:hover {
+            border-color: #38bdf8; /* border-sky-400 */
+        }
+        .question-option.selected {
+            border-color: #0ea5e9; /* border-sky-500 */
+            background-color: #f0f9ff; /* bg-sky-50 */
+        }
+        .question-option.correct {
+            border-color: #10b981; /* border-emerald-500 */
+            background-color: #ecfdf5; /* bg-emerald-50 */
+        }
+        .question-option.incorrect {
+            border-color: #ef4444; /* border-red-500 */
+            background-color: #fef2f2; /* bg-red-50 */
+        }
+
+        /* Animación */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* Delay escalonado para las tarjetas */
+        .card:nth-of-type(1) { animation-delay: 0.2s; }
+        .card:nth-of-type(2) { animation-delay: 0.4s; }
+        .card:nth-of-type(3) { animation-delay: 0.6s; }
+        .card:nth-of-type(4) { animation-delay: 0.8s; }
+        .card:nth-of-type(5) { animation-delay: 1.0s; }
+    </style>
+</head>
+<body class="bg-f0f9ff p-4 md:p-8">
+
+<div class="max-w-4xl mx-auto">
+
+    <header class="text-center mb-10">
+        <svg class="header-icon text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+        </svg>
+        <h1 class="text-3xl md:text-4xl font-bold gradient-text bg-gradient-to-r from-sky-500 to-indigo-600 mb-2">
+            "Ve y haz tú lo mismo"
+        </h1>
+        <p class="text-lg text-gray-600">
+            Reflexionando la parábola del Buen Samaritano
+        </p>
+    </header>
+
+    <section id="evangelio" class="card">
+        <h2 class="text-2xl font-semibold mb-4 text-sky-700">Evangelio según San Lucas (10, 25-37)</h2>
+        <blockquote class="border-l-4 border-sky-500 pl-4 italic text-gray-700 space-y-3">
+            <p>En aquel tiempo, se presentó ante Jesús un doctor de la ley para ponerlo a prueba y le preguntó: "Maestro, ¿qué debo hacer para conseguir la vida eterna?" Jesús le dijo: "¿Qué es lo que está escrito en la ley? ¿Qué lees en ella?" El doctor de la ley le contestó: "Amarás al Señor tu Dios con todo tu corazón, con toda tu alma y con todas tus fuerzas y con todo tu ser, y a tu prójimo como a ti mismo." Jesús entonces le dijo: "Has contestado bien. Si haces eso, vivirás."</p>
+            <p>El doctor de la ley, para justificarse, le preguntó a Jesús: "¿Y quién es mi prójimo?"</p>
+            <p>Jesús le dijo: "Un hombre que bajaba por el camino de Jerusalén a Jericó cayó en manos de unos ladrones, los cuales lo robaron, lo hirieron y lo dejaron medio muerto. Sucedió que por el mismo camino bajaba un sacerdote, el cual lo vio y pasó de largo. De igual modo, un levita que pasó por ahí, lo vio y siguió adelante. Pero un samaritano que iba de viaje, al verlo, se compadeció de él, se le acercó, ungió sus heridas con aceite y vino y se las vendó. Luego lo puso sobre su cabalgadura, lo llevó a un mesón y cuidó de él. Al día siguiente sacó dos denarios, se los dio al dueño del mesón y le dijo: 'Cuida de él y lo que gastes de más te lo pagaré a mi regreso.'"</p>
+            <p>¿Cuál de estos tres te parece que se portó como prójimo del hombre que fue asaltado por los ladrones? El doctor de la ley le respondió: "El que tuvo compasión de él." Entonces Jesús le dijo: "Anda y haz tú lo mismo."</p>
+        </blockquote>
+        <p class="mt-4 font-semibold text-gray-800">Palabra del Señor. <span class="font-normal text-gray-600">Gloria a ti, Señor Jesús.</span></p>
+    </section>
+
+    <section id="homilia" class="card">
+        <h2 class="text-2xl font-semibold mb-6 text-indigo-700">Mensajes Clave de la Homilía</h2>
+
+        <div class="space-y-8">
+            <div>
+                <h3 class="text-xl font-semibold mb-2 text-sky-600">👀 ¿Quiénes son los heridos en nuestro camino?</h3>
+                <p class="text-gray-700 mb-3">La parábola no es solo una historia antigua. Jesús nos pregunta hoy a quiénes vemos tirados al borde de nuestro camino. La homilía nos invita a reconocerlos en:</p>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                    <li>Los que han perdido el sentido de la vida, viven en soledad o tristeza.</li>
+                    <li>Los migrantes que huyen de la violencia o el hambre.</li>
+                    <li>Familias rotas por el resentimiento.</li>
+                    <li>Jóvenes atrapados en adicciones o sin oportunidades.</li>
+                    <li>Los ancianos que nadie visita.</li>
+                    <li>Personas con heridas en el corazón por traiciones, pérdidas o el pecado.</li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold mb-3 text-sky-600">💖 De la Lástima a la Acción</h3>
+                <p class="text-gray-700 mb-4">Sentir lástima es fácil y pasivo. La verdadera compasión, la que Jesús nos pide, es activa. No basta con sentir "pobrecito", hay que involucrarse.</p>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                        <h4 class="font-bold text-red-800">Ver y Pasar de Largo</h4>
+                        <p class="text-red-700">Como el sacerdote y el levita. Es ver el problema pero seguir nuestro camino, creyendo que no es nuestro asunto. Es una fe de palabras, no de hechos.</p>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                        <h4 class="font-bold text-green-800">Ver, Conmoverse y Actuar</h4>
+                        <p class="text-green-700">Como el samaritano. Es dejar que el dolor del otro nos mueva a detenernos, acercarnos y ayudar de forma concreta. Es una fe que se traduce en servicio.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold mb-2 text-sky-600">✝️ Jesús, el Buen Samaritano por Excelencia</h3>
+                <p class="text-gray-700">La homilía nos recuerda que, en el fondo, todos somos ese hombre herido al borde del camino, golpeados por el pecado y las dificultades. Mientras muchos pasan de largo, Jesús siempre se detiene. Él es el Buen Samaritano que cura nuestras heridas con su gracia, nos levanta y paga el precio por nosotros con su vida. Antes de poder ser buenos samaritanos, necesitamos dejarnos sanar por Él.</p>
+            </div>
+
+            <div class="bg-gradient-to-r from-sky-100 to-indigo-100 p-6 rounded-lg text-center">
+                <p class="text-xl italic font-medium text-indigo-900">"No hacer daño no es suficiente. El verdadero discípulo de Jesús ve a un necesitado, se detiene y se involucra."</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="cuento" class="card">
+        <h2 class="text-2xl font-semibold mb-4 text-purple-700">📖 Cuentan que... Ver con el Corazón</h2>
+        <div class="bg-purple-50 p-6 rounded-lg border border-purple-200 text-gray-700 space-y-3">
+            <p>Un sabio monje, el hermano Agustín, llevó a sus jóvenes discípulos a la ciudad para una lección. Les pidió que caminaran por tres calles observando todo, pero sin hacer nada más. Al regresar, los discípulos contaron haber visto gente apurada, un hombre durmiendo en la banqueta y a una señora a la que se le cayó su bolsa.</p>
+            <p>El maestro les reveló la verdad que no vieron: "Hoy los llevé al lugar donde más se necesita la compasión. Y todos ustedes, sí, vieron con los ojos, pero ninguno con el corazón." Les explicó que el hombre no dormía, sino que sufría de hambre, y la señora lloró al no recibir ayuda.</p>
+            <p>La moraleja fue clara: <span class="font-semibold">el verdadero discípulo no solo ve la necesidad, sino que se detiene y actúa.</span> El amor no siempre tiene soluciones perfectas, pero siempre se manifiesta en gestos de presencia y ayuda.</p>
+        </div>
+    </section>
+
+    <section id="cuestionario" class="card">
+        <h2 class="text-2xl font-semibold mb-6 text-emerald-700">📝 Pon a Prueba tu Conocimiento</h2>
+        <form id="quizForm" class="space-y-6">
+            <div class="question-container">
+                <p class="text-lg font-medium mb-3">1. ¿Cuál fue la pregunta inicial que el doctor de la ley le hizo a Jesús?</p>
+                <div class="options-container space-y-2">
+                    <label class="question-option"><input type="radio" name="q1" value="a" class="sr-only"> a) ¿Quién es mi prójimo?</label>
+                    <label class="question-option"><input type="radio" name="q1" value="b" class="sr-only"> b) ¿Qué debo hacer para conseguir la vida eterna?</label>
+                    <label class="question-option"><input type="radio" name="q1" value="c" class="sr-only"> c) ¿Por qué debo amar a Dios?</label>
+                    <label class="question-option"><input type="radio" name="q1" value="d" class="sr-only"> d) ¿Cuál es el mandamiento más importante?</label>
+                </div>
+            </div>
+
+            <div class="question-container">
+                <p class="text-lg font-medium mb-3">2. Según la homilía, ¿cuál es la diferencia fundamental entre sentir lástima y la verdadera compasión?</p>
+                <div class="options-container space-y-2">
+                    <label class="question-option"><input type="radio" name="q2" value="a" class="sr-only"> a) La compasión implica actuar y ayudar, mientras que la lástima es solo un sentimiento pasivo.</label>
+                    <label class="question-option"><input type="radio" name="q2" value="b" class="sr-only"> b) No hay ninguna diferencia, son lo mismo.</label>
+                    <label class="question-option"><input type="radio" name="q2" value="c" class="sr-only"> c) La lástima es más fuerte que la compasión.</label>
+                    <label class="question-option"><input type="radio" name="q2" value="d" class="sr-only"> d) La compasión es solo para los santos, la lástima es para todos.</label>
+                </div>
+            </div>
+
+            <div class="question-container">
+                <p class="text-lg font-medium mb-3">3. En la lectura más profunda de la parábola, ¿quién representa al Buen Samaritano que sana nuestras heridas?</p>
+                <div class="options-container space-y-2">
+                    <label class="question-option"><input type="radio" name="q3" value="a" class="sr-only"> a) La Iglesia.</label>
+                    <label class="question-option"><input type="radio" name="q3" value="b" class="sr-only"> b) Un buen amigo.</label>
+                    <label class="question-option"><input type="radio" name="q3" value="c" class="sr-only"> c) Nosotros mismos cuando hacemos el bien.</label>
+                    <label class="question-option"><input type="radio" name="q3" value="d" class="sr-only"> d) Jesucristo.</label>
+                </div>
+            </div>
+
+            <div class="question-container">
+                <p class="text-lg font-medium mb-3">4. En el cuento del hermano Agustín, ¿cuál fue la lección principal que los discípulos debían aprender en la ciudad?</p>
+                <div class="options-container space-y-2">
+                    <label class="question-option"><input type="radio" name="q4" value="a" class="sr-only"> a) Que la ciudad es un lugar ruidoso y pecaminoso.</label>
+                    <label class="question-option"><input type="radio" name="q4" value="b" class="sr-only"> b) A identificar los diferentes tipos de tiendas.</label>
+                    <label class="question-option"><input type="radio" name="q4" value="c" class="sr-only"> c) A ver a las personas con el corazón y actuar, no solo a observar con los ojos.</label>
+                    <label class="question-option"><input type="radio" name="q4" value="d" class="sr-only"> d) A caminar rápido para hacer ejercicio.</label>
+                </div>
+            </div>
+            
+            <div class="question-container">
+                <p class="text-lg font-medium mb-3">5. ¿Cuál es el llamado final que Jesús nos hace a través de esta parábola, según la homilía?</p>
+                <div class="options-container space-y-2">
+                    <label class="question-option"><input type="radio" name="q5" value="a" class="sr-only"> a) Ir a misa todos los domingos.</label>
+                    <label class="question-option"><input type="radio" name="q5" value="b" class="sr-only"> b) Rezar mucho para no caer en tentación.</label>
+                    <label class="question-option"><input type="radio" name="q5" value="c" class="sr-only"> c) "Ve y haz tú lo mismo": Detenernos ante el que sufre y actuar con compasión.</label>
+                    <label class="question-option"><input type="radio" name="q5" value="d" class="sr-only"> d) Donar dinero a la caridad una vez al año.</label>
+                </div>
+            </div>
+
+            <div class="flex justify-center pt-4">
+                <button type="submit" class="quiz-button w-full md:w-auto">Evaluar Cuestionario</button>
+            </div>
+        </form>
+
+        <div id="quizResult" class="mt-8 p-6 rounded-lg hidden text-center"></div>
+    </section>
+
+    <footer class="text-center mt-8 py-6 border-t border-gray-300">
+        <p class="text-gray-600">&copy; <span id="currentYear"></span> Reflexiones para el Alma Joven. Inspirado en la Parábola del Buen Samaritano.</p>
+    </footer>
+
+</div>
+
+<script>
+    // --- Lógica del Cuestionario ---
+    const quizForm = document.getElementById('quizForm');
+    const quizResult = document.getElementById('quizResult');
+    const correctAnswers = {
+        q1: 'b',
+        q2: 'a',
+        q3: 'd',
+        q4: 'c',
+        q5: 'c'
+    };
+
+    // Resaltar la opción seleccionada
+    document.querySelectorAll('.question-option').forEach(label => {
+        label.addEventListener('click', () => {
+            // Quitar 'selected' de las otras opciones de la misma pregunta
+            const questionName = label.querySelector('input').name;
+            document.querySelectorAll(`input[name="${questionName}"]`).forEach(radio => {
+                radio.parentElement.classList.remove('selected');
+            });
+            // Añadir 'selected' a la opción clickeada
+            label.classList.add('selected');
+        });
+    });
+
+    quizForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        let score = 0;
+        const totalQuestions = Object.keys(correctAnswers).length;
+        const formData = new FormData(quizForm);
+
+        for (const [question, correctAnswer] of Object.entries(correctAnswers)) {
+            const userAnswer = formData.get(question);
+            const questionContainer = document.querySelector(`input[name="${question}"]`).closest('.question-container');
+            const options = questionContainer.querySelectorAll('.question-option');
+            
+            options.forEach(opt => {
+                const radio = opt.querySelector('input');
+                opt.classList.remove('selected'); // Limpiar selección visual
+
+                if (radio.value === correctAnswer) {
+                    opt.classList.add('correct'); // Siempre mostrar la correcta en verde
+                }
+                
+                if (userAnswer && radio.value === userAnswer && userAnswer !== correctAnswer) {
+                    opt.classList.add('incorrect'); // Mostrar la incorrecta del usuario en rojo
+                }
+            });
+
+            if (userAnswer === correctAnswer) {
+                score++;
+            }
+        }
+
+        const percentage = Math.round((score / totalQuestions) * 100);
+        let feedbackMessage = '';
+        let resultColor = '';
+
+        if (percentage === 100) {
+            feedbackMessage = '¡Excelente! Has comprendido todos los mensajes clave.';
+            resultColor = 'bg-emerald-100 text-emerald-800';
+        } else if (percentage >= 60) {
+            feedbackMessage = '¡Muy bien! Tienes una buena comprensión de la homilía.';
+             resultColor = 'bg-sky-100 text-sky-800';
+        } else {
+            feedbackMessage = 'Sigue esforzándote. Te animo a releer los puntos clave para afianzar las ideas.';
+             resultColor = 'bg-amber-100 text-amber-800';
+        }
+
+        quizResult.innerHTML = `
+            <p class="text-2xl font-bold mb-2">Tu puntuación: ${score} de ${totalQuestions} (${percentage}%)</p>
+            <p class="text-lg">${feedbackMessage}</p>
+        `;
+        quizResult.className = `mt-8 p-6 rounded-lg text-center ${resultColor}`;
+        quizResult.classList.remove('hidden');
+
+        // Deshabilitar formulario después de evaluar
+        quizForm.querySelector('button').disabled = true;
+        quizForm.querySelector('button').textContent = 'Evaluado';
+        quizForm.querySelector('button').style.cursor = 'not-allowed';
+        quizForm.querySelector('button').style.backgroundColor = '#9ca3af'; /* gray-400 */
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.disabled = true;
+            radio.parentElement.style.cursor = 'default';
+        });
+    });
+
+    // --- Actualizar Año en el Pie de Página ---
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
