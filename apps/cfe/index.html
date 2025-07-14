@@ -4,348 +4,144 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora CFE 2025 y Pronóstico DAC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Estilos Generales */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f7f6;
-            color: #333;
-        }
-       .container {
-            max-width: 900px;
-            margin: auto;
-            background: #fff;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        h1, h2, h3 {
-            color: #004d40;
-            border-bottom: 2px solid #00796b;
-            padding-bottom: 10px;
-        }
-        h1 {
-            text-align: center;
-            font-size: 2em;
-        }
-        h2 {
-            font-size: 1.5em;
-            margin-top: 30px;
-        }
-        
-        /* Estilos de Formularios y Entradas */
-       .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #004d40;
-        }
-        select, input[type="number"], input[type="checkbox"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-            font-size: 1em;
-        }
-        input[type="checkbox"] {
-            width: auto;
-            margin-right: 10px;
-        }
-       .checkbox-label {
-            display: flex;
-            align-items: center;
-        }
-        button {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            background-color: #00796b;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.2em;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #004d40;
-        }
-        
-        /* Estilos de Resultados */
-        #results {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #e0f2f1;
-            border-left: 5px solid #00796b;
-            border-radius: 5px;
-        }
-       .result-item {
-            font-size: 1.1em;
-            margin-bottom: 15px;
-        }
-       .result-item strong {
-            color: #004d40;
-        }
-       .total-amount {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #d32f2f;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        /* Estilos para el Análisis DAC */
-       .dac-analysis {
-            margin-top: 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-       .dac-input-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-       .dac-status {
-            padding: 15px;
-            border-radius: 5px;
-            text-align: center;
-            font-weight: bold;
-            color: white;
-            margin-top: 15px;
-        }
-       .status-seguro { background-color: #2e7d32; }
-       .status-riesgo { background-color: #f57f17; }
-       .status-dac { background-color: #c62828; }
-       .status-info { background-color: #0277bd; }
-
-       .disclaimer {
-            font-size: 0.8em;
-            color: #555;
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #eee;
-            border-radius: 5px;
-            text-align: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
     </style>
 </head>
-<body>
+<body class="bg-gray-100 text-gray-800">
 
-    <div class="container">
-        <h1>Calculadora de Recibo CFE 2025 y Pronóstico DAC</h1>
+    <div class="container mx-auto max-w-4xl p-4 sm:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-teal-800">Calculadora CFE 2025 y Pronóstico DAC</h1>
+            <p class="text-gray-600 mt-2">Estima tu recibo de luz y analiza tu riesgo de caer en la Tarifa de Alto Consumo.</p>
+        </header>
 
-        <section id="bill-calculator">
-            <h2>1. Cálculo de Recibo Bimestral</h2>
-            <div class="form-group">
-                <label for="tariff">Seleccione su Tarifa Doméstica:</label>
-                <select id="tariff">
-                    <option value="1">Tarifa 1</option>
-                    <option value="1A">Tarifa 1A</option>
-                    <option value="1B">Tarifa 1B</option>
-                    <option value="1C">Tarifa 1C</option>
-                    <option value="1D">Tarifa 1D</option>
-                    <option value="1E">Tarifa 1E</option>
-                    <option value="1F">Tarifa 1F</option>
-                </select>
+        <main class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg space-y-10">
+            <!-- Sección 1: Calculadora de Recibo -->
+            <section id="bill-calculator">
+                <h2 class="text-2xl font-bold text-teal-700 border-b-2 border-teal-200 pb-3 mb-6">1. Cálculo de Recibo Bimestral</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Selección de Tarifa -->
+                    <div class="form-group">
+                        <label for="tariff" class="block mb-2 font-semibold text-gray-700">1. Selecciona tu Tarifa:</label>
+                        <select id="tariff" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
+                            <option value="1">Tarifa 1</option>
+                            <option value="1A">Tarifa 1A</option>
+                            <option value="1B">Tarifa 1B</option>
+                            <option value="1C">Tarifa 1C</option>
+                            <option value="1D">Tarifa 1D</option>
+                            <option value="1E">Tarifa 1E</option>
+                            <option value="1F">Tarifa 1F</option>
+                        </select>
+                    </div>
+                    <!-- Pregunta sobre DAC -->
+                    <div class="form-group">
+                        <label for="dacStatus" class="block mb-2 font-semibold text-gray-700">2. ¿Estás en Tarifa DAC?</label>
+                        <select id="dacStatus" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
+                            <option value="no">No, mi tarifa es subsidiada</option>
+                            <option value="yes">Sí, estoy en Tarifa DAC</option>
+                        </select>
+                    </div>
+                     <!-- Selección de Región (Relevante para DAC) -->
+                    <div class="form-group">
+                        <label for="region" class="block mb-2 font-semibold text-gray-700">3. Región (si estás en DAC):</label>
+                        <select id="region" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
+                            <option value="Central">Central</option>
+                            <option value="Noroeste">Noroeste</option>
+                            <option value="Norte">Norte</option>
+                            <option value="Noreste">Noreste</option>
+                            <option value="Sur y Peninsular">Sur y Peninsular</option>
+                            <option value="Baja California">Baja California</option>
+                            <option value="Baja California Sur">Baja California Sur</option>
+                        </select>
+                    </div>
+                    <!-- Consumo Bimestral -->
+                    <div class="form-group">
+                        <label for="consumption" class="block mb-2 font-semibold text-gray-700">4. Consumo Bimestral (kWh):</label>
+                        <input type="number" id="consumption" placeholder="Ej: 450" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
+                    </div>
+                    <!-- Temporada de Verano -->
+                    <div class="form-group md:col-span-2 flex items-center">
+                        <input type="checkbox" id="summer" class="h-5 w-5 text-teal-600 border-gray-300 rounded focus:ring-teal-500">
+                        <label for="summer" class="ml-3 text-gray-700">Marcar si el periodo es de Temporada de Verano</label>
+                    </div>
+                </div>
+                <button onclick="calculateBill()" class="mt-6 w-full bg-teal-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-transform transform hover:scale-105">
+                    Calcular Monto del Recibo
+                </button>
+            </section>
+
+            <div id="results" style="display:none;" class="mt-8 p-6 bg-teal-50 border-l-4 border-teal-500 rounded-r-lg">
+                <h3 class="text-xl font-bold text-teal-800 mb-4">Resultado del Cálculo</h3>
+                <div id="bill-details" class="space-y-3"></div>
             </div>
-            <div class="form-group">
-                <label for="consumption">Consumo Bimestral (kWh):</label>
-                <input type="number" id="consumption" placeholder="Ej: 450">
-            </div>
-            <div class="form-group">
-                <label class="checkbox-label">
-                    <input type="checkbox" id="summer">
-                    ¿El periodo de facturación corresponde a la Temporada de Verano?
-                </label>
-            </div>
-            <button onclick="calculateBill()">Calcular Monto del Recibo</button>
-        </section>
 
-        <div id="results" style="display:none;">
-            <h3>Resultado del Cálculo</h3>
-            <div id="bill-details"></div>
-        </div>
-
-        <section id="dac-forecaster">
-            <h2>2. Análisis y Pronóstico de Tarifa DAC</h2>
-            <p>Ingrese el consumo bimestral (en kWh) de sus últimos 6 recibos para analizar su situación actual y pronosticar su límite para el siguiente bimestre.</p>
-            <div class="dac-input-group">
-                <div class="form-group">
-                    <label for="h1">Bimestre 1 (Más reciente):</label>
-                    <input type="number" id="h1" placeholder="kWh">
+            <!-- Sección 2: Análisis DAC -->
+            <section id="dac-forecaster">
+                <h2 class="text-2xl font-bold text-teal-700 border-b-2 border-teal-200 pb-3 mb-6">2. Análisis y Pronóstico de Tarifa DAC</h2>
+                <p class="text-gray-600 mb-6">Ingresa el consumo (kWh) de tus últimos 6 recibos para analizar tu situación y pronosticar tu límite para el siguiente bimestre.</p>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+                    <!-- Inputs para historial de consumo -->
+                    <div class="form-group"><label for="h1" class="block text-sm font-medium text-gray-600">Bimestre 1 (Reciente)</label><input type="number" id="h1" placeholder="kWh" class="mt-1 w-full p-2 border border-gray-300 rounded-lg"></div>
+                    <div class="form-group"><label for="h2" class="block text-sm font-medium text-gray-600">Bimestre 2</label><input type="number" id="h2" placeholder="kWh" class="mt-1 w-full p-2 border border-gray-300 rounded-lg"></div>
+                    <div class="form-group"><label for="h3" class="block text-sm font-medium text-gray-600">Bimestre 3</label><input type="number" id="h3" placeholder="kWh" class="mt-1 w-full p-2 border border-gray-300 rounded-lg"></div>
+                    <div class="form-group"><label for="h4" class="block text-sm font-medium text-gray-600">Bimestre 4</label><input type="number" id="h4" placeholder="kWh" class="mt-1 w-full p-2 border border-gray-300 rounded-lg"></div>
+                    <div class="form-group"><label for="h5" class="block text-sm font-medium text-gray-600">Bimestre 5</label><input type="number" id="h5" placeholder="kWh" class="mt-1 w-full p-2 border border-gray-300 rounded-lg"></div>
+                    <div class="form-group"><label for="h6" class="block text-sm font-medium text-gray-600">Bimestre 6 (Antiguo)</label><input type="number" id="h6" placeholder="kWh" class="mt-1 w-full p-2 border border-gray-300 rounded-lg"></div>
                 </div>
-                <div class="form-group">
-                    <label for="h2">Bimestre 2:</label>
-                    <input type="number" id="h2" placeholder="kWh">
-                </div>
-                <div class="form-group">
-                    <label for="h3">Bimestre 3:</label>
-                    <input type="number" id="h3" placeholder="kWh">
-                </div>
-                <div class="form-group">
-                    <label for="h4">Bimestre 4:</label>
-                    <input type="number" id="h4" placeholder="kWh">
-                </div>
-                <div class="form-group">
-                    <label for="h5">Bimestre 5:</label>
-                    <input type="number" id="h5" placeholder="kWh">
-                </div>
-                <div class="form-group">
-                    <label for="h6">Bimestre 6 (Más antiguo):</label>
-                    <input type="number" id="h6" placeholder="kWh">
-                </div>
+                <button onclick="analyzeDAC()" class="mt-6 w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-transform transform hover:scale-105">
+                    Analizar y Pronosticar DAC
+                </button>
+            </section>
+            
+            <div id="dac-results" style="display:none;" class="mt-8 p-6 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg">
+                 <h3 class="text-xl font-bold text-blue-800 mb-4">Resultado del Análisis DAC</h3>
+                 <div id="dac-details" class="space-y-4"></div>
             </div>
-            <button onclick="analyzeDAC()">Analizar y Pronosticar DAC</button>
-        </section>
-        
-        <div id="dac-results" style="display:none;">
-             <h3>Resultado del Análisis DAC</h3>
-             <div id="dac-details"></div>
-        </div>
+        </main>
 
-        <div class="disclaimer">
-            <strong>Aviso:</strong> Esta calculadora es una herramienta de estimación basada en las estructuras tarifarias publicadas para 2025. El cálculo final puede variar debido a ajustes mensuales de la CFE, cargos adicionales como el Derecho de Alumbrado Público (DAP), redondeos o variaciones en los días del periodo de facturación. Los precios utilizados son representativos para el año 2025 y están sujetos a cambios.
-        </div>
+        <footer class="text-center mt-10">
+            <div class="disclaimer text-xs text-gray-500 bg-gray-200 p-4 rounded-lg">
+                <strong>Aviso:</strong> Esta calculadora es una herramienta de estimación. El cálculo final puede variar debido a ajustes de CFE, cargos como el DAP, redondeos o variaciones en los días de facturación. Los precios son representativos para 2025 y están sujetos a cambios.
+            </div>
+        </footer>
     </div>
 
     <script>
-        // Base de datos de tarifas para 2025.
-        // Los precios están por kWh para un mes. El cálculo final los ajustará para el bimestre.
-        // Fuente de datos: Síntesis de S_R31, S_R51, S_R72, S_R75, S_R82, S_R88
+        // --- BASE DE DATOS DE TARIFAS 2025 (Valores mensuales) ---
         const tariffs2025 = {
-            "1": {
-                dacLimit: 250,
-                offSummer: [
-                    { limit: 75, price: 1.083 },
-                    { limit: 140, price: 1.315 }, // 75 + 65
-                    { limit: Infinity, price: 3.847 }
-                ],
-                summer: null // La tarifa 1 no tiene subsidio de verano
-            },
-            "1A": {
-                dacLimit: 300,
-                offSummer: [
-                    { limit: 75, price: 1.091 },
-                    { limit: 150, price: 1.325 }, // 75 + 75
-                    { limit: Infinity, price: 3.875 }
-                ],
-                summer: [
-                    { limit: 100, price: 0.803 },
-                    { limit: 150, price: 0.996 }, // 100 + 50
-                    { limit: Infinity, price: 3.833 }
-                ]
-            },
-            "1B": {
-                dacLimit: 400,
-                offSummer: [
-                    { limit: 75, price: 1.099 },
-                    { limit: 175, price: 1.335 }, // 75 + 100
-                    { limit: Infinity, price: 3.903 }
-                ],
-                summer: [
-                    { limit: 125, price: 0.803 },
-                    { limit: 225, price: 0.996 }, // 125 + 100
-                    { limit: Infinity, price: 3.833 }
-                ]
-            },
-            "1C": {
-                dacLimit: 850,
-                offSummer: [
-                    { limit: 75, price: 1.095 },
-                    { limit: 175, price: 1.330 }, // 75 + 100
-                    { limit: Infinity, price: 3.889 }
-                ],
-                summer: [
-                    { limit: 150, price: 0.803 },
-                    { limit: 300, price: 0.996 }, // 150 + 150
-                    { limit: 450, price: 2.423 }, // 300 + 150
-                    { limit: Infinity, price: 3.833 }
-                ]
-            },
-            "1D": {
-                dacLimit: 1000,
-                offSummer: [
-                    { limit: 75, price: 1.103 },
-                    { limit: 200, price: 1.340 }, // 75 + 125
-                    { limit: Infinity, price: 3.917 }
-                ],
-                summer: [
-                    { limit: 175, price: 0.803 },
-                    { limit: 400, price: 0.996 }, // 175 + 225
-                    { limit: 600, price: 2.423 }, // 400 + 200
-                    { limit: Infinity, price: 3.833 }
-                ]
-            },
-            "1E": {
-                dacLimit: 2000,
-                offSummer: [
-                    { limit: 75, price: 1.107 },
-                    { limit: 200, price: 1.345 }, // 75 + 125
-                    { limit: Infinity, price: 3.932 }
-                ],
-                summer: [
-                    { limit: 300, price: 0.767 },
-                    { limit: 750, price: 0.955 }, // 300 + 450
-                    { limit: 900, price: 2.322 }, // 750 + 150
-                    { limit: Infinity, price: 3.672 }
-                ]
-            },
-            "1F": {
-                dacLimit: 2500,
-                offSummer: [
-                    { limit: 75, price: 1.107 },
-                    { limit: 200, price: 1.345 }, // 75 + 125
-                    { limit: Infinity, price: 3.932 }
-                ],
-                summer: [
-                    { limit: 300, price: 0.767 },
-                    { limit: 1200, price: 0.955 }, // 300 + 900
-                    { limit: 2500, price: 2.322 }, // 1200 + 1300
-                    { limit: Infinity, price: 3.672 }
-                ]
-            }
+            "1":  { dacLimit: 250, offSummer: [{ limit: 75, price: 1.083 }, { limit: 140, price: 1.315 }, { limit: Infinity, price: 3.847 }], summer: null },
+            "1A": { dacLimit: 300, offSummer: [{ limit: 75, price: 1.091 }, { limit: 150, price: 1.325 }, { limit: Infinity, price: 3.875 }], summer: [{ limit: 100, price: 0.803 }, { limit: 150, price: 0.996 }, { limit: Infinity, price: 3.833 }] },
+            "1B": { dacLimit: 400, offSummer: [{ limit: 75, price: 1.099 }, { limit: 175, price: 1.335 }, { limit: Infinity, price: 3.903 }], summer: [{ limit: 125, price: 0.803 }, { limit: 225, price: 0.996 }, { limit: Infinity, price: 3.833 }] },
+            "1C": { dacLimit: 850, offSummer: [{ limit: 75, price: 1.095 }, { limit: 175, price: 1.330 }, { limit: Infinity, price: 3.889 }], summer: [{ limit: 150, price: 0.803 }, { limit: 300, price: 0.996 }, { limit: 450, price: 2.423 }, { limit: Infinity, price: 3.833 }] },
+            "1D": { dacLimit: 1000, offSummer: [{ limit: 75, price: 1.103 }, { limit: 200, price: 1.340 }, { limit: Infinity, price: 3.917 }], summer: [{ limit: 175, price: 0.803 }, { limit: 400, price: 0.996 }, { limit: 600, price: 2.423 }, { limit: Infinity, price: 3.833 }] },
+            "1E": { dacLimit: 2000, offSummer: [{ limit: 75, price: 1.107 }, { limit: 200, price: 1.345 }, { limit: Infinity, price: 3.932 }], summer: [{ limit: 300, price: 0.767 }, { limit: 750, price: 0.955 }, { limit: 900, price: 2.322 }, { limit: Infinity, price: 3.672 }] },
+            "1F": { dacLimit: 2500, offSummer: [{ limit: 75, price: 1.107 }, { limit: 200, price: 1.345 }, { limit: Infinity, price: 3.932 }], summer: [{ limit: 300, price: 0.767 }, { limit: 1200, price: 0.955 }, { limit: 2500, price: 2.322 }, { limit: Infinity, price: 3.672 }] }
         };
         
-        // Datos de la tarifa DAC por región para 2025 (valores promedio para el año)
-        // Fuente: Síntesis de [span_71](start_span)[span_71](end_span)[span_72](start_span)[span_72](end_span)
         const dacTariffs2025 = {
-            "Baja California": { fixed: 142.00, price: 6.80 },
+            "Baja California":   { fixed: 142.00, price: 6.80 },
             "Baja California Sur": { fixed: 142.00, price: 7.10 },
-            "Noroeste": { fixed: 142.00, price: 6.30 },
-            "Norte": { fixed: 142.00, price: 6.15 },
-            "Noreste": { fixed: 142.00, price: 6.15 },
-            "Sur y Peninsular": { fixed: 142.00, price: 6.25 },
-            "Central": { fixed: 142.00, price: 6.70 },
+            "Noroeste":          { fixed: 142.00, price: 6.30 },
+            "Norte":             { fixed: 142.00, price: 6.15 },
+            "Noreste":           { fixed: 142.00, price: 6.15 },
+            "Sur y Peninsular":  { fixed: 142.00, price: 6.25 },
+            "Central":           { fixed: 142.00, price: 6.70 },
         };
 
-        /**
-         * Formatea un número a formato de moneda MXN.
-         * @param {number} number - El número a formatear.
-         * @returns {string} - El número formateado como moneda.
-         */
         function formatCurrency(number) {
             return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(number);
         }
 
-        /**
-         * Calcula el costo de la energía para un consumo mensual dado y una estructura de precios.
-         * @param {number} monthlyConsumption - El consumo en kWh para un mes.
-         * @param {Array<Object>} priceTiers - El array con los escalones de precios.
-         * @returns {number} - El costo total para ese mes.
-         */
-        function calculateMonthlyCost(monthlyConsumption, priceTiers) {
+        function calculateSubsidizedMonthlyCost(monthlyConsumption, priceTiers) {
             let cost = 0;
             let consumed = 0;
-
             for (const tier of priceTiers) {
                 if (monthlyConsumption > consumed) {
                     const consumptionInTier = Math.min(monthlyConsumption - consumed, tier.limit - consumed);
@@ -356,140 +152,183 @@
             return cost;
         }
 
-        /**
-         * Función principal para calcular y mostrar el monto del recibo bimestral.
-         */
         function calculateBill() {
+            // --- RECOLECCIÓN DE DATOS DEL FORMULARIO ---
             const tariffId = document.getElementById('tariff').value;
+            const dacStatus = document.getElementById('dacStatus').value;
+            const region = document.getElementById('region').value;
             const bimonthlyConsumption = parseFloat(document.getElementById('consumption').value);
             const isSummer = document.getElementById('summer').checked;
             const resultsDiv = document.getElementById('results');
             const billDetailsDiv = document.getElementById('bill-details');
 
-            if (isNaN(bimonthlyConsumption) |
-
-| bimonthlyConsumption < 0) {
-                billDetailsDiv.innerHTML = `<p style="color:red;">Por favor, ingrese un valor de consumo válido.</p>`;
+            if (isNaN(bimonthlyConsumption) || bimonthlyConsumption < 0) {
+                billDetailsDiv.innerHTML = `<p class="text-red-600 font-semibold">Por favor, ingrese un valor de consumo válido.</p>`;
                 resultsDiv.style.display = 'block';
                 return;
             }
 
             const tariffData = tariffs2025[tariffId];
-            // El cálculo se basa en el consumo mensual promedio del bimestre.
             const monthlyConsumption = bimonthlyConsumption / 2;
-
-            let priceTiers;
-            let season = "Fuera de Verano";
-            if (isSummer && tariffData.summer) {
-                priceTiers = tariffData.summer;
-                season = "Verano";
-            } else {
-                priceTiers = tariffData.offSummer;
-            }
             
-            const monthlyCost = calculateMonthlyCost(monthlyConsumption, priceTiers);
-            const bimonthlyEnergyCost = monthlyCost * 2;
+            let bimonthlyEnergyCost = 0;
+            let breakdownHTML = '';
+            let calculationType = '';
+
+            // --- LÓGICA DE CÁLCULO BASADA EN LA RESPUESTA DEL USUARIO ---
+            if (dacStatus === 'yes') {
+                // --- CÁLCULO EN TARIFA DAC ---
+                const dacTariff = dacTariffs2025[region];
+                const fixedCostBimonthly = dacTariff.fixed * 2;
+                const variableCostBimonthly = bimonthlyConsumption * dacTariff.price;
+                bimonthlyEnergyCost = fixedCostBimonthly + variableCostBimonthly;
+                calculationType = `Tarifa DAC (Región ${region})`;
+                
+                breakdownHTML = `
+                    <div class="p-4 bg-yellow-100 border border-yellow-300 rounded-lg">
+                        <p class="font-bold text-yellow-800">Cálculo realizado con Tarifa de Alto Consumo (DAC) según tu selección.</p>
+                    </div>
+                    <p><strong>Desglose del Cálculo (DAC):</strong></p>
+                    <ul class="list-disc list-inside text-gray-700">
+                        <li>Cargo Fijo Bimestral: ${formatCurrency(fixedCostBimonthly)}</li>
+                        <li>Cargo por Energía: ${bimonthlyConsumption} kWh x ${formatCurrency(dacTariff.price)}/kWh = ${formatCurrency(variableCostBimonthly)}</li>
+                    </ul>`;
+
+            } else {
+                // --- CÁLCULO EN TARIFA SUBSIDIADA ---
+                let priceTiers;
+                let season = "Fuera de Verano";
+                if (isSummer && tariffData.summer) {
+                    priceTiers = tariffData.summer;
+                    season = "Verano";
+                } else {
+                    priceTiers = tariffData.offSummer;
+                }
+                calculationType = `Tarifa ${tariffId} Subsidiada (${season})`;
+                
+                const monthlyCost = calculateSubsidizedMonthlyCost(monthlyConsumption, priceTiers);
+                bimonthlyEnergyCost = monthlyCost * 2;
+                
+                breakdownHTML = `<p><strong>Desglose del Cálculo (Tarifa Subsidiada):</strong></p><ul class="list-disc list-inside text-gray-700">`;
+                let monthlyConsumed = 0;
+                for (const tier of priceTiers) {
+                    if (monthlyConsumption > monthlyConsumed) {
+                        const consumptionInTier = Math.min(monthlyConsumption - monthlyConsumed, tier.limit - monthlyConsumed);
+                        const tierCost = consumptionInTier * tier.price;
+                        const tierLimitText = tier.limit === Infinity ? 'Excedente' : `hasta ${tier.limit} kWh/mes`;
+                        breakdownHTML += `<li>Escalón (${tierLimitText}): ${consumptionInTier.toFixed(2)} kWh/mes x ${formatCurrency(tier.price)} = ${formatCurrency(tierCost)}/mes</li>`;
+                        monthlyConsumed += consumptionInTier;
+                    }
+                }
+                breakdownHTML += `</ul>`;
+
+                // Añadir una nota si el consumo es alto, como sugerencia
+                const dacLimit = tariffData.dacLimit;
+                if (monthlyConsumption > dacLimit) {
+                     breakdownHTML += `<div class="mt-3 p-3 bg-orange-100 border border-orange-300 rounded-lg text-sm text-orange-800">
+                        <strong>Nota:</strong> Tu consumo para este bimestre (${monthlyConsumption.toFixed(0)} kWh/mes) es superior al límite DAC (${dacLimit} kWh/mes). Si este nivel de consumo se mantiene, podrías ser reclasificado a la tarifa DAC. Te recomendamos usar la sección 2 para un análisis completo.
+                     </div>`;
+                }
+            }
+
             const iva = bimonthlyEnergyCost * 0.16;
             const totalAmount = bimonthlyEnergyCost + iva;
 
-            // Generar el desglose del cálculo
-            let breakdownHTML = `<p><strong>Desglose del Cálculo (Estimado):</strong></p><ul>`;
-            let consumed = 0;
-            let monthlyConsumed = 0;
-            for (const tier of priceTiers) {
-                if (monthlyConsumption > monthlyConsumed) {
-                    const consumptionInTier = Math.min(monthlyConsumption - monthlyConsumed, tier.limit - monthlyConsumed);
-                    const tierCost = consumptionInTier * tier.price;
-                    breakdownHTML += `<li>Escalón (${tier.limit === Infinity? 'Excedente' : 'hasta ' + tier.limit + ' kWh/mes'}): ${consumptionInTier.toFixed(2)} kWh/mes x ${formatCurrency(tier.price)} = ${formatCurrency(tierCost)}/mes</li>`;
-                    monthlyConsumed += consumptionInTier;
-                }
-            }
-            breakdownHTML += `</ul>`;
-
-
             billDetailsDiv.innerHTML = `
-                <div class="result-item"><strong>Tarifa seleccionada:</strong> ${tariffId} (${season})</div>
-                <div class="result-item"><strong>Consumo bimestral:</strong> ${bimonthlyConsumption} kWh</div>
-                <hr>
+                <div class="font-semibold"><strong>Tipo de cálculo:</strong> ${calculationType}</div>
+                <div class="font-semibold"><strong>Consumo bimestral:</strong> ${bimonthlyConsumption} kWh</div>
+                <hr class="my-3">
                 ${breakdownHTML}
-                <hr>
-                <div class="result-item"><strong>Subtotal de Energía (Bimestral):</strong> ${formatCurrency(bimonthlyEnergyCost)}</div>
-                <div class="result-item"><strong>IVA (16%):</strong> ${formatCurrency(iva)}</div>
-                <div class="total-amount">Total a Pagar (Estimado): ${formatCurrency(totalAmount)}</div>
+                <hr class="my-3">
+                <div class="grid grid-cols-2 gap-x-4 text-right">
+                    <span class="font-semibold">Subtotal de Energía:</span><span>${formatCurrency(bimonthlyEnergyCost)}</span>
+                    <span class="font-semibold">IVA (16%):</span><span>${formatCurrency(iva)}</span>
+                </div>
+                <div class="text-center mt-4">
+                    <span class="block text-lg font-semibold text-gray-700">Total a Pagar (Estimado)</span>
+                    <span class="block text-3xl font-bold text-red-600">${formatCurrency(totalAmount)}</span>
+                </div>
             `;
-
             resultsDiv.style.display = 'block';
         }
 
-        /**
-         * Función principal para analizar el estado DAC y pronosticar el límite de consumo.
-         */
         function analyzeDAC() {
             const tariffId = document.getElementById('tariff').value;
             const dacResultsDiv = document.getElementById('dac-results');
             const dacDetailsDiv = document.getElementById('dac-details');
 
-            const consumptions =;
+            const consumptions = [];
+            let hasInvalidInput = false;
             for (let i = 1; i <= 6; i++) {
                 const val = parseFloat(document.getElementById(`h${i}`).value);
-                if (isNaN(val) |
-
-| val < 0) {
-                    dacDetailsDiv.innerHTML = `<p style="color:red;">Por favor, ingrese valores válidos para los 6 bimestres.</p>`;
-                    dacResultsDiv.style.display = 'block';
-                    return;
+                if (isNaN(val) || val < 0) {
+                    hasInvalidInput = true;
+                    break; 
                 }
                 consumptions.push(val);
+            }
+
+            if (hasInvalidInput) {
+                dacDetailsDiv.innerHTML = `<p class="text-red-600 font-semibold">Por favor, ingrese valores numéricos válidos para los 6 bimestres.</p>`;
+                dacResultsDiv.style.display = 'block';
+                return;
             }
             
             const tariffData = tariffs2025[tariffId];
             const dacLimit = tariffData.dacLimit;
 
-            // Cálculo del promedio mensual actual
-            // Se suman los 6 bimestres y se dividen entre 12 meses
             const totalAnnualConsumption = consumptions.reduce((sum, c) => sum + c, 0);
             const currentMonthlyAverage = totalAnnualConsumption / 12;
 
-            // Determinar el estado actual del DAC
             let statusClass = '';
             let statusMessage = '';
-            const riskThreshold = dacLimit * 0.90; // 90% del límite se considera riesgo
+            const riskThreshold = dacLimit * 0.90;
 
             if (currentMonthlyAverage > dacLimit) {
-                statusClass = 'status-dac';
+                statusClass = 'bg-red-600 text-white';
                 statusMessage = 'EN TARIFA DAC';
             } else if (currentMonthlyAverage >= riskThreshold) {
-                statusClass = 'status-riesgo';
+                statusClass = 'bg-yellow-500 text-white';
                 statusMessage = 'EN RIESGO DE ENTRAR A DAC';
             } else {
-                statusClass = 'status-seguro';
+                statusClass = 'bg-green-600 text-white';
                 statusMessage = 'SEGURO (Fuera de riesgo DAC)';
             }
 
-            // Cálculo del límite para el siguiente bimestre
-            // (C2 + C3 + C4 + C5 + C6 + C_next) / 12 <= DAC_Limit
-            // C_next <= (DAC_Limit * 12) - (C2 + C3 + C4 + C5 + C6)
-            const sumOfLast5Bimesters = consumptions.slice(0, 5).reduce((sum, c) => sum + c, 0); // h1 a h5
+            const sumOfLast5Bimesters = consumptions.slice(0, 5).reduce((sum, c) => sum + c, 0);
             const maxNextBimester = (dacLimit * 12) - sumOfLast5Bimesters;
 
             let forecastMessage = '';
             if (maxNextBimester > 0) {
                 forecastMessage = `
-                    <div class="result-item status-info">
-                        <strong>Objetivo Estratégico:</strong> Para NO entrar en tarifa DAC en su próximo recibo, su consumo bimestral <strong>no debe exceder los ${maxNextBimester.toFixed(0)} kWh.</strong>
+                    <div class="p-4 bg-blue-100 border border-blue-300 rounded-lg">
+                        <h4 class="font-bold text-blue-800">Objetivo Estratégico</h4>
+                        <p class="text-blue-700">Para <strong>NO</strong> caer en tarifa DAC en tu próximo recibo, tu consumo bimestral no debe exceder los <strong class="text-xl">${maxNextBimester.toFixed(0)} kWh</strong>.</p>
                     </div>`;
             } else {
                 forecastMessage = `
-                    <div class="result-item status-dac">
-                        <strong>¡Atención!</strong> Según su historial, incluso con un consumo de 0 kWh en el próximo bimestre, su promedio seguirá por encima del límite DAC. Es crucial reducir drásticamente el consumo en los periodos venideros para poder salir de la tarifa DAC.
+                    <div class="p-4 bg-red-100 border border-red-300 rounded-lg">
+                        <h4 class="font-bold text-red-800">¡Atención Crítica!</h4>
+                        <p class="text-red-700">Según tu historial, incluso con un consumo de 0 kWh en el próximo bimestre, tu promedio seguirá por encima del límite DAC. Es crucial reducir drásticamente el consumo para salir de esta tarifa.</p>
                     </div>`;
             }
 
             dacDetailsDiv.innerHTML = `
-                <div class="result-item"><strong>Límite de Alto Consumo (DAC) para Tarifa ${tariffId}:</strong> ${dacLimit} kWh/mes</div>
-                <div class="result-item"><strong>Su consumo promedio mensual actual:</strong> ${currentMonthlyAverage.toFixed(2)} kWh/mes</div>
-                <div class="dac-status ${statusClass}">${statusMessage}</div>
-                <hr>
+                <div class="text-center p-4 rounded-lg ${statusClass}">
+                    <span class="block text-sm font-semibold">Tu Estatus Actual</span>
+                    <span class="block text-2xl font-bold">${statusMessage}</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
+                    <div class="bg-gray-100 p-3 rounded-lg">
+                        <span class="block text-sm text-gray-600">Límite DAC (Tarifa ${tariffId})</span>
+                        <span class="block text-xl font-bold text-gray-800">${dacLimit} kWh/mes</span>
+                    </div>
+                    <div class="bg-gray-100 p-3 rounded-lg">
+                        <span class="block text-sm text-gray-600">Tu Promedio Actual</span>
+                        <span class="block text-xl font-bold text-gray-800">${currentMonthlyAverage.toFixed(2)} kWh/mes</span>
+                    </div>
+                </div>
+                <hr class="my-4">
                 ${forecastMessage}
             `;
             dacResultsDiv.style.display = 'block';
