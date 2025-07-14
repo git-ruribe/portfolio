@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radar de Seguimiento</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide-react@0.292.0/dist/lucide-react.js"></script>
+    
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* slate-100 */
+        }
+        .lucide {
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <div id="loading-screen" class="flex items-center justify-center h-screen bg-slate-50 text-slate-700">
+        <!-- Loader will be rendered by JS -->
+    </div>
+
+    <div id="app-content" class="hidden">
+        <!-- App Header -->
+        <header class="bg-white shadow-sm sticky top-0 z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+                <div id="header-title" class="flex items-center">
+                    <!-- Header title will be rendered by JS -->
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="p-4 md:p-8">
+            <div class="max-w-7xl mx-auto">
+                
+                <!-- Add Contact Form -->
+                <div class="bg-white p-6 rounded-xl shadow-md mb-8">
+                    <h2 class="text-xl font-semibold mb-4 flex items-center">
+                        <span id="form-title-icon"></span>
+                        Nuevo Prospecto
+                    </h2>
+                    <form id="add-contact-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                        <div class="md:col-span-2 lg:col-span-1">
+                            <label for="name" class="block text-sm font-medium text-slate-600 mb-1">Nombre del Contacto</label>
+                            <input id="name" type="text" placeholder="Ej: Juan Pérez" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" required>
+                        </div>
+                        <div class="md:col-span-2 lg:col-span-1">
+                            <label for="note" class="block text-sm font-medium text-slate-600 mb-1">Nota Rápida</label>
+                            <input id="note" type="text" placeholder="Enviar cotización GMM" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="followUpDate" class="block text-sm font-medium text-slate-600 mb-1">Próximo Seguimiento</label>
+                                <input id="followUpDate" type="date" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" required>
+                            </div>
+                            <div>
+                                <label for="stage" class="block text-sm font-medium text-slate-600 mb-1">Etapa</label>
+                                <select id="stage" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition bg-white">
+                                    <option value="initial">Contacto Inicial</option>
+                                    <option value="proposal">Propuesta Enviada</option>
+                                    <option value="followup">Seguimiento</option>
+                                    <option value="closed">Cierre</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" id="submit-button" class="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition disabled:bg-indigo-300 flex items-center justify-center">
+                            Agregar
+                        </button>
+                    </form>
+                    <p id="form-error" class="text-red-500 text-sm mt-2"></p>
+                </div>
+
+                <!-- Navigation Controls -->
+                <div id="nav-controls" class="flex justify-center space-x-4 mb-8">
+                    <!-- Nav buttons will be rendered by JS -->
+                </div>
+
+                <!-- Dynamic Content Area -->
+                <div id="content-area">
+                    <!-- Follow-up list or Pipeline view will be rendered here -->
+                </div>
+
+            </div>
+        </main>
+        
+        <!-- Footer -->
+        <footer class="text-center p-4 text-xs text-slate-400">
+            <p>ID de Sesión: <span id="session-id">N/A</span></p>
+        </footer>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, onSnapshot, where, doc, updateDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- Global State ---
+        let db;
+        let auth;
+        let userId;
+        let currentView = 'list'; // 'list' or 'pipeline'
+        let unsubscribeFollowUp;
+        let unsubscribePipeline;
+        
+        // --- Firebase Configuration ---
+        const firebaseConfig = typeof __firebase_config !== 'undefined' 
+            ? JSON.parse(__firebase_config) 
+            : { apiKey: "YOUR_API_KEY", authDomain: "YOUR_AUTH_DOMAIN", projectId: "YOUR_PROJECT_ID" };
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        // --- Date Helper Functions ---
+        const getStartOfToday = () => {
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+            return Timestamp.fromDate(now);
+        };
+        const getEndOfToday = () => {
+            const now = new Date();
+            now.setHours(23, 59, 59, 999);
+            return Timestamp.fromDate(now);
+        };
+        const getTomorrow = () => {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            return Timestamp.fromDate(tomorrow);
+        };
+        const getNextWeek = () => {
+            const nextWeek = new Date();
+            nextWeek.setDate(nextWeek.getDate() + 7);
+            return Timestamp.fromDate(nextWeek);
+        };
+
+        // --- Icon Renderer ---
+        // This function mimics React's createElement for Lucide icons
+        const createIcon = (iconName, props = {}) => {
+            if (window.lucide && window.lucide[iconName]) {
+                const iconNode = React.createElement(window.lucide[iconName], props);
+                const tempDiv = document.createElement('div');
+                ReactDOM.render(iconNode, tempDiv);
+                return tempDiv.innerHTML;
+            }
+            return '';
+        };
+        
+        // --- Rendering Functions ---
+
+        function renderHeader() {
+            document.getElementById('header-title').innerHTML = `
+                ${createIcon('Radar', { className: 'text-indigo-600', size: 32 })}
+                <h1 class="ml-3 text-2xl font-bold text-slate-800 tracking-tight">Radar de Seguimiento</h1>
+            `;
+            document.getElementById('form-title-icon').innerHTML = createIcon('Plus', { className: 'mr-2 text-indigo-500' });
+        }
+
+        function renderNavControls() {
+            const navContainer = document.getElementById('nav-controls');
+            const baseClasses = "px-4 py-2 rounded-lg font-semibold transition flex items-center";
+            const activeClasses = "bg-indigo-600 text-white shadow";
+            const inactiveClasses = "bg-white text-slate-600 hover:bg-slate-200";
+
+            navContainer.innerHTML = `
+                <button id="btn-list-view" class="${baseClasses} ${currentView === 'list' ? activeClasses : inactiveClasses}">
+                    ${createIcon('Calendar', { className: 'mr-2', size: 18 })} Para Hoy
+                </button>
+                <button id="btn-pipeline-view" class="${baseClasses} ${currentView === 'pipeline' ? activeClasses : inactiveClasses}">
+                    ${createIcon('Kanban', { className: 'mr-2', size: 18 })} Pipeline
+                </button>
+            `;
+
+            document.getElementById('btn-list-view').addEventListener('click', () => {
+                currentView = 'list';
+                render();
+            });
+            document.getElementById('btn-pipeline-view').addEventListener('click', () => {
+                currentView = 'pipeline';
+                render();
+            });
+        }
+
+        function renderFollowUpList(contacts) {
+            const contentArea = document.getElementById('content-area');
+            if (contacts.length === 0) {
+                contentArea.innerHTML = `
+                    <div class="text-center bg-white p-10 rounded-xl shadow-md">
+                        <h3 class="text-2xl font-bold text-green-600">¡Todo listo por hoy! ✨</h3>
+                        <p class="text-slate-500 mt-2">No tienes seguimientos programados para hoy. ¡Buen trabajo!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const itemsHtml = contacts.map(contact => `
+                <div class="bg-white p-4 rounded-xl shadow-md transition-all hover:shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="flex-grow">
+                        <h4 class="font-bold text-lg text-slate-800">${contact.name}</h4>
+                        <p class="text-slate-600 flex items-center text-sm mt-1">
+                            ${createIcon('MessageSquare', { size: 14, className: 'mr-2 text-slate-400' })}
+                            ${contact.note || 'Sin notas.'}
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                        <button data-action="complete" data-id="${contact.id}" class="action-btn flex-1 sm:flex-none justify-center px-3 py-1.5 text-sm font-semibold text-green-700 bg-green-100 rounded-md hover:bg-green-200 transition flex items-center gap-1">
+                            ${createIcon('Check', { size: 16 })} Completado
+                        </button>
+                        <button data-action="tomorrow" data-id="${contact.id}" class="action-btn flex-1 sm:flex-none justify-center px-3 py-1.5 text-sm font-semibold text-blue-700 bg-blue-100 rounded-md hover:bg-blue-200 transition flex items-center gap-1">
+                             ${createIcon('ArrowRight', { size: 16 })} Mañana
+                        </button>
+                        <button data-action="week" data-id="${contact.id}" class="action-btn flex-1 sm:flex-none justify-center px-3 py-1.5 text-sm font-semibold text-purple-700 bg-purple-100 rounded-md hover:bg-purple-200 transition flex items-center gap-1">
+                             ${createIcon('ChevronsRight', { size: 16 })} 1 Semana
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            contentArea.innerHTML = `<div class="space-y-4">${itemsHtml}</div>`;
+        }
+
+        function renderPipelineView(contacts) {
+            const contentArea = document.getElementById('content-area');
+            const stages = {
+                initial: { title: 'Contacto Inicial', color: 'bg-cyan-500', contacts: [] },
+                proposal: { title: 'Propuesta Enviada', color: 'bg-blue-500', contacts: [] },
+                followup: { title: 'Seguimiento', color: 'bg-amber-500', contacts: [] },
+                closed: { title: 'Cierre', color: 'bg-green-500', contacts: [] },
+            };
+
+            contacts.forEach(contact => {
+                if (stages[contact.stage]) {
+                    stages[contact.stage].contacts.push(contact);
+                }
+            });
+            
+            const formatDate = (timestamp) => {
+                if (!timestamp) return 'N/A';
+                return timestamp.toDate().toLocaleDateString('es-MX', { day: '2-digit', month: 'short' });
+            };
+
+            const columnsHtml = Object.entries(stages).map(([key, stageInfo]) => `
+                <div class="bg-slate-200 rounded-xl flex flex-col">
+                    <div class="p-4 rounded-t-xl ${stageInfo.color} text-white">
+                        <h3 class="font-bold">${stageInfo.title}</h3>
+                        <p class="text-sm opacity-80">${stageInfo.contacts.length} prospecto(s)</p>
+                    </div>
+                    <div class="p-4 space-y-3 flex-grow">
+                        ${stageInfo.contacts.length > 0 ? stageInfo.contacts.map(contact => `
+                            <div class="bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                                <p class="font-semibold text-slate-800">${contact.name}</p>
+                                <p class="text-xs text-slate-500 truncate">${contact.note || 'Sin nota'}</p>
+                                <div class="flex items-center justify-end text-xs text-red-600 font-medium mt-2">
+                                    ${createIcon('Clock', { size: 12, className: 'mr-1' })}
+                                    <span>${formatDate(contact.followUpDate)}</span>
+                                </div>
+                            </div>
+                        `).join('') : '<div class="text-center text-slate-500 pt-4 text-sm">Vacío</div>'}
+                    </div>
+                </div>
+            `).join('');
+
+            contentArea.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">${columnsHtml}</div>`;
+        }
+
+        function render() {
+            renderNavControls();
+            const contentArea = document.getElementById('content-area');
+            contentArea.innerHTML = `<p class="text-center text-slate-500">Cargando...</p>`;
+
+            // Detach old listeners
+            if (unsubscribeFollowUp) unsubscribeFollowUp();
+            if (unsubscribePipeline) unsubscribePipeline();
+            
+            if (currentView === 'list') {
+                const q = query(
+                    collection(db, `/artifacts/${appId}/users/${userId}/contacts`),
+                    where('status', '==', 'pending'),
+                    where('followUpDate', '>=', getStartOfToday()),
+                    where('followUpDate', '<=', getEndOfToday())
+                );
+                unsubscribeFollowUp = onSnapshot(q, (snapshot) => {
+                    const contacts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    renderFollowUpList(contacts);
+                });
+            } else {
+                const q = query(
+                    collection(db, `/artifacts/${appId}/users/${userId}/contacts`),
+                    where('status', '==', 'pending')
+                );
+                unsubscribePipeline = onSnapshot(q, (snapshot) => {
+                    const contacts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    renderPipelineView(contacts);
+                });
+            }
+        }
+        
+        // --- Event Handlers ---
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('name');
+            const noteInput = document.getElementById('note');
+            const dateInput = document.getElementById('followUpDate');
+            const stageInput = document.getElementById('stage');
+            const submitButton = document.getElementById('submit-button');
+            const errorP = document.getElementById('form-error');
+
+            if (!nameInput.value.trim() || !dateInput.value) {
+                errorP.textContent = 'El nombre y la fecha son obligatorios.';
+                return;
+            }
+            
+            submitButton.disabled = true;
+            submitButton.textContent = 'Guardando...';
+            errorP.textContent = '';
+
+            try {
+                const date = new Date(dateInput.value);
+                date.setHours(12, 0, 0, 0); // Avoid timezone issues
+
+                await addDoc(collection(db, `/artifacts/${appId}/users/${userId}/contacts`), {
+                    name: nameInput.value.trim(),
+                    note: noteInput.value.trim(),
+                    followUpDate: Timestamp.fromDate(date),
+                    stage: stageInput.value,
+                    status: 'pending',
+                    createdAt: Timestamp.now(),
+                });
+
+                // Reset form
+                e.target.reset();
+                document.getElementById('followUpDate').value = new Date().toISOString().split('T')[0];
+
+            } catch (err) {
+                console.error("Error adding document: ", err);
+                errorP.textContent = 'No se pudo guardar el contacto.';
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Agregar';
+            }
+        }
+
+        async function handleListActions(e) {
+            if (!e.target.matches('.action-btn')) return;
+            
+            const button = e.target;
+            const action = button.dataset.action;
+            const contactId = button.dataset.id;
+            const contactRef = doc(db, `/artifacts/${appId}/users/${userId}/contacts`, contactId);
+
+            button.disabled = true;
+
+            try {
+                if (action === 'complete') {
+                    await updateDoc(contactRef, { status: 'completed' });
+                } else if (action === 'tomorrow') {
+                    await updateDoc(contactRef, { followUpDate: getTomorrow() });
+                } else if (action === 'week') {
+                    await updateDoc(contactRef, { followUpDate: getNextWeek() });
+                }
+            } catch (error) {
+                console.error("Error updating contact:", error);
+                button.disabled = false; // Re-enable on error
+            }
+        }
+
+        // --- Initialization ---
+
+        window.onload = () => {
+            // Render loader
+            document.getElementById('loading-screen').innerHTML = `
+                ${createIcon('Radar', { className: 'animate-spin mr-4', size: 48 })}
+                <h1 class="text-2xl font-semibold">Cargando Radar de Seguimiento...</h1>
+            `;
+
+            // Set default date for form
+            document.getElementById('followUpDate').value = new Date().toISOString().split('T')[0];
+
+            const app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    document.getElementById('session-id').textContent = userId;
+                    
+                    // Show app and hide loader
+                    document.getElementById('loading-screen').classList.add('hidden');
+                    document.getElementById('app-content').classList.remove('hidden');
+
+                    // Initial render
+                    renderHeader();
+                    render();
+                } else {
+                    try {
+                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                            await signInWithCustomToken(auth, __initial_auth_token);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    } catch (error) {
+                        console.error("Error during sign-in:", error);
+                        document.getElementById('loading-screen').innerHTML = `<p class="text-red-500">Error de autenticación. Por favor, recargue la página.</p>`;
+                    }
+                }
+            });
+
+            // Attach event listeners
+            document.getElementById('add-contact-form').addEventListener('submit', handleFormSubmit);
+            document.getElementById('content-area').addEventListener('click', handleListActions);
+        };
+    </script>
+</body>
+</html>
