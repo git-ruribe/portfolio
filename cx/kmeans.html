@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Clusters K-Means para Logística</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Leaflet.js (Mapas) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <!-- PapaParse (Lector de CSV) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/papaparse/5.3.2/papaparse.min.js"></script>
+    
+    <!-- Font Awesome (Iconos) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        #map { 
+            height: 70vh; 
+            width: 100%;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .leaflet-popup-content-wrapper {
+            background-color: #f9fafb;
+            border-radius: 0.5rem;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Optimizador de Ubicación de Plantas</h1>
+            <p class="mt-2 text-lg text-gray-600">Usa K-Means para encontrar las ubicaciones óptimas para tus centros de distribución.</p>
+        </header>
+
+        <main class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <div class="lg:col-span-4 bg-white p-6 rounded-lg shadow-lg h-fit">
+                <h2 class="text-2xl font-bold mb-4 border-b pb-2">Controles</h2>
+                <div class="space-y-6">
+                    <div>
+                        <label for="csvFile" class="block text-sm font-medium text-gray-700 mb-1">1. Cargar archivo .csv</label>
+                        <input type="file" id="csvFile" accept=".csv" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    </div>
+                    <div>
+                        <label for="kValue" class="block text-sm font-medium text-gray-700 mb-1">2. Número de grupos (plantas)</label>
+                        <input type="number" id="kValue" value="3" min="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2">
+                    </div>
+                    <button id="analyzeBtn" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-300 flex items-center justify-center" disabled>
+                        <i class="fas fa-spinner fa-spin mr-2"></i>
+                        Cargando...
+                    </button>
+                </div>
+                <div id="message" class="mt-4 text-sm text-center p-2 rounded-md"></div>
+            </div>
+
+            <div class="lg:col-span-8">
+                 <div id="map"></div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+    // *** CORRECCIÓN DE ROBUSTEZ: Espera activa a que las librerías se carguen ***
+    document.addEventListener('DOMContentLoaded', function() {
+    
+        const messageDiv = document.getElementById('message');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        let attempts = 0;
+        const maxAttempts = 100; // Esperar un máximo de 10 segundos
+
+        function checkLibrariesAndInit() {
+            // Comprobar que tanto Leaflet (L) como PapaParse (Papa) estén definidos
+            if (typeof L !== 'undefined' && typeof Papa !== 'undefined') {
+                initializeApp();
+            } else if (attempts < maxAttempts) {
+                attempts++;
+                setTimeout(checkLibrariesAndInit, 100); // Intentar de nuevo en 100ms
+            } else {
+                showMessage("Error crítico: No se pudieron cargar las librerías externas (Mapa/Análisis). Por favor, recarga la página.", 'error');
+                analyzeBtn.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Error';
+            }
+        }
+
+        function initializeApp() {
+            // --- INICIALIZACIÓN DE ELEMENTOS ---
+            const fileInput = document.getElementById('csvFile');
+            const kInput = document.getElementById('kValue');
+            let deliveryPoints = [];
+            let map;
+            let markersLayer = L.layerGroup();
+            const CLUSTER_COLORS = ['#3b82f6', '#ef4444', '#10b981', '#f97316', '#8b5cf6', '#ec4899', '#f59e0b', '#14b8a6'];
+
+            // --- CAPTURADOR GLOBAL DE ERRORES ---
+            window.onerror = function(message) {
+                showMessage(`Error inesperado: ${message}`, 'error');
+                analyzeBtn.disabled = false;
+                analyzeBtn.innerHTML = '<i class="fas fa-cogs mr-2"></i> Analizar y Visualizar';
+                return true;
+            };
+
+            // --- INICIALIZACIÓN DEL MAPA ---
+            try {
+                map = L.map('map').setView([23.6345, -102.5528], 5);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+                markersLayer.addTo(map);
+                
+                // Habilitar el botón ahora que todo está listo
+                analyzeBtn.disabled = false;
+                analyzeBtn.innerHTML = '<i class="fas fa-cogs mr-2"></i> Analizar y Visualizar';
+                showMessage('Listo para analizar. Por favor, carga un archivo.', 'info');
+
+            } catch (e) {
+                showMessage('Error al inicializar el mapa. Verifica tu conexión a internet.', 'error');
+                analyzeBtn.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Error';
+            }
+
+            // --- MANEJADOR DE EVENTOS PRINCIPAL ---
+            analyzeBtn.addEventListener('click', handleAnalysis);
+
+            // --- DEFINICIÓN DE FUNCIONES ---
+            function handleAnalysis() {
+                try {
+                    const file = fileInput.files[0];
+                    const k = parseInt(kInput.value, 10);
+
+                    if (!file) { showMessage('Por favor, selecciona un archivo CSV.', 'error'); return; }
+                    if (isNaN(k) || k < 1) { showMessage('Por favor, introduce un número válido de grupos (K).', 'error'); return; }
+
+                    analyzeBtn.disabled = true;
+                    analyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Procesando...';
+
+                    Papa.parse(file, {
+                        header: true, skipEmptyLines: true, dynamicTyping: true,
+                        complete: function(results) {
+                            deliveryPoints = results.data.map(row => ({ lat: row.Latitud, lng: row.Longitud, ...row }))
+                                .filter(p => p.lat != null && p.lng != null && typeof p.lat === 'number' && typeof p.lng === 'number');
+
+                            if (deliveryPoints.length === 0) throw new Error('No se encontraron datos de Latitud/Longitud válidos en el archivo.');
+                            if (k > deliveryPoints.length) throw new Error('El número de grupos (K) no puede ser mayor que el número de puntos.');
+
+                            showMessage(`Ejecutando K-Means para ${k} clusters...`, 'loading');
+                            
+                            setTimeout(() => {
+                                const { clusters, centroids } = kmeans(deliveryPoints, k);
+                                visualizeResults(clusters, centroids);
+                                showMessage(`Análisis completo. Se crearon ${k} clusters.`, 'success');
+                                analyzeBtn.disabled = false;
+                                analyzeBtn.innerHTML = '<i class="fas fa-cogs mr-2"></i> Analizar de nuevo';
+                            }, 50);
+                        },
+                        error: (err) => { throw new Error(`Error al leer el archivo CSV: ${err.message}`); }
+                    });
+                } catch (error) {
+                    showMessage(error.message, 'error');
+                    analyzeBtn.disabled = false;
+                    analyzeBtn.innerHTML = '<i class="fas fa-cogs mr-2"></i> Analizar y Visualizar';
+                }
+            }
+
+            function kmeans(data, k) {
+                const maxIterations = 50;
+                let centroids = initializeCentroids(data, k);
+                let assignments = [];
+                for (let iter = 0; iter < maxIterations; iter++) {
+                    const newAssignments = data.map(point => {
+                        let minDistance = Infinity, closestCentroidIndex = 0;
+                        centroids.forEach((centroid, index) => {
+                            const distance = euclideanDistance(point, centroid);
+                            if (distance < minDistance) {
+                                minDistance = distance;
+                                closestCentroidIndex = index;
+                            }
+                        });
+                        return closestCentroidIndex;
+                    });
+                    if (JSON.stringify(assignments) === JSON.stringify(newAssignments)) break;
+                    assignments = newAssignments;
+                    centroids = Array.from({ length: k }, (_, i) => {
+                        const clusterPoints = data.filter((_, index) => assignments[index] === i);
+                        return clusterPoints.length > 0 ? calculateCentroid(clusterPoints) : initializeCentroids(data, 1)[0];
+                    });
+                }
+                const clusters = Array.from({ length: k }, () => []);
+                data.forEach((point, index) => {
+                    if (assignments[index] !== undefined) clusters[assignments[index]].push(point);
+                });
+                return { clusters, centroids };
+            }
+
+            function initializeCentroids(data, k) { return [...data].sort(() => 0.5 - Math.random()).slice(0, k); }
+            function euclideanDistance(p1, p2) { return Math.sqrt(Math.pow(p1.lat - p2.lat, 2) + Math.pow(p1.lng - p2.lng, 2)); }
+            function calculateCentroid(points) {
+                const totals = points.reduce((acc, point) => ({ lat: acc.lat + point.lat, lng: acc.lng + point.lng }), { lat: 0, lng: 0 });
+                return { lat: totals.lat / points.length, lng: totals.lng / points.length };
+            }
+
+            function visualizeResults(clusters, centroids) {
+                markersLayer.clearLayers();
+                clusters.forEach((cluster, i) => {
+                    const color = CLUSTER_COLORS[i % CLUSTER_COLORS.length];
+                    cluster.forEach(point => {
+                        const marker = L.circleMarker([point.lat, point.lng], { radius: 6, color: 'white', weight: 1, fillColor: color, fillOpacity: 0.8 });
+                        let popupContent = `<div class="font-sans"><strong>Punto de Entrega</strong><br>Cluster: ${i + 1}<br>Lat: ${point.lat.toFixed(4)}<br>Lon: ${point.lng.toFixed(4)}`;
+                        if (point.Planta) popupContent += `<br>Planta Origen: ${point.Planta}`;
+                        marker.bindPopup(popupContent + `</div>`);
+                        markersLayer.addLayer(marker);
+                    });
+                });
+                centroids.forEach((centroid, i) => {
+                    const icon = L.divIcon({
+                        html: `<i class="fas fa-industry fa-2x" style="color: ${CLUSTER_COLORS[i % CLUSTER_COLORS.length]}; text-shadow: 1px 1px 2px white;"></i>`,
+                        className: 'bg-transparent border-0', iconSize: [30, 30], iconAnchor: [15, 30]
+                    });
+                    const marker = L.marker([centroid.lat, centroid.lng], { icon: icon });
+                    marker.bindPopup(`<div class="font-sans"><strong>Planta Óptima (Cluster ${i + 1})</strong><br>Lat: ${centroid.lat.toFixed(4)}<br>Lon: ${centroid.lng.toFixed(4)}</div>`);
+                    markersLayer.addLayer(marker);
+                });
+                if (deliveryPoints.length > 0) {
+                    map.fitBounds(L.latLngBounds(deliveryPoints.map(p => [p.lat, p.lng])).pad(0.1));
+                }
+            }
+        }
+
+        function showMessage(text, type) {
+            messageDiv.textContent = text;
+            messageDiv.className = 'mt-4 text-sm text-center p-2 rounded-md transition-all duration-300 ';
+            const styles = {
+                success: 'text-green-800 bg-green-100',
+                error: 'text-red-800 bg-red-100 font-bold',
+                loading: 'text-blue-800 bg-blue-100',
+                info: 'text-gray-800 bg-gray-100'
+            };
+            messageDiv.classList.add(...(styles[type] || styles.info).split(' '));
+        }
+
+        // Iniciar el proceso de verificación
+        checkLibrariesAndInit();
+    });
+    </script>
+</body>
+</html>
