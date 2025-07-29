@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Análisis de Clusters K-Means para Logística</title>
+    <title>Optimizador de Ubicaciones (Corregido)</title>
     
-    <!-- Tailwind CSS -->
+    <!-- Estilos y Librerías -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Leaflet.js (Mapas) -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    
-    <!-- PapaParse (Lector de CSV) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/papaparse/5.3.2/papaparse.min.js"></script>
-    
-    <!-- Font Awesome (Iconos) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CORRECCIÓN: Cargar Leaflet ANTES que sus plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -26,40 +26,66 @@
             border-radius: 0.5rem;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
         }
-        .leaflet-popup-content-wrapper {
-            background-color: #f9fafb;
-            border-radius: 0.5rem;
-        }
+        .leaflet-popup-content-wrapper { background-color: #f9fafb; border-radius: 0.5rem; }
     </style>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body class="bg-gray-100 text-gray-800">
 
     <div class="container mx-auto p-4 md:p-8">
         
         <header class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Optimizador de Ubicación de Plantas</h1>
-            <p class="mt-2 text-lg text-gray-600">Usa K-Means para encontrar las ubicaciones óptimas para tus centros de distribución.</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Optimizador de Ubicaciones</h1>
+            <p class="mt-2 text-lg text-gray-600">Analiza tus puntos de entrega partiendo de una configuración inicial de plantas.</p>
         </header>
 
         <main class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
             <div class="lg:col-span-4 bg-white p-6 rounded-lg shadow-lg h-fit">
                 <h2 class="text-2xl font-bold mb-4 border-b pb-2">Controles</h2>
-                <div class="space-y-6">
+                <div class="space-y-4">
                     <div>
-                        <label for="csvFile" class="block text-sm font-medium text-gray-700 mb-1">1. Cargar archivo .csv</label>
-                        <input type="file" id="csvFile" accept=".csv" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        <label for="csvFile" class="block text-sm font-medium text-gray-700 mb-1">1. Cargar Puntos de Entrega (CSV)</label>
+                        <input type="file" id="csvFile" accept=".csv" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"/>
                     </div>
-                    <div>
-                        <label for="kValue" class="block text-sm font-medium text-gray-700 mb-1">2. Número de grupos (plantas)</label>
-                        <input type="number" id="kValue" value="3" min="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2">
+                     <div>
+                        <label for="centroidsFile" class="block text-sm font-medium text-gray-700 mb-1">2. Cargar Plantas Actuales (Opcional)</label>
+                        <div class="flex items-center space-x-2">
+                             <input type="file" id="centroidsFile" accept=".csv" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 cursor-pointer"/>
+                             <button id="clearCentroidsBtn" class="p-2 text-gray-400 hover:text-gray-600" title="Limpiar archivo de centroides">&times;</button>
+                        </div>
+                        <p class="mt-1 text-xs text-gray-500">Si se carga, ignora K y n_init.</p>
                     </div>
-                    <button id="analyzeBtn" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-300 flex items-center justify-center" disabled>
-                        <i class="fas fa-spinner fa-spin mr-2"></i>
-                        Cargando...
+                    
+                    <div id="kmeans-params" class="space-y-4 pt-2 border-t">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="kValue" class="block text-sm font-medium text-gray-700">Grupos (K)</label>
+                                <input type="number" id="kValue" value="4" min="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
+                            </div>
+                            <div>
+                                <label for="nInitValue" class="block text-sm font-medium text-gray-700">Intentos</label>
+                                <input type="number" id="nInitValue" value="10" min="1" max="100" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t">
+                        <label class="block text-sm font-medium text-gray-700">3. Definir Restricciones</label>
+                        <div class="grid grid-cols-2 gap-4 mt-1">
+                             <div>
+                                <label for="minPoints" class="block text-xs font-medium text-gray-500">Puntos Mín.</label>
+                                <input type="number" id="minPoints" value="1" min="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
+                            </div>
+                            <div>
+                                <label for="maxPoints" class="block text-xs font-medium text-gray-500">Puntos Máx.</label>
+                                <input type="number" id="maxPoints" value="1000" min="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="analyzeBtn" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-300 flex items-center justify-center">
+                        <i class="fas fa-cogs mr-2"></i>
+                        Analizar
                     </button>
                 </div>
                 <div id="message" class="mt-4 text-sm text-center p-2 rounded-md"></div>
@@ -67,190 +93,451 @@
 
             <div class="lg:col-span-8">
                  <div id="map"></div>
+                 <div class="mt-8 bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-bold mb-4">Estadísticas del Resultado Final</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cluster</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nº de Puntos</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Distancia Promedio</th>
+                                </tr>
+                            </thead>
+                            <tbody id="statsTableBody" class="bg-white divide-y divide-gray-200"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-
         </main>
     </div>
 
     <script>
-    // *** CORRECCIÓN DE ROBUSTEZ: Espera activa a que las librerías se carguen ***
-    document.addEventListener('DOMContentLoaded', function() {
-    
-        const messageDiv = document.getElementById('message');
-        const analyzeBtn = document.getElementById('analyzeBtn');
-        let attempts = 0;
-        const maxAttempts = 100; // Esperar un máximo de 10 segundos
+        window.onload = function() {
+            // --- DATOS SIMULADOS ---
+            const simulatedData = [
+                { Planta: 'Norte', Latitud: 25.6866, Longitud: -100.3161 }, { Planta: 'Norte', Latitud: 25.7850, Longitud: -100.4100 },
+                { Planta: 'Norte', Latitud: 25.6500, Longitud: -100.2900 }, { Planta: 'Norte', Latitud: 25.7200, Longitud: -100.3500 },
+                { Planta: 'Norte', Latitud: 25.8000, Longitud: -100.5000 }, { Planta: 'Norte', Latitud: 25.9000, Longitud: -100.6000 },
+                { Planta: 'Norte', Latitud: 25.6000, Longitud: -100.2000 }, { Planta: 'Centro', Latitud: 19.4326, Longitud: -99.1332 },
+                { Planta: 'Centro', Latitud: 19.3900, Longitud: -99.1700 }, { Planta: 'Centro', Latitud: 19.4500, Longitud: -99.1000 },
+                { Planta: 'Centro', Latitud: 19.3500, Longitud: -99.1500 }, { Planta: 'Centro', Latitud: 19.5000, Longitud: -99.2000 },
+                { Planta: 'Occidente', Latitud: 20.6597, Longitud: -103.3496 }, { Planta: 'Occidente', Latitud: 20.6700, Longitud: -103.3900 },
+                { Planta: 'Occidente', Latitud: 20.6000, Longitud: -103.3000 }, { Planta: 'Occidente', Latitud: 20.7000, Longitud: -103.4000 },
+                { Planta: 'Occidente', Latitud: 20.6200, Longitud: -103.3700 }, { Planta: 'Sureste', Latitud: 21.1619, Longitud: -86.8515 },
+                { Planta: 'Sureste', Latitud: 20.9674, Longitud: -89.5926 }, { Planta: 'Sureste', Latitud: 21.1300, Longitud: -86.8200 },
+                { Planta: 'Sureste', Latitud: 20.8900, Longitud: -89.6200 },
+            ].map(d => ({ ...d, lat: d.Latitud, lng: d.Longitud }));
 
-        function checkLibrariesAndInit() {
-            // Comprobar que tanto Leaflet (L) como PapaParse (Papa) estén definidos
-            if (typeof L !== 'undefined' && typeof Papa !== 'undefined') {
-                initializeApp();
-            } else if (attempts < maxAttempts) {
-                attempts++;
-                setTimeout(checkLibrariesAndInit, 100); // Intentar de nuevo en 100ms
-            } else {
-                showMessage("Error crítico: No se pudieron cargar las librerías externas (Mapa/Análisis). Por favor, recarga la página.", 'error');
-                analyzeBtn.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Error';
-            }
-        }
-
-        function initializeApp() {
-            // --- INICIALIZACIÓN DE ELEMENTOS ---
-            const fileInput = document.getElementById('csvFile');
+            // --- VARIABLES GLOBALES ---
+            let userData = null;
+            let initialCentroids = null;
             const kInput = document.getElementById('kValue');
-            let deliveryPoints = [];
-            let map;
-            let markersLayer = L.layerGroup();
-            const CLUSTER_COLORS = ['#3b82f6', '#ef4444', '#10b981', '#f97316', '#8b5cf6', '#ec4899', '#f59e0b', '#14b8a6'];
+            const nInitInput = document.getElementById('nInitValue');
+            const minPointsInput = document.getElementById('minPoints');
+            const maxPointsInput = document.getElementById('maxPoints');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const messageDiv = document.getElementById('message');
+            const fileInput = document.getElementById('csvFile');
+            const centroidsFileInput = document.getElementById('centroidsFile');
+            const clearCentroidsBtn = document.getElementById('clearCentroidsBtn');
+            const kmeansParamsDiv = document.getElementById('kmeans-params');
+            let map, markersLayer, arrowsLayer;
+            const CLUSTER_COLORS = ['#3b82f6', '#ef4444', '#10b981', '#f97316', '#8b5cf6', '#ec4899', '#f59e0b', '#14b8a6', '#64748b', '#d946ef', '#06b6d4', '#f43f5e'];
 
-            // --- CAPTURADOR GLOBAL DE ERRORES ---
-            window.onerror = function(message) {
-                showMessage(`Error inesperado: ${message}`, 'error');
-                analyzeBtn.disabled = false;
-                analyzeBtn.innerHTML = '<i class="fas fa-cogs mr-2"></i> Analizar y Visualizar';
-                return true;
-            };
-
-            // --- INICIALIZACIÓN DEL MAPA ---
+            // --- INICIALIZACIÓN ---
             try {
                 map = L.map('map').setView([23.6345, -102.5528], 5);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                }).addTo(map);
-                markersLayer.addTo(map);
-                
-                // Habilitar el botón ahora que todo está listo
-                analyzeBtn.disabled = false;
-                analyzeBtn.innerHTML = '<i class="fas fa-cogs mr-2"></i> Analizar y Visualizar';
-                showMessage('Listo para analizar. Por favor, carga un archivo.', 'info');
-
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
+                markersLayer = L.layerGroup().addTo(map);
+                arrowsLayer = L.layerGroup().addTo(map);
             } catch (e) {
-                showMessage('Error al inicializar el mapa. Verifica tu conexión a internet.', 'error');
-                analyzeBtn.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Error';
+                showMessage('Error al inicializar el mapa: ' + e.message, 'error');
             }
 
-            // --- MANEJADOR DE EVENTOS PRINCIPAL ---
+            // --- EVENT LISTENERS ---
             analyzeBtn.addEventListener('click', handleAnalysis);
+            fileInput.addEventListener('change', (e) => handleFileUpload(e, 'data'));
+            centroidsFileInput.addEventListener('change', (e) => handleFileUpload(e, 'centroids'));
+            clearCentroidsBtn.addEventListener('click', () => {
+                centroidsFileInput.value = '';
+                initialCentroids = null;
+                kmeansParamsDiv.style.opacity = '1';
+                kInput.disabled = false;
+                nInitInput.disabled = false;
+                showMessage('Archivo de centroides iniciales limpiado.', 'info');
+            });
 
-            // --- DEFINICIÓN DE FUNCIONES ---
-            function handleAnalysis() {
+            // --- MANEJO DE ARCHIVOS ---
+            function handleFileUpload(event, type) {
+                const file = event.target.files[0];
+                if (!file) return;
+                showMessage('Cargando archivo...', 'loading');
+                Papa.parse(file, {
+                    header: true, skipEmptyLines: true,
+                    complete: (results) => {
+                        if (results.errors.length) { showMessage('Error al leer el CSV.', 'error'); return; }
+                        if (!results.data.length || !results.data[0].hasOwnProperty('Latitud') || !results.data[0].hasOwnProperty('Longitud')) {
+                            showMessage('CSV debe tener columnas "Latitud" y "Longitud".', 'error'); return;
+                        }
+                        try {
+                            const parsedData = results.data.map((row, index) => {
+                                const lat = parseFloat(row.Latitud);
+                                const lng = parseFloat(row.Longitud);
+                                if (isNaN(lat) || isNaN(lng)) throw new Error(`Fila ${index + 2} inválida.`);
+                                return { ...row, lat, lng };
+                            });
+
+                            if (type === 'data') {
+                                userData = parsedData;
+                                showMessage(`${userData.length} puntos cargados. Listo para analizar.`, 'success');
+                            } else if (type === 'centroids') {
+                                initialCentroids = parsedData;
+                                kInput.value = initialCentroids.length;
+                                kInput.disabled = true;
+                                nInitInput.disabled = true;
+                                kmeansParamsDiv.style.opacity = '0.5';
+                                showMessage(`${initialCentroids.length} centroides iniciales cargados.`, 'success');
+                            }
+                            handleAnalysis();
+                        } catch (error) { showMessage(`Error en datos: ${error.message}`, 'error'); }
+                    },
+                    error: () => { showMessage('No se pudo procesar el archivo.', 'error'); }
+                });
+            }
+            
+            // --- LÓGICA DE ANÁLISIS PRINCIPAL ---
+            async function handleAnalysis() {
+                const dataToAnalyze = userData || simulatedData;
+                const minPoints = parseInt(minPointsInput.value, 10);
+                const maxPoints = parseInt(maxPointsInput.value, 10);
+                let k = parseInt(kInput.value, 10);
+                const n_init = parseInt(nInitInput.value, 10);
+
+                if ([minPoints, maxPoints, k, n_init].some(isNaN)) { showMessage('Parámetros inválidos.', 'error'); return; }
+                if (minPoints > maxPoints) { showMessage('Mínimo de puntos no puede ser mayor que máximo.', 'error'); return; }
+
+                showMessage('Iniciando análisis...', 'loading');
+                await new Promise(resolve => setTimeout(resolve, 50));
+
                 try {
-                    const file = fileInput.files[0];
-                    const k = parseInt(kInput.value, 10);
+                    // 1. Obtener la agrupación inicial
+                    let initialClustering;
+                    if (initialCentroids) {
+                        k = initialCentroids.length;
+                        initialClustering = kmeans(dataToAnalyze, k, initialCentroids);
+                    } else {
+                        if (k * minPoints > dataToAnalyze.length) {
+                            showMessage('No hay suficientes puntos para el mínimo especificado.', 'error'); return;
+                        }
+                        initialClustering = runNKmeans(dataToAnalyze, k, n_init);
+                    }
+                    
+                    let { clusters, centroids } = initialClustering;
 
-                    if (!file) { showMessage('Por favor, selecciona un archivo CSV.', 'error'); return; }
-                    if (isNaN(k) || k < 1) { showMessage('Por favor, introduce un número válido de grupos (K).', 'error'); return; }
+                    // 2. Bucle de estabilización: aplicar restricciones hasta que no haya cambios
+                    let maxCycles = 10; // Evitar bucles infinitos
+                    let changedInCycle = true;
+                    while (changedInCycle && maxCycles > 0) {
+                        changedInCycle = false;
+                        maxCycles--;
 
-                    analyzeBtn.disabled = true;
-                    analyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Procesando...';
+                        // 2a. Fusionar clusters pequeños
+                        const mergeResult = mergeUndersized(clusters, centroids, minPoints);
+                        if (mergeResult.changed) {
+                            clusters = mergeResult.clusters;
+                            centroids = mergeResult.centroids;
+                            changedInCycle = true;
+                            showMessage(`Fusionando clusters pequeños... Quedan ${clusters.length}`, 'loading');
+                            await new Promise(resolve => setTimeout(resolve, 50));
+                        }
 
-                    Papa.parse(file, {
-                        header: true, skipEmptyLines: true, dynamicTyping: true,
-                        complete: function(results) {
-                            deliveryPoints = results.data.map(row => ({ lat: row.Latitud, lng: row.Longitud, ...row }))
-                                .filter(p => p.lat != null && p.lng != null && typeof p.lat === 'number' && typeof p.lng === 'number');
+                        // 2b. Dividir clusters grandes
+                        const splitResult = splitOversized(clusters, centroids, maxPoints, n_init);
+                        if (splitResult.changed) {
+                            clusters = splitResult.clusters;
+                            centroids = splitResult.centroids;
+                            changedInCycle = true;
+                            showMessage(`Dividiendo clusters grandes... Ahora hay ${clusters.length}`, 'loading');
+                            await new Promise(resolve => setTimeout(resolve, 50));
+                        }
+                    }
 
-                            if (deliveryPoints.length === 0) throw new Error('No se encontraron datos de Latitud/Longitud válidos en el archivo.');
-                            if (k > deliveryPoints.length) throw new Error('El número de grupos (K) no puede ser mayor que el número de puntos.');
+                    if (maxCycles === 0) {
+                        showMessage('Análisis finalizado (límite de ciclos alcanzado).', 'info');
+                    } else {
+                        showMessage(`Análisis estable finalizado. Se generaron ${clusters.length} clusters.`, 'success');
+                    }
+                    
+                    visualizeResults(clusters, centroids, dataToAnalyze, initialCentroids);
 
-                            showMessage(`Ejecutando K-Means para ${k} clusters...`, 'loading');
-                            
-                            setTimeout(() => {
-                                const { clusters, centroids } = kmeans(deliveryPoints, k);
-                                visualizeResults(clusters, centroids);
-                                showMessage(`Análisis completo. Se crearon ${k} clusters.`, 'success');
-                                analyzeBtn.disabled = false;
-                                analyzeBtn.innerHTML = '<i class="fas fa-cogs mr-2"></i> Analizar de nuevo';
-                            }, 50);
-                        },
-                        error: (err) => { throw new Error(`Error al leer el archivo CSV: ${err.message}`); }
-                    });
                 } catch (error) {
-                    showMessage(error.message, 'error');
-                    analyzeBtn.disabled = false;
-                    analyzeBtn.innerHTML = '<i class="fas fa-cogs mr-2"></i> Analizar y Visualizar';
+                    showMessage(`Error durante el análisis: ${error.message}`, 'error');
+                    console.error("Error details:", error);
                 }
             }
 
-            function kmeans(data, k) {
-                const maxIterations = 50;
-                let centroids = initializeCentroids(data, k);
-                let assignments = [];
-                for (let iter = 0; iter < maxIterations; iter++) {
-                    const newAssignments = data.map(point => {
-                        let minDistance = Infinity, closestCentroidIndex = 0;
-                        centroids.forEach((centroid, index) => {
-                            const distance = euclideanDistance(point, centroid);
-                            if (distance < minDistance) {
-                                minDistance = distance;
-                                closestCentroidIndex = index;
+            // --- LÓGICAS DE RESTRICCIÓN ---
+
+            function mergeUndersized(clusters, centroids, minPoints) {
+                let changed = false;
+                let currentClusters = [...clusters];
+                let currentCentroids = [...centroids];
+
+                while (true) {
+                    let mergeOccurredInPass = false;
+                    const validClusters = [];
+                    const undersizedClusters = [];
+
+                    currentClusters.forEach((c, i) => {
+                        if (c.points.length < minPoints && c.points.length > 0) {
+                            undersizedClusters.push({ ...c, originalIndex: i });
+                        } else if (c.points.length > 0) {
+                            validClusters.push({ ...c, originalIndex: i });
+                        }
+                    });
+
+                    if (undersizedClusters.length === 0) break;
+                    if (validClusters.length === 0) break; 
+                    
+                    changed = true;
+                    mergeOccurredInPass = true;
+
+                    // Reasignar puntos de clusters pequeños
+                    undersizedClusters.forEach(uc => {
+                        uc.points.forEach(point => {
+                            let closestValidClusterIndex = -1;
+                            let minSqDist = Infinity;
+                            validClusters.forEach((vc, vc_idx) => {
+                                const centroid = currentCentroids[vc.originalIndex];
+                                const sqDist = (point.lat - centroid.lat)**2 + (point.lng - centroid.lng)**2;
+                                if (sqDist < minSqDist) {
+                                    minSqDist = sqDist;
+                                    closestValidClusterIndex = vc_idx;
+                                }
+                            });
+                            if (closestValidClusterIndex !== -1) {
+                                validClusters[closestValidClusterIndex].points.push(point);
                             }
                         });
-                        return closestCentroidIndex;
                     });
-                    if (JSON.stringify(assignments) === JSON.stringify(newAssignments)) break;
-                    assignments = newAssignments;
-                    centroids = Array.from({ length: k }, (_, i) => {
-                        const clusterPoints = data.filter((_, index) => assignments[index] === i);
-                        return clusterPoints.length > 0 ? calculateCentroid(clusterPoints) : initializeCentroids(data, 1)[0];
+                    
+                    // Recalcular centroides y reconstruir listas
+                    currentClusters = validClusters;
+                    currentCentroids = currentClusters.map(c => {
+                        const newCentroid = calculateCentroid(c.points);
+                        return { ...newCentroid, initialIndex: c.initialIndex };
                     });
+                    
+                    if (!mergeOccurredInPass) break;
                 }
-                const clusters = Array.from({ length: k }, () => []);
-                data.forEach((point, index) => {
-                    if (assignments[index] !== undefined) clusters[assignments[index]].push(point);
-                });
-                return { clusters, centroids };
+                return { clusters: currentClusters, centroids: currentCentroids, changed };
             }
 
-            function initializeCentroids(data, k) { return [...data].sort(() => 0.5 - Math.random()).slice(0, k); }
-            function euclideanDistance(p1, p2) { return Math.sqrt(Math.pow(p1.lat - p2.lat, 2) + Math.pow(p1.lng - p2.lng, 2)); }
+            function splitOversized(clusters, centroids, maxPoints, n_init) {
+                let changed = false;
+                const finalClusters = [];
+                
+                clusters.forEach((cluster, i) => {
+                    if (cluster.points.length > maxPoints) {
+                        changed = true;
+                        const splitResult = runNKmeans(cluster.points, 2, n_init);
+                        splitResult.clusters.forEach(subCluster => {
+                            finalClusters.push({ ...subCluster, initialIndex: cluster.initialIndex });
+                        });
+                    } else {
+                        finalClusters.push(cluster);
+                    }
+                });
+
+                if (changed) {
+                    const finalCentroids = finalClusters.map(c => {
+                        const centroid = calculateCentroid(c.points);
+                        return { ...centroid, initialIndex: c.initialIndex };
+                    });
+                    return { clusters: finalClusters, centroids: finalCentroids, changed: true };
+                }
+
+                return { clusters, centroids, changed: false };
+            }
+
+
+            // --- FUNCIONES K-MEANS ---
+
+            function runNKmeans(data, k, n_init, forcedCentroids = null) {
+                let bestResult = { clusters: [], centroids: [], inertia: Infinity };
+                if (k === 0 || data.length < k) return bestResult;
+
+                const runs = forcedCentroids ? 1 : n_init;
+                for (let i = 0; i < runs; i++) {
+                    const initialC = forcedCentroids ? forcedCentroids : initializeCentroidsKMeansPP(data, k);
+                    const currentResult = kmeans(data, k, initialC);
+                    const inertia = calculateInertia(currentResult.clusters, currentResult.centroids);
+                    if (inertia < bestResult.inertia) {
+                        bestResult = { ...currentResult, inertia };
+                    }
+                }
+                return bestResult;
+            }
+
+            function kmeans(data, k, initialCentroids) {
+                const maxIterations = 100;
+                let centroids = initialCentroids.map((c, i) => ({ ...c, initialIndex: c.initialIndex ?? i }));
+                let assignments = [];
+
+                for (let iter = 0; iter < maxIterations; iter++) {
+                    const newAssignments = data.map(point => {
+                        let minSqDist = Infinity, closestIndex = 0;
+                        centroids.forEach((centroid, index) => {
+                            const sqDist = (point.lat - centroid.lat)**2 + (point.lng - centroid.lng)**2;
+                            if (sqDist < minSqDist) { minSqDist = sqDist; closestIndex = index; }
+                        });
+                        return closestIndex;
+                    });
+                    
+                    if (JSON.stringify(assignments) === JSON.stringify(newAssignments)) break;
+                    assignments = newAssignments;
+
+                    centroids = centroids.map((oldCentroid, i) => {
+                        const clusterPoints = data.filter((_, index) => assignments[index] === i);
+                        const newCentroid = clusterPoints.length > 0 ? calculateCentroid(clusterPoints) : oldCentroid;
+                        return { ...newCentroid, initialIndex: oldCentroid.initialIndex };
+                    });
+                }
+                const clusters = centroids.map((c, i) => ({
+                    points: data.filter((_, pIndex) => assignments[pIndex] === i),
+                    initialIndex: c.initialIndex
+                }));
+
+                return { clusters, centroids };
+            }
+            
+            function initializeCentroidsKMeansPP(data, k) {
+                const centroids = [];
+                if (data.length === 0 || k === 0) return [];
+                const dataCopy = [...data];
+                centroids.push(dataCopy.splice(Math.floor(Math.random() * dataCopy.length), 1)[0]);
+                while (centroids.length < k && dataCopy.length > 0) {
+                    const distances = dataCopy.map(point => {
+                        let minSqDist = Infinity;
+                        centroids.forEach(centroid => {
+                            const sqDist = (point.lat - centroid.lat)**2 + (point.lng - centroid.lng)**2;
+                            minSqDist = Math.min(minSqDist, sqDist);
+                        });
+                        return minSqDist;
+                    });
+                    const sumOfDistances = distances.reduce((a, b) => a + b, 0);
+                    if (sumOfDistances === 0) break;
+                    const randomValue = Math.random() * sumOfDistances;
+                    let cumulativeSum = 0;
+                    let nextCentroidIndex = -1;
+                    for (let j = 0; j < distances.length; j++) {
+                        cumulativeSum += distances[j];
+                        if (cumulativeSum >= randomValue) { nextCentroidIndex = j; break; }
+                    }
+                    if (nextCentroidIndex === -1) { nextCentroidIndex = dataCopy.length - 1; }
+                    centroids.push(dataCopy.splice(nextCentroidIndex, 1)[0]);
+                }
+                return centroids;
+            }
+
             function calculateCentroid(points) {
+                if (!points || points.length === 0) return { lat: 0, lng: 0 };
                 const totals = points.reduce((acc, point) => ({ lat: acc.lat + point.lat, lng: acc.lng + point.lng }), { lat: 0, lng: 0 });
                 return { lat: totals.lat / points.length, lng: totals.lng / points.length };
             }
 
-            function visualizeResults(clusters, centroids) {
-                markersLayer.clearLayers();
+            function calculateInertia(clusters, centroids) {
+                let totalInertia = 0;
                 clusters.forEach((cluster, i) => {
-                    const color = CLUSTER_COLORS[i % CLUSTER_COLORS.length];
-                    cluster.forEach(point => {
-                        const marker = L.circleMarker([point.lat, point.lng], { radius: 6, color: 'white', weight: 1, fillColor: color, fillOpacity: 0.8 });
-                        let popupContent = `<div class="font-sans"><strong>Punto de Entrega</strong><br>Cluster: ${i + 1}<br>Lat: ${point.lat.toFixed(4)}<br>Lon: ${point.lng.toFixed(4)}`;
-                        if (point.Planta) popupContent += `<br>Planta Origen: ${point.Planta}`;
-                        marker.bindPopup(popupContent + `</div>`);
-                        markersLayer.addLayer(marker);
-                    });
+                    const centroid = centroids[i];
+                    if (!centroid || cluster.points.length === 0) return;
+                    totalInertia += cluster.points.reduce((sum, point) => sum + ((point.lat - centroid.lat)**2 + (point.lng - centroid.lng)**2), 0);
                 });
-                centroids.forEach((centroid, i) => {
-                    const icon = L.divIcon({
-                        html: `<i class="fas fa-industry fa-2x" style="color: ${CLUSTER_COLORS[i % CLUSTER_COLORS.length]}; text-shadow: 1px 1px 2px white;"></i>`,
-                        className: 'bg-transparent border-0', iconSize: [30, 30], iconAnchor: [15, 30]
-                    });
-                    const marker = L.marker([centroid.lat, centroid.lng], { icon: icon });
-                    marker.bindPopup(`<div class="font-sans"><strong>Planta Óptima (Cluster ${i + 1})</strong><br>Lat: ${centroid.lat.toFixed(4)}<br>Lon: ${centroid.lng.toFixed(4)}</div>`);
-                    markersLayer.addLayer(marker);
-                });
-                if (deliveryPoints.length > 0) {
-                    map.fitBounds(L.latLngBounds(deliveryPoints.map(p => [p.lat, p.lng])).pad(0.1));
-                }
+                return totalInertia;
             }
-        }
 
-        function showMessage(text, type) {
-            messageDiv.textContent = text;
-            messageDiv.className = 'mt-4 text-sm text-center p-2 rounded-md transition-all duration-300 ';
-            const styles = {
-                success: 'text-green-800 bg-green-100',
-                error: 'text-red-800 bg-red-100 font-bold',
-                loading: 'text-blue-800 bg-blue-100',
-                info: 'text-gray-800 bg-gray-100'
-            };
-            messageDiv.classList.add(...(styles[type] || styles.info).split(' '));
-        }
+            // --- VISUALIZACIÓN ---
+            function visualizeResults(clusters, centroids, allPoints, originalStartCentroids) {
+                markersLayer.clearLayers();
+                arrowsLayer.clearLayers();
+                displayClusterStats(clusters, centroids);
 
-        // Iniciar el proceso de verificación
-        checkLibrariesAndInit();
-    });
+                if (originalStartCentroids) {
+                    originalStartCentroids.forEach((centroid, index) => {
+                        const icon = L.divIcon({ html: `<i class="fas fa-industry fa-2x" style="color: #9ca3af;"></i>`, className: 'bg-transparent border-0', iconSize: [30, 30], iconAnchor: [15, 30] });
+                        L.marker([centroid.lat, centroid.lng], { icon: icon, zIndexOffset: -100 })
+                            .bindPopup(`<b>Inicio Original ${index + 1}</b><br>Lat: ${centroid.lat.toFixed(4)}, Lon: ${centroid.lng.toFixed(4)}`)
+                            .addTo(markersLayer);
+                    });
+                }
+
+                clusters.forEach((clusterData, i) => {
+                    const finalCentroid = centroids[i];
+                    const color = CLUSTER_COLORS[i % CLUSTER_COLORS.length];
+                    
+                    clusterData.points.forEach(point => {
+                        L.circleMarker([point.lat, point.lng], { radius: 6, color: 'white', weight: 1, fillColor: color, fillOpacity: 0.8 })
+                            .bindPopup(`<b>Cluster: ${i + 1}</b><br><hr class="my-1">${Object.keys(point).filter(k=>k!=='lat'&&k!=='lng').map(k=>`<b>${k}:</b> ${point[k]}`).join('<br>')}`)
+                            .addTo(markersLayer);
+                    });
+                    
+                    if (finalCentroid && finalCentroid.lat !== 0) {
+                        const icon = L.divIcon({ html: `<i class="fas fa-industry fa-2x" style="color: ${color}; text-shadow: 1px 1px 2px white;"></i>`, className: 'bg-transparent border-0', iconSize: [30, 30], iconAnchor: [15, 30] });
+                        L.marker([finalCentroid.lat, finalCentroid.lng], { icon: icon })
+                            .bindPopup(`<b>Planta Óptima (Cluster ${i + 1})</b><br>Lat: ${finalCentroid.lat.toFixed(4)}, Lon: ${finalCentroid.lng.toFixed(4)}`)
+                            .addTo(markersLayer);
+
+                        if (originalStartCentroids && clusterData.initialIndex !== undefined) {
+                            const origin = originalStartCentroids[clusterData.initialIndex];
+                            const line = L.polyline([[origin.lat, origin.lng], [finalCentroid.lat, finalCentroid.lng]], { color: '#6b7280', weight: 2, opacity: 0.7 });
+                            const arrow = L.polylineDecorator(line, { patterns: [{ offset: '100%', repeat: 0, symbol: L.Symbol.arrowHead({ pixelSize: 12, polygon: false, pathOptions: { stroke: true, color: '#6b7280', opacity: 0.7 } }) }] });
+                            arrowsLayer.addLayer(line);
+                            arrowsLayer.addLayer(arrow);
+                        }
+                    }
+                });
+                if (allPoints.length > 0) map.fitBounds(L.latLngBounds(allPoints.map(p => [p.lat, p.lng])).pad(0.1));
+            }
+            
+            function displayClusterStats(clusters, centroids) {
+                const statsTableBody = document.getElementById('statsTableBody');
+                statsTableBody.innerHTML = '';
+                if (!clusters || clusters.length === 0) {
+                    statsTableBody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-gray-500">No hay datos para mostrar.</td></tr>`;
+                    return;
+                }
+                clusters.forEach((clusterData, i) => {
+                    const centroid = centroids[i];
+                    const numPoints = clusterData.points.length;
+                    let avgDistance = 0;
+                    if (numPoints > 0 && centroid) {
+                        const totalDistance = clusterData.points.reduce((sum, point) => sum + Math.sqrt((point.lat - centroid.lat)**2 + (point.lng - centroid.lng)**2), 0);
+                        avgDistance = totalDistance / numPoints;
+                    }
+                    const row = `
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap"><div class="flex items-center text-sm text-gray-900 font-medium">
+                                <div class="w-4 h-4 rounded-full mr-3 flex-shrink-0" style="background-color: ${CLUSTER_COLORS[i % CLUSTER_COLORS.length]};"></div>
+                                Cluster ${i + 1}
+                            </div></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${numPoints}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${avgDistance > 0 ? avgDistance.toFixed(4) : 'N/A'}</td>
+                        </tr>`;
+                    statsTableBody.innerHTML += row;
+                });
+            }
+
+            function showMessage(text, type) {
+                messageDiv.textContent = text;
+                messageDiv.className = 'mt-4 text-sm text-center p-2 rounded-md transition-all duration-300 ';
+                const styles = { success: 'text-green-800 bg-green-100', error: 'text-red-800 bg-red-100 font-bold', loading: 'text-blue-800 bg-blue-100', info: 'text-yellow-800 bg-yellow-100' };
+                messageDiv.classList.add(...(styles[type] || styles.info).split(' '));
+            }
+
+            // --- EJECUCIÓN INICIAL ---
+            handleAnalysis();
+        };
     </script>
 </body>
 </html>
