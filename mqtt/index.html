@@ -21,7 +21,7 @@
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
   <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-4xl">
-    <h1 class="text-2xl font-bold text-gray-800 mb-4">Encoder Velocity Dashboard (2)</h1>
+    <h1 class="text-2xl font-bold text-gray-800 mb-4">Encoder Velocity Dashboard</h1>
     <div class="mb-4">
       <p id="connectionStatus" class="text-lg font-semibold text-gray-600">Connecting to MQTT...</p>
     </div>
@@ -32,7 +32,7 @@
 
   <script>
     // MQTT Configuration
-    const brokerUrl = 'wss://89842616873441ce985c09eadcb3ed60.s1.eu.hivemq.cloud:8883/mqtt';
+    const brokerUrl = 'wss://89842616873441ce985c09eadcb3ed60.s1.eu.hivemq.cloud:8884/mqtt';
     const mqttOptions = {
       // hostname, port, protocol, y path se eliminan de aquí
       username: 'elmike',
@@ -40,8 +40,7 @@
       clientId: 'velocity-dashboard-' + Math.random().toString(16).slice(3),
       reconnectPeriod: 5000,
       keepalive: 60,
-      protocolVersion: 5,
-      rejectUnauthorized: false, // Quítalo después de que la conexión funcione
+      protocolVersion: 5
     };
     const mqttTopic = 'Gym';
 
