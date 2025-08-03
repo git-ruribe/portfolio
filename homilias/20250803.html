@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homilía: La Verdadera Riqueza</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Estilos personalizados y componentes */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff; /* bg-sky-50 en Tailwind */
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem; /* p-6 */
+            margin-bottom: 1.5rem; /* mb-6 */
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animación escalonada */
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+
+        .gradient-text {
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+        
+        .header-icon {
+            width: 3.5rem; /* w-14 */
+            height: 3.5rem; /* h-14 */
+            margin: 0 auto 1rem; /* mx-auto mb-4 */
+        }
+
+        /* Estilos del Cuestionario */
+        .question-option {
+            display: block;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb; /* border-gray-200 */
+            border-radius: 0.5rem; /* rounded-lg */
+            margin-bottom: 0.5rem; /* mb-2 */
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .question-option:hover {
+            border-color: #3b82f6; /* border-blue-500 */
+            background-color: #eff6ff; /* bg-blue-50 */
+        }
+        
+        .question-option.selected {
+            border-color: #3b82f6; /* border-blue-500 */
+            background-color: #dbeafe; /* bg-blue-200 */
+            font-weight: 600;
+        }
+
+        /* Clases para resultados */
+        .question-option.correct {
+            border-color: #16a34a; /* border-green-600 */
+            background-color: #dcfce7; /* bg-green-100 */
+            color: #15803d; /* text-green-800 */
+        }
+
+        .question-option.incorrect {
+            border-color: #dc2626; /* border-red-600 */
+            background-color: #fee2e2; /* bg-red-100 */
+            color: #b91c1c; /* text-red-800 */
+            text-decoration: line-through;
+        }
+
+        .quiz-button {
+            background-color: #047857; /* bg-emerald-700 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .quiz-button:hover {
+            background-color: #065f46; /* bg-emerald-800 */
+        }
+        .quiz-button:disabled {
+            background-color: #9ca3af; /* bg-gray-400 */
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="max-w-4xl mx-auto p-4 md:p-6">
+
+        <header class="text-center my-8 md:my-12">
+            <svg class="header-icon text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 11.25v8.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 1 0 12 10.125A2.625 2.625 0 0 0 12 4.875ZM15.75 12m-3.75 0a3.75 3.75 0 1 0 7.5 0 3.75 3.75 0 1 0-7.5 0Z" />
+            </svg>
+            <h1 class="text-3xl md:text-4xl font-bold gradient-text bg-gradient-to-r from-sky-500 to-indigo-600 mb-2">
+                Construyendo una Vida con Sentido
+            </h1>
+            <p class="text-lg text-gray-600">
+                Reflexionando el Evangelio y la Homilía sobre la Verdadera Riqueza
+            </p>
+        </header>
+
+        <section id="evangelio" class="card">
+            <h2 class="text-2xl font-semibold mb-4 text-sky-700">Evangelio según San Lucas (12, 13-21)</h2>
+            <blockquote class="border-l-4 border-sky-500 pl-4 italic text-gray-700 space-y-3">
+                <p>En aquel tiempo, hallándose Jesús en medio de una multitud, un hombre le dijo: “Maestro, dile a mi hermano que comparta conmigo la herencia”. Pero Jesús le contestó: “Amigo, ¿quién me ha puesto como juez en la distribución de herencias?”</p>
+                <p>Y dirigiéndose a la multitud, dijo: “Eviten toda clase de avaricia, porque la vida del hombre no depende de la abundancia de los bienes que posea”.</p>
+                <p>Después les propuso esta parábola: “Un hombre rico obtuvo una gran cosecha y se puso a pensar: ‘¿Qué haré, porque no tengo ya en dónde almacenar la cosecha? Ya sé lo que voy a hacer: derribaré mis graneros y construiré otros más grandes para guardar ahí mi cosecha y todo lo que tengo. Entonces podré decirme: Ya tienes bienes acumulados para muchos años; descansa, come, bebe y date a la buena vida’. Pero Dios le dijo: ‘¡Insensato! Esta misma noche vas a morir. ¿Para quién serán todos tus bienes?’ Lo mismo le pasa al que amontona riquezas para sí mismo y no se hace rico de lo que vale ante Dios”.</p>
+            </blockquote>
+            <p class="mt-4 font-semibold text-gray-800">Palabra del Señor. <span class="font-normal text-gray-600">Gloria a ti, Señor Jesús.</span></p>
+        </section>
+
+        <section id="homilia" class="card">
+            <h2 class="text-2xl font-semibold mb-6 text-indigo-700">Mensajes Clave de la Homilía</h2>
+            <div class="space-y-8">
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-sky-600">🤔 El Espejismo de la Acumulación</h3>
+                    <p class="text-gray-700">Vivimos en una sociedad que nos anima a acumular. Ahorrar y buscar estabilidad no es malo, pero se convierte en un problema cuando <span class="font-semibold">el tener reemplaza al ser</span> y la búsqueda de bienes se vuelve el centro de nuestra vida. Caemos en la ilusión de que "si tengo más, valgo más".</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-sky-600">⚠️ La Trampa de la Autosuficiencia</h3>
+                     <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                        <li>Creer que controlamos todo es una trampa peligrosa. La vida nos muestra nuestra fragilidad a través de enfermedades, pérdidas o crisis.</li>
+                        <li>No somos dueños ni del tiempo, ni del futuro, ni de la vida.</li>
+                        <li>Intentar llenar un vacío interior con logros exteriores es inútil. El alma no tiene hambre de cosas, tiene sed de sentido.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-sky-600">❤️ La Verdadera Riqueza es lo que Damos</h3>
+                    <p class="text-gray-700">No se trata de vivir con culpa por tener, sino con <span class="font-semibold">conciencia</span>. Nada nos pertenece, todo es prestado. El mayor tesoro es lo que damos, no lo que guardamos. Lo que queda al final es lo que hicimos por amor:</p>
+                     <ul class="list-disc list-inside text-gray-700 space-y-1 mt-2 pl-4">
+                        <li>El perdón que ofrecimos.</li>
+                        <li>La mano que tendimos al necesitado.</li>
+                        <li>La palabra de aliento que dimos en la oscuridad.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-sky-600">🕊️ Hacia la Libertad Interior</h3>
+                    <p class="text-gray-700">Ser libre interiormente es el objetivo. Es poder decir: "Esto tengo, pero no me domina. Esto me falta, pero no me define. Esto perdí, pero no me quita la paz". Esta libertad es fruto de una relación profunda con Dios y nos permite vivir con sencillez, confianza y generosidad.</p>
+                </div>
+
+                <div class="bg-gradient-to-r from-sky-100 to-indigo-100 p-6 rounded-lg text-center mt-8">
+                    <p class="text-xl italic text-indigo-800">
+                        "La vida es prestada y el mayor tesoro no es lo que tenemos... <span class="font-semibold">Es lo que damos.</span>"
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="cuento" class="card">
+            <h2 class="text-2xl font-semibold mb-4 text-purple-700">📖 Cuentan que... La Riqueza de Compartir</h2>
+            <div class="bg-purple-50 p-6 rounded-lg border border-purple-200 text-gray-700 space-y-4">
+                <p>La historia nos habla de Luis, un empresario exitoso y rico que, a pesar de tenerlo todo, se sentía vacío e infeliz. Siempre enfocado en acumular más, trataba a los demás con distancia y eficiencia fría. En contraste, su jardinero, Don Ernesto, un hombre sencillo con pocas posesiones, irradiaba una paz y alegría que a Luis le intrigaban.</p>
+                <p>Tras sufrir un infarto leve que lo obligó a detener su ajetreada vida, Luis tuvo tiempo para observar y conversar con Don Ernesto. El jardinero le compartió su sabiduría: "Aprendí que tener no es lo mismo que vivir. Lo que llena el corazón son las personas... compartir, aunque sea poco, me hace sentir más rico que cualquier cuenta bancaria."</p>
+                <p>Este encuentro transformó a Luis. Comenzó a valorar las relaciones humanas, a compartir su tiempo y recursos, y descubrió que el verdadero éxito no estaba en sus posesiones, sino en las personas. Su riqueza material seguía ahí, pero ya no era el centro de su vida.</p>
+                 <p class="pt-4 border-t border-purple-200 mt-4"><span class="font-semibold text-purple-800">Moraleja:</span> La avaricia encierra el corazón, pero el compartir lo libera. No se trata de cuánto poseemos, sino de <span class="font-semibold">cuánto estamos dispuestos a dar</span>, pues solo así los bienes se convierten en verdadera riqueza.</p>
+            </div>
+        </section>
+
+        <section id="cuestionario" class="card">
+            <h2 class="text-2xl font-semibold mb-6 text-emerald-700">📝 Pon a Prueba tu Conocimiento</h2>
+            <form id="quizForm">
+                <div class="space-y-8">
+                    <div class="question-container">
+                        <p class="text-lg font-medium mb-3">1. En la parábola del Evangelio, ¿por qué Dios llama "insensato" al hombre rico?</p>
+                        <label class="question-option"><input type="radio" name="q1" value="a" class="sr-only"> a) Porque sus graneros eran muy pequeños.</label>
+                        <label class="question-option"><input type="radio" name="q1" value="b" class="sr-only"> b) Porque planeó su futuro sin contar con Dios ni con la fragilidad de la vida.</label>
+                        <label class="question-option"><input type="radio" name="q1" value="c" class="sr-only"> c) Porque no supo invertir bien su cosecha.</label>
+                        <label class="question-option"><input type="radio" name="q1" value="d" class="sr-only"> d) Porque no quería compartir la herencia con su hermano.</label>
+                    </div>
+
+                    <div class="question-container">
+                        <p class="text-lg font-medium mb-3">2. Según la homilía, ¿cuándo se convierte en un problema buscar la prosperidad?</p>
+                        <label class="question-option"><input type="radio" name="q2" value="a" class="sr-only"> a) Siempre es un problema ser próspero.</label>
+                        <label class="question-option"><input type="radio" name="q2" value="b" class="sr-only"> b) Solo si no se pagan los impuestos.</label>
+                        <label class="question-option"><input type="radio" name="q2" value="c" class="sr-only"> c) Cuando la búsqueda de bienes se convierte en el eje principal de nuestra vida.</label>
+                        <label class="question-option"><input type="radio" name="q2" value="d" class="sr-only"> d) Cuando se ahorra en lugar de gastar.</label>
+                    </div>
+
+                    <div class="question-container">
+                        <p class="text-lg font-medium mb-3">3. ¿Cuál es "la trampa de la autosuficiencia" mencionada en la reflexión?</p>
+                        <label class="question-option"><input type="radio" name="q3" value="a" class="sr-only"> a) Creer que controlamos todo y que no necesitamos a Dios ni a los demás.</label>
+                        <label class="question-option"><input type="radio" name="q3" value="b" class="sr-only"> b) Ser capaz de resolver los problemas uno mismo.</label>
+                        <label class="question-option"><input type="radio" name="q3" value="c" class="sr-only"> c) No pedir ayuda para las tareas del hogar.</label>
+                        <label class="question-option"><input type="radio" name="q3" value="d" class="sr-only"> d) Tener mucha confianza en uno mismo.</label>
+                    </div>
+
+                    <div class="question-container">
+                        <p class="text-lg font-medium mb-3">4. En la historia de "Cuentan que...", ¿qué le enseñó el jardinero Don Ernesto a su jefe Luis?</p>
+                        <label class="question-option"><input type="radio" name="q4" value="a" class="sr-only"> a) Nuevas técnicas de jardinería para su mansión.</label>
+                        <label class="question-option"><input type="radio" name="q4" value="b" class="sr-only"> b) Cómo ganar más dinero en los negocios.</label>
+                        <label class="question-option"><input type="radio" name="q4" value="c" class="sr-only"> c) Que debía vender su casa y sus autos.</label>
+                        <label class="question-option"><input type="radio" name="q4" value="d" class="sr-only"> d) Que la verdadera riqueza y paz vienen de compartir y valorar a las personas.</label>
+                    </div>
+                    
+                    <div class="question-container">
+                        <p class="text-lg font-medium mb-3">5. ¿Cuál es la definición de "libertad interior" según la homilía?</p>
+                        <label class="question-option"><input type="radio" name="q5" value="a" class="sr-only"> a) Hacer lo que uno quiera sin consecuencias.</label>
+                        <label class="question-option"><input type="radio" name="q5" value="b" class="sr-only"> b) Que las posesiones no te dominen y la falta de ellas no te defina.</label>
+                        <label class="question-option"><input type="radio" name="q5" value="c" class="sr-only"> c) Tener suficiente dinero para no preocuparse por nada.</label>
+                        <label class="question-option"><input type="radio" name="q5" value="d" class="sr-only"> d) Viajar por todo el mundo sin ataduras.</label>
+                    </div>
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <button type="submit" id="quizButton" class="quiz-button w-full md:w-auto">Evaluar Cuestionario</button>
+                </div>
+            </form>
+
+            <div id="quizResult" class="mt-8 p-6 rounded-lg hidden text-center">
+                <h3 id="resultTitle" class="text-2xl font-bold"></h3>
+                <p id="resultScore" class="text-lg mt-2"></p>
+                <p id="resultMessage" class="mt-4 text-gray-700"></p>
+            </div>
+        </section>
+
+        <footer class="text-center py-8 mt-6 border-t border-gray-300">
+            <p class="text-gray-600">&copy; <span id="currentYear"></span> Reflexiones para el Alma Joven. Inspirado en la homilía sobre la Verdadera Riqueza.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Lógica del Cuestionario ---
+            const quizForm = document.getElementById('quizForm');
+            const quizButton = document.getElementById('quizButton');
+            const quizResult = document.getElementById('quizResult');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultScore = document.getElementById('resultScore');
+            const resultMessage = document.getElementById('resultMessage');
+
+            const correctAnswers = {
+                q1: 'b',
+                q2: 'c',
+                q3: 'a',
+                q4: 'd',
+                q5: 'b'
+            };
+            
+            // Selección visual de opciones
+            const questionOptions = document.querySelectorAll('.question-option');
+            questionOptions.forEach(label => {
+                label.addEventListener('click', function() {
+                    const questionName = this.querySelector('input').name;
+                    // Remover 'selected' de otras opciones de la misma pregunta
+                    document.querySelectorAll(`input[name="${questionName}"]`).forEach(radio => {
+                        radio.parentElement.classList.remove('selected');
+                    });
+                    // Añadir 'selected' a la opción clickeada
+                    this.classList.add('selected');
+                });
+            });
+
+            quizForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                let score = 0;
+                const totalQuestions = Object.keys(correctAnswers).length;
+                const formData = new FormData(quizForm);
+
+                // Deshabilitar el formulario para prevenir re-envíos
+                quizButton.disabled = true;
+                quizButton.textContent = 'Evaluado';
+                document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.disabled = true;
+                });
+
+                // Evaluar cada pregunta
+                for (let [question, correctAnswer] of Object.entries(correctAnswers)) {
+                    const userAnswer = formData.get(question);
+                    const questionContainer = document.querySelector(`input[name="${question}"]`).closest('.question-container');
+                    const options = questionContainer.querySelectorAll('.question-option');
+                    
+                    options.forEach(label => {
+                        const input = label.querySelector('input');
+                        // Remover clases de selección y hover
+                        label.classList.remove('selected');
+                        label.style.cursor = 'default';
+
+                        if (input.value === correctAnswer) {
+                            // Marcar siempre la respuesta correcta en verde
+                            label.classList.add('correct');
+                        }
+
+                        if (input.value === userAnswer && userAnswer !== correctAnswer) {
+                            // Si el usuario seleccionó esta y es incorrecta, marcarla en rojo
+                            label.classList.add('incorrect');
+                        }
+                    });
+
+                    if (userAnswer === correctAnswer) {
+                        score++;
+                    }
+                }
+
+                // Mostrar resultados
+                const percentage = Math.round((score / totalQuestions) * 100);
+                resultTitle.textContent = `Resultado del Cuestionario`;
+                resultScore.textContent = `Tu puntuación: ${score} de ${totalQuestions} (${percentage}%)`;
+
+                let feedbackMessage = '';
+                let resultBgColor = '';
+                if (percentage === 100) {
+                    feedbackMessage = "¡Excelente! Has comprendido a la perfección los mensajes clave de la homilía.";
+                    resultBgColor = 'bg-green-100';
+                } else if (percentage >= 60) {
+                    feedbackMessage = "¡Muy bien! Tienes una buena comprensión del tema. Revisa las respuestas para afianzar los conceptos.";
+                    resultBgColor = 'bg-blue-100';
+                } else {
+                    feedbackMessage = "¡Sigue esforzándote! Te animamos a repasar las secciones de la homilía para entender mejor su profundo mensaje.";
+                     resultBgColor = 'bg-yellow-100';
+                }
+                resultMessage.textContent = feedbackMessage;
+                quizResult.classList.remove('hidden');
+                quizResult.classList.add(resultBgColor);
+                quizResult.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // --- Lógica del Pie de Página ---
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+        });
+    </script>
+
+</body>
+</html>
