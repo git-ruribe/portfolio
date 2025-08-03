@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador de Perfil Carga-Velocidad (Dinámico)</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            height: 60vh;
+            width: 100%;
+            max-width: 900px;
+            margin: auto;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            white-space: nowrap;
+        }
+        thead { background-color: #f3f4f6; }
+        tbody tr:nth-child(even) { background-color: #f9fafb; }
+        tfoot tr { background-color: #e5e7eb; font-weight: bold; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Analizador de Perfil C-V Dinámico</h1>
+            <p class="mt-2 text-lg text-gray-600">Genera tu perfil de referencia y compara nuevas sesiones.</p>
+        </header>
+
+        <!-- Step 1: Reference Profile Generation -->
+        <div class="bg-white p-6 rounded-xl shadow-md mb-8">
+            <h2 class="text-xl font-bold mb-3 text-blue-700">Paso 1: Generar Perfil de Referencia</h2>
+            <label for="reference-files" class="block text-sm font-medium text-gray-700 mb-2">Sube tus archivos base (los 5 CSV originales):</label>
+            <input id="reference-files" type="file" accept=".csv" multiple class="block w-full text-sm text-gray-500
+                file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold
+                file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 mb-4"/>
+            <button id="calculate-profile-btn" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                Calcular Perfil de Referencia
+            </button>
+            <div id="r2-display" class="mt-4 text-center"></div>
+        </div>
+
+        <!-- Step 2: Test File Upload -->
+        <div id="test-file-section" class="bg-white p-6 rounded-xl shadow-md hidden">
+            <h2 class="text-xl font-bold mb-3 text-green-700">Paso 2: Comparar Nueva Sesión</h2>
+            <label for="test-file" class="block text-sm font-medium text-gray-700 mb-2">Sube el archivo que quieres analizar:</label>
+            <input id="test-file" type="file" accept=".csv" class="block w-full text-sm text-gray-500
+                file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold
+                file:bg-green-50 file:text-green-700 hover:file:bg-green-100"/>
+        </div>
+
+        <!-- Chart and Stats -->
+        <div id="chart-card" class="bg-white p-4 md:p-6 rounded-xl shadow-lg mt-8 hidden">
+            <div class="chart-container">
+                <canvas id="vbtChart"></canvas>
+            </div>
+        </div>
+
+        <div id="stats-card" class="bg-white p-4 md:p-6 rounded-xl shadow-lg mt-8 hidden overflow-x-auto">
+            <h2 class="text-2xl font-bold text-center mb-4">Estadísticas de la Sesión de Prueba</h2>
+            <table id="stats-table" class="min-w-full text-sm text-gray-700 rounded-lg overflow-hidden">
+                <thead class="text-xs text-gray-700 uppercase">
+                    <tr>
+                        <th>Rep</th><th>Pierna</th><th>Despl. (cm)</th><th>V. Máx (m/s)</th><th>V. Prom (m/s)</th><th>V. Impulso (m/s)</th><th>P. Máx (W)</th><th>P. Prom (W)</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+                <tfoot></tfoot>
+            </table>
+        </div>
+    </div>
+
+    <script>
+    const referenceFilesInput = document.getElementById('reference-files');
+    const calculateProfileBtn = document.getElementById('calculate-profile-btn');
+    const testFileInput = document.getElementById('test-file');
+    const chartCard = document.getElementById('chart-card');
+    const statsCard = document.getElementById('stats-card');
+    const testFileSection = document.getElementById('test-file-section');
+    const r2Display = document.getElementById('r2-display');
+    let vbtChart;
+    let refProfiles = {};
+
+    // --- CORE LOGIC ---
+
+    const processFile = async (file) => {
+        const text = await file.text();
+        const match = file.name.match(/(\d+)d\s*(\d+)i\s*(\d+)lb/);
+        if (!match) return [];
+        
+        const reps_derecha = parseInt(match[1], 10);
+        const carga_lb = parseInt(match[3], 10);
+        const masa_kg = carga_lb * 0.453592;
+
+        const lines = text.trim().split('\n').slice(1);
+        const data = lines.map(line => {
+            const values = line.split(',');
+            return {
+                counts: parseFloat(values[1]),
+                dt_ms: parseFloat(values[2]),
+                velocity_cms: parseFloat(values[3])
+            };
+        }).filter(row => !isNaN(row.velocity_cms));
+
+        const allRepsData = [];
+        let currentRep = [];
+        let isConcentric = false;
+        let fileRepCount = 0;
+
+        const processRep = (rep) => {
+            if (rep.reduce((sum, r) => sum + r.dt_ms, 0) < 100) return;
+            fileRepCount++;
+            const pierna = (fileRepCount <= reps_derecha) ? 'Derecha' : 'Izquierda';
+            
+            const velocidad_maxima_ms = -Math.min(...rep.map(r => r.velocity_cms)) / 100.0;
+            
+            const fullData = { carga_lb, pierna, velocidad_maxima_ms };
+
+            // Detailed stats needed only for test file
+            if (file.isTestFile) {
+                const total_counts = rep.reduce((sum, r) => sum + Math.abs(r.counts), 0);
+                fullData.desplazamiento_cm = (total_counts / 600) * 13.85;
+                fullData.velocidad_promedio_ms = -rep.reduce((sum, r) => sum + r.velocity_cms, 0) / rep.length / 100.0;
+                
+                const idx_max_vel = rep.findIndex(r => r.velocity_cms === Math.min(...rep.map(r => r.velocity_cms)));
+                const impulse_phase = rep.slice(0, idx_max_vel + 1);
+                fullData.velocidad_impulso_ms = impulse_phase.length > 0 ? -impulse_phase.reduce((sum, r) => sum + r.velocity_cms, 0) / impulse_phase.length / 100.0 : 0;
+                
+                const tiempo_hasta_pico_s = impulse_phase.reduce((sum, r) => sum + r.dt_ms, 0) / 1000.0;
+                const aceleracion_ms2 = tiempo_hasta_pico_s > 0 ? velocidad_maxima_ms / tiempo_hasta_pico_s : 0;
+                const fuerza_newtons = masa_kg * (9.81 + aceleracion_ms2);
+                const potencias_instantaneas = rep.map(r => fuerza_newtons * (-r.velocity_cms / 100.0));
+                fullData.potencia_maxima_w = Math.max(...potencias_instantaneas);
+                fullData.potencia_promedio_w = potencias_instantaneas.reduce((sum, p) => sum + p, 0) / potencias_instantaneas.length;
+                fullData.rep = fileRepCount;
+            }
+            allRepsData.push(fullData);
+        };
+
+        data.forEach(row => {
+            if (row.velocity_cms < 0) {
+                if (!isConcentric) isConcentric = true;
+                currentRep.push(row);
+            } else {
+                if (isConcentric) processRep(currentRep);
+                currentRep = [];
+                isConcentric = false;
+            }
+        });
+        if (isConcentric) processRep(currentRep);
+        return allRepsData;
+    };
+
+    const linearRegression = (data) => {
+        const n = data.length;
+        if (n < 2) return { slope: 0, intercept: 0, r2: 0 };
+        const sum_x = data.reduce((s, p) => s + p.x, 0);
+        const sum_y = data.reduce((s, p) => s + p.y, 0);
+        const sum_xy = data.reduce((s, p) => s + p.x * p.y, 0);
+        const sum_xx = data.reduce((s, p) => s + p.x * p.x, 0);
+        
+        const slope = (n * sum_xy - sum_x * sum_y) / (n * sum_xx - sum_x * sum_x);
+        const intercept = (sum_y - slope * sum_x) / n;
+        
+        const y_mean = sum_y / n;
+        const ss_tot = data.reduce((s, p) => s + (p.y - y_mean) ** 2, 0);
+        const ss_res = data.reduce((s, p) => s + (p.y - (slope * p.x + intercept)) ** 2, 0);
+        const r2 = 1 - (ss_res / ss_tot);
+        
+        return { slope, intercept, r2 };
+    };
+
+    // --- EVENT LISTENERS ---
+
+    calculateProfileBtn.addEventListener('click', async () => {
+        const files = referenceFilesInput.files;
+        if (files.length === 0) {
+            alert("Por favor, selecciona al menos un archivo de referencia.");
+            return;
+        }
+
+        calculateProfileBtn.disabled = true;
+        calculateProfileBtn.textContent = 'Calculando...';
+
+        let allPoints = [];
+        for (const file of files) {
+            file.isTestFile = false;
+            const points = await processFile(file);
+            allPoints = allPoints.concat(points);
+        }
+
+        const pointsDerecha = allPoints.filter(p => p.pierna === 'Derecha').map(p => ({ x: p.carga_lb, y: p.velocidad_maxima_ms }));
+        const pointsIzquierda = allPoints.filter(p => p.pierna === 'Izquierda').map(p => ({ x: p.carga_lb, y: p.velocidad_maxima_ms }));
+
+        refProfiles.derecha = linearRegression(pointsDerecha);
+        refProfiles.izquierda = linearRegression(pointsIzquierda);
+
+        if (!vbtChart) initializeChart();
+        updateReferenceLines();
+        
+        r2Display.innerHTML = `
+            <span class="font-semibold">Perfil Calculado:</span>
+            <span class="mx-2">Derecha R²: <b class="text-blue-700">${refProfiles.derecha.r2.toFixed(4)}</b></span>
+            <span>Izquierda R²: <b class="text-orange-700">${refProfiles.izquierda.r2.toFixed(4)}</b></span>
+        `;
+        
+        testFileSection.classList.remove('hidden');
+        calculateProfileBtn.disabled = false;
+        calculateProfileBtn.textContent = 'Recalcular Perfil de Referencia';
+    });
+    
+    testFileInput.addEventListener('change', async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        file.isTestFile = true;
+        const testData = await processFile(file);
+        
+        updateChartWithTestData(testData);
+        updateStatsTable(testData);
+    });
+
+    // --- CHART & TABLE UPDATES ---
+
+    function initializeChart() {
+        chartCard.classList.remove('hidden');
+        const ctx = document.getElementById('vbtChart').getContext('2d');
+        vbtChart = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [
+                    { label: 'Perfil Referencia (Derecha)', data: [], type: 'line', borderColor: 'rgba(59, 130, 246, 0.5)', borderWidth: 2, borderDash: [5, 5], fill: false, pointRadius: 0, showLine: true },
+                    { label: 'Perfil Referencia (Izquierda)', data: [], type: 'line', borderColor: 'rgba(249, 115, 22, 0.5)', borderWidth: 2, borderDash: [5, 5], fill: false, pointRadius: 0, showLine: true },
+                    { label: 'Reps Prueba (Derecha)', data: [], backgroundColor: 'rgba(59, 130, 246, 1)', pointRadius: 6, pointHoverRadius: 8 },
+                    { label: 'Reps Prueba (Izquierda)', data: [], backgroundColor: 'rgba(249, 115, 22, 1)', pointRadius: 6, pointHoverRadius: 8 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: {
+                    x: { type: 'linear', position: 'bottom', title: { display: true, text: 'Carga (lb)', font: { size: 14, weight: 'bold' } } },
+                    y: { title: { display: true, text: 'Velocidad Máxima (m/s)', font: { size: 14, weight: 'bold' } }, beginAtZero: false }
+                },
+                plugins: {
+                    title: { display: true, text: 'Comparación de Perfil Carga-Velocidad', font: { size: 18, weight: 'bold' } }
+                }
+            }
+        });
+    }
+
+    function updateReferenceLines() {
+        const cargas = [40, 60, 80, 110, 120, 130]; // Extended range
+        vbtChart.data.datasets[0].data = cargas.map(c => ({ x: c, y: refProfiles.derecha.slope * c + refProfiles.derecha.intercept }));
+        vbtChart.data.datasets[1].data = cargas.map(c => ({ x: c, y: refProfiles.izquierda.slope * c + refProfiles.izquierda.intercept }));
+        vbtChart.update();
+    }
+    
+    function updateChartWithTestData(testData) {
+        vbtChart.data.datasets[2].data = testData.filter(p => p.pierna === 'Derecha').map(p => ({x: p.carga_lb, y: p.velocidad_maxima_ms}));
+        vbtChart.data.datasets[3].data = testData.filter(p => p.pierna === 'Izquierda').map(p => ({x: p.carga_lb, y: p.velocidad_maxima_ms}));
+        vbtChart.update();
+    }
+
+    function updateStatsTable(stats) {
+        const tableBody = document.querySelector("#stats-table tbody");
+        const tableFoot = document.querySelector("#stats-table tfoot");
+        tableBody.innerHTML = '';
+        tableFoot.innerHTML = '';
+        
+        if (stats.length === 0) {
+            statsCard.classList.add('hidden');
+            return;
+        }
+
+        stats.forEach(s => {
+            tableBody.innerHTML += `<tr>
+                <td class="font-medium text-center">${s.rep}</td><td>${s.pierna}</td><td>${s.desplazamiento_cm.toFixed(2)}</td>
+                <td>${s.velocidad_maxima_ms.toFixed(3)}</td><td>${s.velocidad_promedio_ms.toFixed(3)}</td><td>${s.velocidad_impulso_ms.toFixed(3)}</td>
+                <td>${s.potencia_maxima_w.toFixed(1)}</td><td>${s.potencia_promedio_w.toFixed(1)}</td>
+            </tr>`;
+        });
+        
+        const createSummaryRow = (dataArray, label) => {
+            if (!dataArray || dataArray.length === 0) return '';
+            const summary = {
+                desplazamiento_cm: dataArray.reduce((s, d) => s + d.desplazamiento_cm, 0) / dataArray.length,
+                velocidad_maxima_ms: dataArray.reduce((s, d) => s + d.velocidad_maxima_ms, 0) / dataArray.length,
+                velocidad_promedio_ms: dataArray.reduce((s, d) => s + d.velocidad_promedio_ms, 0) / dataArray.length,
+                velocidad_impulso_ms: dataArray.reduce((s, d) => s + d.velocidad_impulso_ms, 0) / dataArray.length,
+                potencia_maxima_w: dataArray.reduce((s, d) => s + d.potencia_maxima_w, 0) / dataArray.length,
+                potencia_promedio_w: dataArray.reduce((s, d) => s + d.potencia_promedio_w, 0) / dataArray.length,
+            };
+            return `<tr>
+                <td colspan="2">${label}</td><td>${summary.desplazamiento_cm.toFixed(2)}</td><td>${summary.velocidad_maxima_ms.toFixed(3)}</td>
+                <td>${summary.velocidad_promedio_ms.toFixed(3)}</td><td>${summary.velocidad_impulso_ms.toFixed(3)}</td>
+                <td>${summary.potencia_maxima_w.toFixed(1)}</td><td>${summary.potencia_promedio_w.toFixed(1)}</td>
+            </tr>`;
+        }
+
+        tableFoot.innerHTML += createSummaryRow(stats.filter(s => s.pierna === 'Derecha'), 'Resumen Derecha');
+        tableFoot.innerHTML += createSummaryRow(stats.filter(s => s.pierna === 'Izquierda'), 'Resumen Izquierda');
+        tableFoot.innerHTML += createSummaryRow(stats, 'Resumen Total');
+        
+        statsCard.classList.remove('hidden');
+    }
+    </script>
+</body>
+</html>
