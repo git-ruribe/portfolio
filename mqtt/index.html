@@ -14,20 +14,24 @@
     body {
       font-family: 'Inter', sans-serif;
     }
-    #velocityChart {
-      max-height: 400px;
-    }
+
   </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
-  <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-4xl">
+<body class="bg-gray-100 h-screen flex flex-col p-4"> <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-4xl flex flex-col flex-grow">
+    
     <h1 class="text-2xl font-bold text-gray-800 mb-4">Encoder Velocity Dashboard</h1>
-    <div class="mb-4">
+    
+    <div class="flex justify-between items-center mb-4">
       <p id="connectionStatus" class="text-lg font-semibold text-gray-600">Connecting to MQTT...</p>
+      <button id="exportButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+        Exportar a CSV
+      </button>
     </div>
-    <div>
+
+    <div class="flex-grow relative">
       <canvas id="velocityChart"></canvas>
     </div>
+
   </div>
 
   <script>
@@ -40,7 +44,8 @@
       clientId: 'velocity-dashboard-' + Math.random().toString(16).slice(3),
       reconnectPeriod: 5000,
       keepalive: 60,
-      protocolVersion: 5
+      protocolVersion: 5,
+      rejectUnauthorized: false, // Quítalo después de que la conexión funcione
     };
     const mqttTopic = 'Gym';
 
@@ -86,6 +91,8 @@
     const ctx = document.getElementById('velocityChart').getContext('2d');
     const velocityChart = new Chart(ctx, chartConfig);
 
+    let allReadings = [];
+
     // MQTT Client
     const client = mqtt.connect(brokerUrl, mqttOptions);
 
@@ -122,11 +129,17 @@
         const payload = JSON.parse(message.toString());
         if (payload.lecturas && Array.isArray(payload.lecturas)) {
           payload.lecturas.forEach((reading) => {
-            const { c, dt } = reading;
+            const { ts, c, dt } = reading;
             if (typeof c === 'number' && typeof dt === 'number' && dt > 0) {
               // Calculate velocity: v = (1000 * 13.85 / 600) * c / dt
               const velocity = (1000 * 13.85 / 600) * (c / dt);
               readingIndex++;
+
+              //allReadings.push({ index: readingIndex, velocity: velocity });
+              
+              //const timestamp = ts || new Date().toISOString();
+              allReadings.push({ ts, c, dt, velocity });
+
               velocityData.labels.push(readingIndex);
               velocityData.datasets[0].data.push(velocity);
 
@@ -148,6 +161,39 @@
         statusElement.textContent = `Error parsing MQTT message: ${err.message}`;
         statusElement.className = 'text-lg font-semibold text-red-600';
       }
+    });
+
+    function exportToCsv(filename) {
+        if (allReadings.length === 0) {
+            alert('No hay datos para exportar.');
+            return;
+        }
+
+        // CAMBIO: Nuevas cabeceras para el CSV
+        const headers = 'Timestamp,Counts (c),Delta Time (dt),Velocity (RPM)';
+
+        // CAMBIO: Mapear el nuevo objeto de datos a una fila del CSV
+        const rows = allReadings.map(d => `${d.ts},${d.c},${d.dt},${d.velocity.toFixed(4)}`);
+        
+        // Unir todo el contenido (sin cambios)
+        const csvContent = [headers, ...rows].join('\n');
+
+        // Crear y descargar el archivo (sin cambios)
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // NUEVO: Conectar el botón a la función de exportación
+    document.getElementById('exportButton').addEventListener('click', () => {
+        const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+        exportToCsv(`velocity_data_${timestamp}.csv`);
     });
   </script>
 </body>
