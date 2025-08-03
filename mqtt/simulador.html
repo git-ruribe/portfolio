@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Sensor MQTT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/mqtt@5.11.0/dist/mqtt.min.js"></script>
+</head>
+<body class="bg-gray-800 text-white min-h-screen flex items-center justify-center p-4 font-mono">
+
+    <div class="bg-gray-700 rounded-lg shadow-lg p-8 w-full max-w-2xl space-y-6">
+        <h1 class="text-3xl font-bold text-center text-cyan-400">Simulador de Sensor MQTT</h1>
+
+        <div>
+            <label for="csvFile" class="block mb-2 text-sm font-medium text-gray-300">1. Carga tu archivo de datos:</label>
+            <input type="file" id="csvFile" accept=".csv" class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-500 file:text-gray-900 hover:file:bg-cyan-600">
+        </div>
+        
+        <div class="text-center">
+            <button id="playPauseButton" disabled class="bg-gray-500 text-white font-bold py-3 px-8 rounded-lg text-xl transition duration-300 w-48">
+                Play
+            </button>
+        </div>
+        
+        <div class="bg-gray-900 p-4 rounded-lg space-y-2">
+            <p id="statusText" class="text-lg text-center text-yellow-400">Esperando archivo...</p>
+            <p id="progressText" class="text-lg text-center text-gray-200">Tiempo: 0.0s / 0.0s</p>
+            <p id="connectionStatus" class="text-sm text-center text-gray-500">MQTT Desconectado</p>
+        </div>
+    </div>
+
+<script>
+    // --- Referencias a Elementos del DOM ---
+    const csvFileInput = document.getElementById('csvFile');
+    const playPauseButton = document.getElementById('playPauseButton');
+    const statusText = document.getElementById('statusText');
+    const progressText = document.getElementById('progressText');
+    const connectionStatus = document.getElementById('connectionStatus');
+
+    // --- Configuración MQTT (debe ser la misma que en el dashboard) ---
+    const mqttConfig = {
+      brokerUrl: 'wss://89842616873441ce985c09eadcb3ed60.s1.eu.hivemq.cloud:8884/mqtt',
+      options: {
+        username: 'elmike',
+        password: '2WSXqwer',
+        clientId: 'mqtt-simulator-' + Math.random().toString(16).slice(3),
+      },
+      topic: 'Gym'
+    };
+    let mqttClient;
+
+    // --- Estado de la Simulación ---
+    let simulationData = [];
+    let currentIndex = 0;
+    let isPaused = true;
+    let totalTime = 0;
+    let simulationTimeoutId = null;
+
+    // --- Conectar a MQTT ---
+    function connectMqtt() {
+        mqttClient = mqtt.connect(mqttConfig.brokerUrl, mqttConfig.options);
+
+        mqttClient.on('connect', () => {
+            connectionStatus.textContent = 'MQTT Conectado';
+            connectionStatus.className = 'text-sm text-center text-green-500';
+        });
+
+        mqttClient.on('error', (err) => {
+            connectionStatus.textContent = `Error MQTT: ${err.message}`;
+            connectionStatus.className = 'text-sm text-center text-red-500';
+        });
+    }
+    connectMqtt();
+
+    // --- Lógica de Simulación ---
+    csvFileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const lines = e.target.result.split('\n').filter(line => line.trim() !== '');
+            if (lines.length < 2) {
+                statusText.textContent = "Error: El archivo CSV está vacío o no tiene datos.";
+                return;
+            }
+
+            // Resetear estado previo
+            resetSimulation();
+            const dataRows = lines.slice(1); // Omitir cabecera
+            let firstTimestamp = null;
+
+            simulationData = dataRows.map((row, index) => {
+                const [ts, c, dt] = row.split(',');
+                const currentRowTimestamp = new Date(ts).getTime();
+
+                if (index === 0) firstTimestamp = currentRowTimestamp;
+                
+                const prevRowTimestamp = (index > 0) ? new Date(dataRows[index - 1].split(',')[0]).getTime() : currentRowTimestamp;
+                const delay = currentRowTimestamp - prevRowTimestamp;
+                
+                const payload = JSON.stringify({
+                    lecturas: [{ ts, c: Number(c), dt: Number(dt) }]
+                });
+
+                return {
+                    delay,
+                    payload,
+                    elapsedTime: (currentRowTimestamp - firstTimestamp) / 1000
+                };
+            });
+
+            totalTime = simulationData[simulationData.length - 1].elapsedTime;
+            statusText.textContent = "Archivo cargado. Listo para simular.";
+            progressText.textContent = `Tiempo: 0.0s / ${totalTime.toFixed(1)}s`;
+            playPauseButton.disabled = false;
+            playPauseButton.classList.replace('bg-gray-500', 'bg-green-600');
+        };
+        reader.readAsText(file);
+    });
+
+    playPauseButton.addEventListener('click', () => {
+        if (simulationData.length === 0) return;
+        isPaused = !isPaused;
+
+        if (isPaused) {
+            clearTimeout(simulationTimeoutId);
+            statusText.textContent = "Simulación Pausada";
+            playPauseButton.textContent = "Resume";
+            playPauseButton.classList.replace('bg-yellow-500', 'bg-green-600');
+        } else {
+            statusText.textContent = "Simulando...";
+            playPauseButton.textContent = "Pause";
+            playPauseButton.classList.replace('bg-green-600', 'bg-yellow-500');
+            runSimulationStep();
+        }
+    });
+
+    function runSimulationStep() {
+        if (isPaused || currentIndex >= simulationData.length) {
+            if (currentIndex >= simulationData.length) {
+                finishSimulation();
+            }
+            return;
+        }
+
+        const step = simulationData[currentIndex];
+        
+        simulationTimeoutId = setTimeout(() => {
+            // Enviar dato por MQTT
+            if (mqttClient && mqttClient.connected) {
+                mqttClient.publish(mqttConfig.topic, step.payload);
+            }
+            
+            // Actualizar UI
+            progressText.textContent = `Tiempo: ${step.elapsedTime.toFixed(1)}s / ${totalTime.toFixed(1)}s`;
+            
+            // Preparar siguiente paso
+            currentIndex++;
+            runSimulationStep();
+
+        }, step.delay);
+    }
+    
+    function resetSimulation() {
+        clearTimeout(simulationTimeoutId);
+        isPaused = true;
+        simulationData = [];
+        currentIndex = 0;
+        totalTime = 0;
+        playPauseButton.textContent = "Play";
+        playPauseButton.disabled = true;
+        playPauseButton.classList.replace('bg-green-600', 'bg-gray-500');
+        playPauseButton.classList.replace('bg-yellow-500', 'bg-gray-500');
+        statusText.textContent = "Esperando archivo...";
+        progressText.textContent = `Tiempo: 0.0s / 0.0s`;
+    }
+
+    function finishSimulation() {
+        statusText.textContent = "Simulación Finalizada";
+        playPauseButton.textContent = "Play";
+        playPauseButton.classList.replace('bg-yellow-500', 'bg-green-600');
+        isPaused = true;
+        currentIndex = 0;
+    }
+
+</script>
+</body>
+</html>
