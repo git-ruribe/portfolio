@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelo de Decisión: Overhaul vs. Reemplazo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 20px;
+            background-color: #f9f9f9;
+        }
+        h1, h2 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 5px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+        .policy-table td:nth-child(3) {
+            font-weight: bold;
+            color: #28a745;
+        }
+        .cost-table {
+            font-family: "Courier New", Courier, monospace;
+        }
+        .explanation {
+            background-color: #e7f3ff;
+            border-left: 5px solid #0056b3;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Modelo de Decisión: Overhaul vs. Reemplazo</h1>
+        <p class="explanation">
+            [span_0](start_span)[span_1](start_span)Este modelo implementa el método de <strong>programación dinámica</strong> descrito en el <strong>Capítulo 12.2.2 del "Manual del Ingeniero de Mantenimiento"</strong>[span_0](end_span)[span_1](end_span). Calcula la política óptima de mantenimiento (Overhaul, Reparar o Reemplazar) para minimizar el costo total esperado sobre un horizonte de tiempo de 4 períodos.
+        </p>
+
+        <h2>Datos de Entrada del Modelo</h2>
+        <p>Estos son los costos y probabilidades extraídos del ejemplo del manual. Por ahora son fijos en el código.</p>
+        
+        <h3>Costos por Período ($)</h3>
+        <table class="cost-table">
+            <thead>
+                <tr>
+                    <th>Estado Inicial</th>
+                    <th>Acción</th>
+                    <th>Estado Final Bueno (g)</th>
+                    <th>Estado Final con Falla (f)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Bueno (g)</td><td>Overhaul (O)</td><td>200</td><td>1200</td></tr>
+                <tr><td>Bueno (g)</td><td>Reemplazar (R)</td><td>500</td><td>1500</td></tr>
+                <tr><td>Con Falla (f)</td><td>Reparar (r)</td><td>100</td><td>1100</td></tr>
+                <tr><td>Con Falla (f)</td><td>Reemplazar (R)</td><td>500</td><td>1500</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Probabilidades de Transición</h3>
+        <table class="cost-table">
+            <thead>
+                <tr>
+                    <th>Estado Inicial</th>
+                    <th>Acción</th>
+                    <th>Prob. Terminar Bueno (g)</th>
+                    <th>Prob. Terminar con Falla (f)</th>
+                </tr>
+            </thead>
+            <tbody>
+                 <tr><td>Bueno (g)</td><td>Overhaul (O)</td><td>0.75</td><td>0.25</td></tr>
+                 <tr><td>Bueno (g)</td><td>Reemplazar (R)</td><td>0.95</td><td>0.05</td></tr>
+                 <tr><td>Con Falla (f)</td><td>Reparar (r)</td><td>0.60</td><td>0.40</td></tr>
+                 <tr><td>Con Falla (f)</td><td>Reemplazar (R)</td><td>0.95</td><td>0.05</td></tr>
+            </tbody>
+        </table>
+
+        <h2 id="results-title" style="display:none;">Resultados: Política Óptima</h2>
+        <table id="resultsTable" class="policy-table"></table>
+
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // --- DATOS DE ENTRADA (DEL MANUAL) ---
+    const probs = {
+        g: {
+            O: { g: 0.75, f: 0.25 },
+            R: { g: 0.95, f: 0.05 }
+        },
+        f: {
+            r: { g: 0.60, f: 0.40 },
+            R: { g: 0.95, f: 0.05 }
+        }
+    };
+
+    const costs = {
+        g: {
+            O: { g: 200, f: 1200 },
+            R: { g: 500, f: 1500 }
+        },
+        f: {
+            r: { g: 100, f: 1100 },
+            R: { g: 500, f: 1500 }
+        }
+    };
+
+    const HORIZON = 4;
+    const results = {};
+
+    // --- LÓGICA DE PROGRAMACIÓN DINÁMICA ---
+
+    // fn-1(j): Costos futuros esperados del período anterior
+    let futureExpectedCosts = { g: 0, f: 0 }; // f0(i) = 0
+
+    // Bucle hacia atrás (en el cálculo, pero implementado hacia adelante de n=1 a 4)
+    for (let n = 1; n <= HORIZON; n++) {
+        const currentCosts = {};
+        const currentPolicy = {};
+
+        // --- CALCULAR PARA ESTADO INICIAL 'g' (Bueno) ---
+        const actions_g = {
+            'Overhaul': {
+                immediate: (costs.g.O.g * probs.g.O.g) + (costs.g.O.f * probs.g.O.f),
+                future: (futureExpectedCosts.g * probs.g.O.g) + (futureExpectedCosts.f * probs.g.O.f)
+            },
+            'Reemplazar': {
+                immediate: (costs.g.R.g * probs.g.R.g) + (costs.g.R.f * probs.g.R.f),
+                future: (futureExpectedCosts.g * probs.g.R.g) + (futureExpectedCosts.f * probs.g.R.f)
+            }
+        };
+
+        const totalCost_g_O = actions_g.Overhaul.immediate + actions_g.Overhaul.future;
+        const totalCost_g_R = actions_g.Reemplazar.immediate + actions_g.Reemplazar.future;
+
+        if (totalCost_g_O <= totalCost_g_R) {
+            currentCosts.g = totalCost_g_O;
+            currentPolicy.g = 'Overhaul';
+        } else {
+            currentCosts.g = totalCost_g_R;
+            currentPolicy.g = 'Reemplazar';
+        }
+
+        // --- CALCULAR PARA ESTADO INICIAL 'f' (Con Falla) ---
+        const actions_f = {
+            'Reparar': {
+                immediate: (costs.f.r.g * probs.f.r.g) + (costs.f.r.f * probs.f.r.f),
+                future: (futureExpectedCosts.g * probs.f.r.g) + (futureExpectedCosts.f * probs.f.r.f)
+            },
+            'Reemplazar': {
+                immediate: (costs.f.R.g * probs.f.R.g) + (costs.f.R.f * probs.f.R.f),
+                future: (futureExpectedCosts.g * probs.f.R.g) + (futureExpectedCosts.f * probs.f.R.f)
+            }
+        };
+
+        const totalCost_f_r = actions_f.Reparar.immediate + actions_f.Reparar.future;
+        const totalCost_f_R = actions_f.Reemplazar.immediate + actions_f.Reemplazar.future;
+
+        if (totalCost_f_r <= totalCost_f_R) {
+            currentCosts.f = totalCost_f_r;
+            currentPolicy.f = 'Reparar';
+        } else {
+            currentCosts.f = totalCost_f_R;
+            currentPolicy.f = 'Reemplazar';
+        }
+        
+        // Guardar resultados del período n
+        results[n] = {
+            costs: currentCosts,
+            policy: currentPolicy
+        };
+
+        // Actualizar los costos futuros para la siguiente iteración
+        futureExpectedCosts = currentCosts;
+    }
+
+    // --- MOSTRAR RESULTADOS EN LA TABLA ---
+    const table = document.getElementById('resultsTable');
+    let tableHTML = `
+        <thead>
+            <tr>
+                <th>Períodos Restantes (n)</th>
+                <th>Estado Inicial del Equipo</th>
+                <th>Acción Óptima</th>
+                <th>Costo Total Esperado Mínimo ($)</th>
+            </tr>
+        </thead>
+        <tbody>
+    `;
+
+    for (let n = 1; n <= HORIZON; n++) {
+        tableHTML += `
+            <tr>
+                <td rowspan="2">${n}</td>
+                <td>Bueno (g)</td>
+                <td>${results[n].policy.g}</td>
+                <td>${results[n].costs.g.toFixed(2)}</td>
+            </tr>
+            <tr>
+                <td>Con Falla (f)</td>
+                <td>${results[n].policy.f}</td>
+                <td>${results[n].costs.f.toFixed(2)}</td>
+            </tr>
+        `;
+    }
+
+    tableHTML += '</tbody>';
+    table.innerHTML = tableHTML;
+    document.getElementById('results-title').style.display = 'block';
+
+});
+</script>
+
+</body>
+</html>
