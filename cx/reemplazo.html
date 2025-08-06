@@ -3,27 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modelo de Decisión: Overhaul vs. Reemplazo</title>
+    <title>Calculadora de Reemplazo Óptimo de Equipos</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 0 20px;
-            background-color: #f9f9f9;
+        :root {
+            --primary-color: #005a9c;
+            --secondary-color: #e8f4fd;
+            --accent-color: #d9534f;
+            --text-color: #333;
+            --border-color: #ccc;
+            --bg-color: #f9f9f9;
         }
-        h1, h2 {
-            color: #0056b3;
-            border-bottom: 2px solid #0056b3;
-            padding-bottom: 5px;
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
         }
         .container {
-            background-color: #fff;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            max-width: 1000px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+        .input-grid, .overhaul-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+        input[type="number"] {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .annual-data-header {
+            display: grid;
+            grid-template-columns: 50px 1fr 1fr;
+            gap: 10px;
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 0 10px;
+        }
+        .annual-input-row {
+            display: grid;
+            grid-template-columns: 50px 1fr 1fr;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .year-label {
+            font-weight: bold;
+            text-align: center;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        #calculateBtn {
+            background-color: var(--primary-color);
+            color: white;
+            flex-grow: 1;
+        }
+        #calculateBtn:hover {
+            background-color: #004170;
+        }
+        .year-btn {
+            background-color: #f0f0f0;
+            color: var(--text-color);
+        }
+        .year-btn:hover {
+            background-color: #e0e0e0;
+        }
+        #results-section {
+            margin-top: 30px;
+            display: none;
+        }
+        #recommendation {
+            background-color: var(--secondary-color);
+            border-left: 5px solid var(--primary-color);
+            padding: 20px;
+            font-size: 1.2em;
+            border-radius: 5px;
         }
         table {
             width: 100%;
@@ -31,214 +121,281 @@
             margin-top: 20px;
         }
         th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: center;
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-align: right;
         }
         th {
             background-color: #f2f2f2;
+            text-align: center;
+        }
+        .highlight {
+            background-color: #dff0d8;
             font-weight: bold;
-        }
-        tr:nth-child(even) {
-            background-color: #f8f8f8;
-        }
-        .policy-table td:nth-child(3) {
-            font-weight: bold;
-            color: #28a745;
-        }
-        .cost-table {
-            font-family: "Courier New", Courier, monospace;
-        }
-        .explanation {
-            background-color: #e7f3ff;
-            border-left: 5px solid #0056b3;
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 5px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Modelo de Decisión: Overhaul vs. Reemplazo</h1>
-        <p class="explanation">
-            [span_0](start_span)[span_1](start_span)Este modelo implementa el método de <strong>programación dinámica</strong> descrito en el <strong>Capítulo 12.2.2 del "Manual del Ingeniero de Mantenimiento"</strong>[span_0](end_span)[span_1](end_span). Calcula la política óptima de mantenimiento (Overhaul, Reparar o Reemplazar) para minimizar el costo total esperado sobre un horizonte de tiempo de 4 períodos.
-        </p>
+        <h1>Calculadora de Reemplazo Óptimo de Equipos</h1>
+        <p>Esta herramienta calcula el año óptimo para reemplazar un equipo, minimizando el costo promedio anual. Se basa en el modelo del <strong>Capítulo 11 del "Manual del Ingeniero de Mantenimiento"</strong>. Ingresa los datos de tu equipo para obtener una recomendación.</p>
 
-        <h2>Datos de Entrada del Modelo</h2>
-        <p>Estos son los costos y probabilidades extraídos del ejemplo del manual. Por ahora son fijos en el código.</p>
+        <h2>1. Datos de Entrada</h2>
         
-        <h3>Costos por Período ($)</h3>
-        <table class="cost-table">
-            <thead>
-                <tr>
-                    <th>Estado Inicial</th>
-                    <th>Acción</th>
-                    <th>Estado Final Bueno (g)</th>
-                    <th>Estado Final con Falla (f)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td>Bueno (g)</td><td>Overhaul (O)</td><td>200</td><td>1200</td></tr>
-                <tr><td>Bueno (g)</td><td>Reemplazar (R)</td><td>500</td><td>1500</td></tr>
-                <tr><td>Con Falla (f)</td><td>Reparar (r)</td><td>100</td><td>1100</td></tr>
-                <tr><td>Con Falla (f)</td><td>Reemplazar (R)</td><td>500</td><td>1500</td></tr>
-            </tbody>
-        </table>
+        <div class="input-grid">
+            <div class="input-group">
+                <label for="acquisitionCost">Costo de Adquisición ($)</label>
+                <input type="number" id="acquisitionCost" placeholder="Ej: 50000">
+            </div>
+        </div>
+        <div class="overhaul-grid">
+             <div class="input-group">
+                <label for="overhaulCost">Costo de Overhaul ($)</label>
+                <input type="number" id="overhaulCost" placeholder="Ej: 15000 (0 si no aplica)">
+            </div>
+            <div class="input-group">
+                <label for="overhaulYear">Año del Overhaul</label>
+                <input type="number" id="overhaulYear" placeholder="Ej: 4 (dejar en blanco si no aplica)">
+            </div>
+        </div>
 
-        <h3>Probabilidades de Transición</h3>
-        <table class="cost-table">
-            <thead>
-                <tr>
-                    <th>Estado Inicial</th>
-                    <th>Acción</th>
-                    <th>Prob. Terminar Bueno (g)</th>
-                    <th>Prob. Terminar con Falla (f)</th>
-                </tr>
-            </thead>
-            <tbody>
-                 <tr><td>Bueno (g)</td><td>Overhaul (O)</td><td>0.75</td><td>0.25</td></tr>
-                 <tr><td>Bueno (g)</td><td>Reemplazar (R)</td><td>0.95</td><td>0.05</td></tr>
-                 <tr><td>Con Falla (f)</td><td>Reparar (r)</td><td>0.60</td><td>0.40</td></tr>
-                 <tr><td>Con Falla (f)</td><td>Reemplazar (R)</td><td>0.95</td><td>0.05</td></tr>
-            </tbody>
-        </table>
+        <h3>Datos Anuales del Equipo</h3>
+        <div class="annual-data-header">
+            <span>Año</span>
+            <span>Costo Mantenimiento Anual ($)</span>
+            <span>Valor de Reventa ($)</span>
+        </div>
+        <div id="annual-data-inputs"></div>
+        <div class="controls">
+            <button class="year-btn" id="addYearBtn">Añadir Año</button>
+            <button class="year-btn" id="removeYearBtn">Quitar Último Año</button>
+            <button id="calculateBtn">Calcular Momento Óptimo de Reemplazo</button>
+        </div>
 
-        <h2 id="results-title" style="display:none;">Resultados: Política Óptima</h2>
-        <table id="resultsTable" class="policy-table"></table>
-
+        <div id="results-section">
+            <h2>2. Resultados y Recomendación</h2>
+            <div id="recommendation"></div>
+            <h3>Análisis de Costos Anuales</h3>
+            <table id="resultsTable"></table>
+            <h3>Gráfico de Costo Promedio Anual</h3>
+            <canvas id="costChart"></canvas>
+        </div>
     </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    
-    // --- DATOS DE ENTRADA (DEL MANUAL) ---
-    const probs = {
-        g: {
-            O: { g: 0.75, f: 0.25 },
-            R: { g: 0.95, f: 0.05 }
-        },
-        f: {
-            r: { g: 0.60, f: 0.40 },
-            R: { g: 0.95, f: 0.05 }
+    const annualInputsContainer = document.getElementById('annual-data-inputs');
+    const addYearBtn = document.getElementById('addYearBtn');
+    const removeYearBtn = document.getElementById('removeYearBtn');
+    const calculateBtn = document.getElementById('calculateBtn');
+    const resultsSection = document.getElementById('results-section');
+    const recommendationDiv = document.getElementById('recommendation');
+    const resultsTable = document.getElementById('resultsTable');
+    const chartCanvas = document.getElementById('costChart');
+    let costChart;
+    let yearCount = 0;
+
+    const addYearRow = () => {
+        yearCount++;
+        const row = document.createElement('div');
+        row.className = 'annual-input-row';
+        row.innerHTML = `
+            <span class="year-label">${yearCount}</span>
+            <div class="input-group">
+                <input type="number" class="maintenanceCost" placeholder="Costo Manto. Año ${yearCount}">
+            </div>
+            <div class="input-group">
+                <input type="number" class="resaleValue" placeholder="Valor Reventa Año ${yearCount}">
+            </div>
+        `;
+        annualInputsContainer.appendChild(row);
+    };
+
+    const removeYearRow = () => {
+        if (yearCount > 1) {
+            annualInputsContainer.removeChild(annualInputsContainer.lastChild);
+            yearCount--;
         }
     };
 
-    const costs = {
-        g: {
-            O: { g: 200, f: 1200 },
-            R: { g: 500, f: 1500 }
-        },
-        f: {
-            r: { g: 100, f: 1100 },
-            R: { g: 500, f: 1500 }
-        }
-    };
+    const calculateOptimalReplacement = () => {
+        // --- 1. Recolección de Datos ---
+        const acquisitionCost = parseFloat(document.getElementById('acquisitionCost').value);
+        const overhaulCost = parseFloat(document.getElementById('overhaulCost').value) || 0;
+        const overhaulYear = parseInt(document.getElementById('overhaulYear').value) || 0;
 
-    const HORIZON = 4;
-    const results = {};
+        const maintenanceInputs = document.querySelectorAll('.maintenanceCost');
+        const resaleInputs = document.querySelectorAll('.resaleValue');
 
-    // --- LÓGICA DE PROGRAMACIÓN DINÁMICA ---
-
-    // fn-1(j): Costos futuros esperados del período anterior
-    let futureExpectedCosts = { g: 0, f: 0 }; // f0(i) = 0
-
-    // Bucle hacia atrás (en el cálculo, pero implementado hacia adelante de n=1 a 4)
-    for (let n = 1; n <= HORIZON; n++) {
-        const currentCosts = {};
-        const currentPolicy = {};
-
-        // --- CALCULAR PARA ESTADO INICIAL 'g' (Bueno) ---
-        const actions_g = {
-            'Overhaul': {
-                immediate: (costs.g.O.g * probs.g.O.g) + (costs.g.O.f * probs.g.O.f),
-                future: (futureExpectedCosts.g * probs.g.O.g) + (futureExpectedCosts.f * probs.g.O.f)
-            },
-            'Reemplazar': {
-                immediate: (costs.g.R.g * probs.g.R.g) + (costs.g.R.f * probs.g.R.f),
-                future: (futureExpectedCosts.g * probs.g.R.g) + (futureExpectedCosts.f * probs.g.R.f)
-            }
-        };
-
-        const totalCost_g_O = actions_g.Overhaul.immediate + actions_g.Overhaul.future;
-        const totalCost_g_R = actions_g.Reemplazar.immediate + actions_g.Reemplazar.future;
-
-        if (totalCost_g_O <= totalCost_g_R) {
-            currentCosts.g = totalCost_g_O;
-            currentPolicy.g = 'Overhaul';
-        } else {
-            currentCosts.g = totalCost_g_R;
-            currentPolicy.g = 'Reemplazar';
+        if (isNaN(acquisitionCost)) {
+            alert('Por favor, ingresa un Costo de Adquisición válido.');
+            return;
         }
 
-        // --- CALCULAR PARA ESTADO INICIAL 'f' (Con Falla) ---
-        const actions_f = {
-            'Reparar': {
-                immediate: (costs.f.r.g * probs.f.r.g) + (costs.f.r.f * probs.f.r.f),
-                future: (futureExpectedCosts.g * probs.f.r.g) + (futureExpectedCosts.f * probs.f.r.f)
-            },
-            'Reemplazar': {
-                immediate: (costs.f.R.g * probs.f.R.g) + (costs.f.R.f * probs.f.R.f),
-                future: (futureExpectedCosts.g * probs.f.R.g) + (futureExpectedCosts.f * probs.f.R.f)
+        const maintenanceCosts = Array.from(maintenanceInputs).map(input => parseFloat(input.value));
+        const resaleValues = Array.from(resaleInputs).map(input => parseFloat(input.value));
+
+        if (maintenanceCosts.some(isNaN) || resaleValues.some(isNaN)) {
+            alert('Por favor, completa todos los campos de datos anuales con valores numéricos.');
+            return;
+        }
+
+        // --- 2. Lógica de Cálculo (Capítulo 11) ---
+        const results = [];
+        let cumulativeMaintenanceCost = 0;
+        
+        for (let n = 1; n <= yearCount; n++) {
+            let currentYearMaintenance = maintenanceCosts[n - 1];
+            if (n === overhaulYear) {
+                currentYearMaintenance += overhaulCost;
             }
-        };
+            cumulativeMaintenanceCost += currentYearMaintenance;
 
-        const totalCost_f_r = actions_f.Reparar.immediate + actions_f.Reparar.future;
-        const totalCost_f_R = actions_f.Reemplazar.immediate + actions_f.Reemplazar.future;
+            const totalExpenditure = acquisitionCost + cumulativeMaintenanceCost;
+            const resaleValue = resaleValues[n - 1];
+            const netCost = totalExpenditure - resaleValue;
+            const averageAnnualCost = netCost / n;
 
-        if (totalCost_f_r <= totalCost_f_R) {
-            currentCosts.f = totalCost_f_r;
-            currentPolicy.f = 'Reparar';
-        } else {
-            currentCosts.f = totalCost_f_R;
-            currentPolicy.f = 'Reemplazar';
+            results.push({
+                year: n,
+                maintenance: maintenanceCosts[n - 1],
+                isOverhaulYear: n === overhaulYear,
+                totalMaintenance: currentYearMaintenance,
+                cumulativeMaintenance: cumulativeMaintenanceCost,
+                resale: resaleValue,
+                netCost: netCost,
+                averageCost: averageAnnualCost
+            });
         }
         
-        // Guardar resultados del período n
-        results[n] = {
-            costs: currentCosts,
-            policy: currentPolicy
-        };
+        // --- 3. Encontrar el Óptimo ---
+        if (results.length === 0) return;
+        
+        let optimalResult = results[0];
+        for (let i = 1; i < results.length; i++) {
+            if (results[i].averageCost < optimalResult.averageCost) {
+                optimalResult = results[i];
+            }
+        }
 
-        // Actualizar los costos futuros para la siguiente iteración
-        futureExpectedCosts = currentCosts;
-    }
+        // --- 4. Mostrar Resultados ---
+        displayResults(results, optimalResult);
+    };
 
-    // --- MOSTRAR RESULTADOS EN LA TABLA ---
-    const table = document.getElementById('resultsTable');
-    let tableHTML = `
-        <thead>
-            <tr>
-                <th>Períodos Restantes (n)</th>
-                <th>Estado Inicial del Equipo</th>
-                <th>Acción Óptima</th>
-                <th>Costo Total Esperado Mínimo ($)</th>
-            </tr>
-        </thead>
-        <tbody>
-    `;
+    const displayResults = (results, optimalResult) => {
+        const formatter = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
+        
+        // Recomendación
+        recommendationDiv.innerHTML = `La recomendación es <strong>reemplazar el equipo al final del Año ${optimalResult.year}</strong>,
+        cuando el costo promedio anual es mínimo: <strong>${formatter.format(optimalResult.averageCost)}</strong>.`;
 
-    for (let n = 1; n <= HORIZON; n++) {
-        tableHTML += `
-            <tr>
-                <td rowspan="2">${n}</td>
-                <td>Bueno (g)</td>
-                <td>${results[n].policy.g}</td>
-                <td>${results[n].costs.g.toFixed(2)}</td>
-            </tr>
-            <tr>
-                <td>Con Falla (f)</td>
-                <td>${results[n].policy.f}</td>
-                <td>${results[n].costs.f.toFixed(2)}</td>
-            </tr>
+        // Tabla
+        let tableHTML = `
+            <thead>
+                <tr>
+                    <th>Año (n)</th>
+                    <th>Costo Manto. Anual</th>
+                    <th>Costo Acumulado Manto.</th>
+                    <th>Valor de Reventa</th>
+                    <th>Costo Neto Acumulado</th>
+                    <th>Costo Promedio Anual (CAUE)</th>
+                </tr>
+            </thead>
+            <tbody>
         `;
+        results.forEach(res => {
+            const highlightClass = res.year === optimalResult.year ? 'class="highlight"' : '';
+            const maintenanceCell = res.isOverhaulYear 
+                ? `${formatter.format(res.maintenance)} <br><small>(+ ${formatter.format(overhaulCost)} Overhaul)</small>`
+                : formatter.format(res.maintenance);
+
+            tableHTML += `
+                <tr ${highlightClass}>
+                    <td style="text-align:center;">${res.year}</td>
+                    <td>${maintenanceCell}</td>
+                    <td>${formatter.format(res.cumulativeMaintenance)}</td>
+                    <td>${formatter.format(res.resale)}</td>
+                    <td>${formatter.format(res.netCost)}</td>
+                    <td>${formatter.format(res.averageCost)}</td>
+                </tr>
+            `;
+        });
+        tableHTML += '</tbody>';
+        resultsTable.innerHTML = tableHTML;
+
+        // Gráfico
+        renderChart(results, optimalResult);
+        
+        resultsSection.style.display = 'block';
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    const renderChart = (results, optimalResult) => {
+        const ctx = chartCanvas.getContext('2d');
+        if (costChart) {
+            costChart.destroy();
+        }
+        
+        const labels = results.map(r => `Año ${r.year}`);
+        const data = results.map(r => r.averageCost);
+        
+        costChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Costo Promedio Anual (CAUE)',
+                    data: data,
+                    borderColor: 'rgba(0, 90, 156, 1)',
+                    backgroundColor: 'rgba(0, 90, 156, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.1,
+                    fill: true,
+                    pointRadius: 5,
+                    pointBackgroundColor: results.map(r => r.year === optimalResult.year ? 'red' : 'rgba(0, 90, 156, 1)')
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        ticks: {
+                            callback: function(value, index, values) {
+                                return '$' + value.toLocaleString('es-MX');
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    };
+
+    // --- Inicialización ---
+    addYearBtn.addEventListener('click', addYearRow);
+    removeYearBtn.addEventListener('click', removeYearRow);
+    calculateBtn.addEventListener('click', calculateOptimalReplacement);
+
+    // Iniciar con 5 años
+    for(let i=0; i<5; i++) {
+        addYearRow();
     }
-
-    tableHTML += '</tbody>';
-    table.innerHTML = tableHTML;
-    document.getElementById('results-title').style.display = 'block';
-
 });
 </script>
 
