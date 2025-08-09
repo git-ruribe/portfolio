@@ -1,32 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Velocity Dashboard</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <!-- mqtt.js CDN (latest version) -->
-  <script src="https://unpkg.com/mqtt@5.11.0/dist/mqtt.min.js"></script>
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-    }
-
-  </style>
-</head>
-<body class="bg-gray-100 h-screen flex flex-col p-4"> <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-4xl flex flex-col flex-grow">
-    
-    <h1 class="text-2xl font-bold text-gray-800 mb-4">Encoder Velocity Dashboard</h1>
-    
-    <div class="flex justify-between items-center mb-4">
-      <p id="connectionStatus" class="text-lg font-semibold text-gray-600">Connecting to MQTT...</p>
-      <button id="exportButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300">
-        Exportar a CSV
-      </button>
-    </div>
 
     <div class="flex-grow relative">
       <canvas id="velocityChart"></canvas>
@@ -35,28 +6,43 @@
   </div>
 
   <script>
-    // MQTT Configuration
+    // =========================================================================
+    // --- CONFIGURACIÓN ---
+    // =========================================================================
+    // MQTT
     const brokerUrl = 'wss://89842616873441ce985c09eadcb3ed60.s1.eu.hivemq.cloud:8884/mqtt';
     const mqttOptions = {
-      // hostname, port, protocol, y path se eliminan de aquí
       username: 'elmike',
       password: '2WSXqwer',
       clientId: 'velocity-dashboard-' + Math.random().toString(16).slice(3),
-      reconnectPeriod: 5000,
-      keepalive: 60,
-      protocolVersion: 5,
-      rejectUnauthorized: false, // Quítalo después de que la conexión funcione
     };
-    const mqttTopic = 'Gym';
+    // NUEVO: Dos temas, uno para la sesión y otro para los datos
+    const mqttSessionTopic = 'Gym/sessions';
+    const mqttDataTopic = 'Gym/data';
 
-    // Chart Configuration
-    const maxDataPoints = 100; // Limit to 100 points for performance
-    let readingIndex = 0; // Incremental index for x-axis
+    // FÍSICA DEL ENCODER
+    const COUNTS_PER_REVOLUTION = 2400; // Conteo 4x para un encoder de 600 PPR
+    const WHEEL_CIRCUMFERENCE_CM = 13.85; // Circunferencia en cm para calcular la velocidad lineal
+
+    // GRÁFICA
+    const maxDataPoints = 1000;
+
+    // =========================================================================
+    // --- ESTADO GLOBAL ---
+    // =========================================================================
+    let readingIndex = 0;
+    let allReadings = [];
+    // NUEVO: Objeto para guardar la información de la sesión actual
+    let currentSession = {};
+
+    // =========================================================================
+    // --- INICIALIZACIÓN DE LA GRÁFICA ---
+    // =========================================================================
     const velocityData = {
-      labels: [], // Incremental indices (1, 2, 3, ...)
+      labels: [],
       datasets: [{
-        label: 'Velocity (RPM)',
-        data: [], // Velocity values
+        label: 'Velocity (cm/s)',
+        data: [],
         borderColor: 'rgb(75, 192, 192)',
         backgroundColor: 'rgba(75, 192, 192, 0.2)',
         fill: false,
@@ -70,19 +56,17 @@
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-          x: {
-            title: { display: true, text: 'Reading Index' },
-          },
+          x: { title: { display: true, text: 'Reading Index' } },
           y: {
-            title: { display: true, text: 'Velocity (RPM)' },
-            beginAtZero: true,
+            title: { display: true, text: 'Velocity (cm/s)' },
+            beginAtZero: false,
           },
         },
         plugins: {
           legend: { display: true },
           tooltip: {
             callbacks: {
-              label: (context) => `Velocity: ${context.parsed.y.toFixed(2)} RPM`,
+              label: (context) => `Velocidad: ${context.parsed.y.toFixed(2)} cm/s`,
             },
           },
         },
@@ -91,94 +75,127 @@
     const ctx = document.getElementById('velocityChart').getContext('2d');
     const velocityChart = new Chart(ctx, chartConfig);
 
-    let allReadings = [];
-
-    // MQTT Client
+    // =========================================================================
+    // --- CLIENTE MQTT Y MANEJO DE EVENTOS ---
+    // =========================================================================
     const client = mqtt.connect(brokerUrl, mqttOptions);
-
-    // Connection Status Element
     const statusElement = document.getElementById('connectionStatus');
 
-    // Handle MQTT Connection
     client.on('connect', () => {
-      statusElement.textContent = 'Connected to MQTT Broker';
+      statusElement.textContent = 'Conectado al Broker MQTT';
       statusElement.className = 'text-lg font-semibold text-green-600';
-      client.subscribe(mqttTopic, { qos: 0 }, (err) => {
+      
+      // NUEVO: Suscribirse a ambos temas
+      client.subscribe([mqttSessionTopic, mqttDataTopic], { qos: 0 }, (err) => {
         if (err) {
-          console.error('Subscription error:', err);
-          statusElement.textContent = `Error subscribing to topic: ${err.message}`;
+          console.error('Error de suscripción:', err);
+          statusElement.textContent = `Error de suscripción: ${err.message}`;
           statusElement.className = 'text-lg font-semibold text-red-600';
         }
       });
     });
 
     client.on('error', (err) => {
-      console.error('MQTT error:', err);
-      statusElement.textContent = `MQTT Error: ${err.message}`;
+      console.error('Error MQTT:', err);
+      statusElement.textContent = `Error MQTT: ${err.message}`;
       statusElement.className = 'text-lg font-semibold text-red-600';
     });
 
     client.on('close', () => {
-      statusElement.textContent = 'Disconnected from MQTT Broker';
+      statusElement.textContent = 'Desconectado del Broker MQTT';
       statusElement.className = 'text-lg font-semibold text-yellow-600';
     });
 
-    // Handle Incoming Messages
+    // NUEVO: Función para actualizar el panel de información
+    function updateSessionPanel() {
+        document.getElementById('session-exercise').textContent = currentSession.ejercicio || 'N/A';
+        document.getElementById('session-zone').textContent = currentSession.zona || 'N/A';
+        document.getElementById('session-sets').textContent = currentSession.sets_config || 'N/A';
+        document.getElementById('session-reps').textContent = currentSession.reps_config || 'N/A';
+        document.getElementById('session-rest').textContent = currentSession.descanso_config || 'N/A';
+        document.getElementById('session-id').textContent = currentSession.session_id || 'N/A';
+    }
+
+    // NUEVO: Función para resetear la gráfica y los datos
+    function resetChartAndData() {
+        readingIndex = 0;
+        allReadings = [];
+        velocityData.labels = [];
+        velocityData.datasets[0].data = [];
+        velocityChart.update();
+    }
+
     client.on('message', (topic, message) => {
       try {
         const payload = JSON.parse(message.toString());
-        if (payload.lecturas && Array.isArray(payload.lecturas)) {
-          payload.lecturas.forEach((reading) => {
-            const { ts, c, dt } = reading;
-            if (typeof c === 'number' && typeof dt === 'number' && dt > 0) {
-              // Calculate velocity: v = (1000 * 13.85 / 600) * c / dt
-              const velocity = (1000 * 13.85 / 600) * (c / dt);
-              readingIndex++;
 
-              //allReadings.push({ index: readingIndex, velocity: velocity });
-              
-              //const timestamp = ts || new Date().toISOString();
-              allReadings.push({ ts, c, dt, velocity });
+        // CAMBIO: Lógica para manejar mensajes de dos temas diferentes
+        if (topic === mqttSessionTopic) {
+          console.log('Nueva sesión recibida:', payload);
+          // Guarda los nuevos datos de la sesión
+          currentSession = payload;
+          // Resetea la gráfica para empezar de cero con la nueva sesión
+          resetChartAndData();
+          // Actualiza el panel de información en la pantalla
+          updateSessionPanel();
 
-              velocityData.labels.push(readingIndex);
-              velocityData.datasets[0].data.push(velocity);
+        } else if (topic === mqttDataTopic) {
+          // Solo procesa los datos si pertenecen a la sesión actual
+          if (!currentSession.session_id || payload.session_id !== currentSession.session_id) {
+            return; // Ignora datos de sesiones antiguas o si no hay sesión activa
+          }
 
-              // Limit data points
-              if (velocityData.labels.length > maxDataPoints) {
-                velocityData.labels.shift();
-                velocityData.datasets[0].data.shift();
+          if (payload.lecturas && Array.isArray(payload.lecturas)) {
+            payload.lecturas.forEach((reading) => {
+              const { ts, c, dt } = reading;
+              if (typeof c === 'number' && typeof dt === 'number' && dt > 0) {
+                // Calcular velocidad lineal en cm/s
+                const revolutions = c / COUNTS_PER_REVOLUTION;
+                const distance_cm = revolutions * WHEEL_CIRCUMFERENCE_CM;
+                const time_s = dt / 1000;
+                const velocity = distance_cm / time_s;
+
+                readingIndex++;
+                allReadings.push({ ts, c, dt, velocity });
+
+                velocityData.labels.push(readingIndex);
+                velocityData.datasets[0].data.push(velocity);
+
+                if (velocityData.labels.length > maxDataPoints) {
+                  velocityData.labels.shift();
+                  velocityData.datasets[0].data.shift();
+                }
+                
+                velocityChart.update();
               }
-
-              // Update chart
-              velocityChart.update();
-            } else {
-              console.warn('Invalid reading:', reading);
-            }
-          });
+            });
+          }
         }
       } catch (err) {
-        console.error('Error parsing message:', err);
-        statusElement.textContent = `Error parsing MQTT message: ${err.message}`;
+        console.error('Error procesando mensaje:', err);
+        statusElement.textContent = `Error procesando mensaje: ${err.message}`;
         statusElement.className = 'text-lg font-semibold text-red-600';
       }
     });
 
+    // =========================================================================
+    // --- EXPORTACIÓN A CSV ---
+    // =========================================================================
     function exportToCsv(filename) {
         if (allReadings.length === 0) {
             alert('No hay datos para exportar.');
             return;
         }
 
-        // CAMBIO: Nuevas cabeceras para el CSV
-        const headers = 'Timestamp,Counts (c),Delta Time (dt),Velocity (RPM)';
+        // CAMBIO: Nuevas cabeceras para el CSV con toda la información
+        const headers = 'Timestamp,Counts(c),DeltaTime(dt),Velocity(cm/s),SessionID,Ejercicio,Zona,Sets,Reps,Descanso';
 
-        // CAMBIO: Mapear el nuevo objeto de datos a una fila del CSV
-        const rows = allReadings.map(d => `${d.ts},${d.c},${d.dt},${d.velocity.toFixed(4)}`);
+        // CAMBIO: Mapear el nuevo objeto de datos a una fila del CSV, añadiendo los datos de la sesión
+        const rows = allReadings.map(d => 
+            `${d.ts},${d.c},${d.dt},${d.velocity.toFixed(4)},${currentSession.session_id},${currentSession.ejercicio},${currentSession.zona},${currentSession.sets_config},${currentSession.reps_config},${currentSession.descanso_config}`
+        );
         
-        // Unir todo el contenido (sin cambios)
         const csvContent = [headers, ...rows].join('\n');
-
-        // Crear y descargar el archivo (sin cambios)
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         const url = URL.createObjectURL(blob);
@@ -190,7 +207,6 @@
         document.body.removeChild(link);
     }
 
-    // NUEVO: Conectar el botón a la función de exportación
     document.getElementById('exportButton').addEventListener('click', () => {
         const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
         exportToCsv(`velocity_data_${timestamp}.csv`);
