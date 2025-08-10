@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homilía: Sin Miedo, Vigilantes y Confiados</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Estilos personalizados y de componentes */
+        body {
+            background-color: #f0f9ff; /* bg-sky-50 en Tailwind, pero usando el valor exacto */
+            font-family: 'Inter', sans-serif;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem; /* p-6 */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+
+        .gradient-text {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        /* Animación de aparición */
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fade-in-up 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        /* Estilos del Cuestionario */
+        .question-option {
+            display: block;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb; /* border-gray-200 */
+            border-radius: 0.5rem; /* rounded-lg */
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+
+        .question-option:hover {
+            border-color: #3b82f6; /* border-sky-500 */
+        }
+
+        .question-option.selected {
+            background-color: #bfdbfe; /* bg-blue-200 */
+            border-color: #3b82f6; /* border-blue-500 */
+            font-weight: 600;
+        }
+        
+        /* Ocultar el input de radio real */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Estilos para resultados del cuestionario */
+        .correct {
+            background-color: #d1fae5 !important; /* bg-emerald-100 */
+            border-color: #10b981 !important; /* border-emerald-500 */
+            color: #065f46; /* text-emerald-800 */
+        }
+
+        .incorrect {
+            background-color: #fee2e2 !important; /* bg-red-100 */
+            border-color: #ef4444 !important; /* border-red-500 */
+            color: #991b1b; /* text-red-800 */
+        }
+        
+        .quiz-button {
+            padding: 0.75rem 1.5rem;
+            background-color: #16a34a; /* bg-emerald-600 */
+            color: white;
+            font-weight: 600;
+            border-radius: 0.5rem; /* rounded-lg */
+            transition: background-color 0.2s;
+        }
+
+        .quiz-button:hover {
+            background-color: #15803d; /* bg-emerald-700 */
+        }
+        
+        .quiz-button:disabled {
+            background-color: #9ca3af; /* bg-gray-400 */
+            cursor: not-allowed;
+        }
+
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto px-4 py-8 md:px-6 md:py-12 max-w-4xl">
+
+        <header class="text-center mb-12">
+            <div class="flex justify-center mb-4">
+                 <svg class="header-icon text-sky-500 h-16 w-16" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12h2.25m.386-6.364 1.591 1.591L12 14.25a2.25 2.25 0 0 1-3.182 0L6.16 11.603a2.25 2.25 0 0 1 0-3.182l2.652-2.652a2.25 2.25 0 0 1 3.182 0l2.652 2.652a2.25 2.25 0 0 1 0 3.182L12 14.25Z" />
+                </svg>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold gradient-text bg-gradient-to-r from-sky-500 to-indigo-600 mb-2">
+                Sin Miedo: Una Vida Vigilante y Confiada
+            </h1>
+            <p class="text-lg text-gray-600">
+                Reflexionando el Evangelio y la Homilía del Domingo
+            </p>
+        </header>
+
+        <section id="evangelio" style="animation-delay: 0.2s;" class="fade-in">
+            <div class="card">
+                <h2 class="text-2xl font-semibold mb-4 text-sky-700">Evangelio según San Lucas (Lc 12, 32-48)</h2>
+                <blockquote class="border-l-4 border-sky-500 pl-4 italic text-gray-700 space-y-4">
+                    <p>En aquel tiempo Jesús dijo a sus discípulos: No temas, rebañito mío, porque tu Padre ha tenido a bien darte el reino. Vendan sus bienes y den limosnas. Consíganse unas bolsas que no se destruyan y acumulen en el cielo un tesoro que no se acaba, allá donde no llega el ladrón ni carcome la polilla, porque donde está tu tesoro, ahí está tu corazón.</p>
+                    <p>Estén listos, con la túnica puesta y las lámparas encendidas. Sean semejantes a los criados que están esperando a que su señor regrese de la boda, para abrirle en cuanto llegue y toque. Dichosos aquellos a quienes su señor al llegar encuentre en vela. [...] Pues también ustedes estén preparados, porque a la hora en que menos lo piensen, vendrá el hijo del hombre.</p>
+                     <p>Al que mucho se le da, se le exigirá mucho, y al que mucho se le confía, se le exigirá mucho más.</p>
+                </blockquote>
+                <p class="mt-4 font-semibold text-gray-800">Palabra del Señor. <span class="font-normal text-gray-600">Gloria a ti, Señor Jesús.</span></p>
+            </div>
+        </section>
+
+        <section id="homilia" style="animation-delay: 0.4s;" class="fade-in">
+            <div class="card">
+                <h2 class="text-2xl font-semibold mb-6 text-indigo-700">Mensajes Clave de la Homilía</h2>
+                
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3 text-sky-600">😥➡️🛡️ Pilar 1: ¡No Tengas Miedo!</h3>
+                        <p class="text-gray-700 mb-3">La homilía comienza con el consuelo de Jesús: "No temas, rebañito mío". Esta no es una orden, sino una invitación tierna a confiar. En un mundo lleno de miedos (al futuro, la enfermedad, el fracaso), Dios se revela como un Padre amoroso que ya nos ha dado su Reino.</p>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                            <li>El miedo nos paraliza, nos encierra y nos roba la paz.</li>
+                            <li>El amor de Dios nos libera y fortalece.</li>
+                            <li>Somos su "pequeño rebaño": frágiles, pero profundamente amados y cuidados.</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3 text-sky-600">😴➡️💡 Pilar 2: ¡Vive Vigilante!</h3>
+                        <p class="text-gray-700 mb-3">Jesús nos pide tener una fe activa, no pasiva. "Estar listos" y "con las lámparas encendidas" significa vivir con propósito y responsabilidad cada día. No es una espera con angustia, sino con sentido.</p>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                           <li>Ser vigilante es vivir en gracia y amistad con Dios.</li>
+                           <li>Implica no dejar para mañana el bien que podemos hacer hoy.</li>
+                           <li>Significa ser fieles en las pequeñas cosas: en la familia, el trabajo y la comunidad.</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3 text-sky-600">🎁➡️🌍 Pilar 3: ¡Sé Responsable!</h3>
+                        <p class="text-gray-700 mb-3">La frase "Al que mucho se le da, mucho se le exigirá" es un llamado a la acción. Hemos recibido innumerables dones: la fe, los sacramentos, la comunidad y muchas bendiciones. No podemos actuar como si no tuvieran valor.</p>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                           <li>No somos dueños de los dones de Dios, sino sus administradores.</li>
+                           <li>Nuestra tarea es multiplicar esos dones con obras de amor, generosidad y servicio.</li>
+                           <li>Dios espera una respuesta concreta y nos pedirá cuentas de lo que nos ha confiado.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-gradient-to-r from-sky-100 to-indigo-100 p-6 rounded-lg text-center">
+                    <p class="text-xl italic text-indigo-800 font-medium">"Al que mucho se le da, se le exigirá mucho, y al que mucho se le confía, se le exigirá mucho más."</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="cuento" style="animation-delay: 0.6s;" class="fade-in">
+            <div class="card">
+                <h2 class="text-2xl font-semibold mb-4 text-purple-700">📖 Cuentan que... El Vaso y el Agua</h2>
+                <div class="bg-purple-50 p-6 rounded-lg border border-purple-200 text-gray-700 space-y-4">
+                    <p>Un joven inquieto, lleno de miedos, buscó a un anciano monje para encontrar sabiduría. Temía perder lo que tenía y no hacer lo suficiente con su vida. El monje, en silencio, lo llevó a un manantial y llenó un vaso de barro con agua, diciéndole que representaba su vida.</p>
+                    <p>"Si tienes miedo de que se rompa o se vacíe", dijo el monje, "vivirás vigilando el vaso y nunca disfrutarás el agua". Luego, vació el agua sobre la tierra seca. Le explicó al joven que el agua no se había perdido, sino que se había unido a la tierra para dar nueva vida. "Así es nuestra vida", concluyó, <span class="font-semibold">"todo lo que Dios te da, incluso lo que parece perderse, nunca desaparece, se transforma en bendición".</span></p>
+                    <p>La enseñanza final del monje fue vivir cada día como un regalo, despierto y confiado. El vaso vacío que le entregó no era señal de lo que faltaba, sino un <span class="font-semibold">símbolo de todo lo que estaba por llegar</span> de parte de Dios.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="cuestionario" style="animation-delay: 0.8s;" class="fade-in">
+            <div class="card">
+                <h2 class="text-2xl font-semibold mb-6 text-emerald-700">📝 Pon a Prueba tu Conocimiento</h2>
+                <form id="quizForm" class="space-y-6">
+
+                    <div class="question-container">
+                        <p class="text-lg font-medium mb-3">1. ¿Cuál es la razón principal por la que Jesús nos dice "No temas, rebañito mío"?</p>
+                        <div>
+                            <label class="question-option">
+                                <input type="radio" name="q1" value="a" class="sr-only">
+                                <span>a) Porque somos fuertes y no necesitamos ayuda.</span>
+                            </label>
+                            <label class="question-option">
+                                <input type="radio" name="q1" value="b" class="sr-only">
+                                <span>b) Porque nuestro Padre nos ama y ya nos ha dado su Reino.</span>
+                            </label>
+                            <label class="question-option">
+                                <input type="radio" name="q1" value="c" class="sr-only">
+                                <span>c) Porque no existen peligros en el mundo.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-container">
+                        <p class="text-lg font-medium mb-3">2. Según la homilía, ¿qué significa "estar vigilantes"?</p>
+                        <div>
+                            <label class="question-option">
+                                <input type="radio" name="q2" value="a" class="sr-only">
+                                <span>a) Vivir con angustia y miedo a la venida del Señor.</span>
+                            </label>
+                            <label class="question-option">
+                                <input type="radio" name="q2" value="b" class="sr-only">
+                                <span>b) Solo rezar todo el día sin hacer nada más.</span>
+                            </label>
+                            <label class="question-option">
+                                <input type="radio" name="q2" value="c" class="sr-only">
+                                <span>c) Tener una fe activa, viviendo cada día con responsabilidad y servicio.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-container">
+                        <p class="text-lg font-medium mb-3">3. La frase "Al que mucho se le da, mucho se le exigirá" nos llama a ser...</p>
+                        <div>
+                            <label class="question-option">
+                                <input type="radio" name="q3" value="a" class="sr-only">
+                                <span>a) Administradores responsables de los dones que Dios nos ha dado.</span>
+                            </label>
+                            <label class="question-option">
+                                <input type="radio" name="q3" value="b" class="sr-only">
+                                <span>b) Dueños de todo lo que tenemos y guardarlo para nosotros mismos.</span>
+                            </label>
+                            <label class="question-option">
+                                <input type="radio" name="q3" value="c" class="sr-only">
+                                <span>c) Indiferentes, porque los dones no tienen valor real.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-container">
+                        <p class="text-lg font-medium mb-3">4. En el cuento del monje, ¿qué representa el vaso vacío al final?</p>
+                        <div>
+                            <label class="question-option">
+                                <input type="radio" name="q4" value="a" class="sr-only">
+                                <span>a) La pérdida y el fracaso del joven.</span>
+                            </label>
+                             <label class="question-option">
+                                <input type="radio" name="q4" value="b" class="sr-only">
+                                <span>b) La necesidad de comprar más cosas para llenarlo.</span>
+                            </label>
+                            <label class="question-option">
+                                <input type="radio" name="q4" value="c" class="sr-only">
+                                <span>c) La apertura del corazón para recibir todo lo que Dios quiere darnos.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-container">
+                        <p class="text-lg font-medium mb-3">5. ¿Cuál es uno de los principales efectos negativos del miedo, según la homilía?</p>
+                        <div>
+                            <label class="question-option">
+                                <input type="radio" name="q5" value="a" class="sr-only">
+                                <span>a) Nos hace más prudentes y sabios.</span>
+                            </label>
+                            <label class="question-option">
+                                <input type="radio" name="q5" value="b" class="sr-only">
+                                <span>b) Nos paraliza, nos encierra y nos roba la paz.</span>
+                            </label>
+                            <label class="question-option">
+                                <input type="radio" name="q5" value="c" class="sr-only">
+                                <span>c) Nos ayuda a conseguir más amigos.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" id="submitQuiz" class="quiz-button w-full md:w-auto">Evaluar Cuestionario</button>
+                    </div>
+
+                </form>
+
+                <div id="quizResult" class="mt-8 p-6 rounded-lg hidden text-center"></div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="text-center py-6 mt-8 border-t border-gray-300">
+        <p class="text-gray-600 text-sm">
+            &copy; <span id="currentYear"></span> Reflexiones para el Alma Joven. Inspirado en la homilía "Sin Miedo: Una Vida Vigilante y Confiada".
+        </p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Lógica del Cuestionario ---
+            const quizForm = document.getElementById('quizForm');
+            const resultDiv = document.getElementById('quizResult');
+            const submitButton = document.getElementById('submitQuiz');
+            const correctAnswers = {
+                q1: 'b',
+                q2: 'c',
+                q3: 'a',
+                q4: 'c',
+                q5: 'b'
+            };
+
+            // Manejar selección visual de opciones
+            const questionLabels = document.querySelectorAll('.question-option');
+            questionLabels.forEach(label => {
+                label.addEventListener('click', () => {
+                    const input = label.querySelector('input[type="radio"]');
+                    if (input.disabled) return;
+                    
+                    const questionName = input.name;
+                    document.querySelectorAll(`input[name="${questionName}"]`).forEach(radio => {
+                        radio.parentElement.classList.remove('selected');
+                    });
+                    label.classList.add('selected');
+                });
+            });
+
+
+            quizForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                let score = 0;
+                const totalQuestions = Object.keys(correctAnswers).length;
+                const userAnswers = new FormData(quizForm);
+
+                // Deshabilitar todas las opciones
+                const allRadios = quizForm.querySelectorAll('input[type="radio"]');
+                allRadios.forEach(radio => {
+                    radio.disabled = true;
+                    // Asegurarse de que el cursor cambie
+                    radio.parentElement.style.cursor = 'default';
+                    radio.parentElement.classList.remove('selected'); // Limpiar selección visual inicial
+                });
+
+                for (const [question, correctAnswer] of Object.entries(correctAnswers)) {
+                    const userAnswer = userAnswers.get(question);
+                    const questionContainer = document.querySelector(`input[name="${question}"]`).closest('.question-container');
+                    const options = questionContainer.querySelectorAll('label');
+
+                    options.forEach(label => {
+                        const optionValue = label.querySelector('input').value;
+                        if(optionValue === correctAnswer) {
+                            label.classList.add('correct'); // Siempre marcar la correcta
+                        }
+                        if(userAnswer && userAnswer === optionValue && userAnswer !== correctAnswer) {
+                            label.classList.add('incorrect'); // Marcar la incorrecta del usuario
+                        }
+                    });
+
+                    if (userAnswer === correctAnswer) {
+                        score++;
+                    }
+                }
+                
+                // Mostrar resultados
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let feedbackMessage = '';
+                let resultColor = '';
+
+                if (percentage === 100) {
+                    feedbackMessage = '¡Excelente! Has comprendido todos los mensajes clave.';
+                    resultColor = 'bg-emerald-100 text-emerald-800';
+                } else if (percentage >= 60) {
+                    feedbackMessage = '¡Muy bien! Tienes una buena comprensión del tema. Repasa los puntos que fallaste.';
+                    resultColor = 'bg-sky-100 text-sky-800';
+                } else {
+                    feedbackMessage = 'Sigue esforzándote. Te animo a leer de nuevo la homilía para reforzar las ideas.';
+                    resultColor = 'bg-amber-100 text-amber-800';
+                }
+
+                resultDiv.innerHTML = `
+                    <h3 class="text-2xl font-bold mb-2">Tu puntuación: ${score} de ${totalQuestions} (${percentage}%)</h3>
+                    <p class="text-lg">${feedbackMessage}</p>
+                `;
+                resultDiv.className = `mt-8 p-6 rounded-lg ${resultColor}`; // Reemplaza todas las clases
+                
+                // Deshabilitar el botón de envío
+                submitButton.disabled = true;
+            });
+
+
+            // --- Actualizar el año del pie de página ---
+            const yearSpan = document.getElementById('currentYear');
+            if (yearSpan) {
+                yearSpan.textContent = new Date().getFullYear();
+            }
+        });
+    </script>
+</body>
+</html>
