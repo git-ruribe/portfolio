@@ -1,112 +1,425 @@
-
-    <div class="flex-grow relative">
-      <canvas id="velocityChart"></canvas>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VBT Dashboard - Arquitectura Final V6</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+  <script src="https://unpkg.com/mqtt@5.11.0/dist/mqtt.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .table-container::-webkit-scrollbar { width: 8px; }
+    .table-container::-webkit-scrollbar-track { background: #f1f1f1; }
+    .table-container::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+    .table-container::-webkit-scrollbar-thumb:hover { background: #555; }
+  </style>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col p-4">
+  <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-7xl mx-auto flex flex-col flex-grow">
+    
+    <h1 class="text-2xl font-bold text-gray-800 mb-2">Encoder Velocity Dashboard</h1>
+    
+    <div id="sessionInfoPanel" class="bg-gray-50 rounded-md p-3 mb-2 border border-gray-200">
+      <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-700">
+        <div><strong>Ejercicio:</strong> <span id="session-exercise" class="font-mono text-blue-600">Esperando...</span></div>
+        <div><strong>Zona:</strong> <span id="session-zone" class="font-mono text-blue-600">N/A</span></div>
+        <div><strong>Sets:</strong> <span id="session-sets" class="font-mono text-blue-600">N/A</span></div>
+        <div><strong>Reps:</strong> <span id="session-reps" class="font-mono text-blue-600">N/A</span></div>
+        <div><strong>Descanso:</strong> <span id="session-rest" class="font-mono text-blue-600">N/A</span></div>
+        <div><strong>Session ID:</strong> <span id="session-id" class="font-mono text-gray-500">N/A</span></div>
+      </div>
     </div>
 
+    <div id="vbtPanel" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+      <div class="bg-gray-100 p-4 rounded-lg text-center">
+        <div class="text-sm font-bold text-gray-500 uppercase">REPETICIONES VÁLIDAS</div>
+        <div id="rep-counter" class="text-6xl font-bold text-gray-800">0</div>
+      </div>
+      <div class="bg-gray-100 p-4 rounded-lg text-center">
+        <div class="text-sm font-bold text-gray-500 uppercase">VEL. PICO (ÚLTIMA REP)</div>
+        <div class="text-6xl font-bold text-gray-800"><span id="last-rep-velocity">0.0</span><span class="text-xl ml-2">cm/s</span></div>
+      </div>
+      <div class="bg-gray-100 p-4 rounded-lg text-center">
+        <div class="text-sm font-bold text-gray-500 uppercase">T. EXCÉNTRICO (ÚLTIMO)</div>
+        <div class="text-6xl font-bold text-gray-800"><span id="last-eccentric-time">0.0</span><span class="text-xl ml-2">s</span></div>
+      </div>
+      <div id="fatigue-indicator" class="bg-gray-400 p-4 rounded-lg text-center flex flex-col justify-center transition-colors duration-500">
+        <div class="text-sm font-bold text-white uppercase">NIVEL DE FATIGA</div>
+        <div id="fatigue-status" class="text-4xl font-bold text-white">ESPERANDO</div>
+      </div>
+    </div>
+
+    <div class="flex justify-between items-center mb-4">
+      <p id="connectionStatus" class="text-lg font-semibold text-gray-600">Conectando a MQTT...</p>
+      <button id="exportButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+        Exportar a CSV
+      </button>
+    </div>
+
+    <div class="flex-grow grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+      <div class="md:col-span-2 flex flex-col h-full">
+        <div class="flex-grow relative">
+          <canvas id="velocityChart"></canvas>
+        </div>
+      </div>
+      
+      <div class="flex flex-col h-full">
+        <h3 class="text-lg font-bold text-gray-700 mb-2">Historial del Set</h3>
+        <div class="table-container flex-grow bg-gray-50 border rounded-lg overflow-y-auto">
+          <table class="w-full text-sm text-left text-gray-600">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-100 sticky top-0">
+              <tr>
+                <th scope="col" class="px-4 py-3">#</th>
+                <th scope="col" class="px-4 py-3">Vel. Pico</th>
+                <th scope="col" class="px-4 py-3">Pérdida</th>
+                <th scope="col" class="px-4 py-3">Tempo (E/C)</th>
+              </tr>
+            </thead>
+            <tbody id="rep-table-body">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
     // =========================================================================
     // --- CONFIGURACIÓN ---
     // =========================================================================
-    // MQTT
     const brokerUrl = 'wss://89842616873441ce985c09eadcb3ed60.s1.eu.hivemq.cloud:8884/mqtt';
-    const mqttOptions = {
-      username: 'elmike',
-      password: '2WSXqwer',
-      clientId: 'velocity-dashboard-' + Math.random().toString(16).slice(3),
-    };
-    // NUEVO: Dos temas, uno para la sesión y otro para los datos
+    const mqttOptions = { username: 'elmike', password: '2WSXqwer', clientId: 'vbt-dashboard-' + Math.random().toString(16).slice(3), reconnectPeriod: 5000, keepalive: 60, protocolVersion: 5, rejectUnauthorized: false };
     const mqttSessionTopic = 'Gym/sessions';
     const mqttDataTopic = 'Gym/data';
-
-    // FÍSICA DEL ENCODER
-    const COUNTS_PER_REVOLUTION = 2400; // Conteo 4x para un encoder de 600 PPR
-    const WHEEL_CIRCUMFERENCE_CM = 13.85; // Circunferencia en cm para calcular la velocidad lineal
-
-    // GRÁFICA
+    const COUNTS_PER_REVOLUTION = 2400;
+    const WHEEL_CIRCUMFERENCE_CM = 13.85;
     const maxDataPoints = 1000;
+
+    // --- UMBRALES DE LA MÁQUINA DE ESTADOS (V6 - Definitiva) ---
+    const START_VELOCITY_THRESHOLD_NEG = -8.0; 
+    const START_VELOCITY_THRESHOLD_POS = 10.0;
+    const INVERSION_VELOCITY_THRESHOLD_POS = 8.0;
+    const END_REP_TIMEOUT_MS = 400;
+    const INTERRUPT_GRACE_PERIOD_MS = 300; // Ventana de gracia
+    const INTERRUPT_INTENTION_COUNT = 3;   // Filtro de intención
+
+    // --- REGLAS DE VALIDACIÓN DE REPETICIONES ---
+    const MIN_CONCENTRIC_DISTANCE_CM = 15.0;
+    const MAX_REP_DURATION_MS = 8000;
+    const MIN_PEAK_VELOCITY_CMS = 10.0;
+
+    // --- NUEVAS REGLAS DE PAUSA ---
+    const IDLE_VELOCITY_THRESHOLD_ABS = 5.0; // Límite de velocidad (absoluto) para considerar una pausa
+    const IDLE_TRANSITION_COUNT = 5;         // Número de lecturas consecutivas bajo el límite para volver a IDLE
 
     // =========================================================================
     // --- ESTADO GLOBAL ---
     // =========================================================================
     let readingIndex = 0;
     let allReadings = [];
-    // NUEVO: Objeto para guardar la información de la sesión actual
     let currentSession = {};
+    
+    let repState = 'IDLE'; // IDLE, DESCENDING, ASCENDING
+    let currentRepPoints = [];
+    let setRepsData = [];
+    let baselineVelocity = 0;
+    let endRepTimeout = null;
+    let ascentStartTime = 0;
+    let negativeInterruptCounter = 0;
+    let lowVelocityCounter = 0; 
+    let lastEccentricTime = 0;
 
     // =========================================================================
     // --- INICIALIZACIÓN DE LA GRÁFICA ---
     // =========================================================================
-    const velocityData = {
-      labels: [],
-      datasets: [{
-        label: 'Velocity (cm/s)',
-        data: [],
-        borderColor: 'rgb(75, 192, 192)',
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        fill: false,
-        tension: 0.1,
-      }],
-    };
+    const velocityData = { labels: [], datasets: [{ label: 'Velocity (cm/s)', data: [], borderColor: 'rgb(75, 192, 192)', tension: 0.1, pointRadius: 2, borderWidth: 2 }] };
     const chartConfig = {
-      type: 'line',
-      data: velocityData,
+      type: 'line', data: velocityData,
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          x: { title: { display: true, text: 'Reading Index' } },
-          y: {
-            title: { display: true, text: 'Velocity (cm/s)' },
-            beginAtZero: false,
-          },
-        },
+        responsive: true, maintainAspectRatio: false,
+        scales: { x: { title: { display: true, text: 'Reading Index' } }, y: { title: { display: true, text: 'Velocity (cm/s)' }, beginAtZero: false } },
         plugins: {
           legend: { display: true },
-          tooltip: {
-            callbacks: {
-              label: (context) => `Velocidad: ${context.parsed.y.toFixed(2)} cm/s`,
-            },
-          },
+          tooltip: { callbacks: { label: (context) => `Velocidad: ${context.parsed.y.toFixed(2)} cm/s` } },
+          annotation: {
+            annotations: {
+              line15: { type: 'line', display: false, yMin: 0, yMax: 0, borderColor: 'rgba(255, 206, 86, 0.7)', borderWidth: 2, borderDash: [6, 6], label: { content: '-15%', display: true, position: 'end' } },
+              line25: { type: 'line', display: false, yMin: 0, yMax: 0, borderColor: 'rgba(255, 159, 64, 0.7)', borderWidth: 2, borderDash: [6, 6], label: { content: '-25%', display: true, position: 'end' } },
+              line35: { type: 'line', display: false, yMin: 0, yMax: 0, borderColor: 'rgba(255, 99, 132, 0.7)', borderWidth: 2, borderDash: [6, 6], label: { content: '-35%', display: true, position: 'end' } },
+            }
+          }
         },
+        animation: false
       },
     };
     const ctx = document.getElementById('velocityChart').getContext('2d');
     const velocityChart = new Chart(ctx, chartConfig);
-
+    
     // =========================================================================
-    // --- CLIENTE MQTT Y MANEJO DE EVENTOS ---
+    // --- LÓGICA VBT: MÁQUINA DE ESTADOS HÍBRIDA (V6) ---
     // =========================================================================
-    const client = mqtt.connect(brokerUrl, mqttOptions);
-    const statusElement = document.getElementById('connectionStatus');
 
-    client.on('connect', () => {
-      statusElement.textContent = 'Conectado al Broker MQTT';
-      statusElement.className = 'text-lg font-semibold text-green-600';
-      
-      // NUEVO: Suscribirse a ambos temas
-      client.subscribe([mqttSessionTopic, mqttDataTopic], { qos: 0 }, (err) => {
-        if (err) {
-          console.error('Error de suscripción:', err);
-          statusElement.textContent = `Error de suscripción: ${err.message}`;
-          statusElement.className = 'text-lg font-semibold text-red-600';
+    function processVbtDataPoint(reading) {
+        switch (repState) {
+            case 'IDLE':
+                if (reading.velocity < START_VELOCITY_THRESHOLD_NEG) {
+                    startNewRep('DESCENDING', reading);
+                } 
+                else if (reading.velocity > START_VELOCITY_THRESHOLD_POS) {
+                    startNewRep('ASCENDING', reading);
+                }
+                break;
+
+            case 'DESCENDING':
+                // --- Lógica de detección de pausa ---
+                if (Math.abs(reading.velocity) < IDLE_VELOCITY_THRESHOLD_ABS) {
+                    lowVelocityCounter++;
+                } else {
+                    lowVelocityCounter = 0;
+                }
+
+                if (lowVelocityCounter >= IDLE_TRANSITION_COUNT) {
+                    console.log('%cPAUSE DETECTED: DESCENDING -> IDLE', 'color: brown');
+                    
+                    // Cortamos los 'n' puntos de baja velocidad del final
+                    const pointsForOldRep = currentRepPoints.slice(0, -IDLE_TRANSITION_COUNT);
+                    
+                    // Finalizamos la repetición (probablemente inválida) con los datos limpios
+                    finalizeRep(false, pointsForOldRep);
+                    break;
+                }
+                // --- Fin de la lógica de pausa ---
+
+                // Añadimos el punto actual si no se ha detectado una pausa
+                currentRepPoints.push(reading);
+
+                // Lógica de inversión
+                if (reading.velocity > INVERSION_VELOCITY_THRESHOLD_POS) {
+                    console.log(`%cSTATE: DESCENDING -> ASCENDING (V=${reading.velocity.toFixed(1)})`, 'color: green');
+                    repState = 'ASCENDING';
+                    ascentStartTime = Date.now();
+                    negativeInterruptCounter = 0;
+                    lowVelocityCounter = 0;
+                }
+                break;  
+
+            case 'ASCENDING':
+                // Mantenemos el TIMEOUT como failsafe general
+                startEndRepTimer();
+
+                const timeInAscent = Date.now() - ascentStartTime;
+                
+                // Lógica de INTERRUPT (sin cambios)
+                if (reading.velocity < START_VELOCITY_THRESHOLD_NEG && timeInAscent > INTERRUPT_GRACE_PERIOD_MS) {
+                    negativeInterruptCounter++;
+                } else {
+                    negativeInterruptCounter = 0;
+                }
+
+                if (negativeInterruptCounter >= INTERRUPT_INTENTION_COUNT) {
+                    console.log('%cINTERRUPT: Continuous rep detected.', 'color: purple; font-weight: bold;');
+                    const pointsForNewRep = currentRepPoints.slice(-2);
+                    pointsForNewRep.push(reading);
+                    const pointsForOldRep = currentRepPoints.slice(0, -2);
+                    finalizeRep(true, pointsForOldRep);
+                    currentRepPoints = pointsForNewRep;
+                    repState = 'DESCENDING';
+                    lowVelocityCounter = 0;
+                    break;
+                }
+
+                // Lógica de detección de PAUSA (actualizada)
+                if (Math.abs(reading.velocity) < IDLE_VELOCITY_THRESHOLD_ABS) {
+                    lowVelocityCounter++;
+                } else {
+                    lowVelocityCounter = 0;
+                }
+
+                if (lowVelocityCounter >= IDLE_TRANSITION_COUNT) {
+                    console.log('%cPAUSE DETECTED: ASCENDING -> IDLE', 'color: brown');
+
+                    // Cortamos los 'n' puntos de baja velocidad del final
+                    const pointsForOldRep = currentRepPoints.slice(0, -IDLE_TRANSITION_COUNT);
+
+                    // Finalizamos la repetición por pausa con los datos limpios
+                    finalizeRep(false, pointsForOldRep);
+                    break;
+                }
+
+                // Si no pasó nada de lo anterior, es un punto normal de subida.
+                currentRepPoints.push(reading);
+                break;
+
         }
-      });
-    });
+    }
 
-    client.on('error', (err) => {
-      console.error('Error MQTT:', err);
-      statusElement.textContent = `Error MQTT: ${err.message}`;
-      statusElement.className = 'text-lg font-semibold text-red-600';
-    });
+    function startNewRep(initialState, reading) {
+        // --- CAMBIO CLAVE (LA SOLUCIÓN AGRESIVA) ---
+        // Forzamos el vaciado del array justo antes de empezar una nueva repetición.
+        // Esto es para asegurarnos de que no haya absolutamente ninguna acumulación de datos.
+        currentRepPoints = []; 
 
-    client.on('close', () => {
-      statusElement.textContent = 'Desconectado del Broker MQTT';
-      statusElement.className = 'text-lg font-semibold text-yellow-600';
-    });
+        console.log(`%cSTATE: IDLE -> ${initialState} (V=${reading.velocity.toFixed(1)})`, 'color: blue; font-weight: bold;');
+        repState = initialState;
+        currentRepPoints.push(reading); // Añadimos el primer punto al array ahora limpio
 
-    // NUEVO: Función para actualizar el panel de información
+        if (initialState === 'ASCENDING') {
+            ascentStartTime = Date.now();
+            negativeInterruptCounter = 0;
+            startEndRepTimer();
+        }
+    }
+
+    function startEndRepTimer() {
+        clearTimeout(endRepTimeout);
+        endRepTimeout = setTimeout(() => finalizeRep(false), END_REP_TIMEOUT_MS);
+    }
+    
+function finalizeRep(wasInterrupted, data = currentRepPoints) { // <-- El cambio está aquí
+    // Línea de depuración que puedes mantener o quitar
+    console.log(`%c[DEBUG] Finalizando la repetición con ${data.length} puntos de datos.`, 'background: #222; color: #bada55');
+
+    if (data.length === 0) return;
+    
+    clearTimeout(endRepTimeout);
+    
+    if (!wasInterrupted) {
+        console.log(`%cTIMER EXPIRED. Finalizing Rep.`, 'color: red');
+    }
+
+    const metrics = calculateRepMetrics(data); // <-- Ahora usa el array 'data' que le pasamos
+
+    // Guardamos el tiempo excéntrico de CUALQUIER movimiento finalizado.
+    lastEccentricTime = metrics.eccentricDuration || 0;
+    updateEccentricPanel(); // Actualizamos el nuevo panel.
+    
+    if (validateRep(metrics)) {
+        console.log('%cREP VÁLIDA:', 'font-weight: bold; color: green;', metrics);
+        processValidRep(metrics);
+    } else {
+        console.log('%cREP INVÁLIDA:', 'font-weight: bold; color: orange;', metrics);
+    }
+    
+    currentRepPoints = [];
+    repState = 'IDLE';
+}
+
+    function calculateRepMetrics(dataPoints) {
+        if (dataPoints.length === 0) return {};
+
+        // --- Variables para las métricas ---
+        let peakConcentricVelocity = 0;
+        let totalConcentricDistance = 0;
+        
+        // --- Lógica de duración MODIFICADA ---
+        // Ya no usamos new Date().getTime(). Ahora sumamos los 'dt' para cada fase.
+        let eccentricDurationMs = 0;
+        let concentricDurationMs = 0;
+        let foundTurningPoint = false; // Para saber cuándo pasamos de excéntrico a concéntrico
+
+        dataPoints.forEach(p => {
+            // Un punto se considera excéntrico si su velocidad es negativa Y aún no hemos llegado al punto de inflexión.
+            if (p.velocity < 0 && !foundTurningPoint) {
+                eccentricDurationMs += p.dt;
+            } 
+            // En cuanto encontramos un punto no-negativo, o si ya habíamos pasado el punto de inflexión,
+            // todo lo que sigue se considera parte de la fase concéntrica.
+            else {
+                if (!foundTurningPoint) {
+                    foundTurningPoint = true;
+                }
+                concentricDurationMs += p.dt;
+
+                // Calculamos otras métricas concéntricas aquí
+                if (p.velocity > peakConcentricVelocity) {
+                    peakConcentricVelocity = p.velocity;
+                }
+                const distance_cm = (p.c / COUNTS_PER_REVOLUTION) * WHEEL_CIRCUMFERENCE_CM;
+                totalConcentricDistance += Math.abs(distance_cm);
+            }
+        });
+        
+        // Convertimos las duraciones de milisegundos a segundos
+        const eccentricDuration = eccentricDurationMs / 1000;
+        const concentricDuration = concentricDurationMs / 1000;
+        const totalDuration = (eccentricDurationMs + concentricDurationMs) / 1000;
+
+        return { peakConcentricVelocity, totalDuration, totalConcentricDistance, eccentricDuration, concentricDuration };
+    }
+
+    function validateRep(metrics) {
+        return metrics.peakConcentricVelocity > MIN_PEAK_VELOCITY_CMS &&
+               metrics.totalConcentricDistance > MIN_CONCENTRIC_DISTANCE_CM &&
+               metrics.totalDuration * 1000 < MAX_REP_DURATION_MS;
+    }
+
+    // =========================================================================
+    // --- PROCESAMIENTO Y ACTUALIZACIÓN DE UI (Sin cambios) ---
+    // =========================================================================
+    
+    function processValidRep(metrics) {
+        setRepsData.push(metrics);
+        updateRepTable(metrics);
+        updateMainPanel(metrics);
+    }
+
+    function updateRepTable(metrics) {
+        const tableBody = document.getElementById('rep-table-body');
+        const repCount = setRepsData.length;
+
+        if (repCount <= 3) {
+            // Durante las primeras 3 repeticiones, buscamos y establecemos la más rápida hasta el momento.
+            const fastestOfFirstThree = Math.max(...setRepsData.map(r => r.peakConcentricVelocity));
+            baselineVelocity = fastestOfFirstThree;
+        }
+
+        const velocityLoss = baselineVelocity > 0 ? ((baselineVelocity - metrics.peakConcentricVelocity) / baselineVelocity) * 100 : 0;
+        
+        const newRow = document.createElement('tr');
+        newRow.className = 'bg-white border-b hover:bg-gray-50';
+        newRow.innerHTML = `
+            <td class="px-4 py-2 font-medium text-gray-900">${repCount}</td>
+            <td class="px-4 py-2">${metrics.peakConcentricVelocity.toFixed(1)}</td>
+            <td class="px-4 py-2">${velocityLoss.toFixed(0)}%</td>
+            <td class="px-4 py-2">${metrics.eccentricDuration.toFixed(1)}s / ${metrics.concentricDuration.toFixed(1)}s</td>
+        `;
+        tableBody.appendChild(newRow);
+        tableBody.parentElement.scrollTop = tableBody.parentElement.scrollHeight;
+    }
+
+    function updateMainPanel(metrics) {
+        document.getElementById('rep-counter').textContent = setRepsData.length;
+        document.getElementById('last-rep-velocity').textContent = metrics.peakConcentricVelocity.toFixed(1);
+        updateBaselineAndFatigueLines();
+        updateFatigueIndicator();
+    }
+    
+    function updateBaselineAndFatigueLines() {
+        if (baselineVelocity > 0) {
+            const annotations = velocityChart.options.plugins.annotation.annotations;
+            annotations.line15.yMin = baselineVelocity * 0.85; annotations.line15.yMax = baselineVelocity * 0.85; annotations.line15.display = true;
+            annotations.line25.yMin = baselineVelocity * 0.75; annotations.line25.yMax = baselineVelocity * 0.75; annotations.line25.display = true;
+            annotations.line35.yMin = baselineVelocity * 0.65; annotations.line35.yMax = baselineVelocity * 0.65; annotations.line35.display = true;
+        }
+    }
+    
+    function updateFatigueIndicator() {
+        if (setRepsData.length === 0 || baselineVelocity === 0) return;
+        const lastRepVelocity = setRepsData[setRepsData.length - 1].peakConcentricVelocity;
+        const indicator = document.getElementById('fatigue-indicator');
+        const statusText = document.getElementById('fatigue-status');
+        
+        let newColorClass = 'bg-green-400';
+        let newStatusText = 'ÓPTIMO';
+        if (lastRepVelocity < baselineVelocity * 0.65) { newColorClass = 'bg-red-500'; newStatusText = 'DETENER'; }
+        else if (lastRepVelocity < baselineVelocity * 0.75) { newColorClass = 'bg-orange-400'; newStatusText = 'FATIGA ALTA'; }
+        else if (lastRepVelocity < baselineVelocity * 0.85) { newColorClass = 'bg-yellow-400'; newStatusText = 'FATIGA LEVE'; }
+        indicator.className = `p-4 rounded-lg text-center flex flex-col justify-center transition-colors duration-500 ${newColorClass}`;
+        statusText.textContent = newStatusText;
+    }
+    
     function updateSessionPanel() {
         document.getElementById('session-exercise').textContent = currentSession.ejercicio || 'N/A';
         document.getElementById('session-zone').textContent = currentSession.zona || 'N/A';
@@ -116,85 +429,102 @@
         document.getElementById('session-id').textContent = currentSession.session_id || 'N/A';
     }
 
-    // NUEVO: Función para resetear la gráfica y los datos
-    function resetChartAndData() {
-        readingIndex = 0;
-        allReadings = [];
-        velocityData.labels = [];
-        velocityData.datasets[0].data = [];
+    function updateEccentricPanel() {
+        document.getElementById('last-eccentric-time').textContent = lastEccentricTime.toFixed(1);
+    }
+
+    function resetDashboard() {
+        readingIndex = 0; allReadings = []; velocityData.labels = []; velocityData.datasets[0].data = [];
+        repState = 'IDLE'; currentRepPoints = []; setRepsData = []; baselineVelocity = 0;
+        clearTimeout(endRepTimeout);
+
+        document.getElementById('rep-counter').textContent = '0';
+        document.getElementById('last-rep-velocity').textContent = '0.0';
+        document.getElementById('last-eccentric-time').textContent = '0.0'; 
+        document.getElementById('rep-table-body').innerHTML = '';
+        
+        const annotations = velocityChart.options.plugins.annotation.annotations;
+        annotations.line15.display = false; annotations.line25.display = false; annotations.line35.display = false;
+        
+        const indicator = document.getElementById('fatigue-indicator');
+        indicator.className = 'bg-gray-400 p-4 rounded-lg text-center flex flex-col justify-center transition-colors duration-500';
+        document.getElementById('fatigue-status').textContent = 'ESPERANDO';
+
         velocityChart.update();
     }
+    
+    // =========================================================================
+    // --- CLIENTE MQTT Y MANEJO DE MENSAJES (Sin cambios) ---
+    // =========================================================================
+    const client = mqtt.connect(brokerUrl, mqttOptions);
+    const statusElement = document.getElementById('connectionStatus');
+
+    client.on('connect', () => {
+      statusElement.textContent = 'Conectado al Broker MQTT';
+      statusElement.className = 'text-lg font-semibold text-green-600';
+      client.subscribe([mqttSessionTopic, mqttDataTopic], { qos: 0 }, (err) => {
+        if (err) { console.error('Error de suscripción:', err); statusElement.textContent = `Error de suscripción: ${err.message}`; statusElement.className = 'text-lg font-semibold text-red-600'; }
+      });
+    });
+
+    client.on('error', (err) => { console.error('Error MQTT:', err); statusElement.textContent = `Error MQTT: ${err.message}`; statusElement.className = 'text-lg font-semibold text-red-600'; });
+    client.on('close', () => { statusElement.textContent = 'Desconectado del Broker MQTT'; statusElement.className = 'text-lg font-semibold text-yellow-600'; });
 
     client.on('message', (topic, message) => {
       try {
         const payload = JSON.parse(message.toString());
 
-        // CAMBIO: Lógica para manejar mensajes de dos temas diferentes
         if (topic === mqttSessionTopic) {
           console.log('Nueva sesión recibida:', payload);
-          // Guarda los nuevos datos de la sesión
           currentSession = payload;
-          // Resetea la gráfica para empezar de cero con la nueva sesión
-          resetChartAndData();
-          // Actualiza el panel de información en la pantalla
+          resetDashboard();
           updateSessionPanel();
 
         } else if (topic === mqttDataTopic) {
-          // Solo procesa los datos si pertenecen a la sesión actual
-          if (!currentSession.session_id || payload.session_id !== currentSession.session_id) {
-            return; // Ignora datos de sesiones antiguas o si no hay sesión activa
-          }
+          if (!currentSession.session_id || payload.session_id !== currentSession.session_id) return;
 
           if (payload.lecturas && Array.isArray(payload.lecturas)) {
-            payload.lecturas.forEach((reading) => {
-              const { ts, c, dt } = reading;
-              if (typeof c === 'number' && typeof dt === 'number' && dt > 0) {
-                // Calcular velocidad lineal en cm/s
-                const revolutions = c / COUNTS_PER_REVOLUTION;
-                const distance_cm = revolutions * WHEEL_CIRCUMFERENCE_CM;
-                const time_s = dt / 1000;
-                const velocity = distance_cm / time_s;
+            let needsUpdate = false;
+payload.lecturas.forEach((reading) => {
+  const { ts, c } = reading;
+  // --- CAMBIO CLAVE ---
+  // Convertimos 'dt' a Número explícitamente para evitar la concatenación de texto.
+  const dt = Number(reading.dt); 
 
-                readingIndex++;
-                allReadings.push({ ts, c, dt, velocity });
+  // También actualizamos la condición para asegurarnos de que la conversión fue exitosa.
+  if (typeof c === 'number' && typeof dt === 'number' && !isNaN(dt) && dt > 0) {
+    const revolutions = c / COUNTS_PER_REVOLUTION;
+    const distance_cm = revolutions * WHEEL_CIRCUMFERENCE_CM;
+    const time_s = dt / 1000;
+    const velocity = (distance_cm / time_s) * -1;
+    
+    const dataPoint = { ts, c, dt, velocity };
 
-                velocityData.labels.push(readingIndex);
-                velocityData.datasets[0].data.push(velocity);
-
-                if (velocityData.labels.length > maxDataPoints) {
-                  velocityData.labels.shift();
-                  velocityData.datasets[0].data.shift();
-                }
-                
-                velocityChart.update();
-              }
-            });
+    readingIndex++;
+    allReadings.push(dataPoint);
+    velocityData.labels.push(readingIndex);
+    velocityData.datasets[0].data.push(velocity);
+    if (velocityData.labels.length > maxDataPoints) {
+      velocityData.labels.shift();
+      velocityData.datasets[0].data.shift();
+    }
+    needsUpdate = true;
+    
+    processVbtDataPoint(dataPoint);
+  }
+});
+            if(needsUpdate) velocityChart.update('none');
           }
         }
-      } catch (err) {
-        console.error('Error procesando mensaje:', err);
-        statusElement.textContent = `Error procesando mensaje: ${err.message}`;
-        statusElement.className = 'text-lg font-semibold text-red-600';
-      }
+      } catch (err) { console.error('Error procesando mensaje:', err); statusElement.textContent = `Error procesando mensaje: ${err.message}`; statusElement.className = 'text-lg font-semibold text-red-600'; }
     });
-
-    // =========================================================================
-    // --- EXPORTACIÓN A CSV ---
-    // =========================================================================
+    
     function exportToCsv(filename) {
-        if (allReadings.length === 0) {
-            alert('No hay datos para exportar.');
-            return;
-        }
-
-        // CAMBIO: Nuevas cabeceras para el CSV con toda la información
+        if (allReadings.length === 0) { alert('No hay datos para exportar.'); return; }
         const headers = 'Timestamp,Counts(c),DeltaTime(dt),Velocity(cm/s),SessionID,Ejercicio,Zona,Sets,Reps,Descanso';
-
-        // CAMBIO: Mapear el nuevo objeto de datos a una fila del CSV, añadiendo los datos de la sesión
         const rows = allReadings.map(d => 
             `${d.ts},${d.c},${d.dt},${d.velocity.toFixed(4)},${currentSession.session_id},${currentSession.ejercicio},${currentSession.zona},${currentSession.sets_config},${currentSession.reps_config},${currentSession.descanso_config}`
         );
-        
         const csvContent = [headers, ...rows].join('\n');
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
