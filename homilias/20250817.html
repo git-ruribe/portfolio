@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Fuego que Transforma | Reflexiones del Domingo</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem; /* p-6 */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+
+        .gradient-text {
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        /* Animación de aparición */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-section {
+            animation: fadeIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+        
+        /* Estilos del Cuestionario */
+        .question-option {
+            display: block;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb; /* border-gray-200 */
+            border-radius: 0.5rem; /* rounded-lg */
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-option:hover {
+            border-color: #3b82f6; /* border-blue-500 */
+            background-color: #eff6ff; /* bg-blue-50 */
+        }
+
+        .question-option.selected {
+            border-color: #3b82f6; /* border-blue-500 */
+            background-color: #dbeafe; /* bg-blue-200 */
+            font-weight: 600;
+        }
+
+        .question-option.correct {
+            border-color: #10b981; /* border-emerald-500 */
+            background-color: #d1fae5; /* bg-emerald-100 */
+            color: #047857; /* text-emerald-800 */
+            font-weight: 600;
+        }
+
+        .question-option.incorrect {
+            border-color: #ef4444; /* border-red-500 */
+            background-color: #fee2e2; /* bg-red-100 */
+            color: #b91c1c; /* text-red-800 */
+        }
+
+        .quiz-button {
+            background-color: #16a34a; /* bg-green-600 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .quiz-button:hover {
+            background-color: #15803d; /* bg-green-700 */
+        }
+        
+        .quiz-button:disabled {
+            background-color: #9ca3af; /* bg-gray-400 */
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-sky-50 text-gray-800 p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <header class="text-center my-8 md:my-12">
+            <svg class="header-icon w-16 h-16 mx-auto mb-4 text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z" />
+            </svg>              
+            <h1 class="text-3xl md:text-4xl font-bold gradient-text bg-gradient-to-r from-sky-500 to-indigo-600">
+                El Fuego que Transforma y la Paz que Desafía
+            </h1>
+            <p class="mt-2 text-lg text-gray-600">
+                Reflexionando el Evangelio y la Homilía del Domingo
+            </p>
+        </header>
+
+        <section id="evangelio" class="card fade-in-section" style="animation-delay: 0.2s;">
+            <h2 class="text-2xl font-semibold mb-4 text-sky-700">Evangelio según San Lucas (12, 49-53)</h2>
+            <blockquote class="border-l-4 border-sky-500 pl-4 italic text-gray-700 space-y-3">
+                <p>En aquel tiempo, Jesús dijo a sus discípulos, "He venido a traer fuego a la tierra y cuánto desearía que ya estuviera ardiendo. Tengo que recibir un bautismo y cómo me angustio mientras llega. ¿Piensan acaso que he traído a traer paz a la tierra? De ningún modo. No he venido a traer la paz, sino la división.</p>
+                <p>De aquí en adelante, de cinco que haya en una familia, estarán divididos tres contra dos y dos contra tres. Estará dividido el padre contra el hijo, el hijo contra el padre, la madre contra la hija y la hija contra la madre, la suegra contra la nuera y la nuera contra la suegra".</p>
+            </blockquote>
+            <p class="mt-4 font-semibold text-gray-800">Palabra del Señor. <span class="font-normal text-gray-600">Gloria a ti, Señor Jesús.</span></p>
+        </section>
+
+        <section id="homilia" class="card fade-in-section" style="animation-delay: 0.4s;">
+            <h2 class="text-2xl font-semibold mb-6 text-indigo-700">Mensajes Clave de la Homilía</h2>
+            
+            <div class="space-y-8">
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-sky-600">🔥 El Fuego que Purifica, no que Destruye</h3>
+                    <p class="text-gray-700 pl-4">Jesús no habla de un fuego para destruir, sino de uno que representa la <span class="font-semibold">fuerza transformadora</span> de su presencia. Este fuego ilumina, purifica y consume todo lo que nos impide crecer en el Reino de Dios, como el egoísmo o la mentira.</p>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-sky-600">↔️ Una División como Consecuencia, no como Meta</h3>
+                    <p class="text-gray-700 pl-4 mb-4">La división es el resultado de la <span class="font-semibold">libertad</span> que tenemos para seguir o no el Evangelio. Cuando una persona elige vivir la verdad de Cristo, su decisión puede no ser aceptada por otros, incluso en la propia familia (por ejemplo, al decidir ir a Misa cuando otros no quieren). No es que busquemos el conflicto, sino que la verdad misma a veces nos separa de quienes prefieren la comodidad.</p>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-sky-600">🕊️ La Verdadera Paz vs. la Falsa Tranquilidad</h3>
+                    <p class="text-gray-700 pl-4 mb-4">Jesús nos enseña a distinguir entre dos tipos de paz:</p>
+                    <div class="grid md:grid-cols-2 gap-4 mt-4">
+                        <div class="bg-gray-100 p-4 rounded-lg border border-gray-200">
+                            <h4 class="font-bold text-center mb-2">Paz del Mundo (Falsa)</h4>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1 text-sm">
+                                <li>Es solo ausencia de conflictos.</li>
+                                <li>Se basa en el silencio para no tener problemas.</li>
+                                <li>Calla ante la injusticia.</li>
+                                <li>Es una "paz" basada en el miedo o la comodidad.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-sky-100 p-4 rounded-lg border border-sky-200">
+                            <h4 class="font-bold text-center mb-2 text-sky-800">Paz de Jesús (Verdadera)</h4>
+                            <ul class="list-disc list-inside text-sky-900 space-y-1 text-sm">
+                                <li>Es la presencia de la verdad y la justicia.</li>
+                                <li>Nace de un corazón limpio y valiente.</li>
+                                <li>No le teme al conflicto si es por defender el bien.</li>
+                                <li>Es la paz del Reino de Dios.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-sky-100 to-indigo-100 p-6 rounded-lg text-center mt-8">
+                    <p class="text-lg italic text-indigo-900">"La paz que Jesús trae no evita el conflicto, sino que lo atraviesa con la verdad, con la justicia y con el amor."</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="cuento" class="card fade-in-section" style="animation-delay: 0.6s;">
+            <h2 class="text-2xl font-semibold mb-4 text-purple-700">📖 Cuentan que... El Cordero que Rompió el Silencio</h2>
+            <div class="bg-purple-50 p-6 rounded-lg border border-purple-200 text-gray-700 space-y-3">
+                <p>En un bosque vivían muchos animales en una aparente paz, gobernada por un lobo astuto que imponía sus reglas a través del miedo y el silencio. Nadie se atrevía a hablar con la verdad para no "romper la tranquilidad", que en realidad era una calma basada en el temor.</p>
+                <p>Un día, llegó un cordero joven que no conocía el miedo. Hablaba con claridad, defendía a los débiles y no se quedaba callado ante las injusticias. Su presencia causó división: algunos animales se sintieron inspirados y comenzaron a despertar, mientras que otros, cómodos en el silencio, se molestaron. El lobo lo enfrentó, pero el cordero le respondió: <span class="font-semibold">"No se puede llamar paz al silencio que nace del miedo".</span></p>
+                <p>La vieja calma se rompió, pero dio paso a algo nuevo y real: una paz verdadera, construida sobre el respeto, la verdad y el valor de hablar y actuar con justicia, aunque a veces generara desacuerdos. Esa es la paz que realmente vale la pena.</p>
+            </div>
+        </section>
+
+        <section id="cuestionario" class="card fade-in-section" style="animation-delay: 0.8s;">
+            <h2 class="text-2xl font-semibold mb-6 text-emerald-700">📝 Pon a Prueba tu Conocimiento</h2>
+            <form id="quizForm">
+                <div class="question-container mb-6">
+                    <p class="text-lg font-medium mb-3">1. Según la homilía, ¿qué representa el "fuego" que Jesús vino a traer?</p>
+                    <div class="space-y-2">
+                        <label class="question-option"><input type="radio" name="q1" value="a" class="sr-only"> a) Una destrucción literal para castigar a los pecadores.</label>
+                        <label class="question-option"><input type="radio" name="q1" value="b" class="sr-only"> b) La fuerza transformadora y purificadora de su mensaje.</label>
+                        <label class="question-option"><input type="radio" name="q1" value="c" class="sr-only"> c) La ira de Dios contra el mundo.</label>
+                        <label class="question-option"><input type="radio" name="q1" value="d" class="sr-only"> d) La creación de conflictos y peleas sin sentido.</label>
+                    </div>
+                </div>
+
+                <div class="question-container mb-6">
+                    <p class="text-lg font-medium mb-3">2. ¿Por qué el mensaje de Jesús puede causar "división" incluso en las familias?</p>
+                    <div class="space-y-2">
+                        <label class="question-option"><input type="radio" name="q2" value="a" class="sr-only"> a) Porque vivir el Evangelio es una elección libre, y no todos la aceptan.</label>
+                        <label class="question-option"><input type="radio" name="q2" value="b" class="sr-only"> b) Porque Jesús quiere que las familias se peleen entre sí.</label>
+                        <label class="question-option"><input type="radio" name="q2" value="c" class="sr-only"> c) Porque la religión siempre es un tema problemático.</label>
+                        <label class="question-option"><input type="radio" name="q2" value="d" class="sr-only"> d) Porque es imposible que una familia entera crea en lo mismo.</label>
+                    </div>
+                </div>
+
+                <div class="question-container mb-6">
+                    <p class="text-lg font-medium mb-3">3. En el cuento del bosque, ¿cuál era el problema con la "paz" que mantenía el lobo?</p>
+                    <div class="space-y-2">
+                        <label class="question-option"><input type="radio" name="q3" value="a" class="sr-only"> a) Que los animales eran demasiado ruidosos.</label>
+                        <label class="question-option"><input type="radio" name="q3" value="b" class="sr-only"> b) Que el lobo no era un buen líder.</label>
+                        <label class="question-option"><input type="radio" name="q3" value="c" class="sr-only"> c) Que era una paz falsa, basada en el miedo y en callar la verdad.</label>
+                        <label class="question-option"><input type="radio" name="q3" value="d" class="sr-only"> d) Que el cordero llegó para causar problemas.</label>
+                    </div>
+                </div>
+
+                <div class="question-container mb-6">
+                    <p class="text-lg font-medium mb-3">4. ¿Cuál es la "verdadera paz" que trae Jesús, según la homilía?</p>
+                    <div class="space-y-2">
+                        <label class="question-option"><input type="radio" name="q4" value="a" class="sr-only"> a) La ausencia total de problemas y discusiones.</label>
+                        <label class="question-option"><input type="radio" name="q4" value="b" class="sr-only"> b) Una vida fácil y sin complicaciones.</label>
+                        <label class="question-option"><input type="radio" name="q4" value="c" class="sr-only"> c) Una paz que nace de vivir en la verdad y la justicia, aunque sea difícil.</label>
+                        <label class="question-option"><input type="radio" name="q4" value="d" class="sr-only"> d) Ignorar los problemas para mantener la calma.</label>
+                    </div>
+                </div>
+                
+                <div class="question-container mb-6">
+                    <p class="text-lg font-medium mb-3">5. La homilía nos dice que remar "contra la corriente" al vivir nuestra fe... </p>
+                    <div class="space-y-2">
+                        <label class="question-option"><input type="radio" name="q5" value="a" class="sr-only"> a) Es un error y deberíamos adaptarnos a los demás.</label>
+                        <label class="question-option"><input type="radio" name="q5" value="b" class="sr-only"> b) A veces cansa, pero siempre valdrá la pena.</label>
+                        <label class="question-option"><input type="radio" name="q5" value="c" class="sr-only"> c) Es algo que solo los sacerdotes deben hacer.</label>
+                        <label class="question-option"><input type="radio" name="q5" value="d" class="sr-only"> d) Nos hará impopulares y debemos evitarlo.</label>
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn" class="quiz-button w-full md:w-auto">Evaluar Cuestionario</button>
+            </form>
+            <div id="quizResult" class="mt-8 p-6 rounded-lg hidden text-center"></div>
+        </section>
+
+        <footer class="text-center mt-12 py-6 border-t border-gray-300">
+            <p class="text-gray-600">&copy; <span id="currentYear"></span> Reflexiones para el Alma Joven. Inspirado en el Evangelio del Fuego y la Paz Verdadera.</p>
+        </footer>
+    </div>
+
+    <script>
+        // --- SCRIPT PARA EL CUESTIONARIO ---
+        const quizForm = document.getElementById('quizForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const quizResult = document.getElementById('quizResult');
+
+        // Respuestas correctas
+        const correctAnswers = {
+            q1: 'b',
+            q2: 'a',
+            q3: 'c',
+            q4: 'c',
+            q5: 'b'
+        };
+
+        // Manejar la selección visual de las opciones
+        const options = document.querySelectorAll('.question-option');
+        options.forEach(option => {
+            option.addEventListener('click', () => {
+                const radio = option.querySelector('input[type="radio"]');
+                const questionName = radio.name;
+                
+                // Quitar 'selected' de las otras opciones de la misma pregunta
+                document.querySelectorAll(`input[name="${questionName}"]`).forEach(r => {
+                    r.parentElement.classList.remove('selected');
+                });
+                
+                // Añadir 'selected' a la opción clickeada
+                option.classList.add('selected');
+                radio.checked = true;
+            });
+        });
+
+        quizForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let score = 0;
+            const totalQuestions = Object.keys(correctAnswers).length;
+            const userAnswers = new FormData(quizForm);
+
+            // Deshabilitar todas las opciones
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.disabled = true;
+            });
+
+            // Evaluar cada pregunta
+            for (const [question, correctAnswer] of Object.entries(correctAnswers)) {
+                const userAnswer = userAnswers.get(question);
+                const questionOptions = document.querySelectorAll(`input[name="${question}"]`);
+                
+                questionOptions.forEach(option => {
+                    const label = option.parentElement;
+                    if (option.value === correctAnswer) {
+                        // Siempre marcar la respuesta correcta en verde
+                        label.classList.add('correct');
+                        label.classList.remove('selected', 'incorrect');
+                    }
+                    
+                    if (userAnswer && userAnswer === option.value && userAnswer !== correctAnswer) {
+                        // Si el usuario eligió esta y es incorrecta, marcarla en rojo
+                        label.classList.add('incorrect');
+                        label.classList.remove('selected');
+                    }
+                });
+
+                if (userAnswer === correctAnswer) {
+                    score++;
+                }
+            }
+            
+            // Mostrar resultados
+            const percentage = Math.round((score / totalQuestions) * 100);
+            let feedbackMessage = '';
+            let resultColorClass = '';
+
+            if (percentage === 100) {
+                feedbackMessage = '¡Excelente! Has comprendido todos los mensajes clave. ¡Sigue así!';
+                resultColorClass = 'bg-emerald-100 text-emerald-800';
+            } else if (percentage >= 60) {
+                feedbackMessage = '¡Muy bien! Tienes una buena comprensión del tema. Repasa los puntos que fallaste.';
+                resultColorClass = 'bg-sky-100 text-sky-800';
+            } else {
+                feedbackMessage = 'Sigue esforzándote. Te animamos a leer de nuevo la homilía y el evangelio para reforzar las ideas.';
+                resultColorClass = 'bg-amber-100 text-amber-800';
+            }
+
+            quizResult.innerHTML = `
+                <p class="text-2xl font-bold mb-2">Tu puntuación: ${score} de ${totalQuestions} (${percentage}%)</p>
+                <p class="text-lg">${feedbackMessage}</p>
+            `;
+            quizResult.className = `mt-8 p-6 rounded-lg text-center ${resultColorClass}`; // Reemplaza todas las clases
+            quizResult.classList.remove('hidden');
+
+            // Deshabilitar botón de envío
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Evaluado';
+        });
+
+
+        // --- SCRIPT PARA EL AÑO DEL FOOTER ---
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+    </script>
+
+</body>
+</html>
