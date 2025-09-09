@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homilía: El Camino de la Humildad</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff; /* bg-sky-50 en Tailwind v3, usando un color cercano */
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem; /* p-6 */
+            margin-bottom: 1.5rem; /* mb-6 */
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animaciones escalonadas */
+        #evangelio { animation-delay: 0.2s; }
+        #homilia { animation-delay: 0.4s; }
+        #cuento { animation-delay: 0.6s; }
+        #cuestionario { animation-delay: 0.8s; }
+
+        .gradient-text {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .header-icon {
+            width: 4rem; /* w-16 */
+            height: 4rem; /* h-16 */
+            margin: 0 auto 1rem; /* mx-auto mb-4 */
+        }
+        
+        /* Estilos del Cuestionario */
+        .question-option {
+            display: block;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb; /* border-gray-200 */
+            border-radius: 0.5rem; /* rounded-lg */
+            margin-bottom: 0.5rem; /* mb-2 */
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .question-option:hover {
+            border-color: #3b82f6; /* border-blue-500 */
+            background-color: #eff6ff; /* bg-blue-50 */
+        }
+        .question-option.selected {
+            border-color: #3b82f6; /* border-blue-500 */
+            background-color: #dbeafe; /* bg-blue-100 */
+            font-weight: 600;
+        }
+        .question-option.correct {
+            background-color: #dcfce7; /* bg-green-100 */
+            border-color: #22c55e; /* border-green-500 */
+            color: #15803d; /* text-green-800 */
+        }
+        .question-option.incorrect {
+            background-color: #fee2e2; /* bg-red-100 */
+            border-color: #ef4444; /* border-red-500 */
+            color: #b91c1c; /* text-red-800 */
+        }
+
+        .quiz-button {
+            background-color: #16a34a; /* bg-green-600 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        .quiz-button:hover {
+            background-color: #15803d; /* bg-green-700 */
+        }
+        .quiz-button:disabled {
+            background-color: #9ca3af; /* bg-gray-400 */
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto px-4 py-8 md:py-12">
+
+        <header class="text-center mb-10 md:mb-12">
+            <svg class="header-icon text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75" />
+            </svg>
+            <h1 class="text-3xl md:text-4xl font-bold mb-2 gradient-text bg-gradient-to-r from-sky-500 to-indigo-600">
+                El Verdadero Crecimiento está en la Humildad
+            </h1>
+            <p class="text-lg text-gray-600">
+                Reflexionando el Evangelio y la Homilía Dominical
+            </p>
+        </header>
+
+        <main>
+            <section id="evangelio" class="card">
+                <h2 class="text-2xl font-semibold mb-4 text-sky-700">Evangelio según San Lucas (cf. Lc 14, 1. 7-14)</h2>
+                <blockquote class="border-l-4 border-sky-500 pl-4 italic text-gray-700 space-y-3">
+                    <p>Un sábado, Jesús entró a comer en casa de uno de los principales fariseos. Ellos lo observaban atentamente. Viendo cómo los convidados escogían los primeros puestos, les propuso esta parábola:</p>
+                    <p>«Cuando te conviden a una boda, no te sientes en el puesto principal, no sea que hayan convidado a otro de más categoría que tú; y vendrá el que los convidó a ti y al otro y te dirá: “Cédele el puesto a este”. Entonces, avergonzado, irás a ocupar el último puesto. Al revés, cuando te conviden, vete a sentarte en el último puesto, para que, cuando venga el que te convidó, te diga: “Amigo, sube más arriba”. Entonces quedarás muy bien ante todos los comensales. Porque todo el que se enaltece será humillado, y el que se humilla será enaltecido».</p>
+                </blockquote>
+                <p class="mt-4 font-semibold text-gray-600">Palabra del Señor. <span class="font-normal">Gloria a ti, Señor Jesús.</span></p>
+            </section>
+
+            <section id="homilia" class="card">
+                <h2 class="text-2xl font-semibold mb-6 text-indigo-700">Mensajes Clave de la Homilía</h2>
+                
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2 text-sky-600">👑 La Verdadera Grandeza es la Humildad</h3>
+                        <p class="text-gray-700 pl-4">Jesús no condena la reunión, sino la intención del corazón que busca destacar. La verdadera grandeza no está en buscar los primeros lugares, sino en servir, tal como Él lo hizo. La humildad nace al reconocer que todo lo que tenemos es un regalo de Dios.</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3 text-sky-600">💪 Humildad: Fortaleza, no Debilidad</h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                                <h4 class="font-bold text-red-800 mb-1">Lo que NO es Humildad:</h4>
+                                <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                    <li>Sentirse débil o inferior.</li>
+                                    <li>Despreciarse a uno mismo.</li>
+                                    <li>Creerse menos que los demás.</li>
+                                </ul>
+                            </div>
+                             <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                <h4 class="font-bold text-green-800 mb-1">Lo que SÍ es Humildad:</h4>
+                                <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                    <li>Saber quiénes somos ante Dios.</li>
+                                    <li>Reconocer nuestros dones sin orgullo.</li>
+                                    <li>Aceptar nuestros límites sin amargura.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2 text-sky-600">🕊️ El Fruto de la Humildad: La Paz Interior</h3>
+                        <p class="text-gray-700 pl-4">Cuando dejamos de competir por ser los primeros, encontramos serenidad y paz. La humildad nos permite dejar espacio a los demás, abriendo caminos para el perdón, la comprensión y el encuentro verdadero.</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2 text-sky-600">🎁 El Don de Dar sin Esperar</h3>
+                        <p class="text-gray-700 pl-4">Jesús nos invita a compartir no solo con quienes pueden devolvernos el favor, sino con los más necesitados. Un corazón humilde no calcula ni mide el beneficio; da con libertad, porque entiende que todo es un regalo para compartir.</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-gradient-to-r from-sky-100 to-indigo-100 p-6 rounded-lg text-center">
+                    <p class="text-xl italic text-indigo-800">"Porque todo el que se enaltece será humillado, y <span class="font-semibold">el que se humilla será enaltecido</span>. No por los demás, por Dios, que es lo más importante."</p>
+                </div>
+            </section>
+
+            <section id="cuento" class="card">
+                <h2 class="text-2xl font-semibold mb-4 text-purple-700">📖 Cuentan que... La Lección del Roble Viejo</h2>
+                <div class="bg-purple-50 p-6 rounded-lg border border-purple-200 text-gray-700 space-y-3">
+                    <p>Había un árbol joven en un bosque que soñaba con ser el más alto de todos. Se esforzaba día y noche por crecer más rápido que los demás, compitiendo por la luz del sol y quejándose por cualquier obstáculo. Su único objetivo era ser visto y admirado.</p>
+                    <p>Un día, una terrible sequía azotó el bosque. El árbol joven comenzó a marchitarse, desesperado. Fue entonces cuando notó que el viejo roble, a quien tanto envidiaba, se mantenía verde y fuerte. Lleno de curiosidad, le preguntó su secreto.</p>
+                    <p>El roble le respondió sabiamente: "Mientras tú solo has buscado crecer hacia arriba para ser visto, yo he aprendido a crecer hacia abajo. Mis raíces son profundas, no para ser admirado, sino para sostenerme y alimentarme". El joven árbol comprendió entonces la gran lección: <span class="font-semibold">el verdadero crecimiento no se trata de ser el primero ni el más visto, sino de echar raíces profundas para poder servir en silencio, dar sombra y compartir vida.</span></p>
+                </div>
+            </section>
+
+            <section id="cuestionario" class="card">
+                <h2 class="text-2xl font-semibold mb-6 text-emerald-700">📝 Pon a Prueba tu Conocimiento</h2>
+                <form id="quizForm">
+                    <div class="space-y-6">
+                        <div class="question-container">
+                            <p class="text-lg font-medium mb-3">1. ¿Cuál es el tema central que Jesús enseña en el Evangelio de este domingo?</p>
+                            <div>
+                                <label class="question-option">
+                                    <input type="radio" name="q1" value="a" class="sr-only">
+                                    <span>a) La importancia de organizar buenas comidas.</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q1" value="b" class="sr-only">
+                                    <span>b) La verdadera grandeza se encuentra en la humildad.</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q1" value="c" class="sr-only">
+                                    <span>c) Cómo ser el invitado más popular en una fiesta.</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q1" value="d" class="sr-only">
+                                    <span>d) La competencia es buena para superarse.</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="question-container">
+                            <p class="text-lg font-medium mb-3">2. Según la homilía, ¿qué es la humildad?</p>
+                            <div>
+                                <label class="question-option">
+                                    <input type="radio" name="q2" value="a" class="sr-only">
+                                    <span>a) Saber quiénes somos ante Dios, reconociendo dones y límites.</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q2" value="b" class="sr-only">
+                                    <span>b) Pensar que somos inferiores a los demás.</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q2" value="c" class="sr-only">
+                                    <span>c) No tener ninguna cualidad de la que estar orgulloso.</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q2" value="d" class="sr-only">
+                                    <span>d) Una señal de debilidad y falta de carácter.</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="question-container">
+                            <p class="text-lg font-medium mb-3">3. ¿Qué beneficio práctico trae vivir con humildad en nuestro día a día?</p>
+                            <div>
+                                <label class="question-option">
+                                    <input type="radio" name="q3" value="a" class="sr-only">
+                                    <span>a) Ganar más discusiones y debates.</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q3" value="b" class="sr-only">
+                                    <span>b) Acumular más riquezas y prestigio social.</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q3" value="c" class="sr-only">
+                                    <span>c) Vivir con más paz y serenidad al dejar de competir.</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q3" value="d" class="sr-only">
+                                    <span>d) Ser el centro de atención en todos los grupos.</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="question-container">
+                            <p class="text-lg font-medium mb-3">4. En la historia del bosque, ¿cuál era el secreto del roble para mantenerse fuerte durante la sequía?</p>
+                            <div>
+                                <label class="question-option">
+                                    <input type="radio" name="q4" value="a" class="sr-only">
+                                    <span>a) Era el árbol más alto y captaba más sol.</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q4" value="b" class="sr-only">
+                                    <span>b) Tenía un tronco más grueso que los demás.</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q4" value="c" class="sr-only">
+                                    <span>c) Había aprendido a crecer hacia abajo, con raíces profundas.</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q4" value="d" class="sr-only">
+                                    <span>d) Se quejaba menos que el árbol joven.</span>
+                                </label>
+                            </div>
+                        </div>
+                         <div class="question-container">
+                            <p class="text-lg font-medium mb-3">5. Para practicar la generosidad humilde, ¿a quiénes nos dice Jesús que invitemos a nuestra mesa?</p>
+                            <div>
+                                <label class="question-option">
+                                    <input type="radio" name="q5" value="a" class="sr-only">
+                                    <span>a) Solo a nuestros amigos y familiares cercanos.</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q5" value="b" class="sr-only">
+                                    <span>b) A personas importantes que puedan ayudarnos en el futuro.</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q5" value="c" class="sr-only">
+                                    <span>c) A los necesitados que no pueden devolvernos el favor.</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q5" value="d" class="sr-only">
+                                    <span>d) A los mejores cocineros para aprender de ellos.</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 text-center">
+                        <button type="submit" id="quizSubmitBtn" class="quiz-button w-full md:w-auto">Evaluar Cuestionario</button>
+                    </div>
+                </form>
+
+                <div id="quizResult" class="mt-8 p-6 rounded-lg hidden">
+                    <h3 id="resultTitle" class="text-2xl font-bold text-center mb-2"></h3>
+                    <p id="resultText" class="text-center text-lg"></p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center mt-8 pt-6 border-t border-gray-300">
+            <p class="text-gray-600">&copy; <span id="currentYear"></span> Reflexiones para el Alma Joven. Inspirado en el camino de la Humildad.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // Actualizar año en el footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        
+        // Lógica del Cuestionario
+        const quizForm = document.getElementById('quizForm');
+        const submitButton = document.getElementById('quizSubmitBtn');
+        const quizResult = document.getElementById('quizResult');
+        const resultTitle = document.getElementById('resultTitle');
+        const resultText = document.getElementById('resultText');
+        
+        const correctAnswers = {
+            q1: 'b',
+            q2: 'a',
+            q3: 'c',
+            q4: 'c',
+            q5: 'c'
+        };
+
+        // Manejar selección visual
+        const allLabels = document.querySelectorAll('.question-option');
+        allLabels.forEach(label => {
+            label.addEventListener('click', () => {
+                const radioName = label.querySelector('input').name;
+                document.querySelectorAll(`input[name="${radioName}"]`).forEach(radio => {
+                    radio.parentElement.classList.remove('selected');
+                });
+                label.classList.add('selected');
+            });
+        });
+
+        quizForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let score = 0;
+            const totalQuestions = Object.keys(correctAnswers).length;
+            const formData = new FormData(quizForm);
+
+            // Deshabilitar el formulario para evitar reenvíos
+            submitButton.disabled = true;
+            submitButton.textContent = 'Evaluado';
+            document.querySelectorAll('#quizForm input[type="radio"]').forEach(radio => {
+                radio.disabled = true;
+            });
+            
+            // Evaluar respuestas
+            for (let [question, correctAnswer] of Object.entries(correctAnswers)) {
+                const userAnswer = formData.get(question);
+                const questionContainer = document.querySelector(`input[name="${question}"]`).closest('.question-container');
+                const labels = questionContainer.querySelectorAll('label');
+
+                labels.forEach(label => {
+                    const radio = label.querySelector('input');
+                    label.classList.remove('selected'); // Limpiar selección visual
+
+                    if (radio.value === correctAnswer) {
+                        label.classList.add('correct');
+                    }
+                    
+                    if (radio.value === userAnswer && userAnswer !== correctAnswer) {
+                        label.classList.add('incorrect');
+                    }
+                });
+                
+                if (userAnswer === correctAnswer) {
+                    score++;
+                }
+            }
+
+            // Mostrar resultados
+            const percentage = (score / totalQuestions) * 100;
+            resultText.textContent = `Tu puntuación: ${score} de ${totalQuestions} (${percentage.toFixed(0)}%)`;
+
+            if (percentage === 100) {
+                resultTitle.textContent = '¡Excelente!';
+                resultTitle.className = 'text-2xl font-bold text-center mb-2 text-green-600';
+                quizResult.classList.add('bg-green-50', 'border', 'border-green-200');
+            } else if (percentage >= 60) {
+                resultTitle.textContent = '¡Muy Bien!';
+                resultTitle.className = 'text-2xl font-bold text-center mb-2 text-sky-600';
+                quizResult.classList.add('bg-sky-50', 'border', 'border-sky-200');
+            } else {
+                resultTitle.textContent = 'Sigue esforzándote';
+                resultTitle.className = 'text-2xl font-bold text-center mb-2 text-amber-600';
+                quizResult.classList.add('bg-amber-50', 'border', 'border-amber-200');
+            }
+
+            quizResult.classList.remove('hidden');
+            quizResult.scrollIntoView({ behavior: 'smooth' });
+        });
+
+    </script>
+</body>
+</html>
