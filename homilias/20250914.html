@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflexionando la Parábola del Padre Misericordioso</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; /* rounded-xl */
+            padding: 1.5rem; /* p-6 */
+            margin-bottom: 1.5rem; /* mb-6 */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fade-in-up 0.6s ease-out forwards;
+        }
+
+        .gradient-text {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .header-icon {
+            width: 4rem; /* w-16 */
+            height: 4rem; /* h-16 */
+            margin: 0 auto 1rem; /* mx-auto mb-4 */
+        }
+        
+        /* Animación de aparición */
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Estilos del Cuestionario */
+        .question-option {
+            display: block;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb; /* border-gray-200 */
+            border-radius: 0.5rem; /* rounded-lg */
+            margin-bottom: 0.5rem; /* mb-2 */
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .question-option:hover {
+            border-color: #3b82f6; /* border-blue-500 */
+        }
+        
+        .question-option.selected {
+            background-color: #dbeafe; /* bg-blue-100 */
+            border-color: #3b82f6; /* border-blue-500 */
+        }
+
+        .question-option.correct {
+            background-color: #dcfce7; /* bg-green-100 */
+            border-color: #22c55e; /* border-green-500 */
+            font-weight: 600;
+        }
+        
+        .question-option.incorrect {
+            background-color: #fee2e2; /* bg-red-100 */
+            border-color: #ef4444; /* border-red-500 */
+        }
+        
+        .quiz-button {
+            padding: 0.75rem 1.5rem;
+            background-color: #16a34a; /* bg-green-600 */
+            color: white;
+            font-weight: 600;
+            border-radius: 0.5rem; /* rounded-lg */
+            transition: background-color 0.2s;
+        }
+        
+        .quiz-button:hover {
+            background-color: #15803d; /* bg-green-700 */
+        }
+
+        .quiz-button:disabled {
+            background-color: #9ca3af; /* bg-gray-400 */
+            cursor: not-allowed;
+        }
+        
+        /* Oculta el input de radio real */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto px-4 py-8 md:py-12">
+
+        <header class="text-center mb-10">
+            <svg class="header-icon text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+            </svg>
+            <h1 class="text-3xl md:text-4xl font-bold gradient-text bg-gradient-to-r from-sky-500 to-indigo-600 mb-2">
+                Reflexionando la Parábola del Padre Misericordioso
+            </h1>
+            <p class="text-lg text-gray-600">
+                Homilía del Domingo: El amor incondicional que nos espera siempre.
+            </p>
+        </header>
+
+        <main>
+
+            <section id="evangelio" class="card" style="animation-delay: 0.1s;">
+                <h2 class="text-2xl font-semibold mb-4 text-sky-700">Evangelio según San Lucas (15, 11-32)</h2>
+                <blockquote class="border-l-4 border-sky-500 pl-4 italic text-gray-700 space-y-3">
+                    <p>Jesús nos cuenta la historia de un padre con dos hijos. El menor pide su herencia, se va lejos y lo malgasta todo, terminando en la miseria más profunda. Arrepentido, decide volver a casa de su padre, aunque sea para trabajar como uno de sus jornaleros.</p>
+                    <p>Pero el padre, al verlo regresar desde lejos, se conmueve, corre a su encuentro, lo abraza y lo besa. Organiza una gran fiesta para celebrar, vistiéndolo con las mejores ropas y poniendo un anillo en su dedo, porque "este hijo mío estaba muerto y ha vuelto a la vida; estaba perdido y ha sido encontrado".</p>
+                    <p>Mientras tanto, el hijo mayor, que siempre había sido obediente y trabajador, se enoja al volver del campo y enterarse de la fiesta. Se niega a entrar y le reclama a su padre su aparente injusticia. El padre sale a su encuentro y con ternura le explica: "Hijo, tú siempre estás conmigo, y todo lo mío es tuyo. Pero era necesario celebrar y alegrarse, porque este hermano tuyo estaba muerto y ha vuelto a la vida".</p>
+                </blockquote>
+                <p class="mt-4 font-semibold text-gray-600">Palabra del Señor. <span class="font-normal italic">Gloria a ti, Señor Jesús.</span></p>
+            </section>
+
+            <section id="homilia" class="card" style="animation-delay: 0.2s;">
+                <h2 class="text-2xl font-semibold mb-6 text-indigo-700">Mensajes Clave de la Homilía</h2>
+                
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3 text-sky-600">💖 El Rostro del Padre Misericordioso</h3>
+                        <p class="text-gray-700 pl-4">La parábola es, sobre todo, un retrato fiel del corazón de Dios. Un Padre que no se cansa de esperar, no guarda rencor, y cuya única capacidad es la de amar. Su mayor alegría es recuperar al que estaba perdido.</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-xl font-semibold mb-3 text-sky-600">😔 El Hijo Menor: La Libertad Equivocada</h3>
+                             <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                                <li>Buscó la felicidad lejos del hogar, confundiendo la libertad con la ruptura.</li>
+                                <li>Lo que encontró fue vacío, soledad y miseria.</li>
+                                <li>La clave no es su caída, sino su "despertar interior": el momento en que reconoce su error y desea volver.</li>
+                                <li>Su regreso comienza en el instante en que su corazón se arrepiente.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-3 text-sky-600">😠 El Hijo Mayor: Cerca pero Distante</h3>
+                            <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                                <li>Representa a quienes cumplen con las reglas pero tienen el corazón cerrado a la alegría y a la misericordia.</li>
+                                <li>Puede hacer lo correcto, pero sin amor, lo que vuelve amarga su fidelidad.</li>
+                                <li>Vive en la casa del padre, pero no comprende el corazón del padre.</li>
+                                <li>Nos desafía a preguntarnos si nuestra cercanía a Dios es solo por costumbre.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-sky-100 to-indigo-100 p-6 rounded-lg text-center">
+                        <p class="text-xl italic text-indigo-800">"Dios no quiere hijos perfectos. Quiere hijos verdaderos. Hijos que caen, pero regresan. Hijos que obedecen, pero con el corazón abierto."</p>
+                    </div>
+
+                </div>
+            </section>
+            
+            <section id="cuento" class="card" style="animation-delay: 0.3s;">
+                <h2 class="text-2xl font-semibold mb-4 text-purple-700">📖 Cuentan que... El Tejedor de Lámparas</h2>
+                <div class="bg-purple-50 p-6 rounded-lg border border-purple-200 text-gray-700 space-y-4">
+                    <p>En una ciudad antigua, un tejedor llamado Aurelio no hacía ropa, sino "lámparas de luz". No las vendía, las regalaba con una condición: que nunca se usaran para uno mismo mientras hubiera alguien más necesitado de luz. Sus lámparas traían consuelo y esperanza a quienes las recibían.</p>
+                    <p>Un joven ambicioso y autosuficiente llamado Darío, por pura curiosidad, pidió una lámpara. La encendió en su casa y no sintió nada especial, así que la guardó frustrado. Años después, sumido en la soledad y el fracaso, recordó la lámpara. La encendió y, sin esperar nada, lloró su propio vacío. En ese momento, sintió el impulso de llevarla a una anciana que cuidaba huérfanos. Al dársela, la anciana sonrió y Darío, aunque volvió a casa sin luz, sintió su corazón más ligero.</p>
+                    <p>Al día siguiente, arrepentido, volvió con Aurelio. El tejedor le dijo: "Te estaba esperando". Le entregó una nueva lámpara, esta vez tejida con los hilos de su propio arrepentimiento. Darío aprendió la gran lección: <span class="font-semibold">no hay luz más fuerte que la que nace cuando uno se reconoce perdido y descubre que alguien, con paciencia infinita, lo ha estado esperando todo el tiempo.</span> El verdadero arrepentimiento cambia lo que hacemos, y un corazón agradecido no se queda con la luz, sino que aprende a compartirla.</p>
+                </div>
+            </section>
+
+            <section id="cuestionario" class="card" style="animation-delay: 0.4s;">
+                <h2 class="text-2xl font-semibold mb-6 text-emerald-700">📝 Pon a Prueba tu Conocimiento</h2>
+                <form id="quizForm" class="space-y-8">
+                    
+                    <div class="question-container">
+                        <p class="text-lg font-medium mb-3">1. Según la homilía, ¿cuál es la revelación más importante de la parábola?</p>
+                        <div class="options-container" data-question="q1">
+                            <label class="question-option">
+                                <input type="radio" name="q1" value="a" class="sr-only">
+                                <span>a) La importancia de administrar bien el dinero.</span>
+                            </label>
+                            <label class="question-option">
+                                <input type="radio" name="q1" value="b" class="sr-only">
+                                <span>b) El retrato fiel del corazón amoroso y misericordioso de Dios Padre.</span>
+                            </label>
+                            <label class="question-option">
+                                <input type="radio" name="q1" value="c" class="sr-only">
+                                <span>c) Que siempre es mejor quedarse en casa y obedecer.</span>
+                            </label>
+                            <label class="question-option">
+                                <input type="radio" name="q1" value="d" class="sr-only">
+                                <span>d) El peligro de hablar con los criados.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-container">
+                        <p class="text-lg font-medium mb-3">2. ¿Qué representa principalmente el hijo menor en la historia?</p>
+                        <div class="options-container" data-question="q2">
+                            <label class="question-option">
+                                <input type="radio" name="q2" value="a" class="sr-only">
+                                <span>a) El deseo de aventura y de conocer el mundo.</span>
+                            </label>
+                            <label class="question-option">
+                                <input type="radio" name="q2" value="b" class="sr-only">
+                                <span>b) La maldad pura y el deseo de hacer sufrir a su padre.</span>
+                            </label>
+                            <label class="question-option">
+                                <input type="radio" name="q2" value="c" class="sr-only">
+                                <span>c) A quienes confunden la libertad con la ruptura y buscan lejos lo que solo se encuentra cerca.</span>
+                            </label>
+                            <label class="question-option">
+                                <input type="radio" name="q2" value="d" class="sr-only">
+                                <span>d) La importancia de la independencia económica.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-container">
+                        <p class="text-lg font-medium mb-3">3. El principal problema del hijo mayor es que...</p>
+                        <div class="options-container" data-question="q3">
+                             <label class="question-option">
+                                <input type="radio" name="q3" value="a" class="sr-only">
+                                <span>a) Trabajaba demasiado y no se divertía.</span>
+                            </label>
+                            <label class="question-option">
+                                <input type="radio" name="q3" value="b" class="sr-only">
+                                <span>b) Estaba físicamente en la casa de su padre, pero su corazón estaba lejos, lleno de amargura y sin comprender el amor.</span>
+                            </label>
+                            <label class="question-option">
+                                <input type="radio" name="q3" value="c" class="sr-only">
+                                <span>c) No le gustaban las fiestas ni la música.</span>
+                            </label>
+                           <label class="question-option">
+                                <input type="radio" name="q3" value="d" class="sr-only">
+                                <span>d) Quería que mataran un becerro gordo también para él.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-container">
+                        <p class="text-lg font-medium mb-3">4. En el cuento del "Tejedor de Lámparas", ¿por qué la lámpara no tuvo efecto en Darío la primera vez?</p>
+                         <div class="options-container" data-question="q4">
+                            <label class="question-option">
+                                <input type="radio" name="q4" value="a" class="sr-only">
+                                <span>a) Porque la lámpara estaba defectuosa.</span>
+                            </label>
+                            <label class="question-option">
+                                <input type="radio" name="q4" value="b" class="sr-only">
+                                <span>b) Porque la guardó para sí mismo en lugar de compartirla, como era la condición.</span>
+                            </label>
+                             <label class="question-option">
+                                <input type="radio" name="q4" value="c" class="sr-only">
+                                <span>c) Porque no creía en la magia de las lámparas.</span>
+                            </label>
+                            <label class="question-option">
+                                <input type="radio" name="q4" value="d" class="sr-only">
+                                <span>d) Porque no la encendió durante suficiente tiempo.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-container">
+                        <p class="text-lg font-medium mb-3">5. ¿Cuál es uno de los mensajes finales de la homilía sobre lo que Dios espera de nosotros?</p>
+                        <div class="options-container" data-question="q5">
+                             <label class="question-option">
+                                <input type="radio" name="q5" value="a" class="sr-only">
+                                <span>a) Que seamos perfectos y nunca cometamos errores.</span>
+                            </label>
+                            <label class="question-option">
+                                <input type="radio" name="q5" value="b" class="sr-only">
+                                <span>b) Que seamos hijos verdaderos que, aunque caigan, regresan con un corazón arrepentido.</span>
+                            </label>
+                             <label class="question-option">
+                                <input type="radio" name="q5" value="c" class="sr-only">
+                                <span>c) Que trabajemos duro para ganar su amor y su perdón.</span>
+                            </label>
+                            <label class="question-option">
+                                <input type="radio" name="q5" value="d" class="sr-only">
+                                <span>d) Que siempre seamos como el hijo mayor, obedientes y fieles.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="quiz-button w-full md:w-auto">Evaluar Cuestionario</button>
+                    </div>
+                </form>
+
+                <div id="quizResult" class="mt-8 p-6 rounded-lg hidden text-center"></div>
+
+            </section>
+        </main>
+
+        <footer class="text-center py-6 mt-8 border-t border-gray-300 text-sm text-gray-500">
+            <p>&copy; <span id="currentYear"></span> Reflexiones para el Alma Joven. Inspirado en la Parábola del Padre Misericordioso.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            // --- Lógica del Cuestionario ---
+            const quizForm = document.getElementById('quizForm');
+            const quizResult = document.getElementById('quizResult');
+            const submitButton = quizForm.querySelector('button[type="submit"]');
+            
+            const correctAnswers = {
+                q1: 'b',
+                q2: 'c',
+                q3: 'b',
+                q4: 'b',
+                q5: 'b'
+            };
+
+            // Manejo visual de la selección de opciones
+            const optionContainers = document.querySelectorAll('.options-container');
+            optionContainers.forEach(container => {
+                container.addEventListener('click', (e) => {
+                    const label = e.target.closest('.question-option');
+                    if (!label || submitButton.disabled) return;
+
+                    // Deseleccionar otras opciones en el mismo grupo
+                    const questionName = container.dataset.question;
+                    document.querySelectorAll(`input[name="${questionName}"]`).forEach(radio => {
+                        radio.closest('.question-option').classList.remove('selected');
+                    });
+
+                    // Seleccionar la opción clickeada
+                    label.classList.add('selected');
+                    label.querySelector('input[type="radio"]').checked = true;
+                });
+            });
+
+            quizForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                let score = 0;
+                const totalQuestions = Object.keys(correctAnswers).length;
+                const formData = new FormData(quizForm);
+
+                // Deshabilitar todo para evitar re-evaluación
+                submitButton.disabled = true;
+                quizForm.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.disabled = true;
+                });
+
+                for (const question in correctAnswers) {
+                    const userAnswer = formData.get(question);
+                    const correctAnswer = correctAnswers[question];
+                    const questionContainer = document.querySelector(`input[name="${question}"]`).closest('.question-container');
+                    const options = questionContainer.querySelectorAll('.question-option');
+                    
+                    options.forEach(opt => {
+                        const radio = opt.querySelector('input[type="radio"]');
+                        // Mostrar siempre la respuesta correcta en verde
+                        if (radio.value === correctAnswer) {
+                            opt.classList.add('correct');
+                        }
+
+                        // Si el usuario contestó
+                        if (radio.value === userAnswer) {
+                            if (userAnswer === correctAnswer) {
+                                score++;
+                            } else {
+                                // Marcar la incorrecta del usuario en rojo
+                                opt.classList.add('incorrect');
+                            }
+                        }
+                    });
+                }
+
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let feedbackMessage = '';
+                let resultBgColor = '';
+
+                if (percentage === 100) {
+                    feedbackMessage = '¡Excelente! Has comprendido profundamente el mensaje.';
+                    resultBgColor = 'bg-green-100 border-green-300';
+                } else if (percentage >= 60) {
+                    feedbackMessage = '¡Muy bien! Tienes una buena comprensión de los puntos clave.';
+                    resultBgColor = 'bg-sky-100 border-sky-300';
+                } else {
+                    feedbackMessage = 'Sigue esforzándote. Te animo a releer la homilía para afianzar las ideas.';
+                    resultBgColor = 'bg-yellow-100 border-yellow-300';
+                }
+
+                quizResult.innerHTML = `
+                    <h3 class="text-2xl font-bold mb-2">Tu puntuación: ${score} de ${totalQuestions} (${percentage}%)</h3>
+                    <p class="text-lg">${feedbackMessage}</p>
+                `;
+                quizResult.className = `mt-8 p-6 rounded-lg text-center border ${resultBgColor}`;
+                quizResult.classList.remove('hidden');
+                quizResult.scrollIntoView({ behavior: 'smooth' });
+            });
+
+
+            // --- Lógica del Pie de Página ---
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+        });
+    </script>
+
+</body>
+</html>
