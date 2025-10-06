@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflexionando la Fe Sencilla y Poderosa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem; /* p-6 */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+        .gradient-text {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .header-icon {
+            width: 4rem;
+            height: 4rem;
+            margin: 0 auto 1rem;
+        }
+        .question-option {
+            display: block;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb; /* border-gray-200 */
+            border-radius: 0.5rem; /* rounded-lg */
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-bottom: 0.75rem; /* mb-3 */
+        }
+        .question-option:hover {
+            border-color: #3b82f6; /* border-blue-500 */
+        }
+        .question-option.selected {
+            border-color: #3b82f6; /* border-blue-500 */
+            background-color: #eff6ff; /* bg-blue-50 */
+            font-weight: 600;
+        }
+        .question-option.correct {
+            border-color: #10b981; /* border-emerald-500 */
+            background-color: #d1fae5; /* bg-emerald-100 */
+        }
+        .question-option.incorrect {
+            border-color: #ef4444; /* border-red-500 */
+            background-color: #fee2e2; /* bg-red-100 */
+        }
+        .quiz-button {
+            background-color: #16a34a; /* bg-green-600 */
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .quiz-button:hover {
+            background-color: #15803d; /* bg-green-700 */
+        }
+        .quiz-button:disabled {
+            background-color: #9ca3af; /* bg-gray-400 */
+            cursor: not-allowed;
+        }
+
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .fade-in-up {
+            animation: fade-in-up 0.6s ease-out forwards;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="bg-sky-50 text-gray-800 p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto">
+
+        <header class="text-center mb-10 md:mb-12">
+            <svg class="header-icon text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 17.25v-.228a4.5 4.5 0 00-.12-1.03l-2.268-9.64a3.375 3.375 0 00-3.285-2.602H7.923a3.375 3.375 0 00-3.285 2.602l-2.268 9.64a4.5 4.5 0 00-.12 1.03v.228m15.56 0a2.25 2.25 0 01-2.25 2.25h-11.11a2.25 2.25 0 01-2.25-2.25v-1.5a2.25 2.25 0 012.25-2.25h11.11a2.25 2.25 0 012.25 2.25v1.5z" />
+            </svg>
+            <h1 class="text-3xl md:text-4xl font-bold gradient-text bg-gradient-to-r from-sky-500 to-indigo-600 mb-2">
+                La Fe del Tamaño de un Grano de Mostaza
+            </h1>
+            <p class="text-lg text-gray-600">
+                Reflexionando el Evangelio y la Homilía del Domingo
+            </p>
+        </header>
+
+        <main>
+            <section id="evangelio" class="card fade-in-up" style="animation-delay: 0.1s;">
+                <h2 class="text-2xl font-semibold mb-4 text-sky-700">Evangelio según San Lucas (17, 5-10)</h2>
+                <blockquote class="border-l-4 border-sky-500 pl-4 italic text-gray-700 space-y-3">
+                    <p>En aquel tiempo, los apóstoles dijeron al Señor: "Auméntanos la fe".</p>
+                    <p>El Señor les contestó: "Si tuvieran fe, aunque fuera tan pequeña como una semilla de mostaza, podrían decirle a ese árbol frondoso: 'Arráncate de raíz y plántate en el mar', y los obedecería."</p>
+                    <p>"¿Quién de ustedes, si tiene un siervo que labra la tierra o pastorea los rebaños, le dice cuando éste regresa del campo: 'Entra en seguida y ponte a comer'? No le dirá más bien: 'Prepárame de comer y disponte a servirme para que yo coma y beba; después comerás y beberás tú'. ¿Tendrá que acaso mostrarse agradecido con el siervo, porque éste cumplió con su obligación? Así también ustedes, cuando hayan cumplido todo lo que se les mandó, digan: 'No somos más que siervos; sólo hemos hecho lo que teníamos que hacer'."</p>
+                </blockquote>
+                <p class="mt-4 font-semibold text-gray-600">Palabra del Señor. <span class="font-normal italic">Gloria a ti, Señor Jesús.</span></p>
+            </section>
+
+            <section id="homilia" class="card fade-in-up" style="animation-delay: 0.2s;">
+                <h2 class="text-2xl font-semibold mb-6 text-indigo-700">Mensajes Clave de la Homilía</h2>
+
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2 text-sky-600">🙏 ¿Qué es la Fe Realmente?</h3>
+                        <p class="text-gray-700 pl-4">La homilía nos recuerda que la fe no es solo una idea, una costumbre o una tradición. Es mucho más profundo:</p>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4 mt-3">
+                            <li>Es una <strong>relación viva con Dios</strong>, un diálogo constante.</li>
+                            <li>Es un acto de <strong>confianza profunda</strong>, de saber abandonarnos en sus manos.</li>
+                            <li>Es el motor que nos permite vivir de una manera que supera la lógica humana, como el perdón y el amor al enemigo.</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2 text-sky-600">🌱 El Poder de lo Pequeño</h3>
+                        <p class="text-gray-700 pl-4">Jesús usa la imagen del grano de mostaza, una semilla pequeñísima, para enseñarnos una gran lección sobre la fe:</p>
+                        <div class="grid md:grid-cols-2 gap-4 mt-3 pl-4">
+                            <div>
+                                <h4 class="font-semibold text-gray-800">No importa el tamaño</h4>
+                                <p class="text-gray-600">Jesús no nos pide una fe espectacular o gigantesca. Una fe auténtica, aunque sea pequeña, tiene el poder de transformar nuestra vida por completo.</p>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">El problema no es la cantidad</h4>
+                                <p class="text-gray-600">El verdadero problema es que muchas veces no dejamos que nuestra fe actúe, porque queremos tener todo bajo control y ver resultados inmediatos.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2 text-sky-600">🌳 Moviendo tus "Árboles Frondosos"</h3>
+                        <p class="text-gray-700 pl-4">El "árbol frondoso" que la fe puede arrancar no es un árbol físico. Simboliza los grandes obstáculos que llevamos en nuestro corazón y que parecen imposibles de mover:</p>
+                         <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4 mt-3">
+                            <li>Un <strong>rencor</strong> que no hemos podido superar.</li>
+                            <li>Una <strong>herida antigua</strong> que no ha sanado.</li>
+                            <li>Una <strong>tristeza profunda</strong> que nos oprime.</li>
+                            <li>Con una fe sencilla y confiada, Dios puede empezar a arrancar esos "árboles" de raíz.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-gradient-to-r from-sky-100 to-indigo-100 p-6 rounded-lg text-center">
+                    <p class="text-lg italic text-indigo-800">"La fe verdadera no hace ruido, pero sostiene. No se ve, pero transforma. Es como un hilo invisible que conecta nuestro corazón con el corazón de Dios."</p>
+                </div>
+            </section>
+
+            <section id="cuento" class="card fade-in-up" style="animation-delay: 0.3s;">
+                <h2 class="text-2xl font-semibold mb-4 text-purple-700">📖 Cuentan que... El Hilo Dorado de Clara</h2>
+                <div class="bg-purple-50 p-6 rounded-lg border border-purple-200 text-gray-700 space-y-3">
+                    <p>En un pequeño pueblo, vivía una costurera llamada Clara. Su vida era sencilla pero feliz junto a su esposo Julián y su hijo Simón. Un día, su esposo cayó gravemente enfermo, y las dificultades económicas y el cansancio comenzaron a acumularse. Clara no se quejaba ni hacía grandes discursos, pero cada noche, en silencio, sacaba de una cajita de madera un carrete con un hilo dorado muy fino, casi invisible.</p>
+                    <p>Ese hilo era un regalo de su abuela, un símbolo de la fe. No era fuerte como una soga, pero al sostenerlo, Clara recordaba que no estaba sola y renovaba su confianza en Dios. A pesar de que el invierno fue duro y la situación parecía empeorar, su fe silenciosa y persistente nunca flaqueó. Con el tiempo, su esposo comenzó a mejorar y la paz volvió a su hogar.</p>
+                    <p>La historia nos enseña que <span class="font-semibold">la fe más poderosa no es la que grita o busca milagros espectaculares, sino la que confía en silencio, resiste con amor y sostiene con paciencia,</span> incluso cuando todo parece oscuro. Es un hilo delgado pero inquebrantable que nos une a Dios.</p>
+                </div>
+            </section>
+            
+            <section id="cuestionario" class="card fade-in-up" style="animation-delay: 0.4s;">
+                <h2 class="text-2xl font-semibold mb-6 text-emerald-700">📝 Pon a Prueba tu Conocimiento</h2>
+                <form id="quizForm">
+                    <div class="question-container mb-6">
+                        <p class="text-lg font-medium mb-3">1. ¿Qué fue lo primero que los apóstoles le pidieron a Jesús en este Evangelio?</p>
+                        <div class="space-y-2">
+                            <label class="question-option"><input type="radio" name="q1" value="a" class="sr-only"><span>a) Que les diera poder para hacer milagros.</span></label>
+                            <label class="question-option"><input type="radio" name="q1" value="b" class="sr-only"><span>b) "Auméntanos la fe".</span></label>
+                            <label class="question-option"><input type="radio" name="q1" value="c" class="sr-only"><span>c) Que les explicara una parábola.</span></label>
+                            <label class="question-option"><input type="radio" name="q1" value="d" class="sr-only"><span>d) Que los hiciera los más importantes del Reino.</span></label>
+                        </div>
+                    </div>
+                    <div class="question-container mb-6">
+                        <p class="text-lg font-medium mb-3">2. Según la homilía, el "árbol frondoso" que la fe puede arrancar simboliza...</p>
+                        <div class="space-y-2">
+                            <label class="question-option"><input type="radio" name="q2" value="a" class="sr-only"><span>a) La naturaleza y la creación de Dios.</span></label>
+                            <label class="question-option"><input type="radio" name="q2" value="b" class="sr-only"><span>b) La prosperidad material y la riqueza.</span></label>
+                            <label class="question-option"><input type="radio" name="q2" value="c" class="sr-only"><span>c) Problemas profundos como el rencor, las heridas o la tristeza.</span></label>
+                            <label class="question-option"><input type="radio" name="q2" value="d" class="sr-only"><span>d) Un árbol real en el jardín.</span></label>
+                        </div>
+                    </div>
+                    <div class="question-container mb-6">
+                        <p class="text-lg font-medium mb-3">3. ¿Cuál de estas definiciones describe mejor la "fe" según lo explicado por el sacerdote?</p>
+                        <div class="space-y-2">
+                            <label class="question-option"><input type="radio" name="q3" value="a" class="sr-only"><span>a) Una costumbre que heredamos de nuestros padres.</span></label>
+                            <label class="question-option"><input type="radio" name="q3" value="b" class="sr-only"><span>b) Una certeza matemática de que todo saldrá bien.</span></label>
+                            <label class="question-option"><input type="radio" name="q3" value="c" class="sr-only"><span>c) Creer en cosas mágicas y supersticiones.</span></label>
+                            <label class="question-option"><input type="radio" name="q3" value="d" class="sr-only"><span>d) Una relación viva y una confianza profunda en Dios.</span></label>
+                        </div>
+                    </div>
+                    <div class="question-container mb-6">
+                        <p class="text-lg font-medium mb-3">4. En la historia de "El Hilo Dorado", ¿qué hacía Clara cada noche para mantener su esperanza?</p>
+                        <div class="space-y-2">
+                            <label class="question-option"><input type="radio" name="q4" value="a" class="sr-only"><span>a) Sostenía un hilo dorado que simbolizaba su fe silenciosa.</span></label>
+                            <label class="question-option"><input type="radio" name="q4" value="b" class="sr-only"><span>b) Leía libros sobre milagros espectaculares.</span></label>
+                            <label class="question-option"><input type="radio" name="q4" value="c" class="sr-only"><span>c) Se quejaba a sus vecinos para desahogarse.</span></label>
+                            <label class="question-option"><input type="radio" name="q4" value="d" class="sr-only"><span>d) Tejía una bufanda para venderla.</span></label>
+                        </div>
+                    </div>
+                     <div class="question-container mb-6">
+                        <p class="text-lg font-medium mb-3">5. ¿Cuál es la principal lección sobre la fe del tamaño de un grano de mostaza?</p>
+                        <div class="space-y-2">
+                            <label class="question-option"><input type="radio" name="q5" value="a" class="sr-only"><span>a) Que necesitamos una fe enorme para que Dios nos escuche.</span></label>
+                            <label class="question-option"><input type="radio" name="q5" value="b" class="sr-only"><span>b) Que el tamaño de la fe no es tan importante como su autenticidad y el dejarla actuar.</span></label>
+                            <label class="question-option"><input type="radio" name="q5" value="c" class="sr-only"><span>c) Que la fe solo sirve para mover objetos físicos.</span></label>
+                            <label class="question-option"><input type="radio" name="q5" value="d" class="sr-only"><span>d) Que la fe es solo para personas que nunca tienen dudas.</span></label>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-center">
+                         <button type="submit" id="submitBtn" class="quiz-button w-full md:w-auto">Evaluar Cuestionario</button>
+                    </div>
+                </form>
+                
+                <div id="quizResult" class="mt-8 p-6 rounded-lg hidden text-center"></div>
+            </section>
+        </main>
+
+        <footer class="text-center mt-12 py-6 border-t border-gray-300">
+            <p class="text-gray-600">&copy; <span id="currentYear"></span> Reflexiones para el Alma Joven. Inspirado en la Homilía sobre la Fe.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Actualizar año en el footer ---
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // --- Lógica del Cuestionario ---
+        const quizForm = document.getElementById('quizForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const quizResult = document.getElementById('quizResult');
+        const correctAnswers = {
+            q1: 'b',
+            q2: 'c',
+            q3: 'd',
+            q4: 'a',
+            q5: 'b'
+        };
+
+        // Manejar selección visual de opciones
+        const options = document.querySelectorAll('.question-option');
+        options.forEach(option => {
+            option.addEventListener('click', () => {
+                const questionName = option.querySelector('input').name;
+                document.querySelectorAll(`input[name="${questionName}"]`).forEach(radio => {
+                    radio.parentElement.classList.remove('selected');
+                });
+                option.classList.add('selected');
+            });
+        });
+
+        quizForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let score = 0;
+            const totalQuestions = Object.keys(correctAnswers).length;
+            const formData = new FormData(quizForm);
+
+            // Deshabilitar todas las opciones
+            quizForm.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.disabled = true;
+                radio.parentElement.style.cursor = 'default';
+            });
+            
+            // Evaluar respuestas
+            for (const [question, correctAnswer] of Object.entries(correctAnswers)) {
+                const userAnswer = formData.get(question);
+                const questionContainer = document.querySelector(`input[name="${question}"]`).closest('.question-container');
+                const options = questionContainer.querySelectorAll('.question-option');
+                
+                options.forEach(opt => {
+                    const radio = opt.querySelector('input');
+                    // Remover hover effect
+                    opt.classList.remove('hover:border-blue-500');
+
+                    if (radio.value === correctAnswer) {
+                       opt.classList.add('correct'); // Siempre marcar la correcta en verde
+                    }
+
+                    if (radio.checked) {
+                        if (userAnswer === correctAnswer) {
+                            score++;
+                        } else {
+                            opt.classList.add('incorrect'); // Marcar la incorrecta del usuario en rojo
+                        }
+                    }
+                });
+            }
+
+            // Mostrar resultados
+            const percentage = Math.round((score / totalQuestions) * 100);
+            let feedbackMessage = '';
+            let resultBgClass = '';
+            
+            if (percentage === 100) {
+                feedbackMessage = '¡Excelente! Has comprendido todos los mensajes clave. ¡Sigue así!';
+                resultBgClass = 'bg-emerald-100 border border-emerald-300 text-emerald-800';
+            } else if (percentage >= 60) {
+                feedbackMessage = '¡Muy bien! Tienes una buena comprensión de la homilía.';
+                resultBgClass = 'bg-sky-100 border border-sky-300 text-sky-800';
+            } else {
+                feedbackMessage = '¡Sigue esforzándote! Te animamos a repasar los mensajes clave para fortalecer tu comprensión.';
+                 resultBgClass = 'bg-amber-100 border border-amber-300 text-amber-800';
+            }
+
+            quizResult.innerHTML = `
+                <p class="text-2xl font-bold mb-2">Tu puntuación: ${score} de ${totalQuestions} (${percentage}%)</p>
+                <p>${feedbackMessage}</p>
+            `;
+            quizResult.className = `mt-8 p-6 rounded-lg text-center ${resultBgClass}`; // Reemplaza todas las clases
+            quizResult.classList.remove('hidden');
+
+            // Deshabilitar botón
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Evaluado';
+        });
+    </script>
+</body>
+</html>
