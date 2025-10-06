@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflexionando el Peligro de No Ver</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff; /* bg-sky-50 en Tailwind v3, equivalente a azul muy claro */
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem; /* p-6 */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+
+        .gradient-text {
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+
+        .header-icon {
+            width: 4rem; /* 64px */
+            height: 4rem; /* 64px */
+            margin: 0 auto 1rem; /* centrado y margen inferior */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        /* Estilos del Cuestionario */
+        .question-option {
+            display: block;
+            padding: 0.75rem 1.25rem;
+            border: 2px solid #e5e7eb; /* border-gray-200 */
+            border-radius: 0.5rem; /* rounded-lg */
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .question-option:hover {
+            border-color: #3b82f6; /* border-blue-500 */
+            background-color: #eff6ff; /* bg-blue-50 */
+        }
+        .question-option.selected {
+            border-color: #3b82f6; /* border-blue-500 */
+            background-color: #dbeafe; /* bg-blue-100 */
+            font-weight: 600;
+        }
+        .question-option.correct {
+            border-color: #10b981; /* border-emerald-500 */
+            background-color: #d1fae5; /* bg-emerald-100 */
+        }
+        .question-option.incorrect {
+            border-color: #ef4444; /* border-red-500 */
+            background-color: #fee2e2; /* bg-red-100 */
+        }
+        
+        /* Ocultar el radio button real */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        .quiz-button {
+            background-color: #10b981; /* bg-emerald-500 */
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .quiz-button:hover {
+            background-color: #059669; /* bg-emerald-600 */
+        }
+        .quiz-button:disabled {
+            background-color: #9ca3af; /* bg-gray-400 */
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-f0f9ff text-gray-800 p-4 md:p-8">
+    <div class="max-w-4xl mx-auto">
+        
+        <header class="text-center mb-10">
+            <svg class="header-icon text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639l4.418-2.209a1.012 1.012 0 011.275.063l4.218 4.218a1.012 1.012 0 010 1.433l-4.218 4.218a1.012 1.012 0 01-1.275-.063l-4.418-2.209z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.964 12.322a1.012 1.012 0 000-.639l-4.418-2.209a1.012 1.012 0 00-1.275.063l-4.218 4.218a1.012 1.012 0 000 1.433l4.218 4.218a1.012 1.012 0 001.275-.063l4.418-2.209z" />
+            </svg>
+            <h1 class="text-3xl md:text-4xl font-bold gradient-text bg-gradient-to-r from-sky-500 to-indigo-600 mb-2">
+                El Peligro de No Ver
+            </h1>
+            <p class="text-lg text-gray-600">
+                Reflexionando el Evangelio y la Homilía del Domingo
+            </p>
+        </header>
+
+        <main>
+            <section id="evangelio" class="card fade-in" style="animation-delay: 0.2s;">
+                <h2 class="text-2xl font-semibold mb-4 text-sky-700">Evangelio según San Lucas (16, 19-31)</h2>
+                <blockquote class="border-l-4 border-sky-500 pl-4 italic text-gray-700 space-y-2">
+                    <p>Había un hombre rico que se vestía de púrpura y lino finísimo y cada día hacía espléndidos banquetes. A su puerta yacía un pobre, llamado Lázaro, cubierto de llagas, que ansiaba saciarse con lo que caía de la mesa del rico... y hasta los perros venían a lamerle las llagas.</p>
+                    <p>Sucedió que murió el pobre y fue llevado por los ángeles al seno de Abrahán. Murió también el rico y fue sepultado. Estando en el Hades, en medio de los tormentos, levantó los ojos y vio a lo lejos a Abrahán y a Lázaro en su seno. Y gritando, dijo: 'Padre Abrahán, ten piedad de mí y envía a Lázaro para que moje la punta de su dedo en agua y refresque mi lengua, porque estoy atormentado en esta llama'.</p>
+                    <p>Pero Abrahán le dijo: 'Hijo, recuerda que recibiste tus bienes durante tu vida y Lázaro, al contrario, sus males; ahora, pues, él es aquí consolado y tú atormentado. Y además, entre nosotros y vosotros se interpone un gran abismo, de modo que los que quieran pasar de aquí a vosotros, no puedan; ni de ahí puedan pasar donde nosotros'.</p>
+                </blockquote>
+                <p class="text-right mt-4 font-semibold text-gray-600">Palabra del Señor. <span class="font-normal italic">Gloria a ti, Señor Jesús.</span></p>
+            </section>
+
+            <section id="homilia" class="card fade-in" style="animation-delay: 0.4s;">
+                <h2 class="text-2xl font-semibold mb-6 text-indigo-700">Mensajes Clave de la Homilía</h2>
+                
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2 text-sky-600">🙈 El Pecado no es Tener, sino No Ver</h3>
+                        <p class="text-gray-700">La homilía aclara un punto crucial: el problema del hombre rico no era su riqueza, sino su ceguera ante la necesidad. Su pecado fue la **indiferencia**. Vivía tan centrado en sí mismo que Lázaro, quien estaba justo en su puerta, era invisible para él.</p>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1 pl-4 mt-3">
+                            <li>El Evangelio no condena los bienes, sino el rechazo a la persona necesitada.</li>
+                            <li>Cuando los bienes ocupan todo el corazón, ya no hay espacio para los demás.</li>
+                            <li>El rico no fue violento ni injusto, simplemente ignoró la realidad que tenía enfrente.</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2 text-sky-600">🚧 Los Abismos que Creamos Nosotros Mismos</h3>
+                        <p class="text-gray-700">El "gran abismo" que separa al rico y a Lázaro después de la muerte no es un castigo de Dios. Es el reflejo del abismo que el rico cavó en vida, día a día, con sus acciones y omisiones.</p>
+                        <div class="mt-4 grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-bold text-gray-800">¿Cómo se cava un abismo?</h4>
+                                <ul class="list-disc list-inside text-gray-600 pl-4">
+                                    <li>Dando la espalda a los demás.</li>
+                                    <li>Priorizando el "tener" sobre el "ser".</li>
+                                    <li>Pasando junto al sufrimiento sin detenernos.</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">El resultado:</h4>
+                                <p class="text-gray-600">Una distancia enorme entre corazones, mucho más grande que la distancia física entre la sala y la puerta de la casa.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2 text-sky-600">🎭 Los Disfraces de la Indiferencia</h3>
+                        <p class="text-gray-700">La indiferencia es descrita como una de las "enfermedades más actuales y silenciosas". Es muy hábil y a menudo no la reconocemos porque se disfraza.</p>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1 pl-4 mt-3">
+                            <li>Se disfraza de <strong>ocupación:</strong> "No tengo tiempo".</li>
+                            <li>Se disfraza de <strong>cansancio:</strong> "Estoy demasiado agotado".</li>
+                            <li>Se disfraza de <strong>costumbre:</strong> "Las cosas siempre han sido así".</li>
+                        </ul>
+                        <p class="text-gray-700 mt-2">Poco a poco, estos disfraces van endureciendo nuestro corazón.</p>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-sky-100 to-indigo-100 p-6 rounded-lg text-center">
+                        <p class="text-xl italic text-indigo-800 font-semibold">
+                            "Nadie en el mundo es tan pobre que no pueda dar algo, ni tan rico que no necesite abrirse al amor."
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="cuento" class="card fade-in" style="animation-delay: 0.6s;">
+                <h2 class="text-2xl font-semibold mb-4 text-purple-700">📖 Cuentan que... El Espejo de Don Aurelio</h2>
+                <div class="bg-purple-50 p-6 rounded-lg border border-purple-200 text-gray-700 space-y-3">
+                    <p>En un barrio humilde vivía Don Aurelio, un hombre mayor que había acumulado muchas riquezas. Lo que más destacaba en su casa no era su fortuna, sino un enorme y antiguo espejo. Don Aurelio pasaba horas mirándose, recordando sus éxitos, sus viajes y su juventud, completamente absorto en su propio reflejo.</p>
+                    <p>Mientras tanto, ignoraba a sus vecinos: a Estela, una madre soltera; a Don Luis, un viudo silencioso; y a Mateo, un niño que jugaba en la calle. Un día, un incendio afectó a una casa vecina. Todos los vecinos corrieron a ayudar, pero Don Aurelio simplemente miró desde su ventana y volvió a su espejo. Esa noche, una grieta apareció en el cristal.</p>
+                    <p>Cada día, una nueva grieta surgía, hasta que el espejo se hizo añicos por completo. Por primera vez en años, Don Aurelio no tuvo su reflejo para mirar y salió a la calle. Allí, descubrió un mundo que había ignorado: el niño Mateo le regaló una piedra pintada, Estela le ofreció un café y Don Luis conversó con él. Se dio cuenta de que la verdadera vida no estaba en el reflejo de lo que fue, sino en la conexión con los demás.</p>
+                    <p class="mt-4 pt-4 border-t border-purple-200">
+                        <strong>Moraleja:</strong> <span class="font-semibold">La verdadera riqueza no se encuentra mirándonos a nosotros mismos, sino en la presencia compartida, en las relaciones sinceras y en abrir un lugar en nuestra vida para los demás.</span>
+                    </p>
+                </div>
+            </section>
+
+            <section id="cuestionario" class="card fade-in" style="animation-delay: 0.8s;">
+                <h2 class="text-2xl font-semibold mb-6 text-emerald-700">📝 Pon a Prueba tu Conocimiento</h2>
+                <form id="quizForm">
+                    <div class="question-container mb-6">
+                        <p class="text-lg font-medium mb-2">1. Según la homilía, ¿cuál fue el principal pecado del hombre rico del Evangelio?</p>
+                        <label class="question-option"><input type="radio" name="q1" value="a" class="sr-only"> a) Ser violento con Lázaro.</label>
+                        <label class="question-option"><input type="radio" name="q1" value="b" class="sr-only"> b) Su indiferencia y no ver la necesidad de Lázaro.</label>
+                        <label class="question-option"><input type="radio" name="q1" value="c" class="sr-only"> c) Acumular demasiada riqueza.</label>
+                        <label class="question-option"><input type="radio" name="q1" value="d" class="sr-only"> d) No ir al templo a rezar.</label>
+                    </div>
+
+                    <div class="question-container mb-6">
+                        <p class="text-lg font-medium mb-2">2. El "gran abismo" que aparece en el Evangelio es, según la homilía...</p>
+                        <label class="question-option"><input type="radio" name="q2" value="a" class="sr-only"> a) El reflejo de la distancia que creamos en vida al ignorar a los demás.</label>
+                        <label class="question-option"><input type="radio" name="q2" value="b" class="sr-only"> b) Un castigo que Dios impone a los ricos.</label>
+                        <label class="question-option"><input type="radio" name="q2" value="c" class="sr-only"> c) Una característica física del más allá.</label>
+                        <label class="question-option"><input type="radio" name="q2" value="d" class="sr-only"> d) Una prueba para ver si el rico se arrepiente.</label>
+                    </div>
+                    
+                    <div class="question-container mb-6">
+                        <p class="text-lg font-medium mb-2">3. La homilía menciona que la indiferencia es una "enfermedad silenciosa" que se disfraza. ¿Cuál de estos NO es un disfraz mencionado?</p>
+                        <label class="question-option"><input type="radio" name="q3" value="a" class="sr-only"> a) La ocupación o estar muy ocupado.</label>
+                        <label class="question-option"><input type="radio" name="q3" value="b" class="sr-only"> b) La costumbre.</label>
+                        <label class="question-option"><input type="radio" name="q3" value="c" class="sr-only"> c) La maldad intencionada.</label>
+                        <label class="question-option"><input type="radio" name="q3" value="d" class="sr-only"> d) El cansancio.</label>
+                    </div>
+
+                    <div class="question-container mb-6">
+                        <p class="text-lg font-medium mb-2">4. En la historia de "Cuentan que...", ¿qué representaba el espejo de Don Aurelio?</p>
+                        <label class="question-option"><input type="radio" name="q4" value="a" class="sr-only"> a) Un objeto familiar de gran valor económico.</label>
+                        <label class="question-option"><input type="radio" name="q4" value="b" class="sr-only"> b) Su egocentrismo y su enfoque exclusivo en su propia vida y pasado.</label>
+                        <label class="question-option"><input type="radio" name="q4" value="c" class="sr-only"> c) La belleza de su casa.</label>
+                        <label class="question-option"><input type="radio" name="q4" value="d" class="sr-only"> d) La conexión con sus antepasados.</label>
+                    </div>
+
+                    <div class="question-container mb-6">
+                        <p class="text-lg font-medium mb-2">5. ¿Cuál es el mensaje final sobre la "verdadera riqueza"?</p>
+                        <label class="question-option"><input type="radio" name="q5" value="a" class="sr-only"> a) Tener lo suficiente para no preocuparse.</label>
+                        <label class="question-option"><input type="radio" name="q5" value="b" class="sr-only"> b) La verdadera riqueza es tener muchos amigos importantes.</label>
+                        <label class="question-option"><input type="radio" name="q5" value="c" class="sr-only"> c) La verdadera riqueza está en compartir y en la conexión sincera con los demás.</label>
+                        <label class="question-option"><input type="radio" name="q5" value="d" class="sr-only"> d) Donar todo lo que tienes a la caridad.</label>
+                    </div>
+
+                    <div class="text-center">
+                         <button type="submit" id="submitBtn" class="quiz-button w-full md:w-auto">Evaluar Cuestionario</button>
+                    </div>
+                </form>
+                
+                <div id="quizResult" class="mt-8 p-6 rounded-lg hidden text-center"></div>
+            </section>
+        </main>
+        
+        <footer class="text-center py-8 mt-4 border-t border-gray-300">
+            <p class="text-gray-600">&copy; <span id="currentYear"></span> Reflexiones para el Alma Joven. Inspirado en la homilía sobre el Peligro de No Ver.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Actualizar año del footer
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+            const quizForm = document.getElementById('quizForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const quizResult = document.getElementById('quizResult');
+            
+            const correctAnswers = {
+                q1: 'b',
+                q2: 'a',
+                q3: 'c',
+                q4: 'b',
+                q5: 'c'
+            };
+
+            // Manejar la selección visual de opciones
+            const questionOptions = document.querySelectorAll('.question-option');
+            questionOptions.forEach(label => {
+                label.addEventListener('click', function() {
+                    const questionName = this.querySelector('input').name;
+                    // Quitar 'selected' de otras opciones de la misma pregunta
+                    document.querySelectorAll(`input[name="${questionName}"]`).forEach(radio => {
+                        radio.parentElement.classList.remove('selected');
+                    });
+                    // Añadir 'selected' a la opción clicada
+                    this.classList.add('selected');
+                });
+            });
+
+            quizForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitBtn.disabled = true;
+
+                let score = 0;
+                const totalQuestions = Object.keys(correctAnswers).length;
+                const formData = new FormData(quizForm);
+                const userAnswers = {};
+
+                // Obtener respuestas del usuario
+                for (let [name, value] of formData.entries()) {
+                    userAnswers[name] = value;
+                }
+
+                // Evaluar cada pregunta
+                for (const q in correctAnswers) {
+                    const options = document.querySelectorAll(`input[name="${q}"]`);
+                    const correctAnswerValue = correctAnswers[q];
+                    const userAnswerValue = userAnswers[q];
+
+                    options.forEach(option => {
+                        const label = option.parentElement;
+                        label.style.pointerEvents = 'none'; // Deshabilitar clics
+
+                        if (option.value === correctAnswerValue) {
+                            label.classList.add('correct');
+                        }
+
+                        if (option.value === userAnswerValue) {
+                             if (userAnswerValue === correctAnswerValue) {
+                                score++;
+                            } else {
+                                label.classList.add('incorrect');
+                            }
+                        }
+                    });
+                }
+                
+                // Mostrar resultado
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let feedbackMessage = '';
+                let feedbackColor = '';
+
+                if (percentage === 100) {
+                    feedbackMessage = '¡Excelente! Has comprendido todos los mensajes clave. ¡Sigue así!';
+                    feedbackColor = 'bg-emerald-100 text-emerald-800';
+                } else if (percentage >= 60) {
+                    feedbackMessage = '¡Muy bien! Tienes una buena comprensión de la homilía.';
+                    feedbackColor = 'bg-sky-100 text-sky-800';
+                } else {
+                    feedbackMessage = 'Sigue esforzándote. Te animamos a repasar los mensajes clave para reforzar las ideas.';
+                    feedbackColor = 'bg-amber-100 text-amber-800';
+                }
+
+                quizResult.innerHTML = `
+                    <h3 class="text-2xl font-bold mb-2">Tu puntuación: ${score} de ${totalQuestions} (${percentage}%)</h3>
+                    <p class="text-lg">${feedbackMessage}</p>
+                `;
+                quizResult.className = `mt-8 p-6 rounded-lg text-center ${feedbackColor}`;
+                quizResult.classList.remove('hidden');
+
+                submitBtn.textContent = 'Evaluado';
+            });
+        });
+    </script>
+</body>
+</html>
