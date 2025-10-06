@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Esfuerzo: La Puerta a una Fe Verdadera</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.6s forwards;
+        }
+        .gradient-text {
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header-icon {
+            width: 4rem;
+            height: 4rem;
+            margin: 0 auto 1rem;
+        }
+        .question-option {
+            display: block;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .question-option:hover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        .question-option.selected {
+            border-color: #3b82f6;
+            background-color: #dbeafe;
+            font-weight: 600;
+        }
+        .question-option.correct {
+            border-color: #10b981;
+            background-color: #d1fae5;
+        }
+        .question-option.incorrect {
+            border-color: #ef4444;
+            background-color: #fee2e2;
+        }
+        .quiz-button {
+            background-color: #10b981;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s;
+        }
+        .quiz-button:hover {
+            background-color: #059669;
+        }
+        .quiz-button:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-sky-50 text-gray-800 p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto">
+
+        <header class="text-center mb-10">
+            <svg class="header-icon text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.82m5.84-2.56a16.957 16.957 0 01-4.322 3.32m4.322-3.32a16.923 16.923 0 00-4.322-3.32m0 0a16.923 16.923 0 01-4.322 3.32m0 0a6 6 0 01-5.84-7.38m5.84 2.56a16.957 16.957 0 00-4.322-3.32m4.322 3.32l3.537-1.876a1.5 1.5 0 00-2.25-2.25l-1.876 3.537m0 0a16.923 16.923 0 01-4.322 3.32m0 0a16.923 16.923 0 00-4.322-3.32" />
+            </svg>
+            <h1 class="text-3xl md:text-4xl font-bold gradient-text bg-gradient-to-r from-sky-500 to-indigo-600 mb-2">
+                El Esfuerzo: La Puerta a una Fe Verdadera
+            </h1>
+            <p class="text-lg text-gray-600">
+                Reflexionando el Evangelio y la Homilía Dominical
+            </p>
+        </header>
+
+        <main>
+
+            <section id="evangelio" class="card p-6 mb-6" style="animation-delay: 0.1s;">
+                <h2 class="text-2xl font-semibold mb-4 text-sky-700">Evangelio según San Lucas (13, 22-30)</h2>
+                <blockquote class="border-l-4 border-sky-500 pl-4 italic text-gray-700 space-y-2">
+                    <p>En aquel tiempo, Jesús iba enseñando por ciudades y pueblos, mientras se encaminaba a Jerusalén. Y alguien le preguntó: «Señor, ¿es verdad que son pocos los que se salvan?».</p>
+                    <p>Jesús le respondió: «Esfuércense por entrar por la puerta que es angosta, pues yo les aseguro que muchos tratarán de entrar y no podrán. Cuando el dueño de la casa se levante de la mesa y cierre la puerta, ustedes se quedarán afuera y se pondrán a tocar la puerta diciendo: "Señor, ábrenos". Pero él les responderá: "No sé quiénes son ustedes".</p>
+                    <p>Entonces le dirán con insistencia: "Hemos comido y bebido contigo y tú has enseñado en nuestras plazas". Pero él replicará: "Yo les aseguro que no sé quiénes son ustedes. Apártense de mí todos ustedes los que hacen el mal". Entonces llorarán ustedes y se desesperarán, cuando vean a Abraham, a Isaac, a Jacob y a todos los profetas en el reino de Dios, y ustedes se vean echados fuera. Vendrán muchos del oriente y del poniente, del norte y del sur, y participarán en el banquete del reino de Dios. Pues los que ahora son los últimos, serán los primeros; y los que ahora son los primeros, serán los últimos».</p>
+                </blockquote>
+                <p class="mt-4 text-right font-semibold text-gray-600">Palabra del Señor. <span class="font-normal italic">Gloria a ti, Señor Jesús.</span></p>
+            </section>
+
+            <section id="homilia" class="card p-6 mb-6" style="animation-delay: 0.2s;">
+                <h2 class="text-2xl font-semibold mb-6 text-indigo-700">Mensajes Clave de la Homilía</h2>
+                
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2 text-sky-600">💪 El Esfuerzo: Una Llamada a la Profundidad</h3>
+                        <p class="text-gray-700 pl-4">La palabra central de la reflexión es **el esfuerzo**. La enseñanza de Jesús sobre la "puerta angosta" no es una amenaza, sino una invitación amorosa a vivir la fe de una manera profunda, auténtica y comprometida, evitando la superficialidad y la comodidad.</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2 text-sky-600">❤️ Un Esfuerzo que Nace del Amor</h3>
+                        <p class="text-gray-700 pl-4">Este esfuerzo no es algo impuesto desde fuera ni una penitencia. Nace de una convicción interior, de haber experimentado el amor de Dios. Es la respuesta natural de quien ha encontrado el verdadero sentido de su vida y se entrega por completo. El amor nos impulsa a dar lo mejor de nosotros, incluso cuando es difícil.</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2 text-sky-600">🚪 La Puerta Angosta: Símbolo del Camino Cristiano</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1 pl-4">
+                            <li>La puerta estrecha no busca asustar, sino simbolizar el camino que propone el Evangelio.</li>
+                            <li>Es el camino de la **humildad**, la **entrega**, el **perdón** y el **servicio** a los demás.</li>
+                            <li>En la vida cristiana, el esfuerzo no es sinónimo de angustia, sino un signo de **madurez espiritual**.</li>
+                            <li>El Evangelio es exigente porque busca formar discípulos verdaderos, no simpatizantes pasajeros.</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2 text-sky-600">✨ El Esfuerzo en lo Cotidiano</h3>
+                        <p class="text-gray-700 mb-4 pl-4">Estamos llamados a vivir este esfuerzo cada día, no necesariamente en actos extraordinarios, sino en lo ordinario:</p>
+                        <div class="grid md:grid-cols-2 gap-4 pl-4">
+                            <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                <li>En la fidelidad al deber diario.</li>
+                                <li>En la entrega generosa en la familia.</li>
+                                <li>En el testimonio silencioso en el trabajo.</li>
+                            </ul>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                <li>En la lucha contra nuestras debilidades.</li>
+                                <li>Al ofrecer el perdón aunque nos cueste.</li>
+                                <li>Al no abandonar la oración, aunque "no sintamos nada".</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                     <div>
+                        <h3 class="text-xl font-semibold mb-2 text-sky-600">🤝 No Estamos Solos en el Camino</h3>
+                        <p class="text-gray-700 pl-4">Aunque el camino exija esfuerzo, no lo recorremos solos. Dios nos acompaña, nos anima, nos levanta y nos da la gracia para ser perseverantes. Al final, comprenderemos que todo el esfuerzo, todo lo soportado y entregado por amor, valió la pena y fue semilla de vida eterna.</p>
+                    </div>
+
+                </div>
+
+                <div class="mt-8 bg-gradient-to-r from-sky-100 to-indigo-100 p-6 rounded-lg text-center">
+                    <p class="text-xl italic font-semibold text-indigo-800">"El camino más valioso rara vez es el más cómodo. (...) Los frutos verdaderos solo se encuentran del otro lado del esfuerzo."</p>
+                </div>
+
+            </section>
+
+            <section id="cuento" class="card p-6 mb-6" style="animation-delay: 0.3s;">
+                <h2 class="text-2xl font-semibold mb-4 text-purple-700">📖 Cuentan que... El Puente del Viento</h2>
+                <div class="bg-purple-50 p-6 rounded-lg border border-purple-200 text-gray-700 space-y-3">
+                    <p>En una aldea famosa por sus hermosos y anchos puentes de piedra, había uno diferente: viejo, angosto y de madera, conocido como "el puente del viento". Cruzarlo era una proeza debido a los fuertes vientos que soplaban en el cañón que atravesaba. Nadie quería usarlo, prefiriendo los caminos fáciles que ofrecían los otros puentes.</p>
+                    <p>Un día, se supo que al otro lado del cañón florecía un jardín mágico con flores que daban paz y sabiduría, pero solo el difícil "puente del viento" conducía a él. Muchos intentaron llegar por los puentes fáciles, pero fracasaron. Solo una mujer llamada Ana, entendiendo que "si es difícil, entonces vale la pena", decidió enfrentar el desafío. Con gran esfuerzo, soportando el viento, el miedo y el dolor, logró cruzar y encontrar el jardín.</p>
+                    <p>Al regresar, la admiraron no por la flor que traía, sino por haber logrado lo que nadie se atrevió. Su respuesta fue simple: siguió el camino correcto, no el más fácil, sino el que exigía todo de ella. La moraleja es clara: <span class="font-semibold">en la vida y en la fe, los frutos más valiosos y verdaderos a menudo se encuentran solo después de haber cruzado nuestros propios "puentes del viento" con esfuerzo y perseverancia.</span></p>
+                </div>
+            </section>
+            
+            <section id="cuestionario" class="card p-6 mb-6" style="animation-delay: 0.4s;">
+                <h2 class="text-2xl font-semibold mb-6 text-emerald-700">📝 Pon a Prueba tu Conocimiento</h2>
+                <form id="quizForm" class="space-y-8">
+                    
+                    <div class="question-container">
+                        <p class="text-lg font-medium mb-2">1. ¿Cuál es la palabra central en la que se enfoca la homilía para explicar el mensaje del Evangelio?</p>
+                        <div class="options-container">
+                            <label class="question-option"><input type="radio" name="q1" value="a" class="sr-only"> a) El perdón</label>
+                            <label class="question-option"><input type="radio" name="q1" value="b" class="sr-only"> b) El esfuerzo</label>
+                            <label class="question-option"><input type="radio" name="q1" value="c" class="sr-only"> c) La salvación</label>
+                            <label class="question-option"><input type="radio" name="q1" value="d" class="sr-only"> d) La oración</label>
+                        </div>
+                    </div>
+
+                    <div class="question-container">
+                        <p class="text-lg font-medium mb-2">2. Según Jesús en el Evangelio, ¿por qué hay que esforzarse por entrar por la puerta angosta?</p>
+                        <div class="options-container">
+                            <label class="question-option"><input type="radio" name="q2" value="a" class="sr-only"> a) Porque es la única puerta que lleva a la humildad y al servicio.</label>
+                            <label class="question-option"><input type="radio" name="q2" value="b" class="sr-only"> b) Porque muchos tratarán de entrar y no podrán.</label>
+                            <label class="question-option"><input type="radio" name="q2" value="c" class="sr-only"> c) Porque los primeros serán los últimos.</label>
+                            <label class="question-option"><input type="radio" name="q2" value="d" class="sr-only"> d) Porque Dios solo reconoce a los que se esfuerzan.</label>
+                        </div>
+                    </div>
+
+                    <div class="question-container">
+                        <p class="text-lg font-medium mb-2">3. En la historia "Cuentan que...", ¿cuál era la única vía para llegar al jardín mágico?</p>
+                        <div class="options-container">
+                            <label class="question-option"><input type="radio" name="q3" value="a" class="sr-only"> a) Los anchos puentes de piedra.</label>
+                            <label class="question-option"><input type="radio" name="q3" value="b" class="sr-only"> b) Un camino secreto por el barranco.</label>
+                            <label class="question-option"><input type="radio" name="q3" value="c" class="sr-only"> c) El Puente del Viento.</label>
+                            <label class="question-option"><input type="radio" name="q3" value="d" class="sr-only"> d) Esperar a que la flor llegara sola.</label>
+                        </div>
+                    </div>
+
+                    <div class="question-container">
+                        <p class="text-lg font-medium mb-2">4. La homilía explica que el esfuerzo que Dios nos pide es, sobre todo...</p>
+                        <div class="options-container">
+                            <label class="question-option"><input type="radio" name="q4" value="a" class="sr-only"> a) Una penitencia por nuestros pecados.</label>
+                            <label class="question-option"><input type="radio" name="q4" value="b" class="sr-only"> b) Una forma de demostrar que somos mejores que los demás.</label>
+                            <label class="question-option"><input type="radio" name="q4" value="c" class="sr-only"> c) Una prueba difícil para ver si merecemos el cielo.</label>
+                            <label class="question-option"><input type="radio" name="q4" value="d" class="sr-only"> d) La expresión de un amor verdadero que nace desde adentro.</label>
+                        </div>
+                    </div>
+
+                    <div class="question-container">
+                        <p class="text-lg font-medium mb-2">5. ¿Cuál es la principal lección de la historia de Ana y el puente?</p>
+                        <div class="options-container">
+                            <label class="question-option"><input type="radio" name="q5" value="a" class="sr-only"> a) Que siempre debemos elegir el camino más seguro.</label>
+                            <label class="question-option"><input type="radio" name="q5" value="b" class="sr-only"> b) Que las recompensas valiosas a menudo requieren superar grandes dificultades.</label>
+                            <label class="question-option"><input type="radio" name="q5" value="c" class="sr-only"> c) Que no debemos escuchar las burlas de los demás.</label>
+                            <label class="question-option"><input type="radio" name="q5" value="d" class="sr-only"> d) Que es importante tener un sombrero que no se vuele con el viento.</label>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" id="quizSubmitBtn" class="quiz-button w-full md:w-auto">Evaluar Cuestionario</button>
+                    </div>
+                </form>
+
+                <div id="quizResult" class="mt-8 p-6 rounded-lg hidden text-center">
+                    <h3 id="resultTitle" class="text-2xl font-bold mb-2"></h3>
+                    <p id="resultScore" class="text-xl mb-4"></p>
+                    <p id="resultMessage" class="text-gray-600"></p>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="text-center mt-12 py-6 border-t border-gray-300">
+            <p class="text-gray-500">&copy; <span id="currentYear"></span> Reflexiones para el Alma Joven. Inspirado en la homilía sobre el Esfuerzo y la Puerta Angosta.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animación escalonada
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.15}s`;
+            });
+
+            // Actualizar año en el footer
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+            // Lógica del Cuestionario
+            const quizForm = document.getElementById('quizForm');
+            const submitBtn = document.getElementById('quizSubmitBtn');
+            const quizResult = document.getElementById('quizResult');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultScore = document.getElementById('resultScore');
+            const resultMessage = document.getElementById('resultMessage');
+
+            const correctAnswers = {
+                q1: 'b',
+                q2: 'b',
+                q3: 'c',
+                q4: 'd',
+                q5: 'b'
+            };
+
+            // Manejo visual de la selección
+            const options = document.querySelectorAll('.question-option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionName = this.querySelector('input').name;
+                    document.querySelectorAll(`input[name="${questionName}"]`).forEach(radio => {
+                        radio.parentElement.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                });
+            });
+
+
+            quizForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                let score = 0;
+                const totalQuestions = Object.keys(correctAnswers).length;
+                const formData = new FormData(quizForm);
+                
+                // Deshabilitar opciones y botón
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Evaluado';
+                quizForm.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.disabled = true;
+                });
+
+                for (const [question, correctAnswer] of Object.entries(correctAnswers)) {
+                    const userAnswer = formData.get(question);
+                    const questionContainer = document.querySelector(`input[name="${question}"]`).closest('.question-container');
+                    const options = questionContainer.querySelectorAll('.question-option');
+                    
+                    options.forEach(optionLabel => {
+                        const optionInput = optionLabel.querySelector('input');
+                        if (optionInput.value === correctAnswer) {
+                            optionLabel.classList.add('correct'); // Siempre mostrar la correcta
+                        }
+
+                        if (userAnswer === optionInput.value) { // Si el usuario marcó esta opción
+                            if (userAnswer === correctAnswer) {
+                                score++;
+                            } else {
+                                optionLabel.classList.add('incorrect'); // Marcar como incorrecta
+                            }
+                        }
+                        // Quitar el hover effect de todas las opciones
+                        optionLabel.classList.add('pointer-events-none');
+                    });
+                }
+
+                const percentage = Math.round((score / totalQuestions) * 100);
+                
+                resultScore.textContent = `Tu puntuación: ${score} de ${totalQuestions} (${percentage}%)`;
+
+                if (percentage === 100) {
+                    resultTitle.textContent = '¡Excelente!';
+                    resultMessage.textContent = 'Has comprendido perfectamente los mensajes clave. ¡Sigue así!';
+                    quizResult.style.backgroundColor = '#d1fae5'; // Verde claro
+                    resultTitle.style.color = '#047857';
+                } else if (percentage >= 60) {
+                    resultTitle.textContent = '¡Muy Bien!';
+                    resultMessage.textContent = 'Tienes una buena comprensión del tema. ¡Repasa los puntos donde fallaste!';
+                    quizResult.style.backgroundColor = '#fef3c7'; // Amarillo claro
+                    resultTitle.style.color = '#b45309';
+                } else {
+                    resultTitle.textContent = 'Sigue Esforzándote';
+                    resultMessage.textContent = 'Parece que algunos conceptos no quedaron claros. ¡Te animamos a releer la página y volver a intentarlo la próxima vez!';
+                    quizResult.style.backgroundColor = '#fee2e2'; // Rojo claro
+                    resultTitle.style.color = '#b91c1c';
+                }
+
+                quizResult.classList.remove('hidden');
+                quizResult.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+
+</body>
+</html>
