@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflexionando la Fidelidad Creativa | Homilía Dominical</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff; /* bg-sky-50 in Tailwind v3 */
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem; /* p-6 */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+        .gradient-text {
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .header-icon {
+            width: 4rem; /* w-16 */
+            height: 4rem; /* h-16 */
+            margin: 0 auto 1rem; /* mx-auto mb-4 */
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        /* Quiz Styles */
+        .question-option {
+            display: block;
+            padding: 0.75rem 1.25rem;
+            border: 2px solid #e5e7eb; /* border-gray-200 */
+            border-radius: 0.5rem; /* rounded-lg */
+            margin-bottom: 0.5rem; /* mb-2 */
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .question-option:hover {
+            border-color: #3b82f6; /* border-blue-500 */
+            background-color: #eff6ff; /* bg-blue-50 */
+        }
+        .question-option.selected {
+            border-color: #3b82f6; /* border-blue-500 */
+            background-color: #dbeafe; /* bg-blue-100 */
+            font-weight: 600;
+        }
+        .question-option.correct {
+            border-color: #10b981; /* border-emerald-500 */
+            background-color: #d1fae5; /* bg-emerald-100 */
+        }
+        .question-option.incorrect {
+            border-color: #ef4444; /* border-red-500 */
+            background-color: #fee2e2; /* bg-red-100 */
+        }
+        .quiz-button {
+            background-color: #16a34a; /* bg-green-600 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem; /* rounded-lg */
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .quiz-button:hover {
+            background-color: #15803d; /* bg-green-700 */
+        }
+        .quiz-button:disabled {
+            background-color: #9ca3af; /* bg-gray-400 */
+            cursor: not-allowed;
+        }
+
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <header class="text-center mb-10">
+        <svg class="header-icon text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.311a7.5 7.5 0 01-7.5 0c-1.421-.492-2.682-.998-3.624-1.516a6.003 6.003 0 01-1.49-5.197c.34-1.992 1.769-3.657 3.586-4.51a12.028 12.028 0 017.066 0c1.817.853 3.245 2.518 3.586 4.51a6.003 6.003 0 01-1.49 5.197c-.942.518-2.203 1.024-3.624 1.516z" />
+        </svg>
+        <h1 class="text-3xl md:text-4xl font-bold gradient-text bg-gradient-to-r from-sky-500 to-indigo-600">
+            Reflexionando la Fidelidad Creativa
+        </h1>
+        <p class="mt-2 text-lg text-gray-600">
+            Homilía sobre el Evangelio del Administrador Astuto
+        </p>
+    </header>
+
+    <main>
+        <section id="evangelio" class="card fade-in" style="animation-delay: 0.1s;">
+            <h2 class="text-2xl font-semibold mb-4 text-sky-700">Evangelio según San Lucas (16, 1-13)</h2>
+            <blockquote class="border-l-4 border-sky-500 pl-4 italic text-gray-700 space-y-2">
+                <p>En aquel tiempo, dijo Jesús a sus discípulos: «Un hombre rico tenía un administrador, y le llegó la denuncia de que derrochaba sus bienes. Entonces lo llamó y le dijo: “¿Qué es eso que me cuentan de ti? Entrégame el balance de tu gestión, porque quedas despedido”. El administrador se puso a pensar para sus adentros: “¿Qué voy a hacer ahora que mi amo me quita el empleo? Para cavar no tengo fuerzas; mendigar me da vergüenza. Ya sé lo que voy a hacer para que, cuando me echen de la administración, haya quien me reciba en su casa”.</p>
+                <p>Fue llamando uno a uno a los deudores de su amo y dijo al primero: “¿Cuánto debes a mi amo?”. Este respondió: “Cien barriles de aceite”. Él le dijo: “Aquí tienes tu recibo; aprisa, siéntate y escribe cincuenta”. Luego dijo a otro: “Y tú, ¿cuánto debes?”. Él contestó: “Cien fanegas de trigo”. Le dijo: “Aquí tienes tu recibo, escribe ochenta”.</p>
+                <p>Y el amo alabó a aquel administrador injusto, por la astucia con que había procedido. Ciertamente, los hijos de este mundo son más astutos con su propia gente que los hijos de la luz.</p>
+            </blockquote>
+             <p class="mt-4 text-right font-semibold text-gray-600">Palabra del Señor. <span class="font-normal italic">Gloria a ti, Señor Jesús.</span></p>
+        </section>
+
+        <section id="homilia" class="card fade-in" style="animation-delay: 0.2s;">
+            <h2 class="text-2xl font-semibold mb-6 text-indigo-700">Mensajes Clave de la Homilía</h2>
+
+            <div class="space-y-8">
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-sky-600">💡 Ingenio para el Bien</h3>
+                    <p class="text-gray-700">Jesús no alaba la deshonestidad del administrador, sino su <strong>sagacidad, creatividad e inteligencia</strong> para resolver un problema. La gran lección es: si la gente usa tanto ingenio para sus intereses, ¿por qué no aplicamos esa misma creatividad y energía para lo que realmente importa: nuestra salvación y el Reino de los Cielos?</p>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-sky-600">🚀 Una Fidelidad Creativa y Activa</h3>
+                    <p class="text-gray-700 mb-3">El Señor nos llama a una fidelidad que no es rígida ni pasiva. Se trata de una <strong>fidelidad creativa</strong>, que no se conforma con lo mínimo, sino que se arriesga y busca constantemente modos nuevos de amar, servir y vivir el Evangelio en nuestro día a día.</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2 text-sky-600">🌱 La Grandeza de lo Pequeño</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                            <li>La verdadera fidelidad no empieza en las grandes decisiones, sino <strong>en las cosas pequeñas y cotidianas</strong>.</li>
+                            <li>Ahí se prueba el corazón: en cómo tratamos a los demás, cómo usamos nuestro tiempo, nuestros recursos y nuestras palabras.</li>
+                            <li>Quien es fiel en los pequeños gestos, está preparado para recibir encargos mayores. La santidad se vive en lo ordinario.</li>
+                        </ul>
+                    </div>
+                     <div>
+                        <h3 class="text-xl font-semibold mb-2 text-sky-600">🎁 Somos Administradores de Dones</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                            <li>Cada uno de nosotros es un administrador a quien Dios le ha confiado algo: una familia, una comunidad, un trabajo, un talento.</li>
+                            <li>Nuestra fe debe convertirse en sabiduría para gestionar estos dones, tomando decisiones responsables, especialmente en los momentos difíciles.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-sky-100 to-indigo-100 p-6 rounded-lg text-center">
+                    <p class="text-xl italic text-indigo-800 font-semibold">
+                        "Todo lo que no se comparte, se pierde. Pero todo lo que se entrega, se multiplica."
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="cuento" class="card fade-in" style="animation-delay: 0.3s;">
+            <h2 class="text-2xl font-semibold mb-4 text-purple-700">📖 Cuentan que... El Señor del Lápiz</h2>
+            <div class="bg-purple-50 p-6 rounded-lg border border-purple-200 text-gray-700 space-y-3">
+                <p>En una ciudad grande y ruidosa, vivía un humilde hombre que se ganaba la vida reparando paraguas. Su taller era pequeño y casi nadie sabía su nombre, pero todos lo conocían como "El Señor del Lápiz". Además de su oficio, tenía una costumbre especial: cada día, dibujaba pequeñas escenas de bondad en trozos de papel reciclado: una mamá abrazando a su hijo, un joven compartiendo su pan, un anciano recibiendo una carta.</p>
+                <p>Con mucho cuidado, doblaba estos dibujos y los dejaba discretamente dentro de los pliegues de los paraguas que reparaba. Al principio, nadie lo notaba, pero con el tiempo, esos pequeños gestos empezaron a cambiar corazones. Un joven a punto de rendirse encontró ánimo, una hija se reconcilió con su padre, un anciano solitario encontró alegría. Los dibujos hablaban directamente al corazón de las personas.</p>
+                <p>La moraleja de la historia es profunda y clara: <span class="font-semibold">no hacen falta riquezas ni escenarios grandiosos para transformar nuestro mundo.</span> Basta con un corazón fiel, una intención buena y el deseo sincero de poner lo poco que tenemos, como un simple lápiz, al servicio de los demás. Lo que se hace en secreto, con creatividad y amor, nos abre el paso al Reino de los Cielos.</p>
+            </div>
+        </section>
+
+        <section id="cuestionario" class="card fade-in" style="animation-delay: 0.4s;">
+            <h2 class="text-2xl font-semibold mb-6 text-emerald-700">📝 Pon a Prueba tu Conocimiento</h2>
+            <form id="quizForm">
+                <div class="question-container mb-6">
+                    <p class="text-lg font-medium mb-2">1. Según la homilía, ¿qué es lo que Jesús alaba del administrador de la parábola?</p>
+                    <div class="options-container">
+                        <label class="question-option"><input type="radio" name="q1" value="a" class="sr-only"> Su honestidad y rectitud.</label>
+                        <label class="question-option"><input type="radio" name="q1" value="b" class="sr-only"> Su astucia y creatividad para resolver un problema.</label>
+                        <label class="question-option"><input type="radio" name="q1" value="c" class="sr-only"> Su capacidad para hacer dinero.</label>
+                        <label class="question-option"><input type="radio" name="q1" value="d" class="sr-only"> Su obediencia al ser despedido.</label>
+                    </div>
+                </div>
+                <div class="question-container mb-6">
+                    <p class="text-lg font-medium mb-2">2. ¿A qué tipo de fidelidad nos invita el Señor?</p>
+                    <div class="options-container">
+                        <label class="question-option"><input type="radio" name="q2" value="a" class="sr-only"> Una fidelidad pasiva y que solo cumple con lo mínimo.</label>
+                        <label class="question-option"><input type="radio" name="q2" value="b" class="sr-only"> Una fidelidad reservada para momentos extraordinarios.</label>
+                        <label class="question-option"><input type="radio" name="q2" value="c" class="sr-only"> Una fidelidad creativa, activa y que busca nuevas formas de amar.</label>
+                        <label class="question-option"><input type="radio" name="q2" value="d" class="sr-only"> Una fidelidad que solo se enfoca en las grandes decisiones.</label>
+                    </div>
+                </div>
+                 <div class="question-container mb-6">
+                    <p class="text-lg font-medium mb-2">3. La homilía enseña que la verdadera fidelidad y santidad comienzan en...</p>
+                    <div class="options-container">
+                        <label class="question-option"><input type="radio" name="q3" value="a" class="sr-only"> Las grandes obras de caridad.</label>
+                        <label class="question-option"><input type="radio" name="q3" value="b" class="sr-only"> Los milagros y eventos sobrenaturales.</label>
+                        <label class="question-option"><input type="radio" name="q3" value="c" class="sr-only"> Los momentos de oración en la iglesia únicamente.</label>
+                        <label class="question-option"><input type="radio" name="q3" value="d" class="sr-only"> Las pequeñas acciones y gestos de la vida cotidiana.</label>
+                    </div>
+                </div>
+                <div class="question-container mb-6">
+                    <p class="text-lg font-medium mb-2">4. En el cuento, ¿qué hacía "El Señor del Lápiz" para sembrar esperanza?</p>
+                    <div class="options-container">
+                        <label class="question-option"><input type="radio" name="q4" value="a" class="sr-only"> Escribía cartas de ánimo para sus clientes.</label>
+                        <label class="question-option"><input type="radio" name="q4" value="b" class="sr-only"> Regalaba lápices a los niños de la ciudad.</label>
+                        <label class="question-option"><input type="radio" name="q4" value="c" class="sr-only"> Dejaba pequeños dibujos con escenas de bondad en los paraguas que reparaba.</label>
+                        <label class="question-option"><input type="radio" name="q4" value="d" class="sr-only"> Vendía sus dibujos para ayudar a los pobres.</label>
+                    </div>
+                </div>
+                 <div class="question-container mb-6">
+                    <p class="text-lg font-medium mb-2">5. ¿Cuál es el mensaje principal sobre el uso de nuestros dones y recursos?</p>
+                    <div class="options-container">
+                        <label class="question-option"><input type="radio" name="q5" value="a" class="sr-only"> Debemos acumularlos para asegurar nuestro futuro.</label>
+                        <label class="question-option"><input type="radio" name="q5" value="b" class="sr-only"> Todo lo que se comparte se pierde, pero lo que se guarda permanece.</label>
+                        <label class="question-option"><input type="radio" name="q5" value="c" class="sr-only"> Lo que se entrega y comparte se multiplica, mientras que lo que no se comparte se pierde.</label>
+                        <label class="question-option"><input type="radio" name="q5" value="d" class="sr-only"> Solo los bienes materiales son importantes.</label>
+                    </div>
+                </div>
+                <button type="submit" class="quiz-button w-full md:w-auto">Evaluar Cuestionario</button>
+            </form>
+            <div id="quizResult" class="mt-8 p-6 rounded-lg hidden"></div>
+        </section>
+    </main>
+
+    <footer class="mt-12 py-6 border-t border-gray-300 text-center text-gray-500">
+        <p>&copy; <span id="currentYear"></span> Reflexiones para el Alma Joven. Inspirado en la Homilía sobre la Fidelidad Creativa.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Update year in footer
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+            const quizForm = document.getElementById('quizForm');
+            const quizResult = document.getElementById('quizResult');
+            const correctAnswers = {
+                q1: 'b',
+                q2: 'c',
+                q3: 'd',
+                q4: 'c',
+                q5: 'c'
+            };
+
+            // Handle visual selection of options
+            document.querySelectorAll('.question-option input').forEach(input => {
+                input.addEventListener('change', (event) => {
+                    const questionContainer = event.target.closest('.question-container');
+                    questionContainer.querySelectorAll('.question-option').forEach(label => {
+                        label.classList.remove('selected');
+                    });
+                    if (event.target.checked) {
+                        event.target.parentElement.classList.add('selected');
+                    }
+                });
+            });
+
+            quizForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                let score = 0;
+                const totalQuestions = Object.keys(correctAnswers).length;
+                const formData = new FormData(quizForm);
+                const userAnswers = {};
+
+                for (let [key, value] of formData.entries()) {
+                    userAnswers[key] = value;
+                }
+
+                // Disable options and button
+                const submitButton = quizForm.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                quizForm.querySelectorAll('input[type="radio"]').forEach(input => {
+                    input.disabled = true;
+                });
+
+                // Check answers
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionName = `q${i}`;
+                    const correctAnswer = correctAnswers[questionName];
+                    const userAnswer = userAnswers[questionName];
+
+                    const questionContainer = document.querySelector(`input[name="${questionName}"]`).closest('.question-container');
+                    const options = questionContainer.querySelectorAll('.question-option');
+                    
+                    options.forEach(label => {
+                        const input = label.querySelector('input');
+                        label.classList.remove('selected'); // Remove selection color
+
+                        if (input.value === correctAnswer) {
+                            label.classList.add('correct'); // Mark the correct answer in green
+                        }
+                        
+                        if (input.checked && input.value !== correctAnswer) {
+                            label.classList.add('incorrect'); // Mark user's wrong answer in red
+                        }
+                    });
+
+                    if (userAnswer === correctAnswer) {
+                        score++;
+                    }
+                }
+
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let feedbackMessage = '';
+                let resultBgClass = '';
+
+                if (percentage === 100) {
+                    feedbackMessage = '¡Excelente! Has comprendido todos los mensajes clave.';
+                    resultBgClass = 'bg-emerald-100 border-emerald-500 text-emerald-800';
+                } else if (percentage >= 60) {
+                    feedbackMessage = '¡Muy bien! Tienes una buena comprensión de la homilía.';
+                    resultBgClass = 'bg-sky-100 border-sky-500 text-sky-800';
+                } else {
+                    feedbackMessage = '¡Sigue esforzándote! Te animamos a repasar los mensajes clave.';
+                     resultBgClass = 'bg-amber-100 border-amber-500 text-amber-800';
+                }
+                
+                quizResult.innerHTML = `
+                    <h3 class="text-2xl font-bold mb-2">Resultados</h3>
+                    <p class="text-xl mb-4">Tu puntuación: <strong>${score} de ${totalQuestions} (${percentage}%)</strong></p>
+                    <p>${feedbackMessage}</p>
+                `;
+                
+                quizResult.className = `mt-8 p-6 rounded-lg border ${resultBgClass}`;
+                quizResult.classList.remove('hidden');
+                quizResult.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+
+</body>
+</html>
