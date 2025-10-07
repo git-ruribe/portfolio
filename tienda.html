@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Micro-Tienda</title>
+    <title>CloserBox</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -63,7 +63,7 @@
             
             <!-- Cabecera o espacio superior -->
             <header class="text-center py-4">
-                <h1 class="text-2xl font-bold tracking-tight text-gray-100">ENERGY-UP</h1>
+                <h1 class="text-2xl font-bold tracking-tight text-gray-100">CloserBox</h1>
                 <p class="text-sm text-gray-400">Tu parada de energía</p>
             </header>
 
@@ -103,9 +103,17 @@
             <h2 id="modal-product-name" class="text-2xl font-bold mb-2">Nombre del Producto</h2>
             <p id="modal-product-desc" class="text-gray-400 mb-4 text-sm">Descripción detallada del producto.</p>
             <p id="modal-product-price" class="text-xl font-semibold mb-6 text-indigo-400">$0.00</p>
-            <button id="cart-action-button" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-500 transition-colors duration-200">
+            
+            <!-- Botón para agregar por primera vez -->
+            <button id="add-initial-button" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-500 transition-colors duration-200">
                 Agregar al Carrito
             </button>
+            
+            <!-- Controles para agregar/quitar cuando ya existe en el carrito -->
+            <div id="quantity-controls-container" class="w-full flex gap-4 hidden">
+                <button id="remove-one-button" class="w-1/2 bg-gray-600 text-white font-bold py-3 rounded-lg hover:bg-gray-500 transition-colors duration-200">Quitar uno</button>
+                <button id="add-another-button" class="w-1/2 bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-500 transition-colors duration-200">Agregar otro</button>
+            </div>
         </div>
     </div>
     
@@ -157,7 +165,12 @@
             const modalProductName = document.getElementById('modal-product-name');
             const modalProductDesc = document.getElementById('modal-product-desc');
             const modalProductPrice = document.getElementById('modal-product-price');
-            const cartActionButton = document.getElementById('cart-action-button');
+            
+            // Nuevos botones del modal
+            const addInitialButton = document.getElementById('add-initial-button');
+            const quantityControlsContainer = document.getElementById('quantity-controls-container');
+            const removeOneButton = document.getElementById('remove-one-button');
+            const addAnotherButton = document.getElementById('add-another-button');
 
             // Elementos del Modal de Agradecimiento
             const thanksModal = document.getElementById('thanks-modal');
@@ -167,14 +180,12 @@
             let cart = {};
             let currentProduct = null;
             
-            // --- INICIALIZACIÓN ---
             function init() {
                 loadCart();
                 renderProducts();
                 updateTotal();
             }
 
-            // --- RENDERIZADO ---
             function renderProducts() {
                 productGrid.innerHTML = '';
                 products.forEach(product => {
@@ -188,7 +199,6 @@
                     productGrid.innerHTML += itemHtml;
                 });
 
-                // Añadir event listeners a los nuevos elementos
                 document.querySelectorAll('[data-product-id]').forEach(item => {
                     item.addEventListener('click', (e) => {
                         const productId = e.currentTarget.dataset.productId;
@@ -197,14 +207,13 @@
                 });
             }
 
-            // --- LÓGICA DEL CARRITO ---
             function addToCart() {
                 if (!currentProduct) return;
                 const productId = currentProduct.id;
                 cart[productId] = (cart[productId] || 0) + 1;
                 saveCart();
                 updateUIForProduct(productId);
-                updateModalButton();
+                updateModalButtons();
             }
 
             function removeFromCart() {
@@ -218,7 +227,7 @@
                 }
                 saveCart();
                 updateUIForProduct(productId);
-                updateModalButton();
+                updateModalButtons();
             }
             
             function updateUIForProduct(productId) {
@@ -227,11 +236,7 @@
                 
                 if (badge) {
                     badge.textContent = quantity;
-                    if (quantity > 0) {
-                        badge.classList.add('visible');
-                    } else {
-                        badge.classList.remove('visible');
-                    }
+                    badge.classList.toggle('visible', quantity > 0);
                 }
                 updateTotal();
             }
@@ -246,7 +251,6 @@
                 payButton.disabled = total === 0;
             }
 
-            // --- LÓGICA DE MODALES ---
             function openProductModal(productId) {
                 currentProduct = products.find(p => p.id === productId);
                 if (!currentProduct) return;
@@ -256,7 +260,7 @@
                 modalProductDesc.textContent = currentProduct.description;
                 modalProductPrice.textContent = `$${currentProduct.price.toFixed(2)}`;
                 
-                updateModalButton();
+                updateModalButtons();
                 
                 productModal.classList.remove('hidden');
                 modalContent.classList.remove('modal-leave');
@@ -272,14 +276,16 @@
                 }, 300);
             }
             
-            function updateModalButton() {
+            function updateModalButtons() {
+                if (!currentProduct) return;
                 const quantity = cart[currentProduct.id] || 0;
+                
                 if (quantity > 0) {
-                    cartActionButton.textContent = `Quitar del Carrito (${quantity})`;
-                    cartActionButton.onclick = removeFromCart;
+                    addInitialButton.classList.add('hidden');
+                    quantityControlsContainer.classList.remove('hidden');
                 } else {
-                    cartActionButton.textContent = 'Agregar al Carrito';
-                    cartActionButton.onclick = addToCart;
+                    addInitialButton.classList.remove('hidden');
+                    quantityControlsContainer.classList.add('hidden');
                 }
             }
 
@@ -297,14 +303,12 @@
                 }, 300);
             }
 
-
-            // --- LOCAL STORAGE ---
             function saveCart() {
-                localStorage.setItem('vendingMachineCart', JSON.stringify(cart));
+                localStorage.setItem('closerBoxCart', JSON.stringify(cart));
             }
 
             function loadCart() {
-                const savedCart = localStorage.getItem('vendingMachineCart');
+                const savedCart = localStorage.getItem('closerBoxCart');
                 if (savedCart) {
                     cart = JSON.parse(savedCart);
                 }
@@ -319,23 +323,19 @@
 
             // --- EVENT LISTENERS ---
             closeModalButton.addEventListener('click', closeProductModal);
-            
-            payButton.addEventListener('click', () => {
-                showThanksModal();
-            });
-            
+            payButton.addEventListener('click', showThanksModal);
             closeThanksModal.addEventListener('click', () => {
                 hideThanksModal();
                 clearCart();
             });
+            
+            // Listeners para los botones del modal
+            addInitialButton.addEventListener('click', addToCart);
+            addAnotherButton.addEventListener('click', addToCart);
+            removeOneButton.addEventListener('click', removeFromCart);
 
-            // Cerrar modal al hacer clic fuera del contenido
-            productModal.addEventListener('click', (e) => {
-                if (e.target === productModal) {
-                    closeProductModal();
-                }
-            });
-
+            // Cerrar modales al hacer clic fuera del contenido
+            productModal.addEventListener('click', (e) => e.target === productModal && closeProductModal());
             thanksModal.addEventListener('click', (e) => {
                 if (e.target === thanksModal) {
                     hideThanksModal();
@@ -343,11 +343,8 @@
                 }
             });
 
-
-            // --- INICIAR APP ---
             init();
         });
     </script>
 </body>
 </html>
-
