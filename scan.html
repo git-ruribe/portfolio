@@ -108,9 +108,9 @@
 
             // Initialize ZXing code reader
             const codeReader = new ZXing.BrowserMultiFormatReader();
-            let selectedDeviceId;
             let isScanning = false;
             let scannedCodes = new Set();
+            let localStream; // To hold the camera stream
 
             function updateScanCount() {
                 const count = scannedCodes.size;
@@ -121,32 +121,23 @@
             async function startScan() {
                 if (isScanning) return;
                 
-                permissionOverlay.style.display = 'none'; // Hide any previous permission warnings
+                permissionOverlay.style.display = 'none';
                 messageEl.textContent = 'Requesting camera access...';
 
                 try {
-                    // Directly request camera stream to trigger the permission prompt reliably.
-                    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-                    
-                    // Stop the tracks immediately after getting permission, so ZXing can manage the stream.
-                    stream.getTracks().forEach(track => track.stop());
+                    // **MODIFIED LOGIC**: Get the stream and keep it.
+                    localStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                    video.srcObject = localStream;
+                    await video.play();
 
-                    // Now that we have permission, we can list the devices.
-                    const videoInputDevices = await codeReader.listVideoInputDevices();
-                    if (videoInputDevices.length === 0) {
-                        throw new Error('No video input devices found.');
-                    }
-                    
-                    const rearCamera = videoInputDevices.find(device => device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('environment'));
-                    selectedDeviceId = rearCamera ? rearCamera.deviceId : videoInputDevices[0].deviceId;
-                    
                     isScanning = true;
                     startButton.textContent = 'Stop Scanner';
                     startButton.classList.replace('bg-blue-600', 'bg-yellow-600');
                     startButton.classList.replace('hover:bg-blue-700', 'hover:bg-yellow-700');
                     messageEl.textContent = 'Scanning...';
 
-                    codeReader.decodeFromVideoStream(selectedDeviceId, 'video', (result, err) => {
+                    // **MODIFIED LOGIC**: Scan from the video element that is already playing the stream.
+                    codeReader.decodeFromVideoElement(video, (result, err) => {
                         if (result) {
                             const code = result.getText();
                             if (!scannedCodes.has(code)) {
@@ -163,19 +154,21 @@
                             }
                         }
                         if (err && !(err instanceof ZXing.NotFoundException)) {
-                            console.error(err);
-                            messageEl.textContent = `Scanning Error: Please try again.`;
+                             // This error is logged during active scanning, not for critical failures.
+                             console.error("Scanning error:", err);
                         }
                     });
 
                 } catch (error) {
-                    console.error('Error starting scanner:', error.name, error.message);
-                    messageEl.textContent = 'Camera access was denied or failed.';
-                    permissionOverlay.style.display = 'block'; // Show the help message
+                    console.error('Failed to start scanner:', error);
+                    messageEl.textContent = `Error: ${error.message}`;
+                    permissionOverlay.style.display = 'block';
                     if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
                         messageEl.textContent = 'Camera permission denied.';
                     } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
                          messageEl.textContent = 'No camera found on this device.';
+                    } else {
+                        messageEl.textContent = 'Could not start camera.';
                     }
                     isScanning = false;
                 }
@@ -183,14 +176,19 @@
 
             function stopScan() {
                 if (!isScanning) return;
-                codeReader.reset();
+                
+                // **MODIFIED LOGIC**: Stop the tracks of the stored stream.
+                if (localStream) {
+                    localStream.getTracks().forEach(track => track.stop());
+                }
+
+                codeReader.reset(); // Resets the ZXing library state
                 isScanning = false;
+                video.srcObject = null;
                 startButton.textContent = 'Start Scanner';
                 startButton.classList.replace('bg-yellow-600', 'bg-blue-600');
                 startButton.classList.replace('hover:bg-yellow-700', 'hover:bg-blue-700');
                 messageEl.textContent = 'Scanner stopped.';
-                // The reset() method in the library handles stopping the stream tracks.
-                video.srcObject = null;
             }
 
             startButton.addEventListener('click', () => {
@@ -204,11 +202,11 @@
             resetButton.addEventListener('click', () => {
                 scannedCodes.clear();
                 resultList.innerHTML = '';
-                messageEl.textContent = 'List cleared. Ready to scan.';
                 updateScanCount();
                 if (isScanning) {
                     stopScan();
                 }
+                messageEl.textContent = 'List cleared. Ready to scan.';
             });
 
             updateScanCount();
@@ -216,5 +214,3 @@
     </script>
 </body>
 </html>
-
-
