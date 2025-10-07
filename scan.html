@@ -29,6 +29,10 @@
             box-shadow: 0 0 10px rgba(255, 0, 0, 1);
             z-index: 10;
         }
+        /* Style for the permission overlay */
+        #permission-overlay {
+            display: none; /* Hidden by default */
+        }
     </style>
 </head>
 <body class="bg-gray-100 font-sans flex flex-col items-center justify-center min-h-screen p-4">
@@ -39,10 +43,17 @@
             <p class="text-gray-500 mt-1">Point your camera at a barcode to scan it.</p>
         </header>
 
+        <!-- Permissions Overlay -->
+        <div id="permission-overlay" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg" role="alert">
+            <p class="font-bold">Camera Permission Required</p>
+            <p>This app needs access to your camera to scan barcodes. Please grant permission when prompted.</p>
+            <p class="mt-2 text-sm">If you don't see a prompt, check your browser's address bar for a blocked camera icon and allow access. Make sure you are using a secure `https://` connection.</p>
+        </div>
+
         <!-- Video and controls -->
         <main class="space-y-4">
             <div id="video-container" class="bg-gray-900 shadow-inner">
-                <video id="video" class="w-full h-auto"></video>
+                <video id="video" class="w-full h-auto" playsinline></video> <!-- playsinline is important for mobile browsers -->
             </div>
             <div id="message" class="text-center text-gray-600 font-medium p-2 rounded-lg bg-gray-50 h-10 flex items-center justify-center">
                 Ready to scan.
@@ -67,7 +78,6 @@
                 <p id="no-scans-message" class="text-center text-gray-400 italic">No codes scanned yet.</p>
             </div>
         </section>
-
     </div>
 
     <footer class="text-center text-gray-500 mt-8 text-sm">
@@ -76,6 +86,16 @@
 
     <script>
         window.addEventListener('load', function () {
+            // Check for secure context
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+                const insecureMessage = document.getElementById('message');
+                insecureMessage.innerHTML = '<strong>Error:</strong> Must be on a secure (https) connection to access the camera.';
+                insecureMessage.classList.add('text-red-700', 'bg-red-100');
+                document.getElementById('startButton').disabled = true;
+                document.getElementById('resetButton').disabled = true;
+                return;
+            }
+
             // DOM Elements
             const video = document.getElementById('video');
             const startButton = document.getElementById('startButton');
@@ -84,6 +104,7 @@
             const messageEl = document.getElementById('message');
             const scanCountEl = document.getElementById('scan-count');
             const noScansMessage = document.getElementById('no-scans-message');
+            const permissionOverlay = document.getElementById('permission-overlay');
 
             // Initialize ZXing code reader
             const codeReader = new ZXing.BrowserMultiFormatReader();
@@ -91,49 +112,51 @@
             let isScanning = false;
             let scannedCodes = new Set();
 
-            // Function to update the count of scanned items
             function updateScanCount() {
                 const count = scannedCodes.size;
                 scanCountEl.textContent = count;
                 noScansMessage.style.display = count === 0 ? 'block' : 'none';
             }
 
-            // Function to start the camera and scanning
             async function startScan() {
                 if (isScanning) return;
+                
+                permissionOverlay.style.display = 'none'; // Hide any previous permission warnings
+                messageEl.textContent = 'Requesting camera access...';
 
                 try {
-                    messageEl.textContent = 'Initializing camera...';
+                    // Directly request camera stream to trigger the permission prompt reliably.
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                    
+                    // Stop the tracks immediately after getting permission, so ZXing can manage the stream.
+                    stream.getTracks().forEach(track => track.stop());
+
+                    // Now that we have permission, we can list the devices.
                     const videoInputDevices = await codeReader.listVideoInputDevices();
                     if (videoInputDevices.length === 0) {
                         throw new Error('No video input devices found.');
                     }
-
-                    // Prefer the rear camera ('environment')
+                    
                     const rearCamera = videoInputDevices.find(device => device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('environment'));
                     selectedDeviceId = rearCamera ? rearCamera.deviceId : videoInputDevices[0].deviceId;
-
+                    
                     isScanning = true;
                     startButton.textContent = 'Stop Scanner';
                     startButton.classList.replace('bg-blue-600', 'bg-yellow-600');
                     startButton.classList.replace('hover:bg-blue-700', 'hover:bg-yellow-700');
                     messageEl.textContent = 'Scanning...';
 
-                    // Start decoding from the video stream
                     codeReader.decodeFromVideoStream(selectedDeviceId, 'video', (result, err) => {
                         if (result) {
-                            // A barcode was successfully scanned
                             const code = result.getText();
                             if (!scannedCodes.has(code)) {
                                 scannedCodes.add(code);
                                 const listItem = document.createElement('li');
                                 listItem.className = 'p-3 bg-white rounded-md shadow-sm border border-gray-200 flex items-center';
                                 listItem.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-green-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg> <span>${code}</span>`;
-                                resultList.prepend(listItem); // Add new scans to the top
+                                resultList.prepend(listItem);
                                 messageEl.textContent = `Scanned: ${code}`;
                                 updateScanCount();
-                                
-                                // Vibrate for feedback on supported devices
                                 if ('vibrate' in navigator) {
                                     navigator.vibrate(100);
                                 }
@@ -141,18 +164,23 @@
                         }
                         if (err && !(err instanceof ZXing.NotFoundException)) {
                             console.error(err);
-                            messageEl.textContent = `Error: ${err.message}`;
+                            messageEl.textContent = `Scanning Error: Please try again.`;
                         }
                     });
 
                 } catch (error) {
-                    console.error('Error starting scanner:', error);
-                    messageEl.textContent = 'Could not start camera. Check permissions.';
+                    console.error('Error starting scanner:', error.name, error.message);
+                    messageEl.textContent = 'Camera access was denied or failed.';
+                    permissionOverlay.style.display = 'block'; // Show the help message
+                    if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                        messageEl.textContent = 'Camera permission denied.';
+                    } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
+                         messageEl.textContent = 'No camera found on this device.';
+                    }
                     isScanning = false;
                 }
             }
 
-            // Function to stop the camera and scanning
             function stopScan() {
                 if (!isScanning) return;
                 codeReader.reset();
@@ -161,10 +189,10 @@
                 startButton.classList.replace('bg-yellow-600', 'bg-blue-600');
                 startButton.classList.replace('hover:bg-yellow-700', 'hover:bg-blue-700');
                 messageEl.textContent = 'Scanner stopped.';
-                video.srcObject = null; // Turn off camera light
+                // The reset() method in the library handles stopping the stream tracks.
+                video.srcObject = null;
             }
 
-            // Event Listeners
             startButton.addEventListener('click', () => {
                 if (isScanning) {
                     stopScan();
@@ -183,10 +211,10 @@
                 }
             });
 
-            // Initial state
             updateScanCount();
         });
     </script>
 </body>
 </html>
+
 
