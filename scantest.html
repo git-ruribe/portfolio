@@ -1,0 +1,9 @@
+<video id="video"></video>
+<script src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
+<script>
+    const codeReader = new ZXing.BrowserMultiFormatReader();
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }).then(stream => {
+        document.getElementById('video').srcObject = stream;
+        codeReader.decodeFromVideoDevice(null, 'video', (result) => console.log(result));
+    });
+</script>
