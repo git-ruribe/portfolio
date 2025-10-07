@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CloserBox</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; overscroll-behavior: none; }
+        .h-screen-real { height: 100vh; height: -webkit-fill-available; }
+        .modal { display: none; }
+        .modal.visible { display: flex; }
+        .modal-enter { animation: fadeIn 0.3s ease-out forwards; }
+        .modal-leave { animation: fadeOut 0.3s ease-in forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        @keyframes fadeOut { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.95); } }
+        .quantity-badge {
+            position: absolute; top: -0.5rem; right: -0.5rem; background-color: #ef4444; color: white;
+            border-radius: 9999px; width: 1.75rem; height: 1.75rem; display: flex; align-items: center;
+            justify-content: center; font-size: 0.875rem; font-weight: 600; border: 2px solid white;
+            transform: scale(0); transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .quantity-badge.visible { transform: scale(1); }
+        .loader {
+            border: 4px solid #f3f3f3; border-top: 4px solid #4f46e5; border-radius: 50%;
+            width: 40px; height: 40px; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-gray-900 text-white overflow-hidden">
+
+    <!-- Main application container -->
+    <div id="app-container" class="h-screen-real w-screen flex flex-col justify-center items-center p-4 bg-gray-900">
+        <div class="w-full max-w-sm mx-auto flex flex-col h-full">
+            <header class="text-center py-4">
+                <h1 class="text-2xl font-bold tracking-tight text-gray-100">CloserBox</h1>
+                <p class="text-sm text-gray-400">Tus metas, un paso más cerca.</p>
+            </header>
+
+            <main class="flex-grow w-full flex items-center justify-center">
+                <div class="w-full" style="aspect-ratio: 13 / 17;">
+                    <div id="product-grid" class="grid grid-cols-4 grid-rows-4 gap-4 h-full">
+                        <!-- Products inserted here -->
+                    </div>
+                </div>
+            </main>
+
+            <footer class="w-full py-4">
+                <div class="bg-gray-800 rounded-xl p-4 flex justify-between items-center">
+                    <div>
+                        <p class="text-gray-400 text-sm">Total</p>
+                        <p id="total-price" class="text-2xl font-bold">$0.00</p>
+                    </div>
+                    <button id="pay-button" class="bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-colors" disabled>Pagar</button>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- MODALS CONTAINER -->
+    <div id="product-modal" class="modal fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm justify-center items-center p-4">
+        <div class="modal-content bg-gray-800 w-full max-w-sm rounded-2xl p-6 shadow-xl text-center relative">
+            <button class="close-modal-button absolute top-3 right-3 text-gray-400 hover:text-white transition-colors">
+                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+            <div id="modal-image-container" class="w-32 h-32 mx-auto rounded-lg mb-4 flex items-center justify-center overflow-hidden"></div>
+            <h2 id="modal-product-name" class="text-2xl font-bold mb-2"></h2>
+            <p id="modal-product-desc" class="text-gray-400 mb-4 text-sm"></p>
+            <p id="modal-product-price" class="text-xl font-semibold mb-6 text-indigo-400"></p>
+            <button id="add-initial-button" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-500 transition-colors">Agregar al Carrito</button>
+            <div id="quantity-controls-container" class="w-full flex items-center justify-center gap-4 hidden">
+                <button id="decrease-quantity-button" class="w-14 h-14 flex items-center justify-center bg-gray-600 text-white font-bold text-3xl rounded-full hover:bg-gray-500 transition-colors active:scale-95">-</button>
+                <div id="modal-quantity" class="text-3xl font-bold w-16 text-center">1</div>
+                <button id="increase-quantity-button" class="w-14 h-14 flex items-center justify-center bg-indigo-600 text-white font-bold text-3xl rounded-full hover:bg-indigo-500 transition-colors active:scale-95">+</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="payment-choice-modal" class="modal fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm justify-center items-center p-4">
+        <div class="modal-content bg-gray-800 w-full max-w-sm rounded-2xl p-6 shadow-xl text-center relative">
+            <button class="close-modal-button absolute top-3 right-3 text-gray-400 hover:text-white transition-colors">
+                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+            <h2 class="text-2xl font-bold mb-6">Selecciona un método de pago</h2>
+            <div class="flex flex-col gap-4">
+                <button id="pay-in-cash-button" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-500 transition-colors">Pago en Caja</button>
+                <button id="pay-online-button" class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-500 transition-colors">Pago en Línea</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="cash-payment-modal" class="modal fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm justify-center items-center p-4">
+        <div class="modal-content bg-gray-800 w-full max-w-sm rounded-2xl p-8 shadow-xl text-center relative">
+            <h2 class="text-xl font-bold mb-2 text-gray-300">Total a Pagar</h2>
+            <p id="cash-total" class="text-5xl font-bold mb-4 text-green-400">$0.00</p>
+            <p class="text-gray-400 mb-8 text-lg">Muestra esta pantalla en caja para completar tu pago.</p>
+            <button id="paid-button" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-500 transition-colors">PAGADO</button>
+        </div>
+    </div>
+    
+    <div id="online-payment-modal" class="modal fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm justify-center items-center p-4">
+        <div class="modal-content bg-gray-800 w-full max-w-sm rounded-2xl p-6 shadow-xl text-center relative">
+            <button class="close-modal-button absolute top-3 right-3 text-gray-400 hover:text-white transition-colors">
+                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+            <div id="online-payment-view">
+                <h2 class="text-2xl font-bold mb-6">Pago Seguro</h2>
+                <div class="flex flex-col gap-4">
+                    <button class="w-full bg-black text-white font-bold py-3 rounded-lg hover:bg-gray-700 transition-colors flex items-center justify-center gap-2">
+                        <svg class="w-6 h-6" viewBox="0 0 24 24"><path fill="currentColor" d="M16.6,8.29c-1-2.3-2.6-3.4-5.3-3.4c-2.4,0-4.3,1.2-5.5,3.3h0c-0.1,0.2-0.1,0.3-0.1,0.4c0,0.1,0,0.2,0,0.3 c-0.5,1.7-0.6,3.4-0.1,5.1c0.2,0.8,0.5,1.6,0.9,2.4c0.5,1,1.1,1.9,1.8,2.8c0.7,0.8,1.5,1.5,2.7,1.5c1.1,0,1.9-0.6,2.6-1.5 c0.7-0.9,1.3-1.8,1.8-2.8c0.4-0.8,0.7-1.5,0.9-2.4c0.5-1.7,0.4-3.4-0.1-5.1C16.6,8.69,16.6,8.49,16.6,8.29z M12,3.29 c-0.9,0-1.7,0.7-2.1,1.5c-0.2,0.5,0,1.1,0.5,1.3c0.5,0.2,1.1,0,1.3-0.5c0.4-0.8,1.2-1.4,2.1-1.4c0.1,0,0.2,0,0.3,0 c0.5,0.1,1-0.2,1.1-0.7c0.1-0.5-0.2-1-0.7-1.1C13.8,3.39,12.9,3.29,12,3.29z"/></svg>
+                        Apple Pay
+                    </button>
+                    <button id="process-card-payment-button" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-500 transition-colors">Pagar con Tarjeta</button>
+                </div>
+            </div>
+            <div id="processing-view" class="hidden flex-col items-center justify-center gap-4 p-8">
+                <div class="loader"></div>
+                <p class="text-gray-400">Procesando pago...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="thanks-modal" class="modal fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm justify-center items-center p-4">
+        <div class="modal-content bg-gray-800 w-full max-w-sm rounded-2xl p-8 shadow-xl text-center relative">
+            <svg class="h-16 w-16 text-green-400 mx-auto mb-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+            <h2 class="text-2xl font-bold mb-2">¡Gracias por tu compra!</h2>
+            <p class="text-gray-400 mb-6">Tu pedido ha sido procesado.</p>
+            <button id="close-thanks-modal" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-500 transition-colors">Cerrar</button>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const products = [
+            { id: 1, name: 'Quantum Crunch', description: 'Barra de proteína con 25g de aislado de suero.', price: 55.00, color: 'bg-red-500' },
+            { id: 2, name: 'Gummy Gains', description: 'Gomitas con 5g de creatina monohidratada por porción.', price: 40.00, color: 'bg-blue-500' },
+            { id: 3, name: 'Volt Rush', description: 'Bebida energética sin azúcar para un impulso instantáneo.', price: 60.00, color: 'bg-yellow-500' },
+            { id: 4, name: 'Hydro-Charge', description: 'Agua con electrolitos para una hidratación superior.', price: 35.00, color: 'bg-cyan-500' },
+            { id: 5, name: 'Atomic Pump', description: 'Shot de pre-entreno sabor ponche de frutas.', price: 45.00, color: 'bg-purple-500' },
+            { id: 6, name: 'Nutri-Fuel', description: 'Snack de almendras y arándanos rico en antioxidantes.', price: 30.00, color: 'bg-orange-500' },
+            { id: 7, name: 'WheyMax Shake', description: 'Batido listo para tomar con 30g de proteína de alta calidad.', price: 75.00, color: 'bg-green-500' },
+            { id: 8, name: 'Amino-Boost', description: 'Cápsulas de BCAA para recuperación muscular acelerada.', price: 50.00, color: 'bg-pink-500' },
+            { id: 9, name: 'Cookie Core', description: 'Galleta proteica con trozos de chocolate y 20g de proteína.', price: 58.00, color: 'bg-amber-800' },
+            { id: 10, name: 'Ignite Shot', description: 'Shot de jengibre y cúrcuma para un boost antiinflamatorio.', price: 42.00, color: 'bg-amber-500' },
+            { id: 11, name: 'Earth Power', description: 'Barra de proteína vegana a base de chícharo y arroz.', price: 65.00, color: 'bg-lime-600' },
+            { id: 12, name: 'Re-Up Drink', description: 'Bebida de recuperación con carbohidratos y electrolitos.', price: 68.00, color: 'bg-teal-500' },
+            { id: 13, name: 'Cold Brew Lift', description: 'Café frío con un shot de proteína para empezar el día.', price: 70.00, color: 'bg-stone-500' },
+            { id: 14, name: 'Pro-Pudding', description: 'Pudín de chocolate alto en proteína, bajo en azúcar.', price: 52.00, color: 'bg-rose-800' },
+            { id: 15, name: 'Lentil-X Chips', description: 'Chips de lentejas horneados, una alternativa saludable.', price: 48.00, color: 'bg-fuchsia-600' },
+            { id: 16, name: 'Mighty Muffin', description: 'Muffin de arándanos con 15g de proteína.', price: 55.00, color: 'bg-sky-600' },
+        ];
+
+        const productGrid = document.getElementById('product-grid');
+        const totalPriceEl = document.getElementById('total-price');
+        const payButton = document.getElementById('pay-button');
+        
+        // Modal elements
+        const allModals = document.querySelectorAll('.modal');
+        const productModal = document.getElementById('product-modal');
+        const paymentChoiceModal = document.getElementById('payment-choice-modal');
+        const cashPaymentModal = document.getElementById('cash-payment-modal');
+        const onlinePaymentModal = document.getElementById('online-payment-modal');
+        const thanksModal = document.getElementById('thanks-modal');
+        
+        let cart = {};
+        let currentProduct = null;
+        let activeModal = null;
+        
+        function init() {
+            loadCart();
+            renderProducts();
+            updateTotal();
+            setupEventListeners();
+        }
+
+        // --- DYNAMIC CONTENT RENDERING ---
+        function renderProducts() {
+            productGrid.innerHTML = '';
+            products.forEach(product => {
+                const quantity = cart[product.id] || 0;
+                const imgName = `imagen${String(product.id).padStart(2, '0')}.jpg`;
+                const placeholder = `<div class="w-12 h-12 ${product.color} rounded-lg shadow-lg"></div>`;
+                const itemHtml = `
+                    <div class="relative rounded-xl bg-gray-800 p-2 flex justify-center items-center cursor-pointer transform hover:scale-105 transition-transform" data-product-id="${product.id}">
+                        <img src="${imgName}" alt="${product.name}" class="w-12 h-12 object-cover rounded-lg shadow-lg" onerror="this.outerHTML = '${placeholder}'">
+                        <div class="quantity-badge ${quantity > 0 ? 'visible' : ''}" id="badge-${product.id}">${quantity}</div>
+                    </div>
+                `;
+                productGrid.innerHTML += itemHtml;
+            });
+            document.querySelectorAll('[data-product-id]').forEach(item => {
+                item.addEventListener('click', (e) => openProductModal(parseInt(e.currentTarget.dataset.productId)));
+            });
+        }
+
+        function openProductModal(productId) {
+            currentProduct = products.find(p => p.id === productId);
+            if (!currentProduct) return;
+            
+            const { name, description, price, color, id } = currentProduct;
+            const imgName = `imagen${String(id).padStart(2, '0')}.jpg`;
+            const placeholder = `<div class="w-full h-full ${color} rounded-lg"></div>`;
+
+            productModal.querySelector('#modal-image-container').innerHTML = `<img src="${imgName}" alt="${name}" class="w-full h-full object-cover rounded-lg" onerror="this.outerHTML = '${placeholder}'">`;
+            productModal.querySelector('#modal-product-name').textContent = name;
+            productModal.querySelector('#modal-product-desc').textContent = description;
+            productModal.querySelector('#modal-product-price').textContent = `$${price.toFixed(2)}`;
+            
+            updateModalButtons();
+            showModal(productModal);
+        }
+        
+        // --- CART LOGIC ---
+        function addToCart() {
+            if (!currentProduct) return;
+            const productId = currentProduct.id;
+            cart[productId] = (cart[productId] || 0) + 1;
+            saveCart();
+            updateUIForProduct(productId);
+            updateModalButtons();
+        }
+
+        function removeFromCart() {
+            if (!currentProduct) return;
+            const productId = currentProduct.id;
+            if (cart[productId] > 0) {
+                cart[productId]--;
+                if (cart[productId] === 0) delete cart[productId];
+            }
+            saveCart();
+            updateUIForProduct(productId);
+            updateModalButtons();
+        }
+
+        // --- UI UPDATES ---
+        function updateUIForProduct(productId) {
+            const badge = document.getElementById(`badge-${productId}`);
+            const quantity = cart[productId] || 0;
+            if (badge) {
+                badge.textContent = quantity;
+                badge.classList.toggle('visible', quantity > 0);
+            }
+            updateTotal();
+        }
+
+        function updateTotal() {
+            const total = Object.values(cart).reduce((acc, quantity, index) => {
+                const productId = Object.keys(cart)[index];
+                const product = products.find(p => p.id == productId);
+                return acc + (product.price * quantity);
+            }, 0);
+            
+            totalPriceEl.textContent = `$${total.toFixed(2)}`;
+            payButton.disabled = total === 0;
+        }
+
+        function updateModalButtons() {
+            if (!currentProduct) return;
+            const quantity = cart[currentProduct.id] || 0;
+            const addInitialButton = productModal.querySelector('#add-initial-button');
+            const qtyControls = productModal.querySelector('#quantity-controls-container');
+            
+            addInitialButton.classList.toggle('hidden', quantity > 0);
+            qtyControls.classList.toggle('hidden', quantity === 0);
+            
+            if (quantity > 0) {
+                productModal.querySelector('#modal-quantity').textContent = quantity;
+            }
+        }
+
+        // --- MODAL MANAGEMENT ---
+        function showModal(modalElement) {
+            if (activeModal) hideModal(activeModal, true);
+            activeModal = modalElement;
+            modalElement.classList.add('visible');
+            modalElement.querySelector('.modal-content').classList.add('modal-enter');
+            modalElement.querySelector('.modal-content').classList.remove('modal-leave');
+        }
+
+        function hideModal(modalElement, isChaining = false) {
+            if (!modalElement) return;
+            const content = modalElement.querySelector('.modal-content');
+            content.classList.remove('modal-enter');
+            content.classList.add('modal-leave');
+            setTimeout(() => {
+                modalElement.classList.remove('visible');
+                if (activeModal === modalElement && !isChaining) {
+                    activeModal = null;
+                }
+            }, 300);
+        }
+
+        // --- LOCAL STORAGE ---
+        const saveCart = () => localStorage.setItem('closerBoxCart', JSON.stringify(cart));
+        const loadCart = () => cart = JSON.parse(localStorage.getItem('closerBoxCart')) || {};
+        const clearCart = () => { cart = {}; saveCart(); renderProducts(); updateTotal(); };
+
+        // --- EVENT LISTENERS SETUP ---
+        function setupEventListeners() {
+            // Product Modal
+            productModal.querySelector('#add-initial-button').addEventListener('click', addToCart);
+            productModal.querySelector('#increase-quantity-button').addEventListener('click', addToCart);
+            productModal.querySelector('#decrease-quantity-button').addEventListener('click', removeFromCart);
+
+            // Pay Button
+            payButton.addEventListener('click', () => showModal(paymentChoiceModal));
+
+            // Payment Choice Modal
+            paymentChoiceModal.querySelector('#pay-in-cash-button').addEventListener('click', () => {
+                cashPaymentModal.querySelector('#cash-total').textContent = totalPriceEl.textContent;
+                showModal(cashPaymentModal);
+            });
+            paymentChoiceModal.querySelector('#pay-online-button').addEventListener('click', () => {
+                onlinePaymentModal.querySelector('#online-payment-view').classList.remove('hidden');
+                onlinePaymentModal.querySelector('#processing-view').classList.add('hidden');
+                showModal(onlinePaymentModal);
+            });
+
+            // Cash Payment Modal
+            cashPaymentModal.querySelector('#paid-button').addEventListener('click', () => {
+                hideModal(cashPaymentModal);
+                clearCart();
+            });
+
+            // Online Payment Modal
+            onlinePaymentModal.querySelector('#process-card-payment-button').addEventListener('click', () => {
+                onlinePaymentModal.querySelector('#online-payment-view').classList.add('hidden');
+                onlinePaymentModal.querySelector('#processing-view').classList.remove('hidden');
+                setTimeout(() => {
+                    showModal(thanksModal);
+                }, 2500);
+            });
+            
+            // Thanks Modal
+            thanksModal.querySelector('#close-thanks-modal').addEventListener('click', () => {
+                hideModal(thanksModal);
+                clearCart();
+            });
+
+            // Universal Close Listeners
+            allModals.forEach(modal => {
+                modal.addEventListener('click', (e) => e.target === modal && hideModal(modal));
+                modal.querySelector('.close-modal-button')?.addEventListener('click', () => hideModal(modal));
+            });
+        }
+
+        init();
+    });
+    </script>
+</body>
+</html>
