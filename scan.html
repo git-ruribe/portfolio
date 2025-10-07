@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcode Scanner</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- ZXing Library for barcode scanning -->
+    <script type="text/javascript" src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
+    <style>
+        /* Custom styles for the video container to create a viewfinder effect */
+        #video-container {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            margin: auto;
+            overflow: hidden;
+            border-radius: 1rem; /* rounded-2xl */
+        }
+        #video-container::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 5%;
+            right: 5%;
+            height: 2px;
+            background: rgba(255, 0, 0, 0.7);
+            box-shadow: 0 0 10px rgba(255, 0, 0, 1);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-6 space-y-6">
+        <header class="text-center">
+            <h1 class="text-3xl font-bold text-gray-800">Barcode Scanner</h1>
+            <p class="text-gray-500 mt-1">Point your camera at a barcode to scan it.</p>
+        </header>
+
+        <!-- Video and controls -->
+        <main class="space-y-4">
+            <div id="video-container" class="bg-gray-900 shadow-inner">
+                <video id="video" class="w-full h-auto"></video>
+            </div>
+            <div id="message" class="text-center text-gray-600 font-medium p-2 rounded-lg bg-gray-50 h-10 flex items-center justify-center">
+                Ready to scan.
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button id="startButton" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-300 shadow-md">
+                    Start Scanner
+                </button>
+                <button id="resetButton" class="w-full bg-red-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 transition-all duration-300 shadow-md">
+                    Reset List
+                </button>
+            </div>
+        </main>
+
+        <!-- Scanned codes list -->
+        <section>
+            <h2 class="text-xl font-semibold text-gray-700 border-b-2 border-gray-200 pb-2 mb-4">Scanned Codes: <span id="scan-count" class="text-blue-600 font-bold">0</span></h2>
+            <div id="result-container" class="max-h-60 overflow-y-auto bg-gray-50 p-4 rounded-lg shadow-inner">
+                <ul id="result-list" class="space-y-2 text-gray-700">
+                    <!-- Scanned codes will be appended here -->
+                </ul>
+                <p id="no-scans-message" class="text-center text-gray-400 italic">No codes scanned yet.</p>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="text-center text-gray-500 mt-8 text-sm">
+        <p>&copy; 2024 - Built with ZXing and Tailwind CSS</p>
+    </footer>
+
+    <script>
+        window.addEventListener('load', function () {
+            // DOM Elements
+            const video = document.getElementById('video');
+            const startButton = document.getElementById('startButton');
+            const resetButton = document.getElementById('resetButton');
+            const resultList = document.getElementById('result-list');
+            const messageEl = document.getElementById('message');
+            const scanCountEl = document.getElementById('scan-count');
+            const noScansMessage = document.getElementById('no-scans-message');
+
+            // Initialize ZXing code reader
+            const codeReader = new ZXing.BrowserMultiFormatReader();
+            let selectedDeviceId;
+            let isScanning = false;
+            let scannedCodes = new Set();
+
+            // Function to update the count of scanned items
+            function updateScanCount() {
+                const count = scannedCodes.size;
+                scanCountEl.textContent = count;
+                noScansMessage.style.display = count === 0 ? 'block' : 'none';
+            }
+
+            // Function to start the camera and scanning
+            async function startScan() {
+                if (isScanning) return;
+
+                try {
+                    messageEl.textContent = 'Initializing camera...';
+                    const videoInputDevices = await codeReader.listVideoInputDevices();
+                    if (videoInputDevices.length === 0) {
+                        throw new Error('No video input devices found.');
+                    }
+
+                    // Prefer the rear camera ('environment')
+                    const rearCamera = videoInputDevices.find(device => device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('environment'));
+                    selectedDeviceId = rearCamera ? rearCamera.deviceId : videoInputDevices[0].deviceId;
+
+                    isScanning = true;
+                    startButton.textContent = 'Stop Scanner';
+                    startButton.classList.replace('bg-blue-600', 'bg-yellow-600');
+                    startButton.classList.replace('hover:bg-blue-700', 'hover:bg-yellow-700');
+                    messageEl.textContent = 'Scanning...';
+
+                    // Start decoding from the video stream
+                    codeReader.decodeFromVideoStream(selectedDeviceId, 'video', (result, err) => {
+                        if (result) {
+                            // A barcode was successfully scanned
+                            const code = result.getText();
+                            if (!scannedCodes.has(code)) {
+                                scannedCodes.add(code);
+                                const listItem = document.createElement('li');
+                                listItem.className = 'p-3 bg-white rounded-md shadow-sm border border-gray-200 flex items-center';
+                                listItem.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-green-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg> <span>${code}</span>`;
+                                resultList.prepend(listItem); // Add new scans to the top
+                                messageEl.textContent = `Scanned: ${code}`;
+                                updateScanCount();
+                                
+                                // Vibrate for feedback on supported devices
+                                if ('vibrate' in navigator) {
+                                    navigator.vibrate(100);
+                                }
+                            }
+                        }
+                        if (err && !(err instanceof ZXing.NotFoundException)) {
+                            console.error(err);
+                            messageEl.textContent = `Error: ${err.message}`;
+                        }
+                    });
+
+                } catch (error) {
+                    console.error('Error starting scanner:', error);
+                    messageEl.textContent = 'Could not start camera. Check permissions.';
+                    isScanning = false;
+                }
+            }
+
+            // Function to stop the camera and scanning
+            function stopScan() {
+                if (!isScanning) return;
+                codeReader.reset();
+                isScanning = false;
+                startButton.textContent = 'Start Scanner';
+                startButton.classList.replace('bg-yellow-600', 'bg-blue-600');
+                startButton.classList.replace('hover:bg-yellow-700', 'hover:bg-blue-700');
+                messageEl.textContent = 'Scanner stopped.';
+                video.srcObject = null; // Turn off camera light
+            }
+
+            // Event Listeners
+            startButton.addEventListener('click', () => {
+                if (isScanning) {
+                    stopScan();
+                } else {
+                    startScan();
+                }
+            });
+
+            resetButton.addEventListener('click', () => {
+                scannedCodes.clear();
+                resultList.innerHTML = '';
+                messageEl.textContent = 'List cleared. Ready to scan.';
+                updateScanCount();
+                if (isScanning) {
+                    stopScan();
+                }
+            });
+
+            // Initial state
+            updateScanCount();
+        });
+    </script>
+</body>
+</html>
+
