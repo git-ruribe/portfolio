@@ -1,9 +1,187 @@
-<video id="video"></video>
-<script src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
-<script>
-    const codeReader = new ZXing.BrowserMultiFormatReader();
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }).then(stream => {
-        document.getElementById('video').srcObject = stream;
-        codeReader.decodeFromVideoDevice(null, 'video', (result) => console.log(result));
-    });
-</script>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escáner de Código de Barras</title>
+    <!-- Incluyendo Tailwind CSS para un diseño limpio y moderno -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos para el contenedor del escáner y la línea de escaneo */
+        #scanner-container {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            margin: auto;
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+        #scanner-container video, #scanner-container canvas {
+            width: 100%;
+            height: auto;
+        }
+        /* La capa de dibujo de Quagga (canvas) debe ser transparente */
+        #scanner-container .drawingBuffer {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        /* Línea de escaneo animada */
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 0, 0, 0.7);
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.9);
+            animation: scanning 2s infinite ease-in-out;
+            display: none; /* Oculta por defecto */
+        }
+        @keyframes scanning {
+            0% { top: 0; }
+            50% { top: calc(100% - 3px); }
+            100% { top: 0; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen font-sans p-4">
+
+    <div class="w-full max-w-lg bg-white rounded-xl shadow-lg p-6 text-center">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Escáner de Código de Barras</h1>
+        <p class="text-gray-600 mb-6">Presiona "Iniciar" y apunta tu cámara a un código de barras.</p>
+
+        <!-- Contenedor para el video del escáner -->
+        <div id="scanner-container" class="bg-gray-200 rounded-lg mb-4">
+             <div class="scan-line"></div>
+        </div>
+
+        <!-- Botón para iniciar/detener el escáner -->
+        <button id="scan-button" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors duration-300">
+            Iniciar Escáner
+        </button>
+
+        <!-- Área para mostrar el resultado -->
+        <div id="result-container" class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200 hidden">
+            <h2 class="text-lg font-semibold text-gray-700">Código Detectado:</h2>
+            <p id="result" class="text-2xl font-mono text-green-600 break-words"></p>
+        </div>
+    </div>
+
+    <!-- Incluyendo la librería Quagga2 desde un CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2/dist/quagga.min.js"></script>
+
+    <script>
+        const scanButton = document.getElementById('scan-button');
+        const scannerContainer = document.getElementById('scanner-container');
+        const resultContainer = document.getElementById('result-container');
+        const resultElement = document.getElementById('result');
+        const scanLine = document.querySelector('.scan-line');
+
+        let isScanning = false;
+
+        // Configuración de Quagga: nos enfocamos en códigos de barras de productos
+        const quaggaConfig = {
+            inputStream: {
+                name: "Live",
+                type: "LiveStream",
+                target: scannerContainer,
+                constraints: {
+                    width: 640,
+                    height: 480,
+                    facingMode: "environment" // Usa la cámara trasera del móvil
+                },
+            },
+            decoder: {
+                readers: [
+                    "ean_reader",      // Para códigos EAN-13, comunes en Europa y otros lugares
+                    "upc_reader",      // Para códigos UPC, comunes en Norteamérica
+                    "ean_8_reader"
+                ]
+            },
+            locate: true, // Muestra un cuadro alrededor del código detectado
+        };
+
+        const startScanner = () => {
+            Quagga.init(quaggaConfig, (err) => {
+                if (err) {
+                    console.error("Error al inicializar Quagga:", err);
+                    alert("Error: No se pudo iniciar la cámara. Asegúrate de dar los permisos necesarios.");
+                    return;
+                }
+                console.log("Inicialización de Quagga completada. Listo para escanear.");
+                Quagga.start();
+                isScanning = true;
+                scanButton.textContent = 'Detener Escáner';
+                scanButton.classList.replace('bg-blue-600', 'bg-red-600');
+                scanButton.classList.replace('hover:bg-blue-700', 'hover:bg-red-700');
+                resultContainer.classList.add('hidden'); // Ocultar resultados anteriores
+                scanLine.style.display = 'block'; // Mostrar línea de escaneo
+            });
+        };
+
+        const stopScanner = () => {
+            Quagga.stop();
+            isScanning = false;
+            scanButton.textContent = 'Iniciar Escáner';
+            scanButton.classList.replace('bg-red-600', 'bg-blue-600');
+            scanButton.classList.replace('hover:bg-red-700', 'hover:bg-blue-700');
+            // Limpia el contenido del contenedor para que no quede la última imagen
+            scannerContainer.innerHTML = '<div class="scan-line"></div>';
+            // Re-seleccionamos la línea por si fue eliminada
+            document.querySelector('.scan-line').style.display = 'none';
+        };
+
+        scanButton.addEventListener('click', () => {
+            if (isScanning) {
+                stopScanner();
+            } else {
+                startScanner();
+            }
+        });
+
+        // Evento que se dispara cuando se detecta un código de barras
+        Quagga.onDetected((data) => {
+            const code = data.codeResult.code;
+            console.log("Código de barras detectado:", code);
+            
+            // Muestra el resultado
+            resultElement.textContent = code;
+            resultContainer.classList.remove('hidden');
+
+            // Vibra para dar feedback (si el dispositivo lo soporta)
+            if (navigator.vibrate) {
+                navigator.vibrate(200);
+            }
+            
+            // Detiene el escáner automáticamente después de una detección exitosa
+            stopScanner();
+        });
+
+        // Este evento ayuda a dibujar el cuadro alrededor del código
+        Quagga.onProcessed((result) => {
+            const drawingCtx = Quagga.canvas.ctx.overlay;
+            const drawingCanvas = Quagga.canvas.dom.overlay;
+
+            if (result) {
+                if (result.boxes) {
+                    drawingCtx.clearRect(0, 0, parseInt(drawingCanvas.getAttribute("width")), parseInt(drawingCanvas.getAttribute("height")));
+                    result.boxes.filter(box => box !== result.box).forEach(box => {
+                        Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, drawingCtx, { color: "green", lineWidth: 2 });
+                    });
+                }
+
+                if (result.box) {
+                    Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, drawingCtx, { color: "#00F", lineWidth: 2 });
+                }
+
+                if (result.codeResult && result.codeResult.code) {
+                    Quagga.ImageDebug.drawPath(result.line, { x: 'x', y: 'y' }, drawingCtx, { color: 'red', lineWidth: 3 });
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
+
