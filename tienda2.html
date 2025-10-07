@@ -181,7 +181,8 @@
             products.forEach(product => {
                 const quantity = cart[product.id] || 0;
                 const imgName = `imagen${String(product.id).padStart(2, '0')}.jpg`;
-                const placeholder = `<div class="w-12 h-12 ${product.color} rounded-lg shadow-lg"></div>`;
+                // FIX: Use single quotes for the class attribute inside the placeholder string
+                const placeholder = `<div class='w-12 h-12 ${product.color} rounded-lg shadow-lg'></div>`;
                 const itemHtml = `
                     <div class="relative rounded-xl bg-gray-800 p-2 flex justify-center items-center cursor-pointer transform hover:scale-105 transition-transform" data-product-id="${product.id}">
                         <img src="${imgName}" alt="${product.name}" class="w-12 h-12 object-cover rounded-lg shadow-lg" onerror="this.outerHTML = '${placeholder}'">
@@ -201,7 +202,8 @@
             
             const { name, description, price, color, id } = currentProduct;
             const imgName = `imagen${String(id).padStart(2, '0')}.jpg`;
-            const placeholder = `<div class="w-full h-full ${color} rounded-lg"></div>`;
+             // FIX: Use single quotes for the class attribute inside the placeholder string
+            const placeholder = `<div class='w-full h-full ${color} rounded-lg'></div>`;
 
             productModal.querySelector('#modal-image-container').innerHTML = `<img src="${imgName}" alt="${name}" class="w-full h-full object-cover rounded-lg" onerror="this.outerHTML = '${placeholder}'">`;
             productModal.querySelector('#modal-product-name').textContent = name;
