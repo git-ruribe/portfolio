@@ -11,12 +11,10 @@
             font-family: 'Inter', sans-serif;
             overscroll-behavior: none;
         }
-        /* Forzamos el contenedor principal a ocupar toda la altura visible y evitamos el scroll */
         .h-screen-real {
             height: 100vh;
             height: -webkit-fill-available;
         }
-        /* Animación para el modal */
         .modal-enter {
             animation: fadeIn 0.3s ease-out forwards;
         }
@@ -31,7 +29,6 @@
             from { opacity: 1; transform: scale(1); }
             to { opacity: 0; transform: scale(0.95); }
         }
-        /* Estilo para el badge de cantidad */
         .quantity-badge {
             position: absolute;
             top: -0.5rem;
@@ -57,26 +54,26 @@
 </head>
 <body class="bg-gray-900 text-white overflow-hidden">
 
-    <!-- Contenedor principal de la aplicación -->
+    <!-- Main application container -->
     <div id="app-container" class="h-screen-real w-screen flex flex-col justify-center items-center p-4 bg-gray-900">
         <div class="w-full max-w-sm mx-auto flex flex-col h-full">
             
-            <!-- Cabecera o espacio superior -->
+            <!-- Header -->
             <header class="text-center py-4">
                 <h1 class="text-2xl font-bold tracking-tight text-gray-100">CloserBox</h1>
                 <p class="text-sm text-gray-400">Tu parada de energía</p>
             </header>
 
-            <!-- Grid de productos con aspecto 13:17 -->
+            <!-- Product grid with 13:17 aspect ratio -->
             <main class="flex-grow w-full flex items-center justify-center">
                 <div class="w-full" style="aspect-ratio: 13 / 17;">
                     <div id="product-grid" class="grid grid-cols-4 grid-rows-4 gap-4 h-full">
-                        <!-- Los productos se insertarán aquí dinámicamente -->
+                        <!-- Products will be dynamically inserted here -->
                     </div>
                 </div>
             </main>
 
-            <!-- Pie de página con total y botón de pago -->
+            <!-- Footer with total and pay button -->
             <footer class="w-full py-4">
                 <div class="bg-gray-800 rounded-xl p-4 flex justify-between items-center">
                     <div>
@@ -91,33 +88,34 @@
         </div>
     </div>
 
-    <!-- Modal de Detalles del Producto -->
+    <!-- Product Details Modal -->
     <div id="product-modal" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex justify-center items-center p-4 hidden">
         <div id="modal-content" class="bg-gray-800 w-full max-w-sm rounded-2xl p-6 shadow-xl text-center relative modal-enter">
             <button id="close-modal-button" class="absolute top-3 right-3 text-gray-400 hover:text-white transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
             <div id="modal-image-container" class="w-32 h-32 mx-auto rounded-lg mb-4 flex items-center justify-center">
-                <!-- La imagen del producto se inserta aquí -->
+                <!-- Product image is inserted here -->
             </div>
             <h2 id="modal-product-name" class="text-2xl font-bold mb-2">Nombre del Producto</h2>
             <p id="modal-product-desc" class="text-gray-400 mb-4 text-sm">Descripción detallada del producto.</p>
             <p id="modal-product-price" class="text-xl font-semibold mb-6 text-indigo-400">$0.00</p>
             
-            <!-- Botón para agregar por primera vez -->
+            <!-- Button to add for the first time -->
             <button id="add-initial-button" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-500 transition-colors duration-200">
                 Agregar al Carrito
             </button>
             
-            <!-- Controles para agregar/quitar cuando ya existe en el carrito -->
-            <div id="quantity-controls-container" class="w-full flex gap-4 hidden">
-                <button id="remove-one-button" class="w-1/2 bg-gray-600 text-white font-bold py-3 rounded-lg hover:bg-gray-500 transition-colors duration-200">Quitar uno</button>
-                <button id="add-another-button" class="w-1/2 bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-500 transition-colors duration-200">Agregar otro</button>
+            <!-- Quantity controls for items already in the cart -->
+            <div id="quantity-controls-container" class="w-full flex items-center justify-center gap-4 hidden">
+                <button id="decrease-quantity-button" class="w-14 h-14 flex items-center justify-center bg-gray-600 text-white font-bold text-3xl rounded-full hover:bg-gray-500 transition-colors duration-200 active:scale-95">-</button>
+                <div id="modal-quantity" class="text-3xl font-bold w-16 text-center">1</div>
+                <button id="increase-quantity-button" class="w-14 h-14 flex items-center justify-center bg-indigo-600 text-white font-bold text-3xl rounded-full hover:bg-indigo-500 transition-colors duration-200 active:scale-95">+</button>
             </div>
         </div>
     </div>
     
-    <!-- Modal de Agradecimiento -->
+    <!-- "Thank You" Modal -->
     <div id="thanks-modal" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex justify-center items-center p-4 hidden">
         <div id="thanks-modal-content" class="bg-gray-800 w-full max-w-sm rounded-2xl p-8 shadow-xl text-center relative modal-enter">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-400 mx-auto mb-4" viewBox="0 0 20 20" fill="currentColor">
@@ -157,7 +155,7 @@
             const totalPriceEl = document.getElementById('total-price');
             const payButton = document.getElementById('pay-button');
             
-            // Elementos del Modal de Producto
+            // Product Modal Elements
             const productModal = document.getElementById('product-modal');
             const modalContent = document.getElementById('modal-content');
             const closeModalButton = document.getElementById('close-modal-button');
@@ -166,13 +164,14 @@
             const modalProductDesc = document.getElementById('modal-product-desc');
             const modalProductPrice = document.getElementById('modal-product-price');
             
-            // Nuevos botones del modal
+            // Modal Action Buttons
             const addInitialButton = document.getElementById('add-initial-button');
             const quantityControlsContainer = document.getElementById('quantity-controls-container');
-            const removeOneButton = document.getElementById('remove-one-button');
-            const addAnotherButton = document.getElementById('add-another-button');
+            const decreaseQuantityButton = document.getElementById('decrease-quantity-button');
+            const increaseQuantityButton = document.getElementById('increase-quantity-button');
+            const modalQuantity = document.getElementById('modal-quantity');
 
-            // Elementos del Modal de Agradecimiento
+            // "Thank You" Modal Elements
             const thanksModal = document.getElementById('thanks-modal');
             const thanksModalContent = document.getElementById('thanks-modal-content');
             const closeThanksModal = document.getElementById('close-thanks-modal');
@@ -283,6 +282,7 @@
                 if (quantity > 0) {
                     addInitialButton.classList.add('hidden');
                     quantityControlsContainer.classList.remove('hidden');
+                    modalQuantity.textContent = quantity;
                 } else {
                     addInitialButton.classList.remove('hidden');
                     quantityControlsContainer.classList.add('hidden');
@@ -329,12 +329,12 @@
                 clearCart();
             });
             
-            // Listeners para los botones del modal
+            // Listeners for modal action buttons
             addInitialButton.addEventListener('click', addToCart);
-            addAnotherButton.addEventListener('click', addToCart);
-            removeOneButton.addEventListener('click', removeFromCart);
+            increaseQuantityButton.addEventListener('click', addToCart);
+            decreaseQuantityButton.addEventListener('click', removeFromCart);
 
-            // Cerrar modales al hacer clic fuera del contenido
+            // Close modals when clicking outside the content
             productModal.addEventListener('click', (e) => e.target === productModal && closeProductModal());
             thanksModal.addEventListener('click', (e) => {
                 if (e.target === thanksModal) {
