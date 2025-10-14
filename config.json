@@ -10,131 +10,91 @@
   "products": [
     {
       "id": 1,
-      "name": "Gansito",
-      "description": "¡Que rico pastelito!.",
-      "price": 25.00,
+      "name": “Hershey Sin Azucar”,
+      "description": "Disfruta de un snack de chocolate con cero azúcares añadidos y un sabor inconfundible. Perfecto para satisfacer antojos sin sacrificar tu plan.",
+      "price": 35.00,
       "imageName": "imagen01",
-      "color": "bg-red-500"
-    },
-    {
-      "id": 2,
-      "name": "Gummy Gains",
-      "description": "Gomitas con 5g de creatina monohidratada por porción.",
-      "price": 40.00,
-      "imageName": "imagen02",
       "color": "bg-blue-500"
     },
     {
+      "id": 2,
+      "name": "Gummy Gainz”,
+      "description": "Gomitas con 5g de creatina monohidratada por porción.",
+      "price": 40.00,
+      "imageName": "imagen02",
+      "color": "bg-red-500"
+    },
+    {
       "id": 3,
-      "name": "Volt Rush",
-      "description": "Bebida energética sin azúcar para un impulso instantáneo.",
-      "price": 60.00,
+      "name": "Skittles",
+      "description": "Una opción divertida para compartir, celebrar y darte un pequeño gusto sin culpa después de un entrenamiento intenso.”,
+      "price": 20.00,
       "imageName": "imagen03",
       "color": "bg-yellow-500"
     },
     {
       "id": 4,
-      "name": "Hydro-Charge",
-      "description": "Agua con electrolitos para una hidratación superior.",
-      "price": 35.00,
+      "name": "Pulparindo”,
+      "description": "Barra de pulpa de tamarindo ideal para tí, pensada para un capricho rápido y sabroso.",
+      "price": 20.00,
       "imageName": "imagen04",
       "color": "bg-cyan-500"
     },
     {
       "id": 5,
-      "name": "Atomic Pump",
-      "description": "Shot de pre-entreno sabor ponche de frutas.",
-      "price": 45.00,
+      "name": "Creatina Monohidratada",
+      "description": "Suplemento de creatina de alta pureza para potenciar tus repeticiones, fuerza y recuperación post entrenamiento.",
+      "price": 50.00,
       "imageName": "imagen05",
       "color": "bg-purple-500"
     },
     {
       "id": 6,
-      "name": "Nutri-Fuel",
-      "description": "Snack de almendras y arándanos rico en antioxidantes.",
-      "price": 30.00,
+      "name": "Nuwa Ketogenic Nuts Bar",
+      "description": "Barra crujiente con frutos secos pensada para tus hábitos cetogénicos: sabor rico, textura agradable y energía para tus entrenamientos.”,
+      "price": 60.00,
       "imageName": "imagen06",
       "color": "bg-orange-500"
     },
     {
       "id": 7,
-      "name": "WheyMax Shake",
-      "description": "Batido listo para tomar con 30g de proteína de alta calidad.",
-      "price": 75.00,
+      "name": "Proteína Gold Standard (Chocolate)",
+      "description": "Proteína de alta calidad en sabor chocolate, ideal para recuperación muscular y apoyo nutricional diario.",
+      "price": 90.00,
       "imageName": "imagen07",
       "color": "bg-green-500"
     },
     {
       "id": 8,
-      "name": "Amino-Boost",
-      "description": "Cápsulas de BCAA para recuperación muscular acelerada.",
-      "price": 50.00,
+      "name": "Toalla para el GYM“,
+      "description": "Una toalla de gimnasio se caracteriza por ser altamente absorbente, de secado rápido, ligera y compacta, ideal para secar el sudor y mantener la higiene en el entrenamiento.",
+      "price": 70.00,
       "imageName": "imagen08",
       "color": "bg-pink-500"
     },
     {
       "id": 9,
-      "name": "Cookie Core",
-      "description": "Galleta proteica con trozos de chocolate y 20g de proteína.",
-      "price": 58.00,
+      "name": "The Complete Cookie Lenny & Larry Pak",
+      "description": "Galleta vegana de proteica con trozos de chocolate y 16g de proteína.",
+      "price": 70.00,
       "imageName": "imagen09",
       "color": "bg-amber-800"
     },
     {
       "id": 10,
-      "name": "Ignite Shot",
-      "description": "Shot de jengibre y cúrcuma para un boost antiinflamatorio.",
-      "price": 42.00,
+      "name": “Seguro de Accidentes Deportivos en Gimnasios“,
+      "description": "Protege tu salud mientras entrenas: cobertura rápida para accidentes ocurridos en el gimnasio, con atención médica y apoyo para rehabilitación sin complicaciones. Realiza tu asesoría +52 81 21478629”,
+      "price": 0.00,
       "imageName": "imagen10",
       "color": "bg-amber-500"
     },
     {
       "id": 11,
-      "name": "Earth Power",
-      "description": "Barra de proteína vegana a base de chícharo y arroz.",
-      "price": 65.00,
-      "imageName": "imagen11",
-      "color": "bg-lime-600"
-    },
-    {
-      "id": 12,
-      "name": "Re-Up Drink",
-      "description": "Bebida de recuperación con carbohidratos y electrolitos.",
-      "price": 68.00,
+      "name": “Electro Mix, Beyond Vitamins",
+      "description": “Suplemento sin azúcar en polvo para una recuperación con carbohidratos y electrolitos baja en calorías",
+      "price": 40.00,
       "imageName": "imagen12",
       "color": "bg-teal-500"
-    },
-    {
-      "id": 13,
-      "name": "Cold Brew Lift",
-      "description": "Café frío con un shot de proteína para empezar el día.",
-      "price": 70.00,
-      "imageName": "imagen13",
-      "color": "bg-stone-500"
-    },
-    {
-      "id": 14,
-      "name": "Pro-Pudding",
-      "description": "Pudín de chocolate alto en proteína, bajo en azúcar.",
-      "price": 52.00,
-      "imageName": "imagen14",
-      "color": "bg-rose-800"
-    },
-    {
-      "id": 15,
-      "name": "Lentil-X Chips",
-      "description": "Chips de lentejas horneados, una alternativa saludable.",
-      "price": 48.00,
-      "imageName": "imagen15",
-      "color": "bg-fuchsia-600"
-    },
-    {
-      "id": 16,
-      "name": "Mighty Muffin",
-      "description": "Muffin de arándanos con 15g de proteína.",
-      "price": 55.00,
-      "imageName": "imagen16",
-      "color": "bg-sky-600"
     }
   ]
 }
