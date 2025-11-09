@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Somos Templos Vivos | Reflexión de Homilía</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Estilos Personalizados */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff; /* bg-sky-50 */
+        }
+
+        /* Estilo de la Tarjeta (Card) */
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem; /* p-6 */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+
+        /* Texto Degradado para el Título Principal */
+        .gradient-text {
+            background-image: linear-gradient(to right, #0ea5e9, #4f46e5); /* from-sky-500 to-indigo-600 */
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Icono del Encabezado */
+        .header-icon {
+            width: 4rem; /* w-16 */
+            height: 4rem; /* h-16 */
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 1rem; /* mb-4 */
+        }
+
+        /* ---- Animación ---- */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .fade-in {
+            animation: fadeIn 0.7s ease-out forwards;
+            opacity: 0;
+        }
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+
+        /* ---- Estilos del Cuestionario ---- */
+        .question-option {
+            display: block;
+            padding: 0.75rem 1.25rem;
+            border: 2px solid #e5e7eb; /* border-gray-200 */
+            border-radius: 0.5rem; /* rounded-lg */
+            margin-bottom: 0.5rem; /* mb-2 */
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .question-option:hover {
+            border-color: #3b82f6; /* border-blue-500 */
+        }
+        .question-option.selected {
+            background-color: #dbeafe; /* bg-blue-100 */
+            border-color: #2563eb; /* border-blue-600 */
+            font-weight: 600;
+        }
+        
+        /* Ocultar el input de radio */
+        .question-option input[type="radio"] {
+            display: none;
+        }
+
+        .quiz-button {
+            background-color: #16a34a; /* bg-green-600 */
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem; /* rounded-lg */
+            transition: background-color 0.2s ease;
+        }
+        .quiz-button:hover {
+            background-color: #15803d; /* bg-green-700 */
+        }
+        .quiz-button:disabled {
+            background-color: #d1d5db; /* bg-gray-300 */
+            cursor: not-allowed;
+        }
+
+        /* Estilos de Resultados del Cuestionario */
+        .question-option.correct {
+            background-color: #dcfce7; /* bg-green-100 */
+            border-color: #22c55e; /* border-green-500 */
+        }
+        .question-option.incorrect {
+            background-color: #fee2e2; /* bg-red-100 */
+            border-color: #ef4444; /* border-red-500 */
+        }
+        .question-option.unanswered-correct {
+            border-color: #22c55e; /* border-green-500 */
+            box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-sky-50">
+
+    <div class="container mx-auto max-w-3xl p-4 md:p-6">
+
+        <header class="text-center mb-8 pt-8">
+            <svg class="header-icon text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" />
+            </svg>              
+            <h1 class="text-3xl md:text-4xl font-bold gradient-text">
+                Somos Templos Vivos de Dios
+            </h1>
+            <p class="text-lg text-gray-600 mt-2">
+                Reflexionando la Homilía de la Dedicación de la Basílica de Letrán
+            </p>
+        </header>
+
+        <section id="evangelio" class="card fade-in">
+            <h2 class="text-2xl font-semibold mb-4 text-sky-700">🕊️ Evangelio según San Juan (2:13-22)</h2>
+            <blockquote class="border-l-4 border-sky-500 pl-4 italic text-gray-700 space-y-3">
+                <p>Cuando se acercaba la Pascua de los judíos, Jesús llegó a Jerusalén y encontró en el templo a los vendedores de bueyes, ovejas y palomas, y a los cambistas en sus mesas.</p>
+                <p>Entonces hizo un látigo de cordeles y los echó del templo, con todo y sus ovejas y bueyes. A los cambistas les volcó las mesas y les tiró al suelo las monedas; y a los que vendían palomas les dijo: "Quiten todo de aquí y no conviertan en un mercado la casa de mi Padre".</p>
+                <p>En ese momento, sus discípulos se acordaron de lo que estaba escrito: "El celo de tu casa me devora".</p>
+                <p>Después intervinieron los judíos para preguntarle: "¿Qué señal nos das de que tienes autoridad para actuar así?" Jesús les respondió: "Destruyan este templo y en tres días lo reconstruiré".</p>
+                <p>Replicaron los judíos: "Cuarenta y seis años se ha llevado la construcción del templo, ¿y tú lo vas a levantar en tres días?" Pero él les hablaba del templo de su cuerpo. Por eso, cuando resucitó Jesús de entre los muertos, se acordaron sus discípulos de que había dicho aquello y creyeron en la Escritura y en las palabras que Jesús había dicho.</p>
+            </blockquote>
+            <p class="mt-4 font-semibold text-gray-800">Palabra del Señor.</p>
+            <p class="font-medium text-gray-600">Gloria a ti, Señor Jesús.</p>
+        </section>
+
+        <section id="homilia" class="card fade-in delay-1">
+            <h2 class="text-2xl font-semibold mb-6 text-indigo-700">💡 Mensajes Clave de la Homilía</h2>
+            
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-sky-600">🏛️ ¿Qué celebramos hoy?</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1 pl-4">
+                        <li>Celebramos la fiesta de la **Dedicación de la Basílica de Letrán**, en Roma.</li>
+                        <li>Esta basílica es la catedral del Papa (el Obispo de Roma) y es considerada la "madre y cabeza de todas las iglesias" del mundo.</li>
+                        <li>Conmemorar su dedicación nos recuerda la importancia de abrir un espacio sagrado para Dios en medio de nuestro mundo.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-sky-600">🧱 El Templo de Piedra vs. El Templo Vivo</h3>
+                    <p class="text-gray-700 pl-4">El Padre nos recuerda que, aunque el edificio es importante, **"no es el templo de piedra lo más importante, sino la comunidad que lo habita"**. El templo físico es un signo que nos recuerda que cada iglesia local, cada parroquia y cada capilla son lugares de encuentro con Dios.</p>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-sky-600">🌊 ¡Nosotros somos el Edificio de Dios!</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1 pl-4">
+                        <li>La primera lectura habla de un **río de agua viva** que brota del templo, sanando y dando vida. Esto simboliza la gracia de Dios que no se queda encerrada, sino que fluye para transformarnos.</li>
+                        <li>San Pablo nos dice en la segunda lectura: **"somos nosotros el edificio de Dios"**. No somos simples espectadores en la Iglesia; somos parte activa de este templo espiritual, con Cristo como fundamento.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-2 text-sky-600">❤️ La Familia: Una "Pequeña Basílica"</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1 pl-4">
+                        <li>En el Evangelio, Jesús no vino a restaurar solo un edificio, sino a **renovar la relación** del hombre con Dios. Su propio cuerpo (resucitado) es el nuevo templo.</li>
+                        <li>Estamos llamados a que cada hogar sea una **"pequeña basílica"** donde Dios pueda habitar.</li>
+                        <li>Si permitimos que Dios habite en nuestra familia, las tensiones, los prejuicios y las heridas deben dar paso al **perdón, el diálogo y el servicio**.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-gradient-to-r from-sky-100 to-indigo-100 p-6 rounded-lg text-center">
+                <p class="text-xl font-semibold text-indigo-800 italic">
+                    "El templo más importante no tiene muros, sino **corazones abiertos**."
+                </p>
+            </div>
+        </section>
+
+        <section id="cuento" class="card fade-in delay-2">
+            <h2 class="text-2xl font-semibold mb-4 text-purple-700">📖 Cuentan que... El Albañil de Almas</h2>
+            <div class="bg-purple-50 p-6 rounded-lg border border-purple-200 text-gray-700 space-y-3">
+                <p>Había un albañil jubilado llamado Don Julián. Había pasado su vida construyendo casas, escuelas e iglesias. Cada domingo, iba a la parroquia y se sentaba en silencio. Un día, un joven inquieto y con poca fe, llamado Tomás, se le acercó y le preguntó por qué venía siempre.</p>
+                <p>Don Julián le explicó con calma que la iglesia no es solo un lugar de ladrillos. "Cada uno de nosotros", le dijo, "es también una iglesia, un templo vivo". Le confesó a Tomás que al jubilarse, se dio cuenta de que le faltaba lo más importante: **"construirme por dentro"**. Por eso venía cada domingo, para que el Señor le ayudara a levantar su alma "como si fuera una gran catedral".</d>
+                <p>Tomás quedó tocado por esas palabras y empezó a volver a la iglesia. Poco a poco, comenzó a sentir que ese lugar era una "casa con alma" y él también empezó a "reconstruirse por dentro". La lección fue que Don Julián sería recordado no por las casas que construyó con sus manos, <span class="font-semibold">sino por los templos (las personas) que ayudó a edificar con su fe y su paz.</span></p>
+            </div>
+        </section>
+
+        <section id="cuestionario" class="card fade-in delay-3">
+            <h2 class="text-2xl font-semibold mb-6 text-emerald-700">📝 Pon a Prueba tu Conocimiento</h2>
+            
+            <form id="quizForm" class="space-y-6">
+                
+                <div class="question-container">
+                    <p class="text-lg font-medium mb-2">1. ¿Qué fiesta importante menciona el Padre al inicio de la homilía?</p>
+                    <label class="question-option"><input type="radio" name="q1" value="a"> <span>a) Navidad</span></label>
+                    <label class="question-option"><input type="radio" name="q1" value="b"> <span>b) La Dedicación de la Basílica de Letrán</span></label>
+                    <label class="question-option"><input type="radio" name="q1" value="c"> <span>c) Pascua</span></label>
+                    <label class="question-option"><input type="radio" name="q1" value="d"> <span>d) El Bautismo de Jesús</span></label>
+                </div>
+
+                <div class="question-container">
+                    <p class="text-lg font-medium mb-2">2. En el Evangelio, ¿por qué se enoja Jesús y expulsa a los mercaderes del templo?</p>
+                    <label class="question-option"><input type="radio" name="q2" value="a"> <span>a) Porque no le dieron ofrenda.</span></label>
+                    <label class="question-option"><input type="radio" name="q2" value="b"> <span>b) Porque habían convertido la casa de su Padre en un mercado.</span></label>
+                    <label class="question-option"><input type="radio" name="q2" value="c"> <span>c) Porque vendían palomas de mala calidad.</span></label>
+                    <label class="question-option"><input type="radio" name="q2" value="d"> <span>d) Porque quería que el templo estuviera vacío.</span></label>
+                </div>
+
+                <div class="question-container">
+                    <p class="text-lg font-medium mb-2">3. Según la homilía, ¿qué es MÁS importante que el templo físico de piedra?</p>
+                    <label class="question-option"><input type="radio" name="q3" value="a"> <span>a) La comunidad que lo habita y el pueblo que en él ora.</span></label>
+                    <label class="question-option"><input type="radio" name="q3" value="b"> <span>b) El oro y la decoración del altar.</span></label>
+                    <label class="question-option"><input type="radio" name="q3" value="c"> <span>c) El tamaño del edificio.</span></label>
+                    <label class="question-option"><input type="radio" name="q3" value="d"> <span>d) La música del coro.</span></label>
+                </div>
+
+                <div class="question-container">
+                    <p class="text-lg font-medium mb-2">4. El Padre nos invita a que cada familia cristiana sea...</p>
+                    <label class="question-option"><input type="radio" name="q4" value="a"> <span>a) La más rica de la parroquia.</span></label>
+                    <label class="question-option"><input type="radio" name="q4" value="b"> <span>b) Una "pequeña basílica" o un hogar donde Dios habita.</span></label>
+                    <label class="question-option"><input type="radio" name="q4" value="c"> <span>c) Un lugar donde solo se reza todo el día.</span></label>
+                    <label class="question-option"><input type="radio" name="q4" value="d"> <span>d) Un club social.</span></label>
+                </div>
+
+                <div class="question-container">
+                    <p class="text-lg font-medium mb-2">5. En el cuento de Don Julián, ¿cuál es la lección principal que aprende el joven Tomás?</p>
+                    <label class="question-option"><input type="radio" name="q5" value="a"> <span>a) Que ser albañil es un gran trabajo.</span></label>
+                    <label class="question-option"><input type="radio" name="q5" value="b"> <span>b) Que los ancianos siempre tienen la razón.</span></label>
+                    <label class="question-option"><input type="radio" name="q5" value="c"> <span>c) Que cada persona es un "templo vivo" que puede construirse por dentro.</span></label>
+                    <label class="question-option"><input type="radio" name="q5" value="d"> <span>d) Que solo se debe ir a la iglesia los domingos.</span></label>
+                </div>
+
+                <button type="submit" id="quizButton" class="quiz-button w-full md:w-auto">Evaluar Cuestionario</button>
+            </form>
+
+            <div id="quizResult" class="mt-8 p-6 rounded-lg hidden">
+                <h3 id="resultTitle" class="text-2xl font-bold"></h3>
+                <p id="resultScore" class="text-lg mt-2"></p>
+                <p id="resultMessage" class="text-lg mt-2 font-medium"></p>
+            </div>
+        </section>
+
+        <footer class="mt-8 pt-6 border-t border-gray-300 text-center text-gray-500">
+            <p>&copy; <span id="currentYear"></span> Reflexiones para el Alma Joven. Inspirado en "Somos Templos Vivos de Dios".</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            // --- Lógica del Año Actual en el Footer ---
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+            // --- Lógica del Cuestionario ---
+            const quizForm = document.getElementById('quizForm');
+            const quizButton = document.getElementById('quizButton');
+            const quizResult = document.getElementById('quizResult');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultScore = document.getElementById('resultScore');
+            const resultMessage = document.getElementById('resultMessage');
+
+            const correctAnswers = {
+                q1: 'b',
+                q2: 'b',
+                q3: 'a',
+                q4: 'b',
+                q5: 'c'
+            };
+
+            const numQuestions = Object.keys(correctAnswers).length;
+
+            // Manejar la selección visual de opciones
+            const questionOptions = document.querySelectorAll('.question-option');
+            questionOptions.forEach(option => {
+                option.addEventListener('click', function () {
+                    if (quizButton.disabled) return; // No hacer nada si ya se evaluó
+
+                    const questionName = option.querySelector('input').name;
+                    // Quitar 'selected' de todas las opciones de esta pregunta
+                    document.querySelectorAll(`input[name="${questionName}"]`).forEach(radio => {
+                        radio.parentElement.classList.remove('selected');
+                    });
+                    // Añadir 'selected' a la opción clickeada
+                    option.classList.add('selected');
+                });
+            });
+
+            // Manejar el envío del formulario
+            quizForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                if (quizButton.disabled) return; // Prevenir re-evaluación
+
+                let score = 0;
+                const formData = new FormData(quizForm);
+                const userAnswers = {};
+
+                // Calcular puntaje y guardar respuestas del usuario
+                for (const [question, correctAnswer] of Object.entries(correctAnswers)) {
+                    const userAnswer = formData.get(question);
+                    userAnswers[question] = userAnswer;
+                    if (userAnswer === correctAnswer) {
+                        score++;
+                    }
+                }
+
+                // Mostrar retroalimentación visual
+                for (const [question, correctAnswer] of Object.entries(correctAnswers)) {
+                    const userAnswer = userAnswers[question];
+                    const options = document.querySelectorAll(`input[name="${question}"]`);
+                    
+                    options.forEach(option => {
+                        const optionLabel = option.parentElement;
+                        if (option.value === correctAnswer) {
+                            // Es la correcta
+                            if (userAnswer === correctAnswer) {
+                                optionLabel.classList.add('correct'); // Verde si el usuario la eligió
+                            } else if (!userAnswer) {
+                                optionLabel.classList.add('unanswered-correct'); // Resaltar si no respondió
+                            } else {
+                                optionLabel.classList.add('correct'); // Verde para mostrar la correcta
+                            }
+                        } else if (option.value === userAnswer && userAnswer !== correctAnswer) {
+                            // Es una incorrecta que el usuario eligió
+                            optionLabel.classList.add('incorrect'); // Rojo
+                        }
+                    });
+                }
+
+                // Deshabilitar el formulario y el botón
+                quizButton.disabled = true;
+                quizButton.textContent = 'Evaluado';
+                quizForm.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.disabled = true;
+                });
+                questionOptions.forEach(option => {
+                    option.style.cursor = 'default';
+                    option.classList.remove('selected');
+                });
+
+                // Mostrar resultados
+                const percentage = Math.round((score / numQuestions) * 100);
+                resultScore.textContent = `Tu puntuación: ${score} de ${numQuestions} (${percentage}%)`;
+
+                let title = '';
+                let message = '';
+                let bgColor = '';
+
+                if (percentage === 100) {
+                    title = '¡Excelente!';
+                    message = '¡Felicidades! Has comprendido todos los mensajes clave.';
+                    bgColor = 'bg-green-100'; // bg-green-100
+                    resultTitle.className = 'text-2xl font-bold text-green-700';
+                } else if (percentage >= 80) {
+                    title = '¡Muy Bien!';
+                    message = 'Un gran trabajo. Repasa los puntos que fallaste.';
+                    bgColor = 'bg-blue-100'; // bg-blue-100
+                    resultTitle.className = 'text-2xl font-bold text-blue-700';
+                } else {
+                    title = 'Sigue Esforzándote';
+                    message = '¡No te desanimes! Te recomendamos repasar la homilía y el evangelio de nuevo.';
+                    bgColor = 'bg-yellow-100'; // bg-yellow-100
+                    resultTitle.className = 'text-2xl font-bold text-yellow-700';
+                }
+
+                resultTitle.textContent = title;
+                resultMessage.textContent = message;
+                quizResult.classList.remove('hidden');
+                quizResult.classList.add(bgColor);
+            });
+        });
+    </script>
+</body>
+</html>
