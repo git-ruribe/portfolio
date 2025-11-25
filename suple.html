@@ -12,6 +12,7 @@
             --text-color: #e0e0e0;
             --accent-red: #ff4d4d;
             --accent-green: #4dff88;
+            --accent-blue: #4da6ff;
         }
 
         body {
@@ -20,7 +21,7 @@
             color: var(--text-color);
             margin: 0;
             padding: 0;
-            padding-bottom: 60px; /* Espacio para el menú inferior */
+            padding-bottom: 70px; /* Espacio para el menú inferior */
         }
 
         h1, h2, h3 {
@@ -31,7 +32,8 @@
 
         h1 { text-align: center; font-size: 1.5rem; margin: 15px 0; }
         h2 { font-size: 1.2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 5px; margin-top: 25px; }
-        h3 { font-size: 1rem; color: #fff; margin-bottom: 5px; }
+        h3 { font-size: 1rem; color: #fff; margin-bottom: 5px; margin-top: 0; }
+        h4 { font-size: 0.9rem; color: var(--accent-blue); margin-bottom: 3px; margin-top: 10px; text-transform: uppercase;}
 
         .container {
             padding: 15px;
@@ -61,6 +63,7 @@
             padding: 5px;
             border-radius: 5px;
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .nav-item.active {
@@ -102,6 +105,11 @@
 
         .card.training { border-color: var(--accent-red); }
         .card.nutrition { border-color: var(--accent-green); }
+        .card.cycle-option { 
+            border-left: 2px solid var(--accent-blue); 
+            background-color: #252525;
+            margin-top: 10px;
+        }
 
         ul.checklist {
             list-style-type: none;
@@ -110,30 +118,43 @@
         }
 
         ul.checklist li {
-            margin-bottom: 10px;
-            padding-left: 25px;
+            margin-bottom: 8px;
+            padding-left: 20px;
             position: relative;
+            font-size: 0.9rem;
+            line-height: 1.4;
         }
 
         ul.checklist li:before {
-            content: '✓';
+            content: '•';
             position: absolute;
             left: 0;
             color: var(--primary-color);
+            font-weight: bold;
         }
 
         .time-block {
             font-weight: bold;
             color: var(--primary-color);
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
         }
 
         .note {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #aaa;
             font-style: italic;
+            margin-top: 8px;
+        }
+
+        .food-suggestion {
+            color: #ddd;
+            font-size: 0.9rem;
             margin-top: 5px;
+            padding-left: 20px;
+            border-left: 2px solid #444;
         }
 
         .important-box {
@@ -144,6 +165,7 @@
             font-weight: bold;
             margin: 15px 0;
             border: 1px solid var(--primary-color);
+            font-size: 0.9rem;
         }
 
         /* --- Utilidades --- */
@@ -165,508 +187,507 @@
         <div class="card">
             <h3>Sustratos de Rendimiento & Estructura</h3>
             <ul class="checklist">
-                <li><strong>Isopure Zero Carb (Aislado de Suero):</strong> Fuente primaria de Leucina rápida para romper la resistencia anabólica post-entreno.</li>
-                <li><strong>Creatina Monohidrato (Pura):</strong> Combustible para esfuerzos <10s, neuroprotección y ahorro de grupos metilo hepáticos.</li>
-                <li><strong>Colágeno Hidrolizado (Péptidos):</strong> Señalización pre-entreno para protección de tendones/ligamentos y mitigación de cortisol.</li>
+                <li><strong>Isopure Zero Carb (Aislado de Suero):</strong> Fuente primaria de Leucina rápida.</li>
+                <li><strong>Creatina Monohidrato (Pura):</strong> Combustible explosivo y neuroprotección.</li>
+                <li><strong>Colágeno Hidrolizado (Péptidos):</strong> Protección de tendones/ligamentos.</li>
             </ul>
         </div>
 
         <div class="card">
             <h3>Ingeniería Celular & Longevidad</h3>
             <ul class="checklist">
-                <li><strong>ETERNAD NAD (Nicotinamida Ribósido + Pterostilbeno):</strong> Restauración de niveles juveniles de NAD+ para eficiencia mitocondrial y recuperación.</li>
-                <li><strong>Omega-3 (Alta concentración EPA/DHA):</strong> Antiinflamatorio sistémico potente. Flexibilidad de membranas celulares y protección cardiovascular.</li>
-                <li><strong>Vitamina D3 (5000 UI) + K2 MK-7:</strong> Soporte hormonal esteroideo (fuerza/testosterona) y dirección del calcio hacia el hueso, no arterias.</li>
+                <li><strong>ETERNAD NAD:</strong> Eficiencia mitocondrial y recuperación.</li>
+                <li><strong>Omega-3 (Alta conc.):</strong> Antiinflamatorio sistémico.</li>
+                <li><strong>Vitamina D3 (5000 UI) + K2 MK-7:</strong> Soporte hormonal y óseo.</li>
             </ul>
         </div>
 
         <div class="card">
             <h3>Gestión Neuroendocrina & Hidratación</h3>
             <ul class="checklist">
-                <li><strong>Magnesio (Glicinato o Citrato):</strong> Agonista GABA para sueño profundo, relajación muscular y reducción de cortisol nocturno.</li>
-                <li><strong>Potasio (Crema de Tártaro o NoSalt):</strong> Equilibrio de la bomba Na/K celular ante el alto volumen de contracciones explosivas y uso de creatina.</li>
-                <li><strong>Sal Marina / Himalaya:</strong> Hidratación base y conducción nerviosa.</li>
+                <li><strong>Magnesio (Glicinato o Citrato):</strong> Sueño profundo y relajación.</li>
+                <li><strong>Potasio (Crema de Tártaro/NoSalt):</strong> Equilibrio celular.</li>
+                <li><strong>Sal Marina / Himalaya:</strong> Hidratación base.</li>
             </ul>
         </div>
     </div>
 
-
     <div id="lunes" class="tab-content container active">
-        <h2>Lunes: Fuerza Máxima / Dinámica</h2>
-        <div class="important-box">ENFOQUE: Tensión Mecánica / Velocidad de Barra. CARBOS: Bajos.</div>
+        <h2>Lunes: Fuerza (Empuje)</h2>
+        <div class="important-box">ENFOQUE: Tensión Mecánica. CARBOS: Moderados/Bajos.</div>
 
         <div class="card nutrition">
-            <span class="time-block">AL DESPERTAR (RITUAL HIDRATACIÓN & ANTI-CORTISOL)</span>
-            <h3>15-20 minutos ANTES de entrenar</h3>
+            <span class="time-block">AL DESPERTAR (RITUAL)</span>
+            <h3>15-20 min ANTES de entrenar</h3>
             <ul class="checklist">
-                <li>Vaso grande de agua (500ml).</li>
-                <li>1/4 cucharadita de Sal Marina + 1/4 cucharadita de Potasio (Crema de Tártaro/NoSalt).</li>
-                <li>Café solo + <strong>10g Colágeno Hidrolizado + ½ scoop Isopure</strong>.</li>
+                <li>Vaso grande agua + Pizca Sal + Pizca Potasio.</li>
+                <li>Café solo + <strong>10g Colágeno + ½ scoop Isopure</strong>.</li>
             </ul>
-            <p class="note">Acción Crítica: No iniciar el calentamiento en ayunas total.</p>
         </div>
 
         <div class="card training">
-            <span class="time-block">SESIÓN DE ENTRENAMIENTO</span>
-            <h3>Fuerza (Según Ciclo)</h3>
-            <p>Ejecución del bloque de fuerza programado. Solo agua durante la sesión.</p>
+            <span class="time-block">SESIÓN DE ENTRENAMIENTO: EMPUJE</span>
+            <p class="note">Selecciona la opción según tu semana del ciclo:</p>
+            
+            <div class="card cycle-option">
+                <h4>Semana 1: FUERZA MÁXIMA</h4>
+                <ul class="checklist">
+                    <li><strong>Sentadilla Smith:</strong> 4 x 4-6 reps (Pesado).</li>
+                    <li><strong>Press Banca Smith:</strong> 4 x 4-6 reps (Pesado).</li>
+                    <li>Accesorios: Press Hombro mancuerna, Gemelos pesado.</li>
+                </ul>
+            </div>
+            <div class="card cycle-option">
+                <h4>Semana 2: ESTABILIDAD</h4>
+                <ul class="checklist">
+                    <li><strong>Sentadilla Búlgara:</strong> 4 x 10-12 reps (Control).</li>
+                    <li><strong>Press Banca Mancuernas:</strong> 4 x 8-10 reps.</li>
+                    <li>Accesorios: Press Hombro unilateral, Gemelos volumen.</li>
+                </ul>
+            </div>
+            <div class="card cycle-option">
+                <h4>Semana 3: VELOCIDAD</h4>
+                <ul class="checklist">
+                    <li><strong>Sentadilla a Cajón (Smith):</strong> 6 x 3 reps (Explosivo).</li>
+                    <li><strong>Push Press:</strong> 5 x 5 reps (Potencia).</li>
+                    <li><strong>Saltos (Vertical/Broad):</strong> 5 x 5 saltos.</li>
+                </ul>
+            </div>
         </div>
 
         <div class="card nutrition">
-            <span class="time-block">INMEDIATAMENTE POST-ENTRENO</span>
-            <h3>Ventana Anabólica (En vestuario)</h3>
+            <span class="time-block">POST-ENTRENO (Inmediato)</span>
             <ul class="checklist">
-                <li><strong>1 Scoop completo Isopure Zero Carb.</strong></li>
-                <li><strong>5g Creatina Monohidrato.</strong></li>
+                <li><strong>1 Scoop Isopure + 5g Creatina.</strong></li>
             </ul>
-            <p class="note">Mezclar en agua. Consumir antes de la ducha.</p>
         </div>
 
         <div class="card nutrition">
-            <span class="time-block">COMIDA PRINCIPAL (ALMUERZO)</span>
-            <h3>Absorción de Liposolubles</h3>
+            <span class="time-block">ALMUERZO (Comida Principal)</span>
+            <h3>Proteína + Vegetales + Grasa</h3>
             <ul class="checklist">
-                <li><strong>Plato Base:</strong> Fuente alta de proteína (ej. 200g pollo/carne) + Vegetales fibrosos + Grasas saludables (aguacate/aceite oliva).</li>
-                <li><strong>Suplementación Conjunta:</strong>
-                    <ul>
-                        <li>1 cápsula ETERNAD NAD.</li>
-                        <li>2g - 3g Omega-3.</li>
-                        <li>1 cápsula Vitamina D3 + K2 MK-7.</li>
-                    </ul>
-                </li>
+                <li>Pollo/Carne (200g) + Ensalada verde grande + Aguacate/Aceite Oliva.</li>
+                <li><span style="color:var(--accent-green)">Ejemplo: Pechuga asada con espárragos y medio aguacate.</span></li>
+                <li><strong>Suplementos:</strong> ETERNAD, Omega-3, Vit D3+K2.</li>
             </ul>
-            <p class="note">Asegurar ingesta de grasa en esta comida para absorción de suplementos.</p>
         </div>
 
         <div class="card nutrition">
-            <span class="time-block">CENA & PRE-SUEÑO</span>
-            <h3>Reparación Nocturna</h3>
+            <span class="time-block">SNACK (Media Tarde - Opcional)</span>
+            <p class="food-suggestion">Un puño de almendras o un huevo duro. (Solo si hay hambre real).</p>
+        </div>
+
+        <div class="card nutrition">
+            <span class="time-block">CENA</span>
+            <h3>Ligera & Low Carb</h3>
             <ul class="checklist">
-                <li><strong>Cena:</strong> Proteína ligera (pescado blanco/huevos) + Verduras cocidas. <span style="color:var(--accent-red)">CERO carbohidratos densos.</span></li>
-                <li><strong>1 hora antes de dormir:</strong> 400-500mg Magnesio (Glicinato/Citrato).</li>
+                <li>Pescado blanco o Huevos + Verduras al vapor.</li>
+                <li><strong>Suplemento:</strong> Magnesio (1h antes de dormir).</li>
             </ul>
         </div>
     </div>
-
 
     <div id="martes" class="tab-content container">
         <h2>Martes: Recuperación Activa</h2>
         <div class="important-box">ENFOQUE: Flujo Sanguíneo. CARBOS: Bajos.</div>
 
         <div class="card nutrition">
-            <span class="time-block">AL DESPERTAR (RITUAL HIDRATACIÓN & ANTI-CORTISOL)</span>
-            <h3>15-20 minutos ANTES de actividad</h3>
+            <span class="time-block">AL DESPERTAR</span>
+            <h3>Protocolo Matutino</h3>
             <ul class="checklist">
-                <li>Vaso grande de agua (500ml).</li>
-                <li>1/4 cucharadita de Sal Marina + 1/4 cucharadita de Potasio.</li>
-                <li>Café solo + <strong>10g Colágeno Hidrolizado + ½ scoop Isopure</strong>.</li>
+                <li>Agua + Minerales.</li>
+                <li>Café + Colágeno + ½ Scoop Isopure.</li>
             </ul>
         </div>
 
         <div class="card training">
             <span class="time-block">SESIÓN DE ENTRENAMIENTO</span>
-            <h3>Zona 1 Estricta</h3>
-            <p>Trote muy suave o bicicleta. Objetivo: moverse, no fatigarse. Solo agua.</p>
+            <p class="note">El objetivo es moverse sin fatiga:</p>
+            
+            <div class="card cycle-option">
+                <h4>Semanas 1 y 2</h4>
+                <ul class="checklist">
+                    <li><strong>Carrera Suave:</strong> 30-40 min en <strong>Zona 1 Estricta</strong> (<137 BPM).</li>
+                    <li>Opcional: Bicicleta estática suave.</li>
+                </ul>
+            </div>
+            <div class="card cycle-option">
+                <h4>Semana 3 (Velocidad)</h4>
+                <ul class="checklist">
+                    <li><strong>Recuperación Activa:</strong> 30 min caminata o trote MUY suave.</li>
+                    <li>Preparación para la pista de mañana.</li>
+                </ul>
+            </div>
         </div>
 
         <div class="card nutrition">
-            <span class="time-block">INMEDIATAMENTE POST-ACTIVIDAD</span>
-            <h3>Señalización de Mantenimiento</h3>
+            <span class="time-block">POST-ACTIVIDAD</span>
             <ul class="checklist">
-                <li><strong>1 Scoop completo Isopure Zero Carb.</strong></li>
-                <li><strong>5g Creatina Monohidrato.</strong></li>
+                <li>1 Scoop Isopure + 5g Creatina.</li>
+                <li><span class="food-suggestion">Desayuno Sólido (1h después): Huevos revueltos con espinacas y jamón de pavo.</span></li>
             </ul>
         </div>
 
         <div class="card nutrition">
-            <span class="time-block">COMIDA PRINCIPAL (ALMUERZO)</span>
-            <h3>Absorción de Liposolubles</h3>
+            <span class="time-block">ALMUERZO</span>
+            <h3>Nutrición Densa</h3>
             <ul class="checklist">
-                <li><strong>Plato Base:</strong> Fuente alta de proteína + Vegetales fibrosos + Grasas saludables.</li>
-                <li><strong>Suplementación Conjunta:</strong>
-                    <ul>
-                        <li>1 cápsula ETERNAD NAD.</li>
-                        <li>2g - 3g Omega-3.</li>
-                        <li>1 cápsula Vitamina D3 + K2 MK-7.</li>
-                    </ul>
-                </li>
+                <li>Carne de res magra o Salmón + Brócoli/Coliflor.</li>
+                <li><strong>Suplementos:</strong> ETERNAD, Omega-3, Vit D3+K2.</li>
             </ul>
         </div>
 
         <div class="card nutrition">
-            <span class="time-block">CENA & PRE-SUEÑO</span>
-            <h3>Reparación Nocturna</h3>
+            <span class="time-block">CENA</span>
             <ul class="checklist">
-                <li><strong>Cena:</strong> Proteína ligera + Verduras cocidas. <span style="color:var(--accent-red)">CERO carbohidratos densos.</span></li>
-                <li><strong>1 hora antes de dormir:</strong> 400-500mg Magnesio.</li>
+                <li>Atún en agua o Sardinas + Ensalada de tomate y pepino.</li>
+                <li><strong>Suplemento:</strong> Magnesio.</li>
             </ul>
         </div>
     </div>
-
 
     <div id="miercoles" class="tab-content container">
         <h2>Miércoles: Potencia / Velocidad</h2>
-        <div class="important-box">ENFOQUE: Demanda Neural Alta. CARBOS: ALTA DISPONIBILIDAD.</div>
+        <div class="important-box">ENFOQUE: Neural Alto. CARBOS: ALTA DISPONIBILIDAD.</div>
 
         <div class="card nutrition">
-            <span class="time-block">AL DESPERTAR (RITUAL HIDRATACIÓN & PROTECCIÓN)</span>
-            <h3>15-20 minutos ANTES de entrenar (CRÍTICO)</h3>
+            <span class="time-block">PRE-ENTRENO (CRÍTICO)</span>
             <ul class="checklist">
-                <li>Vaso grande de agua (500ml).</li>
-                <li>1/4 cucharadita de Sal Marina + 1/4 cucharadita de Potasio.</li>
-                <li>Café solo + <strong>10g Colágeno Hidrolizado + ½ scoop Isopure</strong>.</li>
+                <li>Agua + Minerales + Café.</li>
+                <li><strong>Colágeno (Vital hoy)</strong> + ½ Scoop Isopure.</li>
             </ul>
-            <p class="note">El colágeno es vital hoy para proteger tendones ante el impacto de alta velocidad.</p>
         </div>
 
         <div class="card training">
             <span class="time-block">SESIÓN DE ENTRENAMIENTO</span>
-            <h3>Cuestas / Pista (Glucolítico)</h3>
-            <p>Ejecución de alta intensidad. Solo agua durante la sesión.</p>
+            
+            <div class="card cycle-option">
+                <h4>Semanas 1 y 2: CUESTAS</h4>
+                <ul class="checklist">
+                    <li>Calentamiento completo.</li>
+                    <li><strong>Sprints en Cuesta:</strong> 6 x 60-80m (Máxima intensidad).</li>
+                    <li>Recuperación completa bajando caminando.</li>
+                </ul>
+            </div>
+            <div class="card cycle-option">
+                <h4>Semana 3: PISTA (Velocidad Específica)</h4>
+                <ul class="checklist">
+                    <li>Calentamiento + Técnica.</li>
+                    <li><strong>Series Largas:</strong> 3 x 300m o 4 x 200m (90-95%).</li>
+                    <li>Recuperación muy larga (8-10 min) entre series. Calidad pura.</li>
+                </ul>
+            </div>
         </div>
 
         <div class="card nutrition">
-            <span class="time-block">INMEDIATAMENTE POST-ENTRENO</span>
-            <h3>Recarga Glucógeno & Creatina</h3>
+            <span class="time-block">POST-ENTRENO (Recarga)</span>
             <ul class="checklist">
-                <li><strong>1 Scoop completo Isopure Zero Carb.</strong></li>
-                <li><strong>5g Creatina Monohidrato.</strong></li>
-                <li><span style="color:var(--accent-green)">OPCIONAL: Añadir fuente rápida de carbohidratos (ej. plátano maduro) junto al batido.</span></li>
+                <li>1 Scoop Isopure + 5g Creatina.</li>
+                <li><span class="food-suggestion"><strong>+ Carbohidrato Rápido:</strong> 1 Plátano maduro o 2 Dátiles.</span></li>
             </ul>
         </div>
 
         <div class="card nutrition">
-            <span class="time-block">COMIDA PRINCIPAL (ALMUERZO - CARGA)</span>
-            <h3>Reposición Energética</h3>
+            <span class="time-block">ALMUERZO (DÍA DE CARGA)</span>
+            <h3>Proteína + Carbohidratos Complejos</h3>
             <ul class="checklist">
-                <li><strong>Plato Base + CARGA:</strong> Fuente alta de proteína + Vegetales + Grasas saludables + <span style="color:var(--accent-green)">Porción generosa de Carbohidratos Complejos (Arroz, Papa, Camote, Quinoa).</span></li>
-                <li><strong>Suplementación Conjunta:</strong>
-                    <ul>
-                        <li>1 cápsula ETERNAD NAD.</li>
-                        <li>2g - 3g Omega-3.</li>
-                        <li>1 cápsula Vitamina D3 + K2 MK-7.</li>
-                    </ul>
-                </li>
+                <li>Pechuga de pollo + <strong>Taza grande de Arroz o Pasta</strong> + Vegetales.</li>
+                <li><strong>Suplementos:</strong> ETERNAD, Omega-3, Vit D3+K2.</li>
             </ul>
         </div>
 
         <div class="card nutrition">
-            <span class="time-block">CENA & PRE-SUEÑO</span>
-            <h3>Retorno a la Calma</h3>
+            <span class="time-block">CENA</span>
+            <h3>Retorno a Low Carb</h3>
             <ul class="checklist">
-                <li><strong>Cena:</strong> Proteína ligera + Verduras cocidas. Volver a carbohidratos bajos.</li>
-                <li><strong>1 hora antes de dormir:</strong> 400-500mg Magnesio.</li>
+                <li>Omelette de claras con champiñones.</li>
+                <li><strong>Suplemento:</strong> Magnesio.</li>
             </ul>
         </div>
     </div>
-
 
     <div id="jueves" class="tab-content container">
         <h2>Jueves: Descanso Total</h2>
-        <div class="important-box">ENFOQUE: Crecimiento SNC. CARBOS: Muy Bajos.</div>
+        <div class="important-box">ENFOQUE: Recuperación SNC. CARBOS: Muy Bajos.</div>
 
         <div class="card nutrition">
-            <span class="time-block">AL DESPERTAR (RITUAL BASE)</span>
-            <h3>Al levantarse</h3>
+            <span class="time-block">AL DESPERTAR</span>
             <ul class="checklist">
-                <li>Vaso grande de agua (500ml) + Pizca de Sal + Pizca de Potasio.</li>
-                <li>Café o Té solo. (No es necesario el batido pre-entreno hoy).</li>
+                <li>Agua + Minerales. Café solo.</li>
+                <li><span class="food-suggestion">Desayuno: Huevos cocidos o revueltos con jamón. (Sin pan).</span></li>
             </ul>
         </div>
 
         <div class="card training">
             <span class="time-block">ACTIVIDAD FÍSICA</span>
             <h3>OFF Total</h3>
-            <p>Sin actividad programada. Movimiento diario normal.</p>
+            <p>Descanso completo. Movilidad ligera si es necesario.</p>
         </div>
 
         <div class="card nutrition">
-            <span class="time-block">A LO LARGO DEL DÍA</span>
-            <h3>Mantenimiento de Creatina</h3>
+            <span class="time-block">ALMUERZO</span>
+            <h3>Nutrición Densa Low Carb</h3>
             <ul class="checklist">
-                <li>Tomar <strong>5g Creatina Monohidrato</strong> disuelta en cualquier líquido en algún momento del día. No saltar la dosis.</li>
+                <li>Corte de carne con grasa (Ribeye o similar) o Salmón.</li>
+                <li>Ensalada verde abundante con aceite de oliva.</li>
+                <li><strong>Suplementos:</strong> ETERNAD, Omega-3, Vit D3+K2.</li>
             </ul>
         </div>
 
         <div class="card nutrition">
-            <span class="time-block">COMIDA PRINCIPAL (ALMUERZO)</span>
-            <h3>Nutrición Densa</h3>
+            <span class="time-block">DURANTE EL DÍA</span>
             <ul class="checklist">
-                <li><strong>Plato Base (Low Carb):</strong> Fuente alta de proteína + Vegetales fibrosos abundantes + Grasas saludables.</li>
-                <li><strong>Suplementación Conjunta:</strong>
-                    <ul>
-                        <li>1 cápsula ETERNAD NAD.</li>
-                        <li>2g - 3g Omega-3.</li>
-                        <li>1 cápsula Vitamina D3 + K2 MK-7.</li>
-                    </ul>
-                </li>
+                <li><strong>Creatina:</strong> 5g en agua (No olvidar en día de descanso).</li>
             </ul>
         </div>
 
         <div class="card nutrition">
-            <span class="time-block">CENA & PRE-SUEÑO</span>
-            <h3>Reparación Nocturna</h3>
+            <span class="time-block">CENA</span>
             <ul class="checklist">
-                <li><strong>Cena:</strong> Proteína ligera + Verduras. <span style="color:var(--accent-red)">CERO carbohidratos densos.</span></li>
-                <li><strong>1 hora antes de dormir:</strong> 400-500mg Magnesio.</li>
+                <li>Caldo de huesos o sopa de verduras con pollo desmenuzado.</li>
+                <li><strong>Suplemento:</strong> Magnesio.</li>
             </ul>
         </div>
     </div>
-
 
     <div id="viernes" class="tab-content container">
-        <h2>Viernes: Estabilidad / Fuerza</h2>
-        <div class="important-box">ENFOQUE: Control Motor / Unilateral. CARBOS: Bajos.</div>
+        <h2>Viernes: Fuerza (Tracción)</h2>
+        <div class="important-box">ENFOQUE: Cadena Posterior. CARBOS: Moderados.</div>
 
         <div class="card nutrition">
-            <span class="time-block">AL DESPERTAR (RITUAL HIDRATACIÓN & ANTI-CORTISOL)</span>
-            <h3>15-20 minutos ANTES de entrenar</h3>
+            <span class="time-block">PRE-ENTRENO</span>
             <ul class="checklist">
-                <li>Vaso grande de agua (500ml).</li>
-                <li>1/4 cucharadita de Sal Marina + 1/4 cucharadita de Potasio.</li>
-                <li>Café solo + <strong>10g Colágeno Hidrolizado + ½ scoop Isopure</strong>.</li>
+                <li>Ritual de Hidratación + Colágeno + ½ Scoop Isopure.</li>
             </ul>
         </div>
 
         <div class="card training">
-            <span class="time-block">SESIÓN DE ENTRENAMIENTO</span>
-            <h3>Fuerza/Estabilidad (Según Ciclo)</h3>
-            <p>Ejecución del bloque programado. Solo agua durante la sesión.</p>
+            <span class="time-block">SESIÓN DE ENTRENAMIENTO: TRACCIÓN</span>
+            
+            <div class="card cycle-option">
+                <h4>Semana 1: FUERZA MÁXIMA</h4>
+                <ul class="checklist">
+                    <li><strong>RDL Smith:</strong> Top Set AMRAP (Objetivo 200lb+).</li>
+                    <li><strong>Remo Smith:</strong> 4 x 6-8 reps (Velocidad).</li>
+                    <li>Accesorios: Curl Bíceps, Poleas.</li>
+                </ul>
+            </div>
+            <div class="card cycle-option">
+                <h4>Semana 2: ESTABILIDAD</h4>
+                <ul class="checklist">
+                    <li><strong>SLRDL (1 Pierna):</strong> 4 x 12 reps (Mancuerna).</li>
+                    <li><strong>Remo a 1 Mano:</strong> 4 x 10-12 reps.</li>
+                    <li>Accesorios: Core anti-rotación.</li>
+                </ul>
+            </div>
+            <div class="card cycle-option">
+                <h4>Semana 3: VELOCIDAD</h4>
+                <ul class="checklist">
+                    <li><strong>Swing a 1 Mano:</strong> 8 x 8-10 reps (Explosivo).</li>
+                    <li><strong>Remo Velocidad:</strong> 6 x 3 reps.</li>
+                    <li>Accesorios: Wall Balls, Saltos.</li>
+                </ul>
+            </div>
         </div>
 
         <div class="card nutrition">
-            <span class="time-block">INMEDIATAMENTE POST-ENTRENO</span>
-            <h3>Ventana Anabólica</h3>
+            <span class="time-block">POST-ENTRENO</span>
             <ul class="checklist">
-                <li><strong>1 Scoop completo Isopure Zero Carb.</strong></li>
-                <li><strong>5g Creatina Monohidrato.</strong></li>
+                <li>1 Scoop Isopure + 5g Creatina.</li>
             </ul>
         </div>
 
         <div class="card nutrition">
-            <span class="time-block">COMIDA PRINCIPAL (ALMUERZO)</span>
-            <h3>Absorción de Liposolubles</h3>
+            <span class="time-block">ALMUERZO</span>
             <ul class="checklist">
-                <li><strong>Plato Base:</strong> Fuente alta de proteína + Vegetales fibrosos + Grasas saludables.</li>
-                <li><strong>Suplementación Conjunta:</strong>
-                    <ul>
-                        <li>1 cápsula ETERNAD NAD.</li>
-                        <li>2g - 3g Omega-3.</li>
-                        <li>1 cápsula Vitamina D3 + K2 MK-7.</li>
-                    </ul>
-                </li>
+                <li>Filete de pescado o Pollo + Camote al horno o porción pequeña de arroz.</li>
+                <li>Vegetales variados.</li>
+                <li><strong>Suplementos:</strong> ETERNAD, Omega-3, Vit D3+K2.</li>
             </ul>
         </div>
 
         <div class="card nutrition">
-            <span class="time-block">CENA & PRE-SUEÑO</span>
-            <h3>Reparación Nocturna</h3>
+            <span class="time-block">CENA</span>
             <ul class="checklist">
-                <li><strong>Cena:</strong> Proteína ligera + Verduras cocidas. <span style="color:var(--accent-red)">CERO carbohidratos densos.</span></li>
-                <li><strong>1 hora antes de dormir:</strong> 400-500mg Magnesio.</li>
+                <li>Ensalada con queso fresco o panela y nueces.</li>
+                <li><strong>Suplemento:</strong> Magnesio.</li>
             </ul>
         </div>
     </div>
-
 
     <div id="sabado" class="tab-content container">
-        <h2>Sábado: Acondicionamiento / Hyrox</h2>
-        <div class="important-box">ENFOQUE: Capacidad de Trabajo. CARBOS: ALTA DISPONIBILIDAD.</div>
+        <h2>Sábado: Acondicionamiento</h2>
+        <div class="important-box">ENFOQUE: Resistencia Metabólica. CARBOS: ALTA DISPONIBILIDAD.</div>
 
         <div class="card nutrition">
-            <span class="time-block">AL DESPERTAR (RITUAL HIDRATACIÓN & PROTECCIÓN)</span>
-            <h3>15-20 minutos ANTES de entrenar (CRÍTICO)</h3>
+            <span class="time-block">PRE-ENTRENO (Energía)</span>
             <ul class="checklist">
-                <li>Vaso grande de agua (500ml).</li>
-                <li>1/4 cucharadita de Sal Marina + 1/4 cucharadita de Potasio.</li>
-                <li>Café solo + <strong>10g Colágeno Hidrolizado + ½ scoop Isopure</strong>.</li>
+                <li>Ritual Hidratación + Colágeno.</li>
+                <li><span class="food-suggestion">Opción: Comer media banana antes si la sesión será larga.</span></li>
             </ul>
-            <p class="note">Protección articular esencial para el volumen de trabajo de hoy.</p>
         </div>
 
         <div class="card training">
             <span class="time-block">SESIÓN DE ENTRENAMIENTO</span>
-            <h3>Hyrox / Carrera Larga</h3>
-            <p>Alta demanda metabólica. Solo agua o agua con electrolitos si la sesión supera los 90 min.</p>
+            
+            <div class="card cycle-option">
+                <h4>Semana 1, 2 y 4: HYROX</h4>
+                <ul class="checklist">
+                    <li>Carrera Interválica + Estaciones Funcionales.</li>
+                    <li>(Remo, Ski, Wall Balls, Sleds).</li>
+                    <li>Intensidad Alta.</li>
+                </ul>
+            </div>
+            <div class="card cycle-option">
+                <h4>Semana 3: CARRERA AERÓBICA</h4>
+                <ul class="checklist">
+                    <li>Carrera Continua en Zona 2 (45-50 min).</li>
+                    <li>Objetivo: Base aeróbica sin impacto de pesas.</li>
+                </ul>
+            </div>
         </div>
 
         <div class="card nutrition">
-            <span class="time-block">INMEDIATAMENTE POST-ENTRENO</span>
-            <h3>Recarga Glucógeno & Creatina</h3>
+            <span class="time-block">POST-ENTRENO (Recarga Completa)</span>
             <ul class="checklist">
-                <li><strong>1 Scoop completo Isopure Zero Carb.</strong></li>
-                <li><strong>5g Creatina Monohidrato.</strong></li>
-                <li><span style="color:var(--accent-green)">Recomendado: Añadir fuente rápida de carbohidratos junto al batido.</span></li>
+                <li>1 Scoop Isopure + 5g Creatina.</li>
+                <li><span class="food-suggestion"><strong>+ Carbohidrato:</strong> Bebida isotónica o fruta.</span></li>
             </ul>
         </div>
 
         <div class="card nutrition">
-            <span class="time-block">COMIDA PRINCIPAL (ALMUERZO - CARGA)</span>
-            <h3>Reposición Energética Profunda</h3>
+            <span class="time-block">ALMUERZO (COMIDA LIBRE CONTROLADA)</span>
+            <p>Es un buen momento para una comida social o con más carbohidratos (Pasta, Sushi, etc.), siempre priorizando la proteína.</p>
             <ul class="checklist">
-                <li><strong>Plato Base + CARGA:</strong> Fuente alta de proteína + Vegetales + Grasas saludables + <span style="color:var(--accent-green)">Porción generosa de Carbohidratos Complejos (Arroz, Papa, Camote, Quinoa).</span></li>
-                <li><strong>Suplementación Conjunta:</strong>
-                    <ul>
-                        <li>1 cápsula ETERNAD NAD.</li>
-                        <li>2g - 3g Omega-3.</li>
-                        <li>1 cápsula Vitamina D3 + K2 MK-7.</li>
-                    </ul>
-                </li>
+                <li><strong>Suplementos:</strong> ETERNAD, Omega-3, Vit D3+K2.</li>
             </ul>
         </div>
 
         <div class="card nutrition">
-            <span class="time-block">CENA & PRE-SUEÑO</span>
-            <h3>Retorno a la Calma</h3>
+            <span class="time-block">CENA</span>
             <ul class="checklist">
-                <li><strong>Cena:</strong> Proteína ligera + Verduras. <span style="color:var(--accent-red)">CERO carbohidratos densos.</span></li>
-                <li><strong>1 hora antes de dormir:</strong> 400-500mg Magnesio.</li>
+                <li>Regreso a la disciplina. Proteína ligera y vegetales.</li>
+                <li><strong>Suplemento:</strong> Magnesio.</li>
             </ul>
         </div>
     </div>
-
 
     <div id="domingo" class="tab-content container">
         <h2>Domingo: Descanso Total</h2>
-        <div class="important-box">ENFOQUE: Evaluación & Reinicio. CARBOS: Muy Bajos.</div>
+        <div class="important-box">ENFOQUE: Reinicio. CARBOS: Muy Bajos.</div>
 
         <div class="card nutrition">
-            <span class="time-block">AL DESPERTAR (RITUAL BASE)</span>
-            <h3>Al levantarse</h3>
+            <span class="time-block">MAÑANA RELAJADA</span>
             <ul class="checklist">
-                <li>Vaso grande de agua (500ml) + Pizca de Sal + Pizca de Potasio.</li>
-                <li>Café o Té solo.</li>
+                <li>Agua + Minerales.</li>
+                <li><span class="food-suggestion">Desayuno tardío: Omelette de 3 huevos con vegetales y aguacate.</span></li>
             </ul>
         </div>
 
         <div class="card training">
             <span class="time-block">ACTIVIDAD FÍSICA</span>
             <h3>OFF Total</h3>
-            <p>Descanso completo. Preparación mental para la semana siguiente.</p>
+            <p>Cero estructura. Caminata familiar opcional.</p>
         </div>
 
         <div class="card nutrition">
-            <span class="time-block">A LO LARGO DEL DÍA</span>
-            <h3>Mantenimiento de Creatina</h3>
+            <span class="time-block">ALMUERZO DOMINICAL</span>
+            <h3>Proteína y Grasas</h3>
             <ul class="checklist">
-                <li>Tomar <strong>5g Creatina Monohidrato</strong> disuelta en cualquier líquido. No saltar la dosis.</li>
+                <li>Parrillada (Carne asada) o Pescado al horno.</li>
+                <li>Ensalada grande. Evitar acompañamientos de harina/maíz en exceso.</li>
+                <li><strong>Suplementos:</strong> ETERNAD, Omega-3, Vit D3+K2.</li>
+                <li><strong>No olvidar:</strong> 5g Creatina.</li>
             </ul>
         </div>
 
         <div class="card nutrition">
-            <span class="time-block">COMIDA PRINCIPAL (ALMUERZO)</span>
-            <h3>Nutrición Densa</h3>
+            <span class="time-block">CENA PRE-SEMANA</span>
             <ul class="checklist">
-                <li><strong>Plato Base (Low Carb):</strong> Fuente alta de proteína + Vegetales fibrosos abundantes + Grasas saludables (Priorizar huevos hoy por la colina).</li>
-                <li><strong>Suplementación Conjunta:</strong>
-                    <ul>
-                        <li>1 cápsula ETERNAD NAD.</li>
-                        <li>2g - 3g Omega-3.</li>
-                        <li>1 cápsula Vitamina D3 + K2 MK-7.</li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-
-        <div class="card nutrition">
-            <span class="time-block">CENA & PRE-SUEÑO</span>
-            <h3>Reparación Nocturna</h3>
-            <ul class="checklist">
-                <li><strong>Cena:</strong> Proteína ligera + Verduras. <span style="color:var(--accent-red)">CERO carbohidratos densos.</span></li>
-                <li><strong>1 hora antes de dormir:</strong> 400-500mg Magnesio.</li>
+                <li>Algo muy ligero para dormir bien. Yogur griego sin azúcar o un poco de pavo.</li>
+                <li><strong>Suplemento:</strong> Magnesio (Dosis completa para asegurar descanso profundo).</li>
             </ul>
         </div>
     </div>
 
-
     <div id="protocolos" class="tab-content container">
         <h2>Protocolos de Monitorización</h2>
-        <p>Vigilancia activa de biomarcadores y efectos secundarios.</p>
+        <p>Vigilancia activa de biomarcadores.</p>
 
         <div class="card">
-            <h3>Signos de Alerta (Suplementación)</h3>
+            <h3>Signos de Alerta</h3>
             <ul class="checklist">
-                <li><strong>Omega-3 (Dosis Alta):</strong> Vigilar aparición de hematomas (moretones) fáciles o sangrado excesivo de encías. Acción: Reducir dosis a 1.5g si ocurre.</li>
-                <li><strong>ETERNAD NAD (Metilación):</strong> Vigilar fatiga inusual, letargo o dolores de cabeza leves persistentes tras 2-3 semanas de uso continuo. Acción: Suspender dosis 48h y reiniciar a dosis media, o tomar en días alternos.</li>
-                <li><strong>Magnesio (Tolerancia Intestinal):</strong> Si hay heces excesivamente blandas o diarrea por la mañana. Acción: Reducir la dosis nocturna ligeramente o asegurar el uso de Glicinato en lugar de Citrato.</li>
+                <li><strong>Sangrado/Hematomas:</strong> Reducir Omega-3.</li>
+                <li><strong>Fatiga Inusual:</strong> Pausar ETERNAD 48h.</li>
+                <li><strong>Intestino Suelto:</strong> Ajustar Magnesio (cambiar a Glicinato).</li>
             </ul>
         </div>
 
         <div class="card">
-            <h3>Métricas de Desempeño (Nutrición)</h3>
+            <h3>Métricas Semanales</h3>
             <ul class="checklist">
-                <li><strong>Grasa Visceral (Perímetro Abdominal):</strong> Medir circunferencia de cintura semanalmente (Lunes en ayunas). Debe mostrar tendencia a la baja con el protocolo "Anti-Cortisol".</li>
-                <li><strong>Calidad del Sueño (Subjetiva):</strong> Evaluar la sensación de descanso al despertar (1-10). El protocolo de Magnesio + Cena Low Carb debe mejorar esto consistentemente.</li>
-                <li><strong>Cumplimiento Proteico:</strong> Asegurar alcanzar la meta de 2.2g/kg diariamente mediante las fuentes combinadas de suplementos y comida sólida.</li>
+                <li><strong>Cintura:</strong> Medir Lunes en ayunas (Objetivo: <90cm).</li>
+                <li><strong>Sueño:</strong> Evaluar sensación de descanso (Sleep Score).</li>
+                <li><strong>Proteína:</strong> ¿Cumpliste los 2.2g/kg diarios?</li>
             </ul>
         </div>
     </div>
 
     <nav class="bottom-nav">
         <a href="#" class="nav-item" onclick="openTab('intro')">
-            <span class="nav-icon">🛒</span>Intro
+            <span class="nav-icon">📋</span>Intro
         </a>
         <a href="#" class="nav-item" id="nav-lunes" onclick="openTab('lunes')">
-            <span class="nav-icon">M</span>Lun
+            <span class="nav-icon">L</span>
         </a>
         <a href="#" class="nav-item" id="nav-martes" onclick="openTab('martes')">
-            <span class="nav-icon">T</span>Mar
+            <span class="nav-icon">M</span>
         </a>
         <a href="#" class="nav-item" id="nav-miercoles" onclick="openTab('miercoles')">
-            <span class="nav-icon">W</span>Mié
+            <span class="nav-icon">M</span>
         </a>
         <a href="#" class="nav-item" id="nav-jueves" onclick="openTab('jueves')">
-            <span class="nav-icon">T</span>Jue
+            <span class="nav-icon">J</span>
         </a>
         <a href="#" class="nav-item" id="nav-viernes" onclick="openTab('viernes')">
-            <span class="nav-icon">F</span>Vie
+            <span class="nav-icon">V</span>
         </a>
         <a href="#" class="nav-item" id="nav-sabado" onclick="openTab('sabado')">
-            <span class="nav-icon">S</span>Sáb
+            <span class="nav-icon">S</span>
         </a>
         <a href="#" class="nav-item" id="nav-domingo" onclick="openTab('domingo')">
-            <span class="nav-icon">S</span>Dom
+            <span class="nav-icon">D</span>
         </a>
         <a href="#" class="nav-item" onclick="openTab('protocolos')">
-            <span class="nav-icon">⚠️</span>Monitor
+            <span class="nav-icon">⚠️</span>
         </a>
     </nav>
 
     <script>
         function openTab(tabName) {
-            // Ocultar todos los contenidos
             const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(content => {
-                content.classList.remove('active');
-            });
+            contents.forEach(content => content.classList.remove('active'));
 
-            // Desactivar todos los items de navegación
             const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach(item => {
-                item.classList.remove('active');
-            });
+            navItems.forEach(item => item.classList.remove('active'));
 
-            // Mostrar el contenido seleccionado y activar el botón
             document.getElementById(tabName).classList.add('active');
-            // Encuentra el nav-item que llama a esta función y actívalo. 
-            // Nota: Esto es una simplificación, para producción se requeriría una lógica más robusta de ID mapping si el número de pestañas crece.
-             const activeLink = document.querySelector(`.bottom-nav a[onclick="openTab('${tabName}')"]`);
-             if (activeLink) {
-                 activeLink.classList.add('active');
-             }
+            
+            // Lógica simple para resaltar el icono activo
+            const activeLink = document.querySelector(`.bottom-nav a[onclick="openTab('${tabName}')"]`);
+            if (activeLink) activeLink.classList.add('active');
             
             window.scrollTo(0, 0);
         }
 
-        // Auto-detectar el día de la semana al cargar
         document.addEventListener('DOMContentLoaded', function() {
             const days = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
             const todayIndex = new Date().getDay();
             const todayName = days[todayIndex];
 
-            // Abrir la pestaña del día actual y marcar la navegación
             openTab(todayName);
-            document.getElementById('nav-' + todayName).classList.add('active');
+            const todayNav = document.getElementById('nav-' + todayName);
+            if(todayNav) todayNav.classList.add('active');
         });
     </script>
 
