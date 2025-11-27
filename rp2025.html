@@ -2,584 +2,305 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Proyecto M60-Gold | 400m Express</title>
     
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS (Estilos) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- React & ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    
-    <!-- Babel -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
         body {
-            background-color: #0f172a;
-            color: #e2e8f0;
+            background-color: #0f172a; /* Slate 900 */
+            color: #e2e8f0; /* Slate 200 */
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
         .gold-text { color: #fbbf24; }
         .gold-border { border-color: #fbbf24; }
-        .hell-week {
-            border-color: #ef4444;
-            background: linear-gradient(to bottom right, #1f1010, #0f172a);
+        
+        /* Utilidades para ocultar/mostrar pestañas */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease-out; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #fbbf24; }
+
+        /* Estilos específicos para inputs */
+        textarea:focus { outline: none; border-color: #fbbf24; }
+        .week-btn.active { transform: scale(1.02); }
     </style>
 </head>
-<body class="min-h-screen">
-    <div id="root"></div>
+<body class="pb-20">
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
-        const { 
-            Dumbbell, Timer, Flame, BatteryCharging, CheckCircle2, 
-            Circle, Save, Trophy, Activity, Mountain, Calendar 
-        } = lucide;
+    <!-- HEADER -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 bg-opacity-95 backdrop-blur-sm shadow-lg">
+        <div class="max-w-3xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-xl md:text-2xl font-black tracking-tight flex items-center gap-2">
+                    <span class="text-white">PROYECTO</span>
+                    <span class="gold-text">M60-GOLD</span>
+                </h1>
+                <p class="text-[10px] text-slate-500 font-mono tracking-widest uppercase">Target: World Champion</p>
+            </div>
+            <div id="header-badge" class="text-right">
+                <!-- Badge se inyecta via JS -->
+            </div>
+        </div>
+    </header>
 
-        // === DATA (sin cambios) ===
+    <!-- MAIN CONTENT -->
+    <main class="max-w-3xl mx-auto px-4 py-6">
+        
+        <!-- WEEK SELECTOR -->
+        <div class="flex space-x-2 mb-6 overflow-x-auto pb-2 scrollbar-hide" id="week-selector">
+            <!-- Botones generados via JS -->
+        </div>
+
+        <!-- CONTENT CONTAINER -->
+        <div id="app-container">
+            <!-- El contenido de los días se renderiza aquí -->
+        </div>
+
+        <!-- NUTRITION REMINDER -->
+        <div id="nutrition-card" class="mt-8 p-4 rounded-lg bg-indigo-900/20 border border-indigo-500/30 text-center">
+            <!-- Texto dinámico -->
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="max-w-3xl mx-auto px-4 py-8 text-center text-slate-600 text-xs">
+        <p class="mb-4">M60-GOLD PROJECT | HACKING THE CLOCK</p>
+        <button onclick="resetApp()" class="underline hover:text-red-500 transition-colors">
+            Reiniciar Progreso
+        </button>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- DATA & CONFIG ---
         const planData = [
             {
-                id: "w1",
-                title: "SEMANA 1: RE-IGNICIÓN",
-                dates: "1 Dic - 7 Dic",
-                theme: "Fuerza Bruta & Mecánica",
-                color: "amber",
+                id: "w1", title: "SEMANA 1: RE-IGNICIÓN", dates: "1 Dic - 7 Dic", theme: "Fuerza Bruta & Mecánica", color: "amber",
                 days: [
-                    {
-                        id: "w1d1",
-                        day: "Lunes 1 Dic",
-                        title: "El Retorno al Templo",
-                        type: "gym",
-                        mission: "Cargar sistema nervioso. Fuerza Máxima - Empuje.",
-                        workout: [
-                            "Calentamiento: 10min Bici + Movilidad + Glúteos",
-                            "Sentadilla Smith: Series aprox + 3x5 pesadas (RPE 8/10)",
-                            "Press Banca: 4x6 (Control total)",
-                            "Press Hombro: 3x10",
-                            "Gemelos (Pesado): 3x15 (Clave)"
-                        ]
-                    },
-                    {
-                        id: "w1d2",
-                        day: "Martes 2 Dic",
-                        title: "Recuperación Activa",
-                        type: "recovery",
-                        mission: "Limpiar piernas.",
-                        workout: [
-                            "30 min carrera suave / caminata (Zona 1 estricta)",
-                            "10 min movilidad extra si hay rigidez"
-                        ]
-                    },
-                    {
-                        id: "w1d3",
-                        day: "Miércoles 3 Dic",
-                        title: "Pista - Velocidad Pura",
-                        type: "track",
-                        mission: "Estrenar Puma evoSPEED. Tocar V-Max.",
-                        workout: [
-                            "Calentamiento: 15min trote + Drills técnicos",
-                            "Transición a Clavos",
-                            "Aceleraciones: 4x30m (Rec 2min)",
-                            "Flying 30s: 3-4 reps (30m accel + 30m fly). Rec 4-5min",
-                            "Enfriamiento: 10min trote descalzo/suave"
-                        ]
-                    },
-                    {
-                        id: "w1d4",
-                        day: "Jueves 4 Dic",
-                        title: "Descanso Total",
-                        type: "rest",
-                        mission: "Recuperación del SNC.",
-                        workout: [
-                            "Comer y Dormir",
-                            "Cero actividad intensa"
-                        ]
-                    },
-                    {
-                        id: "w1d5",
-                        day: "Viernes 5 Dic",
-                        title: "El Motor (Tracción)",
-                        type: "gym",
-                        mission: "Reconectar cadena posterior.",
-                        workout: [
-                            "RDL en Smith: Top Set 1x6-8 (Pesado pero técnico, ~185lb)",
-                            "Remo en Smith: 4x8 (Velocidad)",
-                            "Curl Bíceps: 3x12",
-                            "Core Anti-Rotación (Pallof): 3x10"
-                        ]
-                    },
-                    {
-                        id: "w1d6",
-                        day: "Sábado 6 Dic",
-                        title: "Potencia Anaeróbica (Cuestas)",
-                        type: "hills",
-                        mission: "Fuerza específica de carrera sin impacto.",
-                        workout: [
-                            "Calentamiento bueno",
-                            "Sprints Cuesta: 6-8 reps x 10-12 seg (MÁXIMA intensidad)",
-                            "Recuperación: Baja caminando muy despacio"
-                        ]
-                    },
-                    {
-                        id: "w1d7",
-                        day: "Domingo 7 Dic",
-                        title: "Descanso Total",
-                        type: "rest",
-                        mission: "Cargar baterías para Hell Week.",
-                        workout: [
-                            "Proteína 2.2g/kg",
-                            "Preparación mental"
-                        ]
-                    }
+                    { id: "w1d1", day: "Lunes 1", title: "El Retorno al Templo", type: "gym", mission: "Cargar sistema nervioso. Fuerza Máxima.", workout: ["Calentamiento: 10min Bici + Movilidad", "Sentadilla Smith: 3x5 pesadas (RPE 8)", "Press Banca: 4x6 (Control total)", "Press Hombro: 3x10", "Gemelos (Pesado): 3x15"] },
+                    { id: "w1d2", day: "Martes 2", title: "Recuperación Activa", type: "recovery", mission: "Limpiar piernas.", workout: ["30 min carrera suave Z1", "10 min movilidad extra"] },
+                    { id: "w1d3", day: "Miércoles 3", title: "Pista - Velocidad Pura", type: "track", mission: "Estrenar evoSPEED. Tocar V-Max.", workout: ["Calentamiento + Drills", "Aceleraciones: 4x30m", "Flying 30s: 3-4 reps (Descanso largo)", "Enfriamiento suave"] },
+                    { id: "w1d4", day: "Jueves 4", title: "Descanso Total", type: "rest", mission: "Recuperación del SNC.", workout: ["Comer y Dormir", "Cero actividad intensa"] },
+                    { id: "w1d5", day: "Viernes 5", title: "El Motor (Tracción)", type: "gym", mission: "Reconectar cadena posterior.", workout: ["RDL Smith: Top Set 1x6-8 (Pesado)", "Remo Smith: 4x8 (Velocidad)", "Curl Bíceps: 3x12", "Pallof Press: 3x10"] },
+                    { id: "w1d6", day: "Sábado 6", title: "Potencia (Cuestas)", type: "hills", mission: "Fuerza específica sin impacto.", workout: ["Calentamiento", "Sprints Cuesta: 6-8 reps x 10s (MAX)", "Bajar caminando"] },
+                    { id: "w1d7", day: "Domingo 7", title: "Descanso Total", type: "rest", mission: "Cargar baterías para Hell Week.", workout: ["Proteína 2.2g/kg", "Preparación mental"] }
                 ]
             },
             {
-                id: "w2",
-                title: "SEMANA 2: HELL WEEK",
-                dates: "8 Dic - 14 Dic",
-                theme: "Resistencia a la Velocidad (Lactato)",
-                color: "red",
+                id: "w2", title: "SEMANA 2: HELL WEEK", dates: "8 Dic - 14 Dic", theme: "Resistencia a la Velocidad", color: "red",
                 days: [
-                    {
-                        id: "w2d1",
-                        day: "Lunes 8 Dic",
-                        title: "Potencia Explosiva",
-                        type: "gym",
-                        mission: "Movimientos violentos, encender SNC.",
-                        workout: [
-                            "Box Squat: 6x3 (~135-145lb). Pausa 1s, ¡EXPLOTA!",
-                            "Push Press: 4x5 (30-35lb)",
-                            "Saltos Verticales: 3x5 máximos",
-                            "Core: Plancha lateral 3x30seg"
-                        ]
-                    },
-                    {
-                        id: "w2d2",
-                        day: "Martes 9 Dic",
-                        title: "Recuperación Activa",
-                        type: "recovery",
-                        mission: "Cargar tanques de carbohidratos.",
-                        workout: [
-                            "30 min carrera suave (Zona 1)",
-                            "Cena alta en carbohidratos (Pasta/Arroz)"
-                        ]
-                    },
-                    {
-                        id: "w2d3",
-                        day: "Miércoles 10 Dic",
-                        title: "EL SIMULACRO (Split Runs)",
-                        type: "track",
-                        mission: "Simular fatiga 400m. Día más importante.",
-                        workout: [
-                            "Calentamiento completo (20 min)",
-                            "BLOQUE 1: 300m (90-95%) + 60s descanso + 100m (A MUERTE)",
-                            "Recuperación Macro: 12-15 min",
-                            "BLOQUE 2: 300m (90-95%) + 60s descanso + 100m (A MUERTE)",
-                            "Sobrevivir"
-                        ]
-                    },
-                    {
-                        id: "w2d4",
-                        day: "Jueves 11 Dic",
-                        title: "Descanso Total (OBLIGATORIO)",
-                        type: "rest",
-                        mission: "El SNC está frito. Recupéralo.",
-                        workout: [
-                            "Dormir, Proteína, Hidratar",
-                            "NADA de actividad física"
-                        ]
-                    },
-                    {
-                        id: "w2d5",
-                        day: "Viernes 12 Dic",
-                        title: "Cadena Posterior Dinámica",
-                        type: "gym",
-                        mission: "Isquios y glúteos rápidos.",
-                        workout: [
-                            "Swings Mancuerna/KB: 5x10 (70lb)",
-                            "Remo a una mano: 4x8 (Explosivo/Serrucho)",
-                            "Curl Bíceps y Tríceps ligero (bombeo)"
-                        ]
-                    },
-                    {
-                        id: "w2d6",
-                        day: "Sábado 13 Dic",
-                        title: "Ritmo de Carrera",
-                        type: "track",
-                        mission: "Memorizar velocidad objetivo. Precisión.",
-                        workout: [
-                            "Calentamiento",
-                            "4-5 x 200m a Ritmo Objetivo (ej. 33-34s)",
-                            "Recuperación: 4-5 min caminando (fresco)"
-                        ]
-                    },
-                    {
-                        id: "w2d7",
-                        day: "Domingo 14 Dic",
-                        title: "Descanso Total",
-                        type: "rest",
-                        mission: "Fin de carga. Inicio de Taper.",
-                        workout: [
-                            "Descanso absoluto"
-                        ]
-                    }
+                    { id: "w2d1", day: "Lunes 8", title: "Potencia Explosiva", type: "gym", mission: "Movimientos violentos.", workout: ["Box Squat: 6x3 (Pausa + Explota)", "Push Press: 4x5", "Saltos Verticales: 3x5", "Plancha lateral 3x30seg"] },
+                    { id: "w2d2", day: "Martes 9", title: "Recuperación Activa", type: "recovery", mission: "Cargar tanques.", workout: ["30 min trote suave Z1", "Cena alta en Carbos"] },
+                    { id: "w2d3", day: "Miércoles 10", title: "EL SIMULACRO", type: "track", mission: "Simular fatiga 400m.", workout: ["Calentamiento 20 min", "BLOQUE 1: 300m + 60s rec + 100m", "Descanso 15 min", "BLOQUE 2: 300m + 60s rec + 100m", "Sobrevivir"] },
+                    { id: "w2d4", day: "Jueves 11", title: "Descanso (OBLIGATORIO)", type: "rest", mission: "Recuperar SNC frito.", workout: ["Dormir, Proteína, Hidratar", "NADA de actividad"] },
+                    { id: "w2d5", day: "Viernes 12", title: "Cadena Posterior", type: "gym", mission: "Isquios rápidos.", workout: ["Swings KB/Mancuerna: 5x10", "Remo una mano: 4x8 (Explosivo)", "Bíceps/Tríceps bombeo"] },
+                    { id: "w2d6", day: "Sábado 13", title: "Ritmo de Carrera", type: "track", mission: "Memorizar velocidad.", workout: ["Calentamiento", "4-5 x 200m a Ritmo Objetivo", "Recuperación total entre series"] },
+                    { id: "w2d7", day: "Domingo 14", title: "Descanso Total", type: "rest", mission: "Fin de carga. Inicio Taper.", workout: ["Descanso absoluto"] }
                 ]
             },
             {
-                id: "w3",
-                title: "SEMANA 3: TAPER & TRIAL",
-                dates: "15 Dic - 20 Dic",
-                theme: "Puesta a Punto. Menos es Más.",
-                color: "green",
+                id: "w3", title: "SEMANA 3: TAPER & TRIAL", dates: "15 Dic - 20 Dic", theme: "Puesta a Punto", color: "green",
                 days: [
-                    {
-                        id: "w3d1",
-                        day: "Lunes 15 Dic",
-                        title: "Detonación Neural",
-                        type: "gym",
-                        mission: "Mantener SNC encendido, bajo volumen.",
-                        workout: [
-                            "Box Squat: 3x2 (135lb). Velocidad rayo.",
-                            "Saltos Verticales: 3x3",
-                            "Push Press: 3x3 (Explosivos)",
-                            "Movilidad caderas/tobillos (15 min)"
-                        ]
-                    },
-                    {
-                        id: "w3d2",
-                        day: "Martes 16 Dic",
-                        title: "Descanso Activo / Masaje",
-                        type: "recovery",
-                        mission: "Riego sanguíneo y relajación.",
-                        workout: [
-                            "20 min caminata ligera o trote Z1",
-                            "Foam roller suave (opcional)"
-                        ]
-                    },
-                    {
-                        id: "w3d3",
-                        day: "Miércoles 17 Dic",
-                        title: "Ensayo de Vestuario",
-                        type: "track",
-                        mission: "Calibración final. Sentir el ritmo.",
-                        workout: [
-                            "Calentamiento de competencia",
-                            "Strides con Clavos: 3x50m",
-                            "Ritmo: 2 x 150m a ritmo objetivo (24-25s)",
-                            "Sensación: Fluido y relajado"
-                        ]
-                    },
-                    {
-                        id: "w3d4",
-                        day: "Jueves 18 Dic",
-                        title: "Descanso Total & Carga",
-                        type: "rest",
-                        mission: "Llenar depósitos de glucógeno.",
-                        workout: [
-                            "Cero ejercicio",
-                            "Aumentar carbos complejos",
-                            "Hidratación agresiva"
-                        ]
-                    },
-                    {
-                        id: "w3d5",
-                        day: "Viernes 19 Dic",
-                        title: "Activación (Shakeout)",
-                        type: "track",
-                        mission: "Despertar piernas.",
-                        workout: [
-                            "Trote suave 10-12 min",
-                            "Movilidad dinámica",
-                            "3 Arrancadas (Starts) 15-20m",
-                            "A descansar"
-                        ]
-                    },
-                    {
-                        id: "w3d6",
-                        day: "Sábado 20 Dic",
-                        title: "EL DÍA D (TIME TRIAL)",
-                        type: "race",
-                        mission: "Ejecución perfecta.",
-                        workout: [
-                            "0-50m: Explosión (RDL Force)",
-                            "50-200m: Crucero (Relajado, Hombros abajo)",
-                            "200-300m: Curva de la Verdad (Frecuencia)",
-                            "300-400m: Sobrevivencia (Técnica > Dolor)",
-                            "RECORDAR: Alguien debe cronometrar."
-                        ]
-                    }
+                    { id: "w3d1", day: "Lunes 15", title: "Detonación Neural", type: "gym", mission: "SNC on, músculo off.", workout: ["Box Squat: 3x2 (Rápido)", "Saltos Verticales: 3x3", "Push Press: 3x3", "Movilidad 15 min"] },
+                    { id: "w3d2", day: "Martes 16", title: "Descanso Activo", type: "recovery", mission: "Riego sanguíneo.", workout: ["20 min caminata/trote muy suave", "Masaje suave (opcional)"] },
+                    { id: "w3d3", day: "Miércoles 17", title: "Ensayo de Vestuario", type: "track", mission: "Calibración final.", workout: ["Calentamiento Competición", "Strides con Clavos: 3x50m", "2 x 150m a Ritmo Carrera", "Sensación fluida"] },
+                    { id: "w3d4", day: "Jueves 18", title: "Carga de Glucógeno", type: "rest", mission: "Llenar depósitos.", workout: ["Cero ejercicio", "Carbos complejos", "Hidratación"] },
+                    { id: "w3d5", day: "Viernes 19", title: "Activación (Shakeout)", type: "track", mission: "Despertar piernas.", workout: ["Trote 10 min", "Movilidad dinámica", "3 Arrancadas 15m", "Descansar"] },
+                    { id: "w3d6", day: "Sábado 20", title: "EL DÍA D (TIME TRIAL)", type: "race", mission: "EJECUCIÓN PERFECTA.", workout: ["0-50m: Explosión", "50-200m: Crucero", "200-300m: Curva de la Verdad", "300-400m: Sobrevivencia", "¡REGISTRA EL TIEMPO!"] }
                 ]
             }
         ];
-    
 
-        // === ICON MAP ===
-        const IconMap = {
-            gym: Dumbbell,
-            track: Timer,
-            recovery: BatteryCharging,
-            rest: CheckCircle2,
-            hills: Mountain,
-            race: Trophy
+        // --- ICONS (SVG Strings) ---
+        const icons = {
+            gym: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6.5 6.5 11 11"/><path d="m21 21-1-1"/><path d="m3 3 1 1"/><path d="m18 22 4-4"/><path d="m2 6 4-4"/><path d="m3 10 7-7"/><path d="m14 21 7-7"/></svg>',
+            track: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/></svg>',
+            recovery: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"/><path d="M6 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h1"/><path d="m11 7-3 5h4l-3 5"/></svg>',
+            rest: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.35 2.15l1.65 2.85 2.85 1.65 -2.85 1.65 -1.65 2.85 -1.65 -2.85 -2.85 -1.65 2.85 -1.65z"/><path d="M18 12l1 2 2 1 -2 1 -1 2 -1 -2 -2 -1 2 -1z"/></svg>',
+            hills: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>',
+            race: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>',
+            check: '<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
         };
 
-        // === COMPONENTES ===
+        // --- STATE MANAGEMENT ---
+        let appData = JSON.parse(localStorage.getItem('m60gold_data')) || {};
+        let activeWeekIndex = 0;
 
-        const WeekSelector = ({ activeWeek, setActiveWeek }) => {
-            return (
-                <div className="flex space-x-3 mb-6 overflow-x-auto pb-3 snap-x snap-mandatory scrollbar-hide">
-                    {planData.map((week, index) => (
-                        <button
-                            key={week.id}
-                            onClick={() => setActiveWeek(index)}
-                            className={`flex-shrink-0 w-40 py-3 px-4 rounded-lg font-bold transition-all duration-300 border-2 snap-center
-                                ${activeWeek === index
-                                    ? week.id === 'w2'
-                                        ? 'bg-red-900/40 border-red-500 text-red-400 shadow-[0_0_20px_rgba(239,68,68,0.4)]'
-                                        : 'bg-amber-900/40 border-amber-500 text-amber-400 shadow-[0_0_20px_rgba(251,191,36,0.4)]'
-                                    : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-500 hover:bg-slate-700/50'
-                                }`}
-                        >
-                            <span className="block text-xs uppercase tracking-widest opacity-70">Semana {index + 1}</span>
-                            <span className="text-sm whitespace-nowrap">
-                                {week.id === 'w2' ? 'HELL WEEK' : (index === 2 ? 'TAPER & TRIAL' : 'RE-IGNICIÓN')}
-                            </span>
-                        </button>
-                    ))}
-                </div>
-            );
-        };
+        function saveData() {
+            localStorage.setItem('m60gold_data', JSON.stringify(appData));
+            renderApp(); // Re-render to update progress bars
+        }
 
-        const DayCard = ({ day, data, updateData, isHellWeek }) => {
-            const Icon = IconMap[day.type] || Activity;
-            
-            const getCheckKey = (idx) => `${day.id}-check-${idx}`;
-            const getNoteKey = () => `${day.id}-note`;
+        function toggleCheck(id) {
+            appData[id] = !appData[id];
+            saveData();
+        }
 
-            const [notes, setNotes] = useState(data[getNoteKey()] || "");
-            
-            const totalChecks = day.workout.length;
-            const completedChecks = day.workout.filter((_, i) => data[getCheckKey(i)]).length;
-            const progress = totalChecks > 0 ? (completedChecks / totalChecks) * 100 : 0;
-            const isDone = progress === 100;
+        function saveNote(id, text) {
+            appData[id] = text;
+            saveData(); // No need to re-render whole app for notes, but good for safety
+        }
 
-            const handleCheck = (idx) => {
-                const key = getCheckKey(idx);
-                updateData(key, !data[key]);
-            };
+        function resetApp() {
+            if(confirm("¿Reiniciar todo el progreso?")) {
+                localStorage.removeItem('m60gold_data');
+                appData = {};
+                location.reload();
+            }
+        }
 
-            const handleNoteChange = (e) => setNotes(e.target.value);
-            const handleNoteBlur = () => updateData(getNoteKey(), notes);
+        function setWeek(index) {
+            activeWeekIndex = index;
+            renderApp();
+        }
 
-            // Estilos dinámicos mejorados
-            const cardClasses = `
-                relative rounded-xl border p-5 mb-6 overflow-hidden transition-all duration-500
-                ${isDone 
-                    ? 'border-green-500/70 bg-green-900/30 shadow-[0_0_20px_rgba(34,197,94,0.25)]' 
-                    : isHellWeek 
-                        ? 'border-red-500/30 bg-slate-800' 
-                        : 'border-amber-500/30 bg-slate-800'
-                }
+        // --- RENDERING ---
+        function renderApp() {
+            const currentWeek = planData[activeWeekIndex];
+            const isHellWeek = currentWeek.id === 'w2';
+            const isTaper = currentWeek.id === 'w3';
+
+            // 1. Render Header Badge
+            const badgeClass = isHellWeek ? 'border-red-500 text-red-500' : (isTaper ? 'border-green-500 text-green-500' : 'border-amber-500 text-amber-500');
+            document.getElementById('header-badge').innerHTML = `
+                <span class="text-xs font-bold px-2 py-1 rounded border ${badgeClass}">EDICIÓN EXPRESS</span>
             `;
 
-            return (
-                <div className={cardClasses}>
-                    {/* Barra de progreso superior */}
-                    <div 
-                        className={`absolute top-0 left-0 h-1.5 transition-all duration-700 ${isDone ? 'bg-green-500' : isHellWeek ? 'bg-red-600' : 'bg-amber-500'}`} 
-                        style={{ width: `${progress}%` }}
-                    />
+            // 2. Render Week Selector
+            const selectorHtml = planData.map((week, idx) => {
+                const isActive = idx === activeWeekIndex;
+                let activeClass = '';
+                
+                if (isActive) {
+                    if (week.color === 'red') activeClass = 'bg-red-900/40 border-red-500 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.3)]';
+                    else if (week.color === 'green') activeClass = 'bg-green-900/40 border-green-500 text-green-400 shadow-[0_0_15px_rgba(34,197,94,0.3)]';
+                    else activeClass = 'bg-amber-900/40 border-amber-500 text-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.3)]';
+                } else {
+                    activeClass = 'bg-slate-800 border-slate-700 text-slate-400';
+                }
 
-                    <div className="flex justify-between items-start mb-4">
-                        <div>
-                            <div className="flex flex-wrap items-center gap-2 mb-1">
-                                <span className={`text-xs font-mono px-2 py-0.5 rounded ${isHellWeek ? 'bg-red-900 text-red-200' : 'bg-slate-700 text-slate-300'}`}>
-                                    {day.day}
-                                </span>
-                                {day.type === 'race' && (
-                                    <span className="text-xs font-bold bg-gradient-to-r from-amber-400 to-yellow-500 text-black px-3 py-1 rounded-full animate-pulse">
-                                        RACE DAY
-                                    </span>
-                                )}
-                            </div>
-                            <h3 className={`text-xl font-bold ${isHellWeek ? 'text-red-100' : 'text-slate-100'}`}>
-                                {day.title}
-                            </h3>
-                        </div>
-                        <div className={`p-2 rounded-full ${isHellWeek ? 'bg-red-900/30 text-red-500' : 'bg-amber-900/30 text-amber-500'}`}>
-                            <Icon size={28} />
-                        </div>
-                    </div>
+                return `
+                    <button onclick="setWeek(${idx})" class="week-btn flex-1 min-w-[100px] py-3 px-4 rounded-lg font-bold transition-all duration-300 border-2 ${activeClass}">
+                        <span class="block text-[10px] uppercase tracking-widest opacity-70">Semana ${idx + 1}</span>
+                        <span class="text-sm whitespace-nowrap">${week.id === 'w2' ? 'HELL WEEK' : (idx === 2 ? 'TAPER' : 'RE-IGNICIÓN')}</span>
+                    </button>
+                `;
+            }).join('');
+            document.getElementById('week-selector').innerHTML = selectorHtml;
 
-                    <div className="mb-4">
-                        <p className="text-sm text-slate-400 italic border-l-4 border-slate-600 pl-4 leading-relaxed">
-                            "{day.mission}"
-                        </p>
-                    </div>
-
-                    <div className="space-y-3 mb-6 select-none">
-                        {day.workout.map((item, idx) => {
-                            const checked = !!data[getCheckKey(idx)];
-                            return (
-                                <div 
-                                    key={idx}
-                                    onClick={(e) => { e.preventDefault(); handleCheck(idx); }}
-                                    className={`flex items-start space-x-3 p-3 rounded-lg cursor-pointer transition-all hover:bg-slate-700/60 ${
-                                        checked ? 'opacity-50' : ''
-                                    }`}
-                                >
-                                    <div className={`mt-0.5 flex-shrink-0 w-6 h-6 rounded border-2 flex items-center justify-center transition-all ${
-                                        checked 
-                                            ? 'bg-green-600 border-green-600 text-white' 
-                                            : 'border-slate-500 text-transparent'
-                                    }`}>
-                                        {checked && <CheckCircle2 size={16} />}
-                                    </div>
-                                    <span className={`text-sm leading-tight ${checked ? 'line-through text-slate-500' : 'text-slate-300'}`}>
-                                        {item}
-                                    </span>
-                                </div>
-                            );
-                        })}
-                    </div>
-
-                    <div className="mt-6">
-                        <label className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-2 block flex items-center gap-2">
-                            <Save size={14} /> Notas / Sensaciones
-                        </label>
-                        <textarea
-                            value={notes}
-                            onChange={handleNoteChange}
-                            onBlur={handleNoteBlur}
-                            placeholder="Pesos, tiempos, cómo te sentiste, RPE..."
-                            className="w-full bg-slate-900/60 border border-slate-700 rounded-lg p-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all resize-none h-28"
-                        />
+            // 3. Render Main Content (Days)
+            let contentHtml = `
+                <div class="mb-6 p-4 rounded-lg bg-slate-800/50 border border-slate-700 animate-[fadeIn_0.5s_ease-out]">
+                    <h2 class="text-lg font-bold mb-1 ${isHellWeek ? 'text-red-400' : (isTaper ? 'text-green-400' : 'text-amber-400')}">${currentWeek.title}</h2>
+                    <div class="flex justify-between items-center text-sm text-slate-400">
+                        <span>${currentWeek.dates}</span>
+                        <span class="italic opacity-70">${currentWeek.theme}</span>
                     </div>
                 </div>
-            );
-        };
+                <div class="grid grid-cols-1 gap-4">
+            `;
 
-        const App = () => {
-            const [activeWeek, setActiveWeek] = useState(0);
-            const [userData, setUserData] = useState({});
-            const [mounted, setMounted] = useState(false);
+            currentWeek.days.forEach(day => {
+                const iconSvg = icons[day.type] || icons.rest;
+                const noteKey = `${day.id}-note`;
+                const savedNote = appData[noteKey] || "";
+                
+                // Progress Calculation
+                let totalChecks = day.workout.length;
+                let checkedCount = 0;
+                
+                day.workout.forEach((_, i) => {
+                    if (appData[`${day.id}-check-${i}`]) checkedCount++;
+                });
+                
+                const progress = (checkedCount / totalChecks) * 100;
+                const isDone = progress === 100;
 
-            useEffect(() => {
-                const saved = localStorage.getItem('m60gold_data');
-                if (saved) setUserData(JSON.parse(saved));
-                setMounted(true);
-            }, []);
+                // Dynamic Styles
+                const cardBorder = isDone ? 'border-green-500/50' : (isHellWeek ? 'border-red-500/30' : 'border-amber-500/30');
+                const cardBg = isDone ? 'bg-slate-800/80' : 'bg-slate-800';
+                const progressBarColor = isDone ? 'bg-green-500' : (isHellWeek ? 'bg-red-600' : 'bg-amber-500');
+                const iconBg = isHellWeek ? 'bg-red-900/20 text-red-500' : 'bg-amber-900/20 text-amber-500';
+                const titleColor = isHellWeek ? 'text-red-100' : 'text-slate-100';
 
-            // Recrear iconos de Lucide cada vez que cambie la semana o se monte
-            useEffect(() => {
-                if (mounted) {
-                    // Pequeño timeout para asegurar que el DOM ya está actualizado
-                    setTimeout(() => lucide.createIcons(), 100);
-                }
-            }, [mounted, activeWeek]);
+                // Checks HTML
+                const checksHtml = day.workout.map((item, i) => {
+                    const checkKey = `${day.id}-check-${i}`;
+                    const isChecked = appData[checkKey];
+                    const checkClass = isChecked ? 'bg-green-600 border-green-600 text-white' : 'border-slate-500 text-transparent';
+                    const textClass = isChecked ? 'line-through text-slate-500' : 'text-slate-300';
+                    
+                    return `
+                        <div onclick="toggleCheck('${checkKey}')" class="flex items-start space-x-3 p-2 rounded cursor-pointer hover:bg-slate-700/50">
+                            <div class="mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-colors ${checkClass}">
+                                ${icons.check}
+                            </div>
+                            <span class="text-sm ${textClass}">${item}</span>
+                        </div>
+                    `;
+                }).join('');
 
-            const updateData = (key, value) => {
-                const newData = { ...userData, [key]: value };
-                setUserData(newData);
-                localStorage.setItem('m60gold_data', JSON.stringify(newData));
-            };
-
-            const clearData = () => {
-                if (confirm("¿Seguro que quieres borrar todo el progreso?")) {
-                    localStorage.removeItem('m60gold_data');
-                    setUserData({});
-                    window.location.reload();
-                }
-            };
-
-            if (!mounted) return <div className="flex items-center justify-center min-h-screen text-amber-500 text-2xl font-bold">CARGANDO M60-GOLD...</div>;
-
-            const currentWeekData = planData[activeWeek];
-            const isHellWeek = currentWeekData.id === 'w2';
-
-            return (
-                <div className="min-h-screen pb-20">
-                    {/* HEADER */}
-                    <header className="bg-slate-900/95 border-b border-slate-800 sticky top-0 z-50 backdrop-blur-sm">
-                        <div className="max-w-4xl mx-auto px-4 py-5 flex justify-between items-center">
+                contentHtml += `
+                    <div class="relative rounded-xl border ${cardBorder} ${cardBg} p-5 overflow-hidden transition-all">
+                        <div class="absolute top-0 left-0 h-1 transition-all duration-500 ${progressBarColor}" style="width: ${progress}%"></div>
+                        
+                        <div class="flex justify-between items-start mb-4">
                             <div>
-                                <h1 className="text-2xl md:text-3xl font-black tracking-tighter flex items-center gap-3">
-                                    <span className="text-white">PROYECTO</span>
-                                    <span className="gold-text text-3xl">M60-GOLD</span>
-                                </h1>
-                                <p className="text-xs text-slate-500 font-mono tracking-widest uppercase">Target: Sub-60" 400m · Edición Express</p>
-                            </div>
-                            <div className={`text-xs font-bold px-3 py-1.5 rounded border ${isHellWeek ? 'border-red-500 text-red-400' : 'border-amber-500 text-amber-400'}`}>
-                                {isHellWeek ? 'MODO INFIERNO' : 'MODO ORO'}
-                            </div>
-                        </div>
-                    </header>
-
-                    <main className="max-w-4xl mx-auto px-4 py-8">
-                        <WeekSelector activeWeek={activeWeek} setActiveWeek={setActiveWeek} />
-
-                        <div className="mb-8 p-5 rounded-xl bg-slate-800/60 border border-slate-700">
-                            <h2 className={`text-2xl font-black mb-2 ${isHellWeek ? 'text-red-400' : 'text-amber-400'}`}>
-                                {currentWeekData.title}
-                            </h2>
-                            <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400">
-                                <div className="flex items-center gap-2">
-                                    <Calendar size={16} />
-                                    <span>{currentWeekData.dates}</span>
+                                <div class="flex items-center space-x-2 mb-1">
+                                    <span class="text-[10px] font-mono px-2 py-0.5 rounded ${isHellWeek ? 'bg-red-900 text-red-200' : 'bg-slate-700 text-slate-300'}">${day.day}</span>
+                                    ${day.type === 'race' ? '<span class="text-[10px] font-bold bg-amber-500 text-black px-2 py-0.5 rounded animate-pulse">RACE DAY</span>' : ''}
                                 </div>
-                                <span className="italic opacity-80">→ {currentWeekData.theme}</span>
+                                <h3 class="text-xl font-bold ${titleColor}">${day.title}</h3>
                             </div>
+                            <div class="p-2 rounded-full ${iconBg}">${iconSvg}</div>
                         </div>
-
-                        {currentWeekData.days.map(day => (
-                            <DayCard 
-                                key={day.id}
-                                day={day}
-                                data={userData}
-                                updateData={updateData}
-                                isHellWeek={isHellWeek}
-                            />
-                        ))}
-
-                        <div className="mt-12 p-6 rounded-xl bg-indigo-900/30 border border-indigo-500/50 text-center">
-                            <h4 className="text-indigo-300 font-black text-lg mb-3 flex justify-center items-center gap-3">
-                                <Flame size={20} className="animate-pulse" /> RECORDATORIO DE COMBUSTIBLE
-                            </h4>
-                            <p className="text-sm text-indigo-200 leading-relaxed">
-                                Proteína: <strong>2.2g/kg diario</strong> · Hidratación agresiva<br/>
-                                {isHellWeek 
-                                    ? "Carga brutal de carbohidratos la noche antes del simulacro (300+100)."
-                                    : activeWeek === 2 
-                                        ? "Desde el jueves: subir carbohidratos complejos + hidratación máxima."
-                                        : "Mantén el tanque lleno. El oro se forja con combustible."
-                                }
-                            </p>
+                        
+                        <p class="mb-4 text-sm text-slate-400 italic border-l-2 border-slate-600 pl-3">"${day.mission}"</p>
+                        
+                        <div class="space-y-1 mb-6">${checksHtml}</div>
+                        
+                        <div>
+                            <label class="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-2 block">Notas del Coach / Sensaciones</label>
+                            <textarea 
+                                onblur="saveNote('${noteKey}', this.value)"
+                                placeholder="Registra pesos, tiempos o cómo te sentiste..." 
+                                class="w-full bg-slate-900/50 border border-slate-700 rounded-lg p-3 text-sm text-slate-200 resize-none h-24"
+                            >${savedNote}</textarea>
                         </div>
-                    </main>
+                    </div>
+                `;
+            });
 
-                    <footer className="max-w-4xl mx-auto px-4 py-10 text-center text-slate-600 text-xs">
-                        <p className="mb-4 font-bold">M60-GOLD PROJECT · HACKING THE CLOCK © 2025</p>
-                        <button onClick={clearData} className="underline hover:text-red-500 transition-colors">
-                            Reiniciar todo el progreso
-                        </button>
-                    </footer>
-                </div>
-            );
-        };
+            contentHtml += `</div>`;
+            document.getElementById('app-container').innerHTML = contentHtml;
 
-        // === RENDER ===
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+            // 4. Update Nutrition Text
+            const nutritionText = isHellWeek 
+                ? "Semana 2: Cena alta en carbohidratos (pasta/arroz) antes de los Split Runs."
+                : (isTaper 
+                    ? "Semana 3: Hidratación agresiva. Aumentar carbos complejos Jueves y Viernes."
+                    : "Semana 1: Carbos moderados. Más altos miércoles y sábado.");
+            
+            document.getElementById('nutrition-card').innerHTML = `
+                <h4 class="text-indigo-300 font-bold mb-2 flex justify-center items-center gap-2">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                    RECORDATORIO DE COMBUSTIBLE
+                </h4>
+                <p class="text-sm text-indigo-200 opacity-80">Proteína: 2.2g/kg religiosamente.<br/>${nutritionText}</p>
+            `;
+        }
+
+        // --- INIT ---
+        renderApp();
+
     </script>
 </body>
 </html>
