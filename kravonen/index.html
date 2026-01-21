@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Karvonen | M60 Gold</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gold-gradient {
+            background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- Main Container -->
+    <div class="w-full max-w-lg bg-slate-800 rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
+        
+        <!-- Header -->
+        <div class="bg-slate-900 p-6 border-b border-slate-700 flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-white tracking-tight">Karvonen <span class="text-yellow-500">M60</span></h1>
+                <p class="text-xs text-slate-400 mt-1">Calculadora de Zonas de Frecuencia Cardíaca</p>
+            </div>
+            <i data-lucide="heart-pulse" class="text-yellow-500 w-8 h-8"></i>
+        </div>
+
+        <!-- Inputs Section -->
+        <div class="p-6 space-y-6">
+            
+            <!-- Warning/Context -->
+            <div class="bg-slate-700/50 p-3 rounded-lg border-l-4 border-yellow-500 text-sm text-slate-300">
+                <p>Ideal para calibrar tus días de <strong>Recuperación Activa</strong> (Zona 1-2) y tus sesiones de <strong>Capacidad Anaeróbica</strong>.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- FC Reposo -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-slate-300">FC Reposo (lpm)</label>
+                    <div class="relative">
+                        <input type="number" id="fcRest" placeholder="Ej. 55" class="w-full bg-slate-900 border border-slate-600 rounded-lg py-3 px-4 focus:outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 transition text-white">
+                        <i data-lucide="bed" class="absolute right-3 top-3.5 text-slate-500 w-5 h-5"></i>
+                    </div>
+                    <p class="text-[10px] text-slate-500">Mide esto al despertar.</p>
+                </div>
+
+                <!-- FC Máxima -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-slate-300">FC Máxima (lpm)</label>
+                    <div class="relative">
+                        <input type="number" id="fcMax" placeholder="Ej. 175" class="w-full bg-slate-900 border border-slate-600 rounded-lg py-3 px-4 focus:outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 transition text-white">
+                        <i data-lucide="activity" class="absolute right-3 top-3.5 text-slate-500 w-5 h-5"></i>
+                    </div>
+                    <p class="text-[10px] text-slate-500">Tu máximo real en pista.</p>
+                </div>
+            </div>
+
+            <button onclick="calculateZones()" class="w-full gold-gradient text-black font-bold py-3 px-4 rounded-lg hover:opacity-90 transition transform active:scale-95 shadow-lg flex justify-center items-center gap-2">
+                <i data-lucide="calculator" class="w-5 h-5"></i>
+                Calcular Zonas
+            </button>
+        </div>
+
+        <!-- Results Section (Hidden by default) -->
+        <div id="results" class="hidden bg-slate-900 p-6 border-t border-slate-700 animate-fade-in">
+            <h3 class="text-lg font-semibold text-white mb-4">Tus Zonas de Entrenamiento</h3>
+            
+            <div class="space-y-3">
+                
+                <!-- Zone 5 -->
+                <div class="flex items-center justify-between p-3 rounded-lg bg-red-900/20 border border-red-500/30">
+                    <div>
+                        <span class="text-xs font-bold text-red-400 uppercase tracking-wider">Zona 5 (90-100%)</span>
+                        <div class="text-white font-bold text-lg" id="z5-val">---</div>
+                        <p class="text-xs text-slate-400">Potencia Máxima / Velocidad (Sprints 400m)</p>
+                    </div>
+                    <i data-lucide="flame" class="text-red-500 w-6 h-6"></i>
+                </div>
+
+                <!-- Zone 4 -->
+                <div class="flex items-center justify-between p-3 rounded-lg bg-orange-900/20 border border-orange-500/30">
+                    <div>
+                        <span class="text-xs font-bold text-orange-400 uppercase tracking-wider">Zona 4 (80-90%)</span>
+                        <div class="text-white font-bold text-lg" id="z4-val">---</div>
+                        <p class="text-xs text-slate-400">Umbral Anaeróbico / Resistencia a la acidosis</p>
+                    </div>
+                    <i data-lucide="zap" class="text-orange-500 w-6 h-6"></i>
+                </div>
+
+                <!-- Zone 3 -->
+                <div class="flex items-center justify-between p-3 rounded-lg bg-yellow-900/20 border border-yellow-500/30">
+                    <div>
+                        <span class="text-xs font-bold text-yellow-400 uppercase tracking-wider">Zona 3 (70-80%)</span>
+                        <div class="text-white font-bold text-lg" id="z3-val">---</div>
+                        <p class="text-xs text-slate-400">Tempo / Capacidad Aeróbica</p>
+                    </div>
+                    <i data-lucide="trending-up" class="text-yellow-500 w-6 h-6"></i>
+                </div>
+
+                <!-- Zone 2 -->
+                <div class="flex items-center justify-between p-3 rounded-lg bg-green-900/20 border border-green-500/30">
+                    <div>
+                        <span class="text-xs font-bold text-green-400 uppercase tracking-wider">Zona 2 (60-70%)</span>
+                        <div class="text-white font-bold text-lg" id="z2-val">---</div>
+                        <p class="text-xs text-slate-400">Base Aeróbica / Recuperación Activa</p>
+                    </div>
+                    <i data-lucide="wind" class="text-green-500 w-6 h-6"></i>
+                </div>
+
+                <!-- Zone 1 -->
+                <div class="flex items-center justify-between p-3 rounded-lg bg-blue-900/20 border border-blue-500/30">
+                    <div>
+                        <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">Zona 1 (50-60%)</span>
+                        <div class="text-white font-bold text-lg" id="z1-val">---</div>
+                        <p class="text-xs text-slate-400">Calentamiento / Vuelta a la calma</p>
+                    </div>
+                    <i data-lucide="coffee" class="text-blue-500 w-6 h-6"></i>
+                </div>
+                
+                <div class="mt-4 pt-4 border-t border-slate-800">
+                    <div class="flex justify-between text-sm text-slate-400">
+                        <span>Reserva Cardíaca (HRR):</span>
+                        <span id="hrr-val" class="text-white font-mono">---</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        function calculateZones() {
+            const fcRestInput = document.getElementById('fcRest').value;
+            const fcMaxInput = document.getElementById('fcMax').value;
+
+            // Basic Validation
+            if (!fcRestInput || !fcMaxInput) {
+                alert("Por favor ingresa tanto la FC de Reposo como la FC Máxima.");
+                return;
+            }
+
+            const fcRest = parseInt(fcRestInput);
+            const fcMax = parseInt(fcMaxInput);
+
+            if (fcRest >= fcMax) {
+                alert("La FC de Reposo no puede ser mayor o igual a la FC Máxima.");
+                return;
+            }
+
+            // Karvonen Formula: TargetHR = ((max - rest) * intensity) + rest
+            const hrr = fcMax - fcRest; // Heart Rate Reserve
+
+            // Helper to calc range
+            const calcRange = (minPct, maxPct) => {
+                const min = Math.round((hrr * minPct) + fcRest);
+                const max = Math.round((hrr * maxPct) + fcRest);
+                return `${min} - ${max} lpm`;
+            };
+
+            // Update DOM
+            document.getElementById('z5-val').textContent = calcRange(0.90, 1.00);
+            document.getElementById('z4-val').textContent = calcRange(0.80, 0.90);
+            document.getElementById('z3-val').textContent = calcRange(0.70, 0.80);
+            document.getElementById('z2-val').textContent = calcRange(0.60, 0.70);
+            document.getElementById('z1-val').textContent = calcRange(0.50, 0.60);
+            
+            document.getElementById('hrr-val').textContent = `${hrr} lpm`;
+
+            // Show results
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.classList.remove('hidden');
+            
+            // Scroll to results on mobile
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
+
