@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alpha Terminal | Polymarket Whale</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #05070a;
+            --card-bg: rgba(22, 27, 34, 0.7);
+            --card-border: rgba(48, 54, 61, 0.8);
+            --text-color: #e6edf3;
+            --accent-color: #58a6ff;
+            --success-color: #3fb950;
+            --danger-color: #f85149;
+            --glow-color: rgba(88, 166, 255, 0.15);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(88, 166, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(63, 185, 80, 0.03) 0%, transparent 40%);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            /* Prevent body scroll, layout handles it */
+            height: 100vh;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            grid-template-rows: auto 1fr;
+            height: 100vh;
+            gap: 1px;
+            background-color: var(--card-border);
+        }
+
+        header {
+            grid-column: 1 / -1;
+            background: var(--bg-color);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .logo-section h1 {
+            font-size: 1.2rem;
+            margin: 0;
+            background: linear-gradient(90deg, #58a6ff, #bc8cff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-section p {
+            margin: 2px 0 0;
+            font-size: 0.7rem;
+            color: #8b949e;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        main {
+            padding: 25px;
+            overflow-y: auto;
+            background: var(--bg-color);
+        }
+
+        /* Summary Bar */
+        .summary-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+            background: rgba(88, 166, 255, 0.03);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .summary-label {
+            font-size: 0.7rem;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-value {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .summary-subtext {
+            font-size: 0.65rem;
+            margin-top: 2px;
+        }
+
+        .matrix-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .matrix-header h2 {
+            font-size: 1rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #8b949e;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+            gap: 20px;
+            align-items: start;
+        }
+
+        /* Market Group Row Styling */
+        .market-group {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 15px;
+            /* Compacted */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .market-group.resolving-group {
+            border-color: #d29922;
+            /* Amber */
+            background: rgba(210, 153, 34, 0.05);
+        }
+
+        .market-group:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 25px var(--glow-color);
+        }
+
+        .group-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+        }
+
+        .group-title {
+            flex: 1;
+            font-size: 0.85rem;
+            /* More compact font */
+            font-weight: 700;
+            color: #f0f6fc;
+            line-height: 1.3;
+        }
+
+        .group-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--card-border);
+        }
+
+        .outcomes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .outcome-panel {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(48, 54, 61, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            position: relative;
+        }
+
+        .outcome-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .outcome-badge {
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .badge-up {
+            background: rgba(63, 185, 80, 0.15);
+            color: var(--success-color);
+        }
+
+        .badge-down {
+            background: rgba(248, 81, 73, 0.15);
+            color: var(--danger-color);
+        }
+
+        .panel-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .stat-line {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+        }
+
+        .stat-label {
+            color: #8b949e;
+        }
+
+        .stat-value {
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 600;
+        }
+
+        .pnl-text {
+            font-weight: 700;
+        }
+
+        /* Sidebar Ticker */
+        aside {
+            background: #0d1117;
+            border-left: 1px solid var(--card-border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            /* Container fixed */
+            height: 100%;
+        }
+
+        .sidebar-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            /* Flex container */
+            border-bottom: 1px solid #30363d;
+            min-height: 0;
+        }
+
+        .sidebar-content {
+            overflow-y: auto;
+            /* ENABLE SCROLL */
+            flex: 1;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .sidebar-header h3 {
+            font-size: 0.8rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #8b949e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .ticker-item {
+            padding: 10px;
+            border-bottom: 1px solid #21262d;
+            font-size: 0.85rem;
+            animation: fadeIn 0.3s ease-in-out;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-group-title {
+            font-size: 0.75rem;
+            color: #8b949e;
+            padding: 8px 5px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 4px;
+            margin-top: 5px;
+            margin-bottom: 2px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @keyframes slide-right {
+            from {
+                transform: translateX(-10px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .ticker-time {
+            color: #57606a;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.65rem;
+        }
+
+        .ticker-market {
+            color: #f0f6fc;
+            display: block;
+            margin: 4px 0;
+            font-weight: 600;
+            font-size: 0.75rem;
+            line-height: 1.3;
+        }
+
+        .ticker-financials {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed rgba(48, 54, 61, 0.5);
+        }
+
+        .ticker-fin-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ticker-fin-label {
+            font-size: 0.6rem;
+            color: #8b949e;
+            text-transform: uppercase;
+        }
+
+        .ticker-fin-value {
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+
+        /* Loading Overlay */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(88, 166, 255, 0.1);
+            border-top: 3px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Compact Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+            height: 60px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #e6edf3;
+            margin: 0;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-inline {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #8b949e;
+        }
+
+        .stat-value-inline {
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 700;
+            color: #e6edf3;
+        }
+
+        .user-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid #30363d;
+        }
+
+        #user-alias-display {
+            font-weight: 600;
+            color: var(--accent-color);
+            cursor: pointer;
+        }
+
+        #user-address-input {
+            background: transparent;
+            border: none;
+            color: #e6edf3;
+            font-family: 'Roboto Mono', monospace;
+            width: 140px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .edit-icon {
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .edit-icon:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="layout">
+        <header>
+            <div class="header-left">
+                <div class="logo-icon"></div>
+                <h1 class="header-title">
+                    0x8dxd Terminal
+                    <span style="font-size:0.8rem; color:var(--text-secondary); font-weight:400;">v2.6 Live</span>
+                </h1>
+            </div>
+
+            <div class="header-right">
+                <!-- User Control -->
+                <div class="user-control">
+                    <span id="user-alias-display" onclick="toggleAddressEdit()"
+                        title="Click to Edit Address">Loading...</span>
+                    <!-- Reverted to simple input without search handlers -->
+                    <input type="text" id="user-address-input" style="display:none;" autocomplete="off"
+                        spellcheck="false" onkeydown="handleAddressKey(event)" onblur="saveAddressEdit()"
+                        placeholder="0x... or Alias">
+                    <span class="edit-icon" onclick="toggleAddressEdit()">✏️</span>
+                </div>
+
+                <!-- Session PnL -->
+                <div class="stat-inline">
+                    <span>PnL:</span>
+                    <span class="stat-value-inline" id="session-pnl" style="color:var(--text-secondary);">$0.00</span>
+                </div>
+
+                <!-- Status -->
+                <div class="stat-inline">
+                    <div class="live-dot" style="background: var(--success-color);"></div>
+                    <span style="font-size:0.8rem; font-weight:700; color:var(--success-color);">ACTIVE</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="summary-bar">
+                <div class="summary-item">
+                    <span class="summary-label">Capital Total</span>
+                    <span class="summary-value" id="total-invested">$0.00</span>
+                    <span class="summary-subtext" style="color: #8b949e;">Inversión Inicial</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Balance Actual</span>
+                    <span class="summary-value" id="total-equity">$0.00</span>
+                    <span class="summary-subtext" id="equity-diff" style="color: #8b949e;">--</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">PnL Total No Realizado</span>
+                    <span class="summary-value" id="total-pnl">$0.00</span>
+                    <span class="summary-subtext" id="total-pnl-perc">0.00%</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Winners (Active)</span>
+                    <span class="summary-value" id="winners-count" style="color: var(--success-color);">0</span>
+                    <span class="summary-subtext" id="winners-pnl" style="color: var(--success-color);">+$0.00</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Losers (Active)</span>
+                    <span class="summary-value" id="losers-count" style="color: var(--danger-color);">0</span>
+                    <span class="summary-subtext" id="losers-pnl" style="color: var(--danger-color);">-$0.00</span>
+                </div>
+            </div>
+
+            <div class="matrix-header">
+                <h2>Portafolio por Mercado</h2>
+                <span id="pos-count" style="font-size: 0.8rem; color: #57606a;">0 Mercados Activos</span>
+            </div>
+            <div class="grid-container" id="position-grid">
+                <!-- Groups appear here -->
+            </div>
+        </main>
+
+        <aside>
+            <!-- Session Results Section (Top 50%) -->
+            <div class="sidebar-section">
+                <div class="sidebar-header">
+                    <h3>
+                        <div class="live-dot" style="background: var(--accent-color);"></div> Session Results
+                    </h3>
+                </div>
+                <div class="sidebar-content" id="activity-ticker">
+                    <!-- Resolved results appear here -->
+                </div>
+            </div>
+
+            <!-- History Section (Bottom 50%) -->
+            <div class="sidebar-section" style="border-bottom: none;">
+                <div class="sidebar-header">
+                    <h3>
+                        <span style="font-size:1rem">📜</span> 24h History
+                    </h3>
+                </div>
+                <div class="sidebar-content" id="history-list">
+                    <div style="padding:20px; text-align:center; color:#8b949e;">Loading history...</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        // Default: 0x8dxd
+        const DEFAULT_USER = "0x594edb9112f526fa6a80b8f858a6379c8a2c1c11";
+        let USER_ADDRESS = localStorage.getItem('tracked_user') || DEFAULT_USER;
+
+        // Initialize UI
+        updateAliasDisplay();
+        fetchTradeHistory();
+
+        function formatSlug(slug) {
+            if (!slug) return "Unknown Event";
+            // "highest-temperature-in-miami..." -> "Highest Temperature In Miami..."
+            return slug.split('-').map(word => {
+                // Capitalize first letter
+                return word.charAt(0).toUpperCase() + word.slice(1);
+            }).join(' ');
+        }
+
+        async function fetchTradeHistory() {
+            const histContainer = document.getElementById('history-list');
+            histContainer.innerHTML = '<div style="padding:20px; text-align:center; color:#8b949e;">Loading...</div>';
+
+            try {
+                // Fetch last 500 trades
+                const res = await fetch(`https://data-api.polymarket.com/trades?user=${USER_ADDRESS}&limit=500`);
+                if (!res.ok) throw new Error("API Error");
+                const trades = await res.json();
+
+                // Filter last 24h
+                const oneDayAgo = (Date.now() / 1000) - 86400;
+                const recentTrades = trades.filter(t => t.timestamp > oneDayAgo);
+
+                if (recentTrades.length === 0) {
+                    histContainer.innerHTML = '<div style="padding:20px; text-align:center; color:#8b949e;">No trades in last 24h</div>';
+                    return;
+                }
+
+                // Group by Event Slug (fallback to title if missing)
+                const grouped = {};
+                recentTrades.forEach(t => {
+                    // Use eventSlug if available, else title
+                    const key = t.eventSlug || t.title;
+                    if (!grouped[key]) grouped[key] = [];
+                    grouped[key].push(t);
+                });
+
+                // Render
+                let html = "";
+                const sortedKeys = Object.keys(grouped).sort();
+
+                sortedKeys.forEach(key => {
+                    // If key look like a slug, format it. Else use as is.
+                    const displayTitle = key.includes('-') ? formatSlug(key) : key;
+
+                    html += `<div class="history-group-title" title="${displayTitle}">${displayTitle}</div>`;
+
+                    // Sort trades by date desc
+                    const groupTrades = grouped[key].sort((a, b) => b.timestamp - a.timestamp);
+
+                    groupTrades.forEach(t => {
+                        const isBuy = t.side === "BUY";
+                        const color = isBuy ? "var(--success-color)" : "var(--danger-color)";
+                        const type = isBuy ? "BUY" : "SELL";
+                        const size = parseFloat(t.size).toFixed(0);
+                        const price = parseFloat(t.price).toFixed(2);
+                        const timeStr = new Date(t.timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                        html += `
+                            <div class="ticker-item" style="padding:6px 10px;">
+                                <div style="display:flex; flex-direction:column; gap:2px;">
+                                    <span style="font-weight:700; color:${color}; font-size:0.8rem;">${type} ${t.outcome}</span>
+                                    <span style="font-size:0.7rem; color:#8b949e; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px;" title="${t.title}">${t.title}</span>
+                                    <span style="font-size:0.65rem; color:#484f58;">${timeStr}</span>
+                                </div>
+                                <div style="text-align:right;">
+                                    <div style="font-family:'Roboto Mono'; font-weight:700; font-size:0.85rem;">${size} @ ${price}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                });
+
+                histContainer.innerHTML = html;
+
+            } catch (e) {
+                console.error(e);
+                histContainer.innerHTML = '<div style="padding:20px; text-align:center; color:var(--danger-color);">Error loading history</div>';
+            }
+        }
+
+        function getShortAddress(addr) {
+            return addr.substring(0, 6) + "..." + addr.substring(addr.length - 4);
+        }
+
+        function updateAliasDisplay() {
+            const alias = localStorage.getItem(`alias_${USER_ADDRESS}`);
+            const displayEl = document.getElementById('user-alias-display');
+            if (alias) {
+                displayEl.innerText = alias;
+                displayEl.title = USER_ADDRESS; // Tooltip shows full address
+            } else {
+                displayEl.innerText = getShortAddress(USER_ADDRESS);
+                displayEl.title = "Click to set Alias";
+            }
+        }
+
+        function toggleAddressEdit() {
+            const displayEl = document.getElementById('user-alias-display');
+            const inputEl = document.getElementById('user-address-input');
+            const iconEl = document.querySelector('.edit-icon');
+
+            if (inputEl.style.display === 'none') {
+                inputEl.style.display = 'block';
+                displayEl.style.display = 'none';
+                iconEl.style.display = 'none';
+
+                // Show current Alias or Address in input
+                const alias = localStorage.getItem(`alias_${USER_ADDRESS}`);
+                if (!alias) inputEl.value = ""; // Clear if passing raw address so user can type name
+                else inputEl.value = alias;
+
+                inputEl.focus();
+            } else {
+                saveAddressEdit();
+            }
+        }
+
+        function handleAddressKey(e) {
+            if (e.key === 'Enter') saveAddressEdit();
+            if (e.key === 'Escape') {
+                // Cancel
+                document.getElementById('user-address-input').style.display = 'none';
+                document.getElementById('user-alias-display').style.display = 'block';
+                document.querySelector('.edit-icon').style.display = 'inline';
+            }
+        }
+
+        function saveAddressEdit() {
+            const inputEl = document.getElementById('user-address-input');
+            const val = inputEl.value.trim();
+
+            if (!val) return; // Ignore empty
+
+            if (val.startsWith('0x') && val.length > 20) {
+                // Treat as Address Change
+                if (val !== USER_ADDRESS) {
+                    changeUser(val);
+                }
+            } else {
+                // Treat as Alias Set for CURRENT address
+                localStorage.setItem(`alias_${USER_ADDRESS}`, val);
+            }
+
+            // Restore UI
+            inputEl.style.display = 'none';
+            document.getElementById('user-alias-display').style.display = 'block';
+            document.querySelector('.edit-icon').style.display = 'inline';
+            updateAliasDisplay();
+        }
+
+        function changeUser(newAddr) {
+            USER_ADDRESS = newAddr;
+            localStorage.setItem('tracked_user', USER_ADDRESS);
+
+            // Reset session
+            processedResolved.clear();
+            sessionRealizedPnL = 0;
+            isFirstLoad = true;
+            document.getElementById('session-pnl').innerText = "$0.00";
+            document.getElementById('session-pnl').style.color = "var(--text-secondary)";
+            document.getElementById('activity-ticker').innerHTML = "";
+
+            // Force reload
+            document.getElementById('loader').style.display = 'flex';
+            updateDashboard();
+            updateAliasDisplay();
+            fetchTradeHistory();
+        }
+
+        let processedResolved = new Map(); // asset -> realizedPnl
+        let sessionRealizedPnL = 0;
+        let isFirstLoad = true;
+
+        async function updateDashboard() {
+            try {
+                const POS_API = `https://data-api.polymarket.com/positions?user=${USER_ADDRESS}`;
+                const response = await fetch(POS_API);
+                if (response.ok) {
+                    const positions = await response.json();
+                    renderPositions(positions);
+                    trackResolved(positions);
+                    isFirstLoad = false;
+                }
+                document.getElementById('loader').style.display = 'none';
+            } catch (err) { console.error("Fetch error:", err); }
+        }
+
+        function renderPositions(positions) {
+            const grid = document.getElementById('position-grid');
+            const nowTs = Date.now();
+            // Allow expired but not redeemable positions to show (Pending Resolution)
+            const activePositions = positions.filter(pos => !pos.redeemable && pos.curPrice > 0);
+
+            const resolvingCount = activePositions.filter(p => {
+                if (!p.endDate) return false;
+                // Add 24h to treat expiration as End of Day (UTC) to avoid early flagging
+                const endTs = new Date(p.endDate).getTime() + 86400000;
+                return nowTs > endTs;
+            }).length;
+            const tradingCount = activePositions.length - resolvingCount;
+
+            document.getElementById('pos-count').innerHTML = `
+                <span style="color:#e6edf3">${tradingCount} Trading</span> 
+                <span style="color:#8b949e; margin:0 6px;">|</span> 
+                <span style="color:#d29922">${resolvingCount} Resolving</span>
+            `;
+
+            // Aggregation for Summary
+            let stats = { invested: 0, equity: 0, pnl: 0, winners: 0, losers: 0, winPnl: 0, lossPnl: 0 };
+
+            // Grouping Logic
+            const groups = new Map();
+            activePositions.forEach(pos => {
+                stats.invested += pos.initialValue;
+                stats.equity += pos.currentValue;
+                stats.pnl += pos.cashPnl;
+                if (pos.cashPnl >= 0) { stats.winners++; stats.winPnl += pos.cashPnl; }
+                else { stats.losers++; stats.lossPnl += pos.cashPnl; }
+
+                // Grouping by Event
+                const groupKey = pos.eventSlug || pos.title;
+                // Use formatSlug if available, else title
+                const displayTitle = pos.eventSlug ? formatSlug(pos.eventSlug) : pos.title;
+
+                if (!groups.has(groupKey)) {
+                    // Check if this market is in the past (Resolving)
+                    let isResolving = false;
+                    if (pos.endDate) {
+                        try {
+                            const endTs = new Date(pos.endDate).getTime() + 86400000;
+                            isResolving = nowTs > endTs;
+                        } catch (e) {
+                            console.error("Date Error", e);
+                        }
+                    }
+
+                    groups.set(groupKey, {
+                        title: displayTitle,
+                        icon: pos.icon,
+                        positions: [],
+                        netPnL: 0,
+                        isResolving: isResolving
+                    });
+                }
+                const group = groups.get(groupKey);
+                group.positions.push(pos);
+                group.netPnL += pos.cashPnl;
+            });
+
+            // Update Summary UI
+            document.getElementById('total-invested').innerText = `$${stats.invested.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+            document.getElementById('total-equity').innerText = `$${stats.equity.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+            const pnlColor = stats.pnl >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
+            document.getElementById('total-pnl').innerText = `${stats.pnl >= 0 ? '+' : ''}$${Math.abs(stats.pnl).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+            document.getElementById('total-pnl').style.color = pnlColor;
+            const pnlPerc = stats.invested > 0 ? (stats.pnl / stats.invested * 100).toFixed(2) : '0.00';
+            document.getElementById('total-pnl-perc').innerText = `${stats.pnl >= 0 ? '+' : ''}${pnlPerc}%`;
+            document.getElementById('total-pnl-perc').style.color = pnlColor;
+            document.getElementById('winners-count').innerText = stats.winners;
+            document.getElementById('winners-pnl').innerText = `+$${stats.winPnl.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+            document.getElementById('losers-count').innerText = stats.losers;
+            document.getElementById('losers-pnl').innerText = `-$${Math.abs(stats.lossPnl).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+            const equityDiff = stats.equity - stats.invested;
+            document.getElementById('equity-diff').innerText = `${equityDiff >= 0 ? '+' : ''}$${Math.abs(equityDiff).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+            document.getElementById('equity-diff').style.color = equityDiff >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
+
+            // Render Groups
+            grid.innerHTML = '';
+            const sortedGroups = Array.from(groups.values()).sort((a, b) => a.title.localeCompare(b.title));
+
+            sortedGroups.forEach(group => {
+                const row = document.createElement('div');
+                row.className = `market-group ${group.isResolving ? 'resolving-group' : ''}`;
+
+                const pnlColorGroup = group.netPnL >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
+                const resolvingBadge = group.isResolving ?
+                    `<span class="resolving-badge"><span class="live-dot" style="background:#d29922; animation:none;"></span> AWAITING ORACLE</span>` : '';
+
+                let groupHtml = `
+                    <div class="group-header">
+                        <img class="group-icon" src="${group.icon || 'https://polymarket.com/favicon.ico'}" alt="">
+                        <div class="group-title">
+                            ${group.title}
+                            ${resolvingBadge}
+                        </div>
+                        <div class="group-pnl" style="color:${pnlColorGroup}">
+                            ${group.netPnL >= 0 ? '+' : ''}$${Math.abs(group.netPnL).toFixed(2)}
+                        </div>
+                    </div>
+                    <div class="outcomes-container">
+                `;
+
+                group.positions.forEach(pos => {
+                    const pnlClass = pos.percentPnl >= 0 ? 'pnl-positive' : 'pnl-negative';
+                    const sideClass = `badge-${pos.outcome.toLowerCase()}`;
+                    groupHtml += `
+                        <div class="outcome-panel">
+                            <div class="market-sub-title" style="font-size:0.8rem; color:#8b949e; margin-bottom:6px; line-height:1.3;">
+                                ${pos.title}
+                            </div>
+                            <div class="outcome-header">
+                                <span class="outcome-badge ${sideClass}">${pos.outcome}</span>
+                                <span class="pnl-text ${pnlClass}" style="font-family:'Roboto Mono'; font-size:0.85rem;">${pos.percentPnl >= 0 ? '+' : ''}${pos.percentPnl.toFixed(2)}%</span>
+                            </div>
+                            <div class="panel-stats">
+                                <div class="stat-line"><span class="stat-label">Precio Ent.</span><span class="stat-value">$${pos.avgPrice.toFixed(4)}</span></div>
+                                <div class="stat-line"><span class="stat-label">Valor Act.</span><span class="stat-value">$${pos.currentValue.toFixed(2)}</span></div>
+                                <div class="stat-line"><span class="stat-label">Tamaño</span><span class="stat-value">${Math.floor(pos.size).toLocaleString()}</span></div>
+                                <div class="stat-line"><span class="stat-label">PnL ($)</span><span class="stat-value ${pnlClass}">${pos.cashPnl >= 0 ? '+' : '-'}$${Math.abs(pos.cashPnl).toFixed(2)}</span></div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                groupHtml += `</div>`;
+                row.innerHTML = groupHtml;
+                grid.appendChild(row);
+            });
+        }
+
+        function trackResolved(positions) {
+            const ticker = document.getElementById('activity-ticker');
+
+            positions.forEach(pos => {
+                const lastState = processedResolved.get(pos.asset);
+                const currentState = {
+                    realizedPnl: pos.realizedPnl,
+                    size: pos.size,
+                    redeemable: pos.redeemable
+                };
+
+                // Initialize tracker if new asset observed
+                if (!lastState) {
+                    processedResolved.set(pos.asset, currentState);
+                    return;
+                }
+
+                // DETECT: Partial Sale or Profit Taking
+                // Condition: Realized PnL changed AND (Size decreased OR it's a new PnL bump)
+                const pnlChanged = Math.abs(pos.realizedPnl - lastState.realizedPnl) > 0.05;
+                const sizeDecreased = pos.size < lastState.size - 0.1; // tolerance for rounding
+                const becameRedeemable = pos.redeemable && !lastState.redeemable;
+
+                if ((pnlChanged || sizeDecreased || becameRedeemable) && !isFirstLoad) {
+                    let diffPnL = pos.realizedPnl - lastState.realizedPnl;
+
+                    // FIX: If market just finished (Redeemable) but realizedPnL didn't update yet (not claimed),
+                    // use the internal 'cashPnl' which represents (FinalValue - Cost).
+                    if (becameRedeemable && Math.abs(diffPnL) < 0.01) {
+                        diffPnL = pos.cashPnl;
+                        // Note: This assumes the 'cashPnl' reflects the final settlement state correctly 
+                        // (e.g. price went to 1 or 0).
+                    }
+
+                    // Allow logging even if PnL diff is 0, provided size changed significantly or the market finished
+                    const significantAction = Math.abs(diffPnL) > 0.01 || sizeDecreased || becameRedeemable;
+
+                    if (significantAction) {
+                        sessionRealizedPnL += diffPnL;
+                        updateSessionPnLDisplay();
+                        addTickerItem(ticker, pos, diffPnL, becameRedeemable ? "Finalizado" : "Venta Parcial");
+                    }
+                }
+
+                // Update state for next poll
+                processedResolved.set(pos.asset, currentState);
+            });
+
+            if (isFirstLoad) isFirstLoad = false;
+        }
+
+        function updateSessionPnLDisplay() {
+            const el = document.getElementById('session-pnl');
+            el.innerText = `${sessionRealizedPnL >= 0 ? '+' : ''}$${sessionRealizedPnL.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+            el.style.color = sessionRealizedPnL >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
+        }
+
+        function addTickerItem(container, pos, amount, type) {
+            const item = document.createElement('div');
+            item.className = 'ticker-item';
+            const pnlColor = amount >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
+
+            // Estimation of invested amount for this specific chunk is hard without trade history.
+            // We show the realized amount for this event.
+
+            item.innerHTML = `
+                <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                    <span class="ticker-time">${new Date().toLocaleTimeString([], { hour12: false })}</span>
+                    <span style="font-size:0.65rem; color:#8b949e; text-transform:uppercase; border:1px solid #30363d; padding:1px 4px; border-radius:4px;">${type}</span>
+                </div>
+                <span class="ticker-market">${pos.title}</span>
+                <div style="font-size:0.7rem; color:#8b949e; margin-bottom: 8px;">Outcome: <b style="color:#e6edf3">${pos.outcome}</b></div>
+                
+                <div class="ticker-financials">
+                     <div class="ticker-fin-item" style="grid-column: span 2; display:flex; flex-direction:row; justify-content:space-between; align-items:center;">
+                        <span class="ticker-fin-label">Resultado Operación</span>
+                        <span class="ticker-fin-value" style="font-size:0.9rem; color:${pnlColor}">${amount >= 0 ? '+' : ''}$${amount.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+            container.insertBefore(item, container.firstChild);
+            while (container.children.length > 50) container.removeChild(container.lastChild);
+        }
+        setInterval(updateDashboard, 2000);
+        updateDashboard();
+    </script>
+</body>
+
+</html>
