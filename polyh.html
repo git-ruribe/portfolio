@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polymarket Order Book Scanner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0f172a; color: #e2e8f0; }
+       .custom-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }
+       .custom-scrollbar::-webkit-scrollbar-track { background: #1e293b; }
+       .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+       .bid-row { background: linear-gradient(90deg, rgba(34, 197, 94, 0.1) 0%, transparent 100%); }
+       .ask-row { background: linear-gradient(90deg, rgba(239, 68, 68, 0.1) 0%, transparent 100%); }
+    </style>
+</head>
+<body class="min-h-screen p-6 font-sans">
+
+    <div class="max-w-7xl mx-auto">
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 mb-6 shadow-xl">
+            <h1 class="text-3xl font-bold mb-2 text-white">Meteorological Market Scanner</h1>
+            <p class="text-slate-400 mb-6">Analizador del Limit Order Book (CLOB) para mercados de temperatura.</p>
+            
+            <div class="flex flex-col md:flex-row gap-4">
+                <input type="text" id="urlInput" 
+                    value="https://polymarket.com/event/highest-temperature-in-chicago-on-february-21-2026" 
+                    class="flex-1 bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                    placeholder="Pega la URL del evento de Polymarket aquí...">
+                
+                <button id="fetchBtn" onclick="app.startFetch()" 
+                    class="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-8 rounded-lg transition-colors shadow-lg shadow-blue-500/30">
+                    Escanear Mercado
+                </button>
+            </div>
+            
+            <div class="mt-4 flex items-center justify-between text-sm text-slate-400">
+                <div class="flex items-center gap-2">
+                    <div id="statusDot" class="w-3 h-3 rounded-full bg-slate-500"></div>
+                    <span id="statusText">Esperando acción...</span>
+                </div>
+                <div>Última actualización: <span id="lastUpdate" class="text-white font-mono">--:--:--</span></div>
+            </div>
+        </div>
+
+        <div id="marketsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+    </div>
+
+    <script>
+        const app = {
+            timer: null,
+            intervalMs: 5 * 60 * 1000, // 5 minutos
+
+            // 1. Extraer el Slug de la URL
+            getSlugFromUrl: (url) => {
+                try {
+                    const urlObj = new URL(url);
+                    const pathParts = urlObj.pathname.split('/').filter(p => p.length > 0);
+                    // Usualmente la URL es /event/slug-del-evento
+                    const eventIndex = pathParts.indexOf('event');
+                    if (eventIndex!== -1 && pathParts.length > eventIndex + 1) {
+                        return pathParts[eventIndex + 1];
+                    }
+                    return pathParts[pathParts.length - 1]; // Fallback al último segmento
+                } catch (e) {
+                    return url.trim(); // Si falla, asumimos que el usuario pegó el slug directamente
+                }
+            },
+
+            // 2. Iniciar el escaneo y configurar el loop de 5 minutos
+            startFetch: async () => {
+                if(app.timer) clearInterval(app.timer);
+                await app.fetchData();
+                app.timer = setInterval(app.fetchData, app.intervalMs);
+            },
+
+            // 3. Orquestador Principal
+            fetchData: async () => {
+                const url = document.getElementById('urlInput').value;
+                const slug = app.getSlugFromUrl(url);
+                const container = document.getElementById('marketsContainer');
+                
+                app.updateStatus('Conectando a Gamma API...', 'bg-yellow-500');
+                
+                try {
+                    // Llamada a Gamma API para obtener la metadata del evento
+                    const eventRes = await fetch(`https://gamma-api.polymarket.com/events?slug=${slug}`);
+                    const events = await eventRes.json();
+                    
+                    if (!events |
+
+| events.length === 0) {
+                        throw new Error("No se encontró el evento. Verifica la URL.");
+                    }
+
+                    const eventData = events;
+                    container.innerHTML = ''; // Limpiar contenedor
+                    app.updateStatus(`Evento encontrado: ${eventData.title}. Cargando Order Books...`, 'bg-blue-500');
+
+                    // Procesar cada mercado (rango de temperatura) dentro del evento
+                    const markets = eventData.markets ||;
+                    
+                    // Ordenamos los mercados por su valor nominal si es posible
+                    for (const market of markets) {
+                        // El índice 0 de clobTokenIds siempre representa las acciones "Sí" (Yes)
+                        const yesTokenId = market.clobTokenIds; 
+                        await app.buildMarketCard(market, yesTokenId, container);
+                    }
+
+                    app.updateStatus('Datos actualizados correctamente.', 'bg-green-500');
+                    document.getElementById('lastUpdate').innerText = new Date().toLocaleTimeString();
+
+                } catch (error) {
+                    console.error(error);
+                    app.updateStatus(`Error: ${error.message}`, 'bg-red-500');
+                }
+            },
+
+            // 4. Obtener el CLOB (Order Book) y crear la tarjeta HTML
+            buildMarketCard: async (market, tokenId, container) => {
+                // Crear el esqueleto de la tarjeta
+                const card = document.createElement('div');
+                card.className = "bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-lg";
+                
+                const title = market.question |
+
+| market.groupItemTitle |
+| "Rango Desconocido";
+                
+                let orderBookHtml = `<div class="p-4 text-center text-slate-400 animate-pulse">Cargando liquidez...</div>`;
+                
+                card.innerHTML = `
+                    <div class="bg-slate-900 border-b border-slate-700 p-4 flex justify-between items-center">
+                        <h2 class="text-lg font-bold text-white">${title}</h2>
+                        <span class="px-2 py-1 bg-slate-700 text-xs rounded text-slate-300 font-mono">Prob: ${(market.impliedProbability * 100).toFixed(1)}%</span>
+                    </div>
+                    <div class="flex-1 p-0" id="ob-${tokenId}">
+                        ${orderBookHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+
+                try {
+                    // Llamada al CLOB API público para el Order Book del token
+                    const obRes = await fetch(`https://clob.polymarket.com/book?token_id=${tokenId}`);
+                    const obData = await obRes.json();
+                    
+                    document.getElementById(`ob-${tokenId}`).innerHTML = app.renderOrderBookTable(obData.bids, obData.asks);
+                } catch (error) {
+                    document.getElementById(`ob-${tokenId}`).innerHTML = `<div class="p-4 text-red-400 text-sm">Error cargando CLOB. Posible bloqueo CORS o API caída.</div>`;
+                }
+            },
+
+            // 5. Renderizar Bids y Asks en formato de tabla
+            renderOrderBookTable: (bids, asks) => {
+                // Tomar los 5 mejores precios de cada lado (Top of the book)
+                const topAsks = (asks ||).sort((a, b) => parseFloat(a.price) - parseFloat(b.price)).slice(0, 5).reverse(); // Vendedores (rojo), ordenados de mayor a menor para la vista
+                const topBids = (bids ||).sort((a, b) => parseFloat(b.price) - parseFloat(a.price)).slice(0, 5); // Compradores (verde)
+
+                let html = `
+                    <div class="w-full text-sm font-mono flex flex-col">
+                        <div class="grid grid-cols-2 text-slate-400 border-b border-slate-700 bg-slate-800/50 p-2 text-xs">
+                            <div class="text-left">Volumen (Acciones)</div>
+                            <div class="text-right">Precio (USDC)</div>
+                        </div>
+                `;
+
+                // Renderizar Asks (Ventas)
+                if(topAsks.length === 0) {
+                    html += `<div class="p-2 text-center text-slate-500 italic text-xs">Libro de ventas vacío</div>`;
+                }
+                topAsks.forEach(ask => {
+                    html += `
+                        <div class="grid grid-cols-2 p-2 ask-row border-b border-slate-800/50">
+                            <div class="text-left text-slate-300">${parseFloat(ask.size).toFixed(0)}</div>
+                            <div class="text-right text-red-400 font-bold">$${parseFloat(ask.price).toFixed(3)}</div>
+                        </div>
+                    `;
+                });
+
+                // Separador del Mid-Market
+                html += `<div class="w-full h-px bg-slate-600 my-1"></div>`;
+
+                // Renderizar Bids (Compras)
+                if(topBids.length === 0) {
+                    html += `<div class="p-2 text-center text-slate-500 italic text-xs">Libro de compras vacío</div>`;
+                }
+                topBids.forEach(bid => {
+                    html += `
+                        <div class="grid grid-cols-2 p-2 bid-row border-b border-slate-800/50">
+                            <div class="text-left text-slate-300">${parseFloat(bid.size).toFixed(0)}</div>
+                            <div class="text-right text-green-400 font-bold">$${parseFloat(bid.price).toFixed(3)}</div>
+                        </div>
+                    `;
+                });
+
+                html += `</div>`;
+                return html;
+            },
+
+            updateStatus: (text, colorClass) => {
+                document.getElementById('statusText').innerText = text;
+                const dot = document.getElementById('statusDot');
+                dot.className = `w-3 h-3 rounded-full ${colorClass} animate-pulse`;
+            }
+        };
+
+        // Iniciar automáticamente con la URL por defecto al cargar la página
+        window.onload = () => {
+            app.startFetch();
+        };
+    </script>
+</body>
+</html>
