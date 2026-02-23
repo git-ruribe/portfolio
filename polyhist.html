@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador y Gráficas - Polymarket</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; padding: 20px; max-width: 900px; margin: auto; background-color: #f4f7f9; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        h2 { margin-top: 0; color: #111; }
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        input { flex: 1; padding: 12px; font-size: 16px; border: 1px solid #d1d5db; border-radius: 6px; }
+        button { padding: 12px 20px; font-size: 16px; background-color: #0052FF; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.2s; }
+        button:hover { background-color: #003ECC; }
+        .options-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+        .option-btn { background-color: #e0e7ff; color: #0052FF; border: 1px solid #0052FF; border-radius: 20px; padding: 8px 16px; font-size: 14px; }
+        .option-btn:hover { background-color: #c7d2fe; }
+        canvas { border: 1px solid #eee; border-radius: 8px; background-color: #fcfcfc; margin-top: 20px; width: 100%; }
+        #chartContainer { display: none; } /* Oculto hasta que haya datos */
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>1. Buscar Mercado en Polymarket</h2>
+        <p>Pega la URL completa del evento (ej. <em>https://polymarket.com/event/highest-temperature-in-nyc...</em>)</p>
+        
+        <div class="input-group">
+            <input type="text" id="urlInput" placeholder="https://polymarket.com/event/...">
+            <button onclick="searchEvent()">Buscar Opciones</button>
+        </div>
+
+        <div id="optionsContainer">
+            </div>
+    </div>
+
+    <div class="card" id="chartContainer">
+        <h2 id="chartTitle">Historial de Precio</h2>
+        <canvas id="priceChart" height="120"></canvas>
+    </div>
+
+    <script>
+        let priceChartInstance = null;
+
+        // Paso 1: Buscar el evento en la API Gamma de Polymarket
+        async function searchEvent() {
+            const urlInput = document.getElementById('urlInput').value.trim();
+            const optionsContainer = document.getElementById('optionsContainer');
+            
+            // Extraer el "slug" (identificador) de la URL usando una expresión regular
+            const match = urlInput.match(/polymarket\.com\/event\/([^/\?]+)/);
+            if (!match) {
+                alert("Por favor, ingresa una URL válida de un evento de Polymarket.");
+                return;
+            }
+            
+            const slug = match[1];
+            optionsContainer.innerHTML = "<p>Buscando en la blockchain...</p>";
+
+            try {
+                // Consultar la API Gamma pública
+                const response = await fetch(`https://gamma-api.polymarket.com/events?slug=${slug}`);
+                const events = await response.json();
+
+                if (!events || events.length === 0) {
+                    optionsContainer.innerHTML = "<p style='color:red;'>No se encontró el evento. Verifica la URL.</p>";
+                    return;
+                }
+
+                const event = events[0];
+                optionsContainer.innerHTML = `<h3>Elige una opción para "${event.title}":</h3><div class="options-grid" id="buttonsGrid"></div>`;
+                const buttonsGrid = document.getElementById('buttonsGrid');
+
+                // Recorrer los sub-mercados (opciones) del evento
+                event.markets.forEach(market => {
+                    const optionName = market.groupItemTitle || market.question || "Opción Única";
+                    
+                    // Los Token IDs vienen en un string con formato JSON "[ '0x...', '0x...' ]"
+                    let clobIds = [];
+                    try {
+                        clobIds = typeof market.clobTokenIds === 'string' ? JSON.parse(market.clobTokenIds) : market.clobTokenIds;
+                    } catch(e) { console.error("Error parseando IDs", e); }
+
+                    if (clobIds && clobIds.length > 0) {
+                        const yesTokenId = clobIds[0]; // El índice 0 siempre representa la acción "Sí"
+                        
+                        const btn = document.createElement('button');
+                        btn.className = 'option-btn';
+                        btn.innerText = `📈 ${optionName}`;
+                        btn.onclick = () => fetchPriceHistory(yesTokenId, optionName);
+                        buttonsGrid.appendChild(btn);
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error:", error);
+                optionsContainer.innerHTML = "<p style='color:red;'>Error de conexión con la API Gamma.</p>";
+            }
+        }
+
+        // Paso 2: Graficar usando la API CLOB
+        async function fetchPriceHistory(tokenId, optionName) {
+            document.getElementById('chartContainer').style.display = 'block';
+            document.getElementById('chartTitle').innerText = `Historial: ${optionName}`;
+            
+            // Usamos un intervalo de 1 hora (1h) para mayor detalle, puede cambiarse a 1d (1 día)
+            const url = `https://clob.polymarket.com/prices-history?market=${tokenId}&interval=1h`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (!data.history || data.history.length === 0) {
+                    alert("No hay datos históricos suficientes para esta opción aún.");
+                    return;
+                }
+
+                const labels = data.history.map(punto => new Date(punto.t * 1000).toLocaleString());
+                const precios = data.history.map(punto => punto.p); // Precio en dólares
+
+                renderChart(labels, precios, optionName);
+
+            } catch (error) {
+                console.error("Error CLOB:", error);
+                alert("Error al cargar el historial de precios.");
+            }
+        }
+
+        function renderChart(labels, precios, optionName) {
+            const ctx = document.getElementById('priceChart').getContext('2d');
+            
+            if (priceChartInstance) {
+                priceChartInstance.destroy();
+            }
+
+            priceChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: `Probabilidad de "${optionName}" ($)`,
+                        data: precios,
+                        borderColor: '#0052FF',
+                        backgroundColor: 'rgba(0, 82, 255, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        pointRadius: 0, // Oculta los puntos para una línea más limpia
+                        tension: 0.2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    interaction: { mode: 'index', intersect: false },
+                    scales: {
+                        y: { min: 0, max: 1, title: { display: true, text: 'Precio ($)' } },
+                        x: { display: false } // Ocultamos las fechas del eje X para que no se sature
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
