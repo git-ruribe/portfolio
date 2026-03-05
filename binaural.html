@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Generador Binaural</title>
+    <style>
+        /* Diseño general optimizado para móvil oscuro */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden; /* Evita el scroll accidental en móvil */
+            touch-action: none; /* Mejora el uso de los sliders */
+        }
+
+        #app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Panel superior de frecuencias */
+        #display-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #1e1e1e;
+            padding: 20px 10px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+        }
+
+        .freq-box {
+            text-align: center;
+            flex: 1;
+        }
+
+        .freq-box span {
+            display: block;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .freq-box small {
+            color: #888;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .highlight {
+            color: #00ffcc; /* Color llamativo para la resta/binaural */
+            transform: scale(1.1);
+        }
+        
+        .highlight span {
+            font-size: 32px;
+        }
+
+        /* Botón central */
+        #control-panel {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #play-btn {
+            background-color: #ff4757;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        #play-btn.playing {
+            background-color: #2ed573;
+            box-shadow: 0 5px 15px rgba(46, 213, 115, 0.4);
+        }
+
+        /* Sliders Verticales (Mezcladora) */
+        #mixer-panel {
+            display: flex;
+            justify-content: space-around;
+            flex: 1;
+            padding-bottom: 20px;
+        }
+
+        .channel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            width: 40%;
+        }
+
+        /* Truco para hacer el slider vertical en todos los navegadores móviles */
+        input[type=range] {
+            -webkit-appearance: slider-vertical;
+            appearance: slider-vertical;
+            width: 40px;
+            height: 100%;
+            background: #333;
+            outline: none;
+            border-radius: 20px;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 50px;
+            height: 50px;
+            background: #ffffff;
+            border-radius: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+        
+        .warning {
+            text-align: center;
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <div class="warning">🎧 Requiere uso de auriculares estéreo</div>
+    
+    <div id="display-panel">
+        <div class="freq-box">
+            <span id="val-izq">400</span>
+            <small>Izq (Hz)</small>
+        </div>
+        <div class="freq-box highlight">
+            <span id="val-resta">10.0</span>
+            <small>Binaural</small>
+        </div>
+        <div class="freq-box">
+            <span id="val-der">410</span>
+            <small>Der (Hz)</small>
+        </div>
+    </div>
+
+    <div id="control-panel">
+        <button id="play-btn">Encender</button>
+    </div>
+
+    <div id="mixer-panel">
+        <div class="channel">
+            <input type="range" id="slider-izq" min="100" max="600" value="400" orient="vertical">
+        </div>
+        <div class="channel">
+            <input type="range" id="slider-der" min="100" max="600" value="410" orient="vertical">
+        </div>
+    </div>
+</div>
+
+<script>
+    // Variables del sistema de audio
+    let audioCtx;
+    let oscIzq, oscDer;
+    let panIzq, panDer;
+    let nodoVolumen;
+    let encendido = false;
+
+    // Referencias a los elementos del DOM (HTML)
+    const sliderIzq = document.getElementById('slider-izq');
+    const sliderDer = document.getElementById('slider-der');
+    const txtIzq = document.getElementById('val-izq');
+    const txtDer = document.getElementById('val-der');
+    const txtResta = document.getElementById('val-resta');
+    const btnPlay = document.getElementById('play-btn');
+
+    // Función para actualizar los números en pantalla
+    function actualizarPantalla() {
+        const freqIzq = parseFloat(sliderIzq.value);
+        const freqDer = parseFloat(sliderDer.value);
+        
+        txtIzq.innerText = freqIzq;
+        txtDer.innerText = freqDer;
+        
+        // Calculamos la resta (el pulso binaural)
+        const resta = Math.abs(freqDer - freqIzq);
+        txtResta.innerText = resta.toFixed(1);
+
+        // Si está sonando, actualizamos la frecuencia en tiempo real
+        if (encendido) {
+            oscIzq.frequency.setValueAtTime(freqIzq, audioCtx.currentTime);
+            oscDer.frequency.setValueAtTime(freqDer, audioCtx.currentTime);
+        }
+    }
+
+    // Escuchamos el movimiento de los sliders
+    sliderIzq.addEventListener('input', actualizarPantalla);
+    sliderDer.addEventListener('input', actualizarPantalla);
+
+    // Función para iniciar o apagar el audio
+    function alternarAudio() {
+        // Inicializar el contexto de audio si no existe
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        // Si el navegador bloqueó el audio, lo reanudamos
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+
+        if (encendido) {
+            // APAGAR
+            nodoVolumen.gain.setTargetAtTime(0, audioCtx.currentTime, 0.1); // Apagado suave
+            setTimeout(() => {
+                oscIzq.stop();
+                oscDer.stop();
+                oscIzq.disconnect();
+                oscDer.disconnect();
+            }, 200);
+            
+            btnPlay.innerText = "Encender";
+            btnPlay.classList.remove('playing');
+            encendido = false;
+        } else {
+            // ENCENDER
+            // 1. Crear control de volumen maestro
+            nodoVolumen = audioCtx.createGain();
+            nodoVolumen.gain.value = 0; // Inicia en 0 para encendido suave
+            nodoVolumen.connect(audioCtx.destination);
+
+            // 2. Crear los generadores de tono (osciladores) de onda senoidal
+            oscIzq = audioCtx.createOscillator();
+            oscDer = audioCtx.createOscillator();
+            oscIzq.type = 'sine';
+            oscDer.type = 'sine';
+            oscIzq.frequency.value = sliderIzq.value;
+            oscDer.frequency.value = sliderDer.value;
+
+            // 3. Crear paneo estéreo (Izquierda / Derecha)
+            panIzq = audioCtx.createStereoPanner();
+            panDer = audioCtx.createStereoPanner();
+            panIzq.pan.value = -1; // 100% Izquierda
+            panDer.pan.value = 1;  // 100% Derecha
+
+            // 4. Conectar los cables virtuales: Oscilador -> Paneo -> Volumen -> Altavoz
+            oscIzq.connect(panIzq).connect(nodoVolumen);
+            oscDer.connect(panDer).connect(nodoVolumen);
+
+            // 5. Reproducir
+            oscIzq.start();
+            oscDer.start();
+            nodoVolumen.gain.setTargetAtTime(1, audioCtx.currentTime, 0.1); // Subida suave
+
+            btnPlay.innerText = "Apagar";
+            btnPlay.classList.add('playing');
+            encendido = true;
+        }
+    }
+
+    // Evento del botón central
+    btnPlay.addEventListener('click', alternarAudio);
+
+    // Inicializar la pantalla al cargar
+    actualizarPantalla();
+</script>
+
+</body>
+</html>
