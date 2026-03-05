@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Generador Binaural Pro</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        #app-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .warning { text-align: center; font-size: 12px; color: #aaa; margin-bottom: 10px; }
+
+        /* Panel superior */
+        #display-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #1e1e1e;
+            padding: 15px 10px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .freq-box { text-align: center; flex: 1; }
+        .freq-box span { display: block; font-size: 24px; font-weight: bold; }
+        .freq-box small { color: #888; font-size: 11px; text-transform: uppercase; }
+        
+        /* Controles de afinación */
+        .fine-tune-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .btn-tune {
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+            line-height: 1;
+            cursor: pointer;
+        }
+        .btn-tune:active { background-color: #555; }
+
+        /* Centro dinámico */
+        .highlight { transition: color 0.3s ease; }
+        .highlight span { font-size: 32px; }
+        #wave-name { display: block; font-size: 14px; font-weight: bold; margin-top: 5px; }
+
+        /* Botón Central */
+        #control-panel { text-align: center; margin-bottom: 20px; }
+        #play-btn {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        /* Sliders */
+        #mixer-panel {
+            display: flex;
+            justify-content: space-around;
+            height: 200px;
+            margin-bottom: 20px;
+        }
+        .channel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+        }
+        input[type=range] {
+            -webkit-appearance: slider-vertical;
+            appearance: slider-vertical;
+            width: 40px;
+            height: 100%;
+            background: #333;
+            outline: none;
+            border-radius: 20px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 50px;
+            height: 50px;
+            background: #ffffff;
+            border-radius: 25px;
+        }
+
+        /* Gestor de Presets */
+        #preset-panel {
+            background-color: #1e1e1e;
+            padding: 15px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .preset-row { display: flex; gap: 10px; }
+        input[type="text"], select {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background-color: #121212;
+            color: white;
+            font-size: 14px;
+        }
+        button.btn-preset {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        #nota-display {
+            font-size: 12px;
+            color: #aaa;
+            font-style: italic;
+            text-align: center;
+            min-height: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <div class="warning">🎧 Requiere uso de auriculares estéreo</div>
+    
+    <div id="display-panel">
+        <div class="freq-box">
+            <span id="val-izq">400</span>
+            <small>Izq (Hz)</small>
+            <div class="fine-tune-container">
+                <button class="btn-tune" onclick="afinar('izq', -1)">-</button>
+                <button class="btn-tune" onclick="afinar('izq', 1)">+</button>
+            </div>
+        </div>
+        <div class="freq-box highlight" id="binaural-box">
+            <span id="val-resta">10.0</span>
+            <span id="wave-name">Alfa</span>
+        </div>
+        <div class="freq-box">
+            <span id="val-der">410</span>
+            <small>Der (Hz)</small>
+            <div class="fine-tune-container">
+                <button class="btn-tune" onclick="afinar('der', -1)">-</button>
+                <button class="btn-tune" onclick="afinar('der', 1)">+</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="control-panel">
+        <button id="play-btn">Encender</button>
+    </div>
+
+    <div id="mixer-panel">
+        <div class="channel">
+            <input type="range" id="slider-izq" min="100" max="600" value="400" orient="vertical">
+        </div>
+        <div class="channel">
+            <input type="range" id="slider-der" min="100" max="600" value="410" orient="vertical">
+        </div>
+    </div>
+
+    <div id="preset-panel">
+        <div class="preset-row">
+            <input type="text" id="preset-name" placeholder="Nombre (Ej. Dormir)">
+            <button class="btn-preset" onclick="guardarPreset()">Guardar</button>
+        </div>
+        <input type="text" id="preset-note" placeholder="Nota (Ej. Usar por 20 min)">
+        <div class="preset-row">
+            <select id="preset-list" onchange="cargarPreset()">
+                <option value="">Selecciona un preset...</option>
+            </select>
+            <button class="btn-preset" onclick="borrarPreset()" style="background-color: #ff4757;">Borrar</button>
+        </div>
+        <div id="nota-display"></div>
+    </div>
+</div>
+
+<script>
+    let audioCtx, oscIzq, oscDer, panIzq, panDer, nodoVolumen;
+    let encendido = false;
+    let waveColor = "#78e08f"; // Color por defecto (Alfa)
+
+    const sliderIzq = document.getElementById('slider-izq');
+    const sliderDer = document.getElementById('slider-der');
+    const txtIzq = document.getElementById('val-izq');
+    const txtDer = document.getElementById('val-der');
+    const txtResta = document.getElementById('val-resta');
+    const waveName = document.getElementById('wave-name');
+    const binauralBox = document.getElementById('binaural-box');
+    const displayPanel = document.getElementById('display-panel');
+    const btnPlay = document.getElementById('play-btn');
+
+    // 1. Actualización y Colores
+    function actualizarPantalla() {
+        const freqIzq = parseFloat(sliderIzq.value);
+        const freqDer = parseFloat(sliderDer.value);
+        
+        txtIzq.innerText = freqIzq;
+        txtDer.innerText = freqDer;
+        
+        const resta = Math.abs(freqDer - freqIzq);
+        txtResta.innerText = resta.toFixed(1);
+
+        // Lógica de ondas cerebrales y colores
+        let nombre = "";
+        if (resta < 4) { nombre = "Delta"; waveColor = "#4a69bd"; } // Azul profundo (Sueño)
+        else if (resta < 8) { nombre = "Theta"; waveColor = "#60a3bc"; } // Azul claro (Meditación)
+        else if (resta < 14) { nombre = "Alfa"; waveColor = "#78e08f"; } // Verde (Relajación)
+        else if (resta < 30) { nombre = "Beta"; waveColor = "#f6b93b"; } // Amarillo (Enfoque)
+        else { nombre = "Gamma"; waveColor = "#e55039"; } // Rojo (Procesamiento alto)
+
+        waveName.innerText = nombre;
+        binauralBox.style.color = waveColor;
+        displayPanel.style.boxShadow = `0 4px 15px ${waveColor}40`; // Sombra dinámica
+
+        if (encendido) {
+            oscIzq.frequency.setValueAtTime(freqIzq, audioCtx.currentTime);
+            oscDer.frequency.setValueAtTime(freqDer, audioCtx.currentTime);
+            btnPlay.style.backgroundColor = waveColor;
+            btnPlay.style.boxShadow = `0 5px 15px ${waveColor}60`;
+        }
+    }
+
+    // 2. Afinar (+ / -)
+    function afinar(canal, cantidad) {
+        let slider = canal === 'izq' ? sliderIzq : sliderDer;
+        let nuevoValor = parseFloat(slider.value) + cantidad;
+        
+        // Mantener dentro del rango de 100 a 600
+        if(nuevoValor >= 100 && nuevoValor <= 600) {
+            slider.value = nuevoValor;
+            actualizarPantalla();
+        }
+    }
+
+    sliderIzq.addEventListener('input', actualizarPantalla);
+    sliderDer.addEventListener('input', actualizarPantalla);
+
+    // 3. Sistema de Audio
+    function alternarAudio() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        if (encendido) {
+            nodoVolumen.gain.setTargetAtTime(0, audioCtx.currentTime, 0.1);
+            setTimeout(() => { oscIzq.stop(); oscDer.stop(); oscIzq.disconnect(); oscDer.disconnect(); }, 200);
+            
+            btnPlay.innerText = "Encender";
+            btnPlay.style.backgroundColor = "#333";
+            btnPlay.style.boxShadow = "none";
+            encendido = false;
+        } else {
+            nodoVolumen = audioCtx.createGain();
+            nodoVolumen.gain.value = 0;
+            nodoVolumen.connect(audioCtx.destination);
+
+            oscIzq = audioCtx.createOscillator(); oscDer = audioCtx.createOscillator();
+            oscIzq.type = 'sine'; oscDer.type = 'sine';
+            oscIzq.frequency.value = sliderIzq.value; oscDer.frequency.value = sliderDer.value;
+
+            panIzq = audioCtx.createStereoPanner(); panDer = audioCtx.createStereoPanner();
+            panIzq.pan.value = -1; panDer.pan.value = 1;
+
+            oscIzq.connect(panIzq).connect(nodoVolumen);
+            oscDer.connect(panDer).connect(nodoVolumen);
+
+            oscIzq.start(); oscDer.start();
+            nodoVolumen.gain.setTargetAtTime(1, audioCtx.currentTime, 0.1);
+
+            btnPlay.innerText = "Apagar";
+            btnPlay.style.backgroundColor = waveColor;
+            btnPlay.style.boxShadow = `0 5px 15px ${waveColor}60`;
+            encendido = true;
+        }
+    }
+    btnPlay.addEventListener('click', alternarAudio);
+
+    // 4. Sistema de Presets (Memoria Local)
+    function cargarListaPresets() {
+        const select = document.getElementById('preset-list');
+        select.innerHTML = '<option value="">Selecciona un preset...</option>';
+        const presets = JSON.parse(localStorage.getItem('binaural_presets')) || [];
+        
+        presets.forEach((p, index) => {
+            let option = document.createElement('option');
+            option.value = index;
+            option.text = p.name;
+            select.appendChild(option);
+        });
+    }
+
+    function guardarPreset() {
+        const nameInput = document.getElementById('preset-name');
+        const noteInput = document.getElementById('preset-note');
+        
+        if(!nameInput.value.trim()) { alert("Dale un nombre al preset primero."); return; }
+
+        let presets = JSON.parse(localStorage.getItem('binaural_presets')) || [];
+        presets.push({
+            name: nameInput.value,
+            note: noteInput.value,
+            izq: sliderIzq.value,
+            der: sliderDer.value
+        });
+
+        localStorage.setItem('binaural_presets', JSON.stringify(presets));
+        nameInput.value = ""; noteInput.value = "";
+        cargarListaPresets();
+    }
+
+    function cargarPreset() {
+        const select = document.getElementById('preset-list');
+        const noteDisplay = document.getElementById('nota-display');
+        
+        if(select.value === "") { noteDisplay.innerText = ""; return; }
+
+        const presets = JSON.parse(localStorage.getItem('binaural_presets')) || [];
+        const preset = presets[select.value];
+
+        if(preset) {
+            sliderIzq.value = preset.izq;
+            sliderDer.value = preset.der;
+            noteDisplay.innerText = preset.note ? `Nota: "${preset.note}"` : "";
+            actualizarPantalla();
+        }
+    }
+
+    function borrarPreset() {
+        const select = document.getElementById('preset-list');
+        if(select.value === "") return;
+
+        let presets = JSON.parse(localStorage.getItem('binaural_presets')) || [];
+        presets.splice(select.value, 1); // Elimina el elemento seleccionado
+        localStorage.setItem('binaural_presets', JSON.stringify(presets));
+        
+        document.getElementById('nota-display').innerText = "";
+        cargarListaPresets();
+    }
+
+    // Inicializar
+    actualizarPantalla();
+    cargarListaPresets();
+</script>
+
+</body>
+</html>
