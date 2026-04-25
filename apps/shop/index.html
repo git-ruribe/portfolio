@@ -198,8 +198,8 @@
                 products.forEach(product => {
                     const quantity = cart[product.id] || 0;
                     const baseName = product.imageName;
-                    const imgNameLower = `${baseName}.jpeg`;
-                    const imgNameUpper = `${baseName}.JPG`;
+                    const imgNameLower = `../../assets/images/${baseName}.jpeg`;
+                    const imgNameUpper = `../../assets/images/${baseName}.JPG`;
 
                     const itemHtml = `
                         <div class="relative rounded-xl bg-gray-800 p-2 flex justify-center items-center cursor-pointer transform hover:scale-105 transition-transform" data-product-id="${product.id}">
@@ -221,8 +221,8 @@
                 
                 const { name, description, price, color, imageName } = currentProduct;
                 const baseName = imageName;
-                const imgNameLower = `${baseName}.jpeg`;
-                const imgNameUpper = `${baseName}.JPG`;
+                const imgNameLower = `../../assets/images/${baseName}.jpeg`;
+                const imgNameUpper = `../../assets/images/${baseName}.JPG`;
 
                 const modalImageContainer = productModal.querySelector('#modal-image-container');
                 modalImageContainer.innerHTML = `

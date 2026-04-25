@@ -3,219 +3,1842 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Portafolio de Aplicaciones</title>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
+    <title>Rafael Uribe | Digital Portfolio</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    
     <style>
-        /* Tus estilos generales para el portafolio */
-        body { font-family: sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; color: #333; }
-        header { text-align: center; margin-bottom: 40px; }
-        h1, h2 { color: #0056b3; } /* Tono de azul ligeramente más oscuro */
-        main { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        :root {
+            --bg: #050505;
+            --surface: rgba(255, 255, 255, 0.05);
+            --surface-hover: rgba(255, 255, 255, 0.1);
+            --accent: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+        }
 
-        /* --- NUEVO: Estilo para los títulos de sección --- */
-        .section-title {
-            font-size: 2em;
-            margin-top: 50px;
-            margin-bottom: 25px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #007bff;
-            display: inline-block;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
         }
-        
-        /* Estilo de la rejilla que ahora se aplicará a cada sección */
-        .portfolio-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-            padding-bottom: 20px; /* Espacio después de la última fila de tarjetas */
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
         }
-        .portfolio-item {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            overflow: hidden;
+
+        /* --- Scrollbar Customization --- */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* --- Background Effects --- */
+        .glow {
+            position: fixed;
+            width: 40vw;
+            height: 40vw;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+            top: -10vw;
+            right: -10vw;
+            z-index: -1;
+            filter: blur(100px);
+            pointer-events: none;
+        }
+
+        .glow-2 {
+            position: fixed;
+            width: 30vw;
+            height: 30vw;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, transparent 70%);
+            bottom: -5vw;
+            left: -5vw;
+            z-index: -1;
+            filter: blur(100px);
+            pointer-events: none;
+        }
+
+        /* --- Header --- */
+        header {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+
+        /* --- Hero --- */
+
+        /* --- Hero --- */
+        .hero {
+            padding: 6rem 2rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
             text-align: center;
-            padding-bottom: 20px;
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
-        .portfolio-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -2px;
+            line-height: 1.1;
         }
-        .portfolio-item img {
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+        }
+
+        /* --- Filters --- */
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            padding: 0 1rem;
+        }
+
+        .filter-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .filter-btn:hover {
+            background: var(--surface-hover);
+            color: var(--text);
+        }
+
+        .filter-btn.active {
+            background: var(--text);
+            color: var(--bg);
+            border-color: var(--text);
+        }
+
+        /* --- Search Bar --- */
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            position: relative;
+            padding: 0 1rem;
+        }
+
+        #search-bar {
             width: 100%;
-            height: 180px;
-            object-fit: cover;
-            border-bottom: 1px solid #eee;
-            display: block;
+            padding: 1.2rem 1.5rem;
+            font-size: 1.1rem;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            color: var(--text);
+            outline: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
-        .portfolio-item h3 { /* Cambiado de h2 a h3 por semántica */
-            margin: 15px 0 8px;
-            font-size: 1.4em;
-            color: #333;
+
+        #search-bar:focus {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: var(--surface-hover);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
-        .portfolio-item a {
+
+        /* --- Blog Feed --- */
+        .project-feed {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem 8rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        .blog-post {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
             text-decoration: none;
             color: inherit;
+            display: block;
         }
-        .portfolio-item a:hover h3 {
-            color: #007bff;
+
+        /* --- Gallery Styles --- */
+        .post-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            overflow: hidden;
         }
-        .portfolio-item .category {
-            font-size: 0.9em;
-            color: #666;
-            margin-bottom: 10px;
-            font-weight: bold; /* Darle más peso al estatus */
+
+        .gallery-item {
+            aspect-ratio: 16/9;
+            background: var(--surface);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: transform 0.3s ease;
+            position: relative;
         }
-        .portfolio-item p {
-            padding: 0 15px;
-            font-size: 0.95em;
-            line-height: 1.5;
-            color: #555;
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            z-index: 2;
         }
-        footer {
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            font-size: 0.65rem;
+            padding: 4px 8px;
             text-align: center;
-            margin-top: 50px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            color: #777;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-        footer a {
-            color: #007bff;
-            text-decoration: none;
+
+        .gallery-item:hover .gallery-caption {
+            opacity: 1;
         }
-        footer a:hover {
-            text-decoration: underline;
+
+        .blog-post:hover {
+            transform: translateY(-4px);
+            background: var(--surface-hover);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .post-icon {
+            font-size: 2.2rem;
+            background: var(--surface);
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            border: 1px solid var(--border);
+        }
+
+        .post-title-wrapper h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            line-height: 1.2;
+        }
+
+        .post-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.8rem;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+        }
+
+        .tag.status-prod { background: rgba(34, 197, 94, 0.1); color: #4ade80; }
+        .tag.status-mvp { background: rgba(59, 130, 246, 0.1); color: #60a5fa; }
+        .tag.status-proto { background: rgba(245, 158, 11, 0.1); color: #fbbf24; }
+
+        .post-content {
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .read-more {
+            display: inline-block;
+            color: #a855f7;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        .blog-post:hover .read-more {
+            color: #ec4899;
+        }
+
+        /* --- Footer --- */
+        footer {
+            padding: 4rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .copyright {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 768px) {
+            header { padding: 1.5rem; }
+            .hero { padding: 4rem 1.5rem 3rem; }
+            .project-grid { grid-template-columns: 1fr; padding: 0 1.5rem 5rem; }
         }
     </style>
 </head>
 <body>
+    <div class="glow"></div>
+    <div class="glow-2"></div>
+
     <header>
-        <h1>Mis Proyectos Web</h1>
-        <p>Explora algunas de mis aplicaciones y experimentos.</p>
+        <div class="logo">Rafael Uribe</div>
     </header>
 
-    <main id="portfolio-container">
-        <p id="loading-message">Cargando proyectos...</p>
-        <p id="error-message" style="color: red; display: none;">No se pudieron cargar los proyectos. Inténtalo de nuevo más tarde.</p>
+    <section class="hero">
+        <h1 class="fade-in">Digital Ecosystem</h1>
+        <p class="fade-in" style="animation-delay: 0.1s;">Una colección de experimentos, herramientas y aplicaciones diseñadas para potenciar el rendimiento humano y digital.</p>
+        
+        <div class="filters fade-in" style="animation-delay: 0.2s;">
+            <button class="filter-btn active" data-category="all">Todos</button>
+            <button class="filter-btn" data-category="performance">📊 Performance</button>
+            <button class="filter-btn" data-category="business">🚀 Negocios</button>
+            <button class="filter-btn" data-category="health">🏋️ Salud</button>
+            <button class="filter-btn" data-category="ai">🧠 IA & Data</button>
+            <button class="filter-btn" data-category="play">🎮 Play</button>
+            <button class="filter-btn" data-category="life">✨ Vida</button>
+        </div>
+
+        <div class="search-container fade-in" style="animation-delay: 0.3s;">
+            <input type="text" id="search-bar" placeholder="🔍 Busca por título, descripción, tecnología o temática...">
+        </div>
+    </section>
+
+    <main class="project-feed" id="project-container">
+        <!-- Static Projects will be here + Firestore projects -->
     </main>
 
     <footer>
-        <p>&copy; 2025 Rafael Uribe. Todos los derechos reservados.</p>
-        <p><a href="admin.html">Acceder a Gestión</a></p>
+        <p class="copyright">&copy; 2025 Rafael Uribe. Coded with passion for the digital future.</p>
     </footer>
 
     <script>
-        // --- Firebase Configuration (¡¡¡IMPORTANTE: REEMPLAZA ESTO CON TUS PROPIOS VALORES!!!) ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyB2Jo2pqMfAOC-h9M9qrV4t-3adq8f-B9A",
-            authDomain: "appszoo.firebaseapp.com",
-            projectId: "appszoo",
-            storageBucket: "appszoo.firebasestorage.app",
-            messagingSenderId: "489054092246",
-            appId: "1:489054092246:web:07a78ff4d5abd0c9414277"
-        };
+        // --- DATA: Static Projects (Found in Repository) ---
+        const staticProjects = [
+            {"name": "Bt", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "⚙️", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/python/bt]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en python. [Directorio: /Users/rafaeluribe/python/bt]", "url": "#"},
+            {"name": "Tradeagent", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "⚙️", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/python/tradeAgent]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en python. [Directorio: /Users/rafaeluribe/python/tradeAgent]", "url": "#"},
+            {"name": "Cheky", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/cheky]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/cheky]", "url": "#"},
+            {"name": "Cheky App", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/cheky-app]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/cheky-app]", "url": "#"},
+            {"name": "Itsthebee", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/itsthebee]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/itsthebee]", "url": "#"},
+            {"name": "Petanca", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/petanca]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/petanca]", "url": "#"},
+            {"name": "Kidzmx", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/kidzmx]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/kidzmx]", "url": "#"},
+            {"name": "Ngrok", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/ngrok]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/ngrok]", "url": "#"},
+            {"name": "Telegramchatbot", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/TelegramChatBot]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/TelegramChatBot]", "url": "#"},
+            {"name": "Zoomvideosdk", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/ZoomVideoSDK]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/ZoomVideoSDK]", "url": "#"},
+            {"name": "Videoai", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/VideoAI]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/VideoAI]", "url": "#"},
+            {"name": "Googleforms", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/googleForms]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/googleForms]", "url": "#"},
+            {"name": "Homilias", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/homilias]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/homilias]", "url": "#"},
+            {"name": "Template", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/template]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/template]", "url": "#"},
+            {"name": "Mobility App Web", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/mobility-app-web]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/mobility-app-web]", "url": "#"},
+            {"name": "Freeformweb", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/freeformweb]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/freeformweb]", "url": "#"},
+            {"name": "Latlon", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/latlon]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/latlon]", "url": "#"},
+            {"name": "First5K_Run", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/First5K_run]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/First5K_run]", "url": "#"},
+            {"name": "Pupettergrok", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/pupetterGrok]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/pupetterGrok]", "url": "#"},
+            {"name": "Gonnafindvercel", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/GonnaFindVercel]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/GonnaFindVercel]", "url": "#"},
+            {"name": "Mqttgym", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/MQTTgym]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/MQTTgym]", "url": "#"},
+            {"name": "Pitches", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/pitches]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/pitches]", "url": "#"},
+            {"name": "Closerbox", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/closerbox]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/closerbox]", "url": "#"},
+            {"name": "Gonnafind", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/GonnaFind]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/GonnaFind]", "url": "#"},
+            {"name": "Miplanpro", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/html/miplanpro]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en html. [Directorio: /Users/rafaeluribe/html/miplanpro]", "url": "#"},
+            {"name": "Bolasar", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/SWIFT/BolasAR]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en swift. [Directorio: /Users/rafaeluribe/SWIFT/BolasAR]", "url": "#"},
+            {"name": "Holamundo", "date": "2024-01-01", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local documentado. [Local: /Users/rafaeluribe/SWIFT/HolaMundo]", "review": "Recurso técnico localizado en el entorno de desarrollo. Parte del ecosistema digital de Rafael Uribe enfocado en swift. [Directorio: /Users/rafaeluribe/SWIFT/HolaMundo]", "url": "#"},
+            {
+                name: "Multimodal Live Console",
+                date: "2026-04-15",
+                category: "ai",
+                status: "Private",
+                icon: "🎙️",
+                description: "Consola de interacción en tiempo real con modelos multimodales. [Local: ~/html/multimodal-live-api-web-console]",
+                review: "Implementación web de vanguardia para interactuar con APIs de IA multimodal (voz, texto, visión). Permite pruebas de latencia y flujos de trabajo de IA generativa en tiempo real, sirviendo como banco de pruebas para la próxima generación de asistentes inteligentes.",
+                url: "#"
+            },
+            {
+                name: "TradeAI Autonomous Agent",
+                date: "2026-03-25",
+                category: "ai",
+                status: "Private",
+                icon: "📈",
+                description: "Agente de trading automatizado con modelos de predicción. [Local: ~/python/tradeAI]",
+                review: "Sistema robusto desarrollado en Python para el análisis técnico y ejecución autónoma en mercados financieros. Utiliza librerías de data science para identificar patrones y gestionar el riesgo de forma algorítmica, minimizando el sesgo humano en el trading.",
+                url: "#"
+            },
+            {
+                name: "InterBotMe Platform",
+                date: "2026-02-10",
+                category: "ai",
+                status: "Private",
+                icon: "🤖",
+                description: "Ecosistema de gestión y despliegue de chatbots. [Local: ~/html/InterBotMe]",
+                review: "Una plataforma integral para diseñar, probar y desplegar agentes conversacionales. Incluye herramientas de análisis de sentimiento y dashboards de rendimiento, facilitando la integración de IA en canales de atención al cliente.",
+                url: "#"
+            },
+            {
+                name: "SensorLogger IoT Bridge",
+                date: "2025-11-30",
+                category: "tech",
+                status: "Private",
+                icon: "📡",
+                description: "Hub de datos IoT con soporte MQTT y Bluetooth. [Local: ~/python/mqtt]",
+                review: "Puente de comunicación diseñado para centralizar datos de múltiples sensores remotos. Utiliza el protocolo MQTT para garantizar una transmisión ligera y eficiente, ideal para monitorización industrial o deportiva en tiempo real.",
+                url: "#"
+            },
+            {
+                name: "FreeForm Web Designer",
+                date: "2025-09-15",
+                category: "tech",
+                status: "Private",
+                icon: "🎨",
+                description: "Herramienta de prototipado visual y diseño libre. [Local: ~/html/freeform-web]",
+                review: "Editor visual propietario que permite la creación de layouts sin las restricciones de los frameworks tradicionales. Enfocado en la rapidez y la libertad creativa para el desarrollo de interfaces de usuario experimentales.",
+                url: "#"
+            },
+            {
+                name: "360° Photo Processor",
+                date: "2025-07-20",
+                category: "tech",
+                status: "Private",
+                icon: "📸",
+                description: "Procesador de metadatos e imágenes panorámicas. [Local: ~/python/360photo]",
+                review: "Script especializado en la manipulación y optimización de fotografías de 360 grados. Gestiona la inyección de metadatos espaciales y la corrección de proyecciones para visualizadores de realidad virtual y tours interactivos.",
+                url: "#"
+            },
+            {
+                name: "Visor 3D Interactivo",
+                date: "2025-04-05",
+                category: "tech",
+                status: "Private",
+                icon: "🧱",
+                description: "Visualizador WebGL para modelos tridimensionales. [Local: ~/html/visor3D]",
+                review: "Potente visualizador basado en Three.js que permite la carga y manipulación de modelos 3D directamente en el navegador. Soporta múltiples formatos y ofrece herramientas de inspección técnica para desarrolladores y diseñadores.",
+                url: "#"
+            },
+            {
+                name: "WarmApp Mobility",
+                date: "2025-02-18",
+                category: "health",
+                status: "Private",
+                icon: "🔥",
+                description: "App de protocolos de preparación y calentamiento físico. [Local: ~/html/warmApp]",
+                review: "Guía interactiva de movilidad diseñada para optimizar el rendimiento atlético antes del entrenamiento. Estructura rutinas dinámicas basadas en la disciplina del deportista, reduciendo el riesgo de lesiones mediante ciencia aplicada.",
+                url: "#"
+            },
+            {
+                name: "Selenium Automation Engine",
+                date: "2024-12-10",
+                category: "tech",
+                status: "Private",
+                icon: "⚙️",
+                description: "Framework de automatización y scraping avanzado. [Local: ~/python/selenium]",
+                review: "Suite de herramientas en Python para la automatización de tareas repetitivas en la web. Capaz de interactuar con elementos complejos de UI, extraer datos masivos y realizar pruebas funcionales de forma masiva y programada.",
+                url: "#"
+            },
+            {
+                name: "Raspberry Pi Vision Lab",
+                date: "2024-10-05",
+                category: "tech",
+                status: "Private",
+                icon: "🥧",
+                description: "Procesamiento de imagen embebido para IoT. [Local: ~/python/camaraPi]",
+                review: "Exploración de visión computacional en hardware de bajo costo. Utiliza OpenCV y la cámara de la Raspberry Pi para detección de objetos y análisis de movimiento en entornos controlados de experimentación tecnológica.",
+                url: "#"
+            },
+            {
+                name: "LidarSpeed Tracker (iOS)",
+                date: "2026-03-10",
+                category: "performance",
+                status: "Private",
+                icon: "🔦",
+                description: "Medición de velocidad y profundidad mediante sensor LiDAR. [Local: ~/SWIFT/LidarSpeed]",
+                review: "Aplicación nativa en Swift que explota las capacidades de hardware del iPhone Pro. LidarSpeed utiliza el sensor de profundidad para rastrear objetos en el espacio tridimensional en tiempo real, permitiendo calcular velocidades de desplazamiento y distancias con precisión quirúrgica. Es un experimento en la frontera de la visión computacional y el tracking deportivo.",
+                url: "#"
+            },
+            {
+                name: "MobilityAR Diagnostics",
+                date: "2026-01-15",
+                category: "health",
+                status: "Private",
+                icon: "🕺",
+                description: "Análisis cinemático con Realidad Aumentada (ARKit). [Local: ~/SWIFT/MobilityAR]",
+                review: "Una herramienta de diagnóstico que utiliza ARKit para superponer esqueletos digitales y ángulos de movimiento sobre el cuerpo del atleta. Permite evaluar la calidad del movimiento y detectar asimetrías funcionales de forma visual e inmediata, transformando el iPhone en un laboratorio de biomecánica portátil.",
+                url: "#"
+            },
+            {
+                name: "Petanque AR App",
+                date: "2025-11-05",
+                category: "play",
+                status: "Private",
+                icon: "🔵",
+                description: "Árbitro digital de alta precisión para Petanca. [Local: ~/SWIFT/PetanqueARApp]",
+                review: "Esta app resuelve la disputa más común en el juego de petanca: ¿quién está más cerca? Utilizando visión computacional nativa en iOS, la cámara identifica las bolas y el boliche, calculando distancias relativas con un margen de error mínimo. Es la perfecta unión entre un deporte tradicional y la tecnología de vanguardia.",
+                url: "#"
+            },
+            {
+                name: "IndoorPositioning Lab",
+                date: "2025-08-20",
+                category: "tech",
+                status: "Private",
+                icon: "📍",
+                description: "Sistema de navegación y beacon tracking en interiores. [Local: ~/SWIFT/IndoorPositioning]",
+                review: "Un laboratorio de pruebas para la localización en interiores donde el GPS no llega. Implementa CoreLocation y protocolos de iBeacon para crear un sistema de posicionamiento preciso dentro de edificios, permitiendo el rastreo de flujos de personas y la interacción basada en la proximidad física.",
+                url: "#"
+            },
+            {
+                name: "MindInfluencer App",
+                date: "2025-05-12",
+                category: "life",
+                status: "Private",
+                icon: "🧠",
+                description: "Suite de refuerzo cognitivo y bienestar. [Local: ~/SWIFT/MindInfluencer]",
+                review: "MindInfluencer es una aplicación nativa diseñada para mejorar el enfoque y la resiliencia mental. Con una interfaz limpia en SwiftUI, ofrece herramientas de meditación guiada, tracking de hábitos y ejercicios cognitivos. El proyecto destaca por su arquitectura robusta y su enfoque en una experiencia de usuario fluida y calmante.",
+                url: "#"
+            },
+            {
+                name: "Social-Health Feed (MiPlan Pro)",
+                date: "2026-04-20",
+                category: "performance",
+                status: "Production",
+                icon: "📸",
+                description: "Interfaz de entrenamiento diseñada con el lenguaje visual de redes sociales. [Local: ~/Antigravity/miplanpro/programa.html]",
+                review: "Este componente revoluciona la adherencia al ejercicio en adultos mayores al transformar la rutina clínica en un feed interactivo similar a Instagram. Cada sesión diaria se presenta como un 'post' visualmente rico con citas inspiradoras, guías paso a paso y encuestas rápidas de feedback. Es un experimento exitoso en psicología del comportamiento, utilizando la familiaridad de las redes sociales para construir hábitos de salud duraderos.",
+                url: "#"
+            },
+            {
+                name: "MiPlan Pro (Ecosistema Integral)",
+                date: "2025-06-15",
+                category: "health",
+                status: "Production",
+                icon: "🛡️",
+                description: "Plataforma completa de acompañamiento familiar para el adulto mayor. [Local: ~/Antigravity/miplanpro/index.html]",
+                review: "Un ecosistema digital diseñado para combatir la fragilidad en la vejez. Esta suite integra una Landing Page persuasiva, un Evaluador de Movilidad Clínica (SPPB), protocolos de seguridad interactivos y sistemas de registro. Basado en el Método LiFE, el proyecto saca la tecnología del camino del adulto mayor y empodera al familiar como 'Coach', transformando el ejercicio en un ritual de amor y conexión.",
+                url: "#",
+                gallery: [
+                    { src: "../miplanpro/assets/hero_binomio.png", label: "Binomio Coach-Campeón" },
+                    { src: "../miplanpro/assets/coach_guiando.png", label: "Acompañamiento Real" },
+                    { src: "../miplanpro/assets/coach_instrucciones.png", label: "Instrucciones Simples" }
+                ]
+            },
+            {
+                name: "Evaluador de Movilidad Clínica (SPPB)",
+                date: "2025-05-15",
+                category: "health",
+                status: "Production",
+                icon: "👵",
+                description: "Herramienta de diagnóstico funcional para el adulto mayor. [Local: ~/Antigravity/miplanpro/sppb-test.html]",
+                review: "Este sistema es una implementación digital del protocolo SPPB, el 'estándar de oro' en geriatría para medir la fragilidad y el riesgo de discapacidad. Incluye cronómetros reactivos, guías visuales y un algoritmo de puntuación automática que prescribe la intensidad del ejercicio seguro. Es una pieza fundamental de tecnología asistencial diseñada para proteger y mejorar la autonomía de las personas mayores.",
+                url: "#",
+            },
+            {
+                name: "El Callejón de los Recuerdos",
+                date: "2026-03-20",
+                category: "ai",
+                status: "Private",
+                icon: "🎞️",
+                description: "Narrativa dinámica y biografía asistida por IA. [Local: ~/Antigravity/el-callejón-de-los-recuerdos-dinámico]",
+                review: "Un proyecto experimental de 'Storytelling' inmersivo. Utiliza la API de Gemini para procesar fragmentos de historia personal y convertirlos en una narrativa coherente y dinámica. Incluye mecánicas de juego (Simon/Memory) y un gestor de biografía que permite reconstruir el pasado de forma interactiva. Es una exploración sobre cómo la IA puede actuar como un archivista de la memoria humana.",
+                url: "#"
+            },
+            {
+                name: "PolyStars Trading Hub",
+                date: "2026-02-28",
+                category: "ai",
+                status: "Private",
+                icon: "✨",
+                description: "Panel de control avanzado para mercados de predicción. [Local: ~/Antigravity/PolyStars]",
+                review: "PolyStars es el sucesor avanzado de mis herramientas de trading en Polymarket. Desarrollado con Next.js y TypeScript, integra monitores de balance, gestión de órdenes y posiciones en tiempo real. Utiliza un backend de alto rendimiento para medir latencias de API y ejecutar estrategias complejas de 'market making' en mercados de alta volatilidad.",
+                url: "#"
+            },
+            {
+                name: "Sentinel HR (watchOS)",
+                date: "2026-02-15",
+                category: "performance",
+                status: "Private",
+                icon: "⌚",
+                description: "Monitor metabólico y de fatiga para Apple Watch. [Local: ~/SentinelHR]",
+                review: "Una aplicación nativa de watchOS diseñada para atletas que necesitan datos fisiológicos precisos en movimiento. Sentinel HR calcula zonas metabólicas personalizadas y monitoriza la variabilidad de la frecuencia cardiaca (HRV) durante el entrenamiento. Incluye visualizaciones de gráficos de Poincaré para evaluar el equilibrio del sistema nervioso autónomo directamente en la muñeca.",
+                url: "#"
+            },
+            {
+                name: "Arduino SpeedGate System",
+                date: "2026-01-25",
+                category: "performance",
+                status: "Private",
+                icon: "🚧",
+                description: "Hardware de cronometraje láser para sprints. [Local: ~/ArduinoSpeedGate]",
+                review: "Este proyecto combina ingeniería electrónica con desarrollo de software. Consiste en un sistema de puertas infrarrojas (SpeedGates) controladas por Arduino que permiten medir tiempos de sprint con precisión de milisegundos. El repositorio incluye el código de las placas (C++), esquemas de conexión y un manual de calibración técnica para pruebas de velocidad en campo.",
+                url: "#"
+            },
+            {
+                name: "BOT Administrador Suite",
+                date: "2025-12-15",
+                category: "business",
+                status: "Private",
+                icon: "🛠️",
+                description: "Consola de gestión para ecosistemas de IA y SMS.",
+                review: "Una SPA robusta desarrollada en React para la administración centralizada de servicios automatizados. Permite la supervisión de conversaciones SMS, gestión de clientes, inventarios de refacciones y dashboards de asistencia humana. Es el centro de operaciones para controlar bots de servicio al cliente y flujos de trabajo operativos complejos.",
+                url: "#"
+            },
+            {
+                name: "Stress Pilot (Crono)",
+                date: "2025-11-10",
+                category: "health",
+                status: "Private",
+                icon: "🚀",
+                description: "Predictor de fatiga basado en HRV e IA.",
+                review: "Stress Pilot es una herramienta de análisis predictivo que utiliza datos de frecuencia cardiaca para alertar sobre niveles críticos de fatiga. Implementa modelos de IA para analizar la tendencia de estrés a largo plazo y sugiere ajustes en la carga de entrenamiento para prevenir el sobreentrenamiento (overtraining). Incluye integraciones con Pushover para notificaciones de alerta inmediata.",
+                url: "#"
+            },
+            {
+                name: "Claudia Design Editor",
+                date: "2025-08-05",
+                category: "tech",
+                status: "Private",
+                icon: "📐",
+                description: "Editor visual de programas y layouts de UI.",
+                review: "Un editor web propietario diseñado para agilizar la creación de contenidos estructurados. Permite diseñar layouts interactivos y generar esquemas JSON para aplicaciones de entrenamiento de forma visual. Es la herramienta que utilizo internamente para 'prototipar' las interfaces de mis proyectos de alto rendimiento.",
+                url: "#"
+            },
+            {
+                name: "Biofeedback Sensors Lab",
+                date: "2024-09-20",
+                category: "health",
+                status: "Private",
+                icon: "🧬",
+                description: "Visualizador de datos de sensores fisiológicos.",
+                review: "Un laboratorio de pruebas web para la captura y visualización de señales biométricas. El sistema permite conectar sensores externos para observar flujos de datos en tiempo real, facilitando la investigación en biofeedback y el desarrollo de nuevos algoritmos de análisis de salud.",
+                url: "#"
+            },
+            {
+                name: "PolyMarket IA Bot",
+                date: "2026-02-19",
+                category: "ai",
+                status: "Private",
+                icon: "📊",
+                description: "Agente autónomo de trading para mercados de predicción.",
+                review: "Este sistema de IA está diseñado para operar en Polymarket. Utiliza scripts avanzados de Python para el análisis de PnL, extracción de datos de eventos en tiempo real y ejecución de trades basados en señales algorítmicas. Incluye un visualizador web de actividad y servidores proxy para garantizar una conexión estable y segura con los smart contracts del mercado.",
+                url: "#"
+            },
+            {
+                name: "ForcePlate Analysis",
+                date: "2026-01-10",
+                category: "performance",
+                status: "Private",
+                icon: "👣",
+                description: "Hardware y software para el análisis de fuerza reactiva.",
+                review: "Un proyecto integral que une hardware (Arduino/ESP32) con software de análisis de alto rendimiento. ForcePlate captura datos de celdas de carga para medir la potencia de salto y la simetría de fuerza en atletas. El sistema procesa señales en tiempo real para ofrecer métricas de fatiga neuromuscular y capacidad elástica, fundamentales en el entrenamiento de élite.",
+                url: "#"
+            },
+            {
+                name: "PolarH10 ECG Monitor",
+                date: "2025-11-20",
+                category: "performance",
+                status: "Private",
+                icon: "🫀",
+                description: "Suite de monitoreo cardiaco y ECG avanzado.",
+                review: "Desarrollada para iOS utilizando Swift, esta suite se conecta directamente al sensor Polar H10 para extraer datos de electrocardiograma (ECG) crudos. Permite el análisis de la variabilidad de la frecuencia cardiaca (HRV) y la detección de patrones de estrés fisiológico, proporcionando a los atletas una ventana profunda hacia su recuperación y estado del sistema nervioso autónomo.",
+                url: "#"
+            },
+            {
+                name: "Navidad Fuerza (Vite App)",
+                date: "2024-12-24",
+                category: "play",
+                status: "Private",
+                icon: "🎄",
+                description: "Aplicación interactiva de competencia familiar.",
+                review: "Una Single Page Application (SPA) moderna desarrollada con Vite, Tailwind CSS y TypeScript. Diseñada para gamificar una competencia de fuerza familiar durante las fiestas, el sistema permite el registro de resultados, visualización de rankings en tiempo real y exportación de datos en CSV, demostrando cómo la tecnología puede elevar las tradiciones grupales.",
+                url: "#"
+            },
+            {
+                name: "MiPlan Pro (Full Suite)",
+                date: "2025-04-20",
+                category: "performance",
+                status: "Private",
+                icon: "🛡️",
+                description: "Ecosistema profesional de gestión atlética y clínica.",
+                review: "La versión local 'Full Suite' de MiPlan Pro es mi proyecto más ambicioso. Incluye herramientas clínicas como el test SPPB, protocolos de emergencia interactivos, editores de planes semanales y una base de datos de más de 200,000 palabras de contenido pedagógico. Es el centro de mando para el entrenamiento de alto rendimiento, integrando manuales de coach, campeona y sistemas de registro beta.",
+                url: "#"
+            },
+            {
+                name: "Radar CRM (Local Build)",
+                date: "2025-07-14",
+                category: "business",
+                status: "Private",
+                icon: "📡",
+                description: "Versión extendida del CRM táctico.",
+                review: "Construido sobre la base del Radar CRM, esta versión local incluye módulos experimentales de seguimiento y una integración más profunda con bases de datos locales. Optimizado para una respuesta instantánea, permite la gestión masiva de leads y la automatización de flujos de contacto sin depender de servicios externos.",
+                url: "#"
+            },
+            {
+                name: "Cartas Regias (Gastro-App)",
+                date: "2025-01-20",
+                category: "life",
+                status: "Exploration",
+                icon: "🌮",
+                description: "Explorador gastronómico táctico para Monterrey.",
+                review: "Un proyecto de curaduría gastronómica digital. Cartas Regias es una aplicación que organiza y cataloga restaurantes y cantinas tradicionales, permitiendo filtrar por tipo de experiencia y ubicación. Utiliza una arquitectura JSON-driven para facilitar la actualización de menús y recomendaciones personales del autor.",
+                url: "apps/travel/cartasregias.html"
+            },
+            {
+                name: "Karvonen Calculator",
+                date: "2024-05-10",
+                category: "performance",
+                status: "Production",
+                icon: "💓",
+                description: "Herramienta de precisión para zonas de entrenamiento.",
+                review: "Un calculador técnico que implementa la fórmula de Karvonen para determinar la frecuencia cardiaca de reserva (FCR). Esencial para la prescripción de ejercicio aeróbico individualizado, permite a los atletas afinar sus zonas de intensidad con base en su frecuencia cardiaca en reposo y máxima.",
+                url: "apps/kravonen/index.html"
+            },
+            {
+                name: "Energy Sim (CFE Lab)",
+                date: "2024-03-15",
+                category: "tech",
+                status: "Exploration",
+                icon: "⚡",
+                description: "Simulador de consumo y tarifas eléctricas.",
+                review: "Una herramienta de análisis diseñada para modelar el consumo energético residencial. El simulador permite proyectar costos basados en las tarifas vigentes, ayudando a identificar patrones de ahorro y optimizar el uso de recursos eléctricos mediante una interfaz clara y educativa.",
+                url: "apps/cfe/index.html"
+            },
+            {
+                name: "CloserBox Shop",
+                date: "2025-10-07",
+                category: "business",
+                status: "Production",
+                icon: "🛒",
+                description: "Plataforma de e-commerce optimizada.",
+                review: "CloserBox nació con la idea de crear una experiencia de compra sin fricciones para suplementos y snacks de alto rendimiento. En esta plataforma, prioricé un frontend ultra rápido y una interfaz de usuario limpia que convierta visitas en ventas de forma efectiva. Es una prueba de que el comercio electrónico puede ser estéticamente impecable y altamente funcional.",
+                url: "apps/shop/index.html"
+            },
+            {
+                name: "Generador Binaural",
+                date: "2026-03-04",
+                category: "health",
+                status: "Production",
+                icon: "🎧",
+                description: "Herramienta de ingeniería sonora.",
+                review: "La acústica y la neurociencia siempre me han fascinado. Este generador binaural es mi apuesta por usar el sonido para 'hackear' el cerebro. Al reproducir frecuencias ligeramente distintas en cada oído, la aplicación induce estados de foco absoluto (ondas Beta/Gamma) o de sueño profundo (ondas Delta). Todo procesado directamente en el navegador mediante la API de Web Audio.",
+                url: "apps/binaural/index.html"
+            },
+            {
+                name: "Binaural Pro",
+                date: "2026-03-05",
+                category: "health",
+                status: "Production",
+                icon: "💎",
+                description: "Versión avanzada del generador binaural.",
+                review: "Tras el éxito del generador básico, la versión 'Pro' introduce un panel de control avanzado digno de un estudio de sonido. Permite afinar las frecuencias portadoras, mezclar ruido blanco, rosa o marrón, y guardar perfiles de usuario. Es la herramienta definitiva para quienes buscan maximizar su concentración y aislarse del ruido moderno.",
+                url: "apps/binaural/pro.html"
+            },
+            {
+                name: "Proyecto M60-Gold",
+                date: "2025-11-27",
+                category: "health",
+                status: "Production",
+                icon: "🥇",
+                description: "Plan de entrenamiento táctico (400m Express).",
+                review: "El alto rendimiento atlético exige planificación milimétrica. Desarrollé esta web app como un diario interactivo de 3 semanas (fases de Re-ignición, Hell Week y Taper) para preparar una carrera de 400 metros planos. Utiliza LocalStorage para persistir el progreso y las notas del entrenador, demostrando cómo la tecnología puede ser un copiloto en el deporte.",
+                url: "apps/plan/rp2025.html"
+            },
+            {
+                name: "WarmApp (Calientapp)",
+                date: "2025-06-03",
+                category: "health",
+                status: "MVP",
+                icon: "🔥",
+                description: "Entrenador de calentamiento interactivo.",
+                review: "Un buen calentamiento previene el 90% de las lesiones, pero casi todos nos lo saltamos. Construí Calientapp como una Single Page Application (SPA) móvil que funciona como un cronómetro guiado. Te lleva de la mano por cada ejercicio, registrando tus rachas en un calendario visual para gamificar la disciplina pre-entrenamiento.",
+                url: "apps/health/warmapp.html"
+            },
+            {
+                name: "Bolsa Familiar",
+                date: "2025-06-08",
+                category: "business",
+                status: "MVP",
+                icon: "💰",
+                description: "Sistema de gestión financiera colaborativa.",
+                review: "Administrar las finanzas del hogar no debería ser un dolor de cabeza. Este sistema permite gestionar presupuestos de manera colaborativa, con un diseño claro que elimina la fricción de las clásicas hojas de cálculo. Es un MVP que explora la intersección entre la simplicidad de uso y la complejidad de la contabilidad personal.",
+                url: "apps/bolsafamiliar/index.html"
+            },
+            {
+                name: "Cheky.app",
+                date: "2025-06-06",
+                category: "health",
+                status: "MVP",
+                icon: "✨",
+                description: "Planificador de acción semanal.",
+                review: "Cheky es una herramienta para construir el 'one-person unicorn'. En lugar de perderte en listas infinitas de tareas, este planificador te obliga a definir acciones semanales claras y concisas con un sistema visual gratificante. Es mi manifiesto personal sobre la productividad: menos ruido, más ejecución táctica.",
+                url: "apps/plan/cheky.html"
+            },
+            {
+                name: "Face Identifica",
+                date: "2025-06-03",
+                category: "ai",
+                status: "Experiment",
+                icon: "👤",
+                description: "Reconocimiento y descriptor facial.",
+                review: "Me sumergí en el mundo de la visión artificial (Computer Vision) para construir este prototipo. Captura el feed de la webcam y utiliza modelos de machine learning en el navegador para extraer descriptores faciales en tiempo real. Es un experimento fascinante sobre biometría y privacidad, todo ejecutándose sin enviar imágenes a un servidor.",
+                url: "apps/facerecognition/identifica.html"
+            },
+            {
+                name: "Entrenador de Modelos Faciales",
+                date: "2025-06-03",
+                category: "ai",
+                status: "Production",
+                icon: "🧠",
+                description: "Herramienta de generación de descriptores faciales.",
+                review: "La otra mitad esencial de 'Face Identifica'. Esta herramienta permite capturar rostros con la webcam, generar sus vectores matemáticos (descriptores) usando redes neuronales, y exportarlos en formato JSON. Funciona como un pequeño estudio de entrenamiento biométrico que funciona 100% del lado del cliente.",
+                url: "apps/facerecognition/facedescriptors.html"
+            },
+            {
+                name: "Restaurador de Fotos",
+                date: "2025-06-14",
+                category: "ai",
+                status: "Production",
+                icon: "🎨",
+                description: "Motor de procesamiento de imágenes.",
+                review: "Este es uno de los proyectos técnicos de los que estoy más orgulloso. Sin usar librerías externas de procesamiento, construí un motor que manipula la matriz de píxeles de HTML5 Canvas directamente mediante Javascript. Implementé algoritmos matemáticos para reducir ruido, ajustar exposición y eliminar tonos sepia de fotos antiguas.",
+                url: "apps/restaura/index.html"
+            },
+            {
+                name: "Oware Game",
+                date: "2025-06-20",
+                category: "play",
+                status: "Production",
+                icon: "🏺",
+                description: "Juego de estrategia africano.",
+                review: "Llevar un juego de mesa milenario al entorno digital requiere entender profundamente sus reglas y su flujo. Esta implementación de Oware destaca por sus animaciones fluidas y la gestión precisa del estado del juego en JavaScript. Es un ejercicio de lógica y una forma de preservar la cultura a través del código.",
+                url: "apps/oware/index.html"
+            },
+            {
+                name: "Radar Digital (CRM)",
+                date: "2025-07-14",
+                category: "business",
+                status: "MVP",
+                icon: "🎯",
+                description: "CRM táctico de ventas y seguimientos.",
+                review: "Un CRM (Customer Relationship Management) ágil y sin fricciones. Permite gestionar prospectos a través de vistas de lista ('Para Hoy') y tableros Kanban ('Pipeline'). Está conectado a Firestore para sincronización en tiempo real y categoriza los leads en etapas clave: Contacto Inicial, Propuesta, Seguimiento y Cierre.",
+                url: "apps/radar/index.html"
+            },
+            {
+                name: "K-Means CX",
+                date: "2025-07-29",
+                category: "ai",
+                status: "Experiment",
+                icon: "📊",
+                description: "Algoritmo de clustering (K-Means).",
+                review: "Para resolver problemas logísticos y de experiencia del cliente, implementé el algoritmo de clustering K-Means desde cero en Javascript. Permite visualizar cómo un conjunto de datos (por ejemplo, ubicaciones de clientes) se agrupa automáticamente alrededor de 'centros de gravedad' para optimizar rutas o aperturas de tiendas.",
+                url: "apps/cx/kmeans.html"
+            },
+            {
+                name: "Zyllia Quest",
+                date: "2025-06-03",
+                category: "play",
+                status: "Prototype",
+                icon: "⚔️",
+                description: "Aventura de texto en entorno web.",
+                review: "Zyllia es un viaje a la nostalgia de los juegos conversacionales (MUDs) de los 80s, pero con un motor moderno bajo el capó. Construí un parser de comandos determinista y un sistema de gestión de inventario y estado global. Demuestra que no siempre se necesitan gráficos 3D hiperrealistas para crear inmersión y narrativa profunda.",
+                url: "apps/games/zyllia.html"
+            },
+            {
+                name: "Doble o Nada",
+                date: "2026-04-22",
+                category: "play",
+                status: "Experiment",
+                icon: "🎲",
+                description: "Juego psicológico de riesgo.",
+                review: "¿Qué pasa si tu dinero se duplica con cada clic, pero la probabilidad de perderlo todo sube un 1%? Este experimento lúdico explora la psicología del riesgo y la avaricia humana. Con un diseño oscuro tipo casino y animaciones reactivas, es sorprendentemente adictivo y un gran estudio sobre la toma de decisiones bajo presión.",
+                url: "apps/plan/doble.html"
+            },
+            {
+                name: "Protocolo Suple",
+                date: "2025-11-25",
+                category: "health",
+                status: "Production",
+                icon: "💊",
+                description: "Manual operativo de suplementación.",
+                review: "Como parte del ecosistema M60-Oro, este documento web interactivo actúa como un 'Manual Operativo' para bio-hackers y atletas. Centraliza información crítica sobre dosificación, tiempos de ingesta y sinergias entre suplementos. Está estructurado para ser leído rápidamente desde un móvil justo antes o después de entrenar.",
+                url: "apps/plan/suple.html"
+            },
+            {
+                name: "VBT Performance",
+                date: "2025-06-23",
+                category: "health",
+                status: "MVP",
+                icon: "⚡",
+                description: "Velocity Based Training.",
+                review: "El Velocity Based Training (VBT) es el futuro del levantamiento de pesas. Esta aplicación actúa como la interfaz frontal para monitorear la velocidad de ejecución de los ejercicios. El objetivo es ofrecer a los atletas métricas objetivas en tiempo real sobre su fatiga neuromuscular, reemplazando las percepciones subjetivas por datos puros.",
+                url: "apps/vbt/index.html"
+            },
+            {
+                name: "Homilías Interactivas (LMS)",
+                date: "2025-06-08",
+                category: "life",
+                status: "Production",
+                icon: "🕊️",
+                description: "Plataforma de e-learning espiritual con 20+ lecciones interactivas.",
+                review: "Lo que comenzó como un repositorio de reflexiones evolucionó en una plataforma de Micro-Learning espiritual. Cada una de las más de 20 lecciones (documentadas por fecha) incluye el texto del Evangelio, una síntesis pedagógica de la homilía y un cuento reflexivo. La pieza clave es su sistema de evaluación interactivo construido con JavaScript y Tailwind CSS, que permite a los usuarios validar su comprensión del mensaje en tiempo real. Es un ejemplo de cómo aplicar principios de UX y Gamificación a contenidos tradicionales.",
+                url: "apps/homilias/index.html"
+            },
+            {
+                name: "Visor 3D",
+                date: "2025-06-21",
+                category: "tech",
+                status: "Experiment",
+                icon: "🧊",
+                description: "Visor interactivo de modelos y dibujos en 3D.",
+                review: "Uniendo Three.js con Firebase, construí este Visor 3D en la nube. Lee coordenadas tridimensionales de una base de datos en tiempo real y renderiza la geometría (puntos/esferas) en el navegador. Es la pieza fundamental (el frontend) de una arquitectura desacoplada donde el dibujo ocurre en otro dispositivo y se transmite a la web.",
+                url: "apps/visor3d/index.html"
+            },
+            {
+                name: "Barcode Scanner",
+                date: "2025-10-07",
+                category: "tech",
+                status: "Prototype",
+                icon: "📷",
+                description: "Lector de códigos de barras.",
+                review: "Convertir el navegador del móvil en un escáner industrial requiere manejar correctamente la API de MediaDevices. Este prototipo activa la cámara del usuario, procesa el flujo de video en busca de patrones de códigos de barras, y extrae la información. Un bloque de construcción esencial para cualquier sistema de inventarios moderno.",
+                url: "apps/scan/index.html"
+            },
+            {
+                name: "BeforeIdie.app",
+                date: "2025-06-10",
+                category: "life",
+                status: "MVP",
+                icon: "🌟",
+                description: "Aplicación para coleccionar sueños.",
+                review: "'Before I Die' es una filosofía convertida en software. Es un planificador de vida diseñado para que los usuarios establezcan y rastreen sus metas más ambiciosas antes de partir de este mundo. La interfaz busca ser inspiradora y reflexiva, priorizando la claridad mental sobre la saturación visual típica de las apps de productividad.",
+                url: "apps/bid/index.html"
+            },
+            {
+                name: "Calculadora Karvonen",
+                date: "2026-01-21",
+                category: "health",
+                status: "Production",
+                icon: "❤️",
+                description: "Zonas de frecuencia cardíaca.",
+                review: "Para entrenar el sistema cardiovascular eficientemente, las pulsaciones deben ser matemáticas, no adivinanzas. Esta herramienta aplica la fórmula de Karvonen (tomando en cuenta la frecuencia cardíaca en reposo) para entregar zonas de entrenamiento altamente personalizadas. Es pequeña, veloz y resuelve un problema muy específico.",
+                url: "apps/kravonen/index.html"
+            },
+            {
+                name: "VBT Dashboard (MQTT)",
+                date: "2025-08-01",
+                category: "tech",
+                status: "Experiment",
+                icon: "📈",
+                description: "Arquitectura IoT para monitoreo VBT vía MQTT.",
+                review: "Este proyecto es una inmersión profunda en el Internet de las Cosas (IoT). El dashboard se conecta a un broker MQTT para escuchar telemetría en tiempo real (datos de sensores físicos durante un levantamiento de pesas). Representa un puente de muy baja latencia entre el hardware (placas/sensores) y el software (visualización en la web).",
+                url: "apps/mqtt/index.html"
+            },
+            {
+                name: "Calculadora CFE 2025",
+                date: "2025-07-14",
+                category: "life",
+                status: "Production",
+                icon: "⚡",
+                description: "Simulador de tarifas eléctricas y pronóstico DAC.",
+                review: "Las tarifas eléctricas en México son notoriamente complejas, y caer en la tarifa DAC (Alto Consumo) es un desastre financiero. Desarrollé esta calculadora con la base de datos oficial de tarifas 2025 para predecir recibos de luz y advertir a los usuarios antes de cruzar el umbral de riesgo. Es inteligencia financiera en estado puro.",
+                url: "apps/cfe/index.html"
+            },
+            {
+                name: "Alpha Terminal",
+                date: "2026-02-17",
+                category: "business",
+                status: "Experiment",
+                icon: "🐋",
+                description: "Terminal de datos de Polymarket.",
+                review: "Los mercados de predicción como Polymarket son el nuevo Wall Street de la información. Esta 'Alpha Terminal' es un tablero financiero construido para monitorear tendencias, volúmenes de apuestas y buscar oportunidades de arbitraje. Tiene un diseño denso en información, ideal para 'ballenas' y analistas de datos obsesivos.",
+                url: "apps/poly/index.html"
+            },
+            {
+                name: "Sabores Clásicos NL",
+                date: "2025-06-04",
+                category: "life",
+                status: "MVP",
+                icon: "🌮",
+                description: "Guía gastronómica de Nuevo León.",
+                review: "Un homenaje a la gastronomía del norte de México. Esta aplicación funciona como un directorio nostálgico que rescata las cartas y los menús de restaurantes clásicos de Nuevo León. Es un esfuerzo por digitalizar la cultura culinaria local en una interfaz rápida y accesible para cualquier turista o residente hambriento.",
+                url: "apps/travel/cartasregias.html"
+            },
+            {
+                name: "Think Twice (GDD)",
+                date: "2025-06-04",
+                category: "business",
+                status: "Concept",
+                icon: "🧠",
+                description: "Documento de Diseño Funcional.",
+                review: "Antes de escribir una sola línea de código, las buenas aplicaciones nacen en papel. 'Think Twice' es un Game/App Design Document (GDD) que detalla la arquitectura, el flujo de usuario y la monetización de una idea conceptual. Sirve como testimonio de que la planificación técnica es tan importante como la programación misma.",
+                url: "apps/ideas/thinktwice.html"
+            },
+            {
+                name: "Proteínas en tu Bolsillo",
+                date: "2025-06-03",
+                category: "health",
+                status: "Production",
+                icon: "💪",
+                description: "Infografía interactiva de contenido proteico.",
+                review: "Construí esta infografía interactiva para tener a mano una guía rápida y visual de las mejores fuentes de proteína. Utiliza un efecto 3D de tarjetas que se giran al tocar, permitiendo ver detalles nutricionales como raciones y beneficios específicos de cada alimento. Es una herramienta sencilla pero poderosa para optimizar la nutrición diaria.",
+                url: "apps/proteinas.html"
+            },
+            {
+                name: "Asset Strategy: Overhaul vs Reemplazo",
+                date: "2025-07-01",
+                category: "business",
+                status: "Production",
+                icon: "📉",
+                description: "Simulador de Costo de Ciclo de Vida de activos.",
+                review: "Esta herramienta de análisis estratégico permite comparar financieramente dos caminos críticos en la gestión de activos industriales: realizar un Overhaul (reconstrucción) o reemplazar el equipo por uno nuevo. Utiliza modelos matemáticos de Costo Anual Equivalente (CAE) y Valor Presente Neto (VPN) para determinar la decisión más rentable a largo plazo.",
+                url: "apps/cx/oh.html"
+            },
+            {
+                name: "Simulador de Reemplazo de Activos",
+                date: "2025-08-05",
+                category: "business",
+                status: "Production",
+                icon: "🔄",
+                description: "Calculadora de año óptimo de reemplazo de equipos.",
+                review: "Basada en el 'Manual del Ingeniero de Mantenimiento', esta calculadora resuelve el dilema de cuándo es el momento exacto para jubilar una máquina. Al analizar la curva de costos crecientes de mantenimiento frente a la depreciación del valor de reventa, el algoritmo identifica el año donde el costo total anual se minimiza.",
+                url: "apps/cx/reemplazo.html"
+            },            {
+                name: "Crono HRV Analyzer",
+                date: "2026-01-12",
+                category: "performance",
+                status: "Archived",
+                icon: "⏱️",
+                description: "Analizador de Variabilidad de la Frecuencia Cardíaca (HRV) en Python.",
+                review: "Crono es una herramienta de backend escrita en Python diseñada para procesar y analizar datos biométricos complejos. Su núcleo se centra en la Variabilidad de la Frecuencia Cardíaca (HRV), calculando métricas críticas como la relación LF/HF para determinar el estado del sistema nervioso autónomo del atleta. Es una pieza fundamental para la toma de decisiones basada en datos de recuperación.",
+                url: "#"
+            },
+            {
+                name: "ForcePlate Dashboard",
+                date: "2026-01-01",
+                category: "performance",
+                status: "Archived",
+                icon: "⚖️",
+                description: "Interfaz de visualización para plataformas de fuerza.",
+                review: "Este proyecto es el centro de control para la captura de datos de plataformas de fuerza. Integra flujos de datos en tiempo real para analizar la potencia, el salto vertical y la asimetría en el apoyo. Está diseñado para trabajar en conjunto con sistemas VBT, proporcionando una capa de visualización intuitiva (HTML5/JS) sobre datos de hardware crudos.",
+                url: "#"
+            },
+            {
+                name: "Arduino SpeedGate Firmware",
+                date: "2025-12-26",
+                category: "performance",
+                status: "Archived",
+                icon: "🚧",
+                description: "Firmware IoT para fotoceldas de cronometraje deportivo.",
+                review: "Este repositorio contiene el código fuente en C++ para un sistema de cronometraje por fotoceldas basado en Arduino. El firmware gestiona la interrupción de rayos láser/infrarrojos con precisión de microsegundos, permitiendo medir tiempos de sprint y agilidad de forma inalámbrica. Es una solución de hardware 'low-cost' para alto rendimiento deportivo.",
+                url: "#"
+            },
+            {
+                name: "SentinelHR (Watch App)",
+                date: "2025-12-26",
+                category: "performance",
+                status: "Archived",
+                icon: "⌚",
+                description: "Aplicación de Apple Watch para monitoreo avanzado de HR.",
+                review: "SentinelHR es una aplicación nativa para watchOS desarrollada en Swift. Su propósito es capturar y transmitir datos de frecuencia cardíaca de alta frecuencia durante entrenamientos intensos. Implementa algoritmos para filtrar artefactos de movimiento y calcula en tiempo real métricas de esfuerzo y recuperación directamente en la muñeca del atleta.",
+                url: "#"
+            },
+            {
+                name: "Antigravity VBT Engine",
+                date: "2025-12-26",
+                category: "performance",
+                status: "Archived",
+                icon: "🚀",
+                description: "Motor central de cálculo para Velocity Based Training.",
+                review: "Antigravity VBT es el 'core' lógico para el entrenamiento basado en velocidad. Este repositorio contiene algoritmos para la limpieza de ruido de acelerómetros, detección de fases de movimiento (excéntrico/concéntrico) y cálculo de la pérdida de velocidad intra-serie. Es el motor que alimenta el ecosistema de hardware y visualización de Antigravity.",
+                url: "#"
+            },
+            {
+                name: "Firebase State Machine",
+                date: "2025-11-14",
+                category: "tech",
+                status: "Archived",
+                icon: "⚙️",
+                description: "Lógica de backend basada en funciones y máquinas de estado.",
+                review: "Este repositorio contiene una colección de Firebase Cloud Functions diseñadas para gestionar flujos de trabajo complejos mediante máquinas de estado. Implementa una arquitectura robusta para manejar eventos de bases de datos y orquestar servicios externos, garantizando que los procesos de negocio se ejecuten de forma determinista y escalable.",
+                url: "#"
+            },
+            {
+                name: "Twilio API Sandbox",
+                date: "2025-11-02",
+                category: "tech",
+                status: "Archived",
+                icon: "💬",
+                description: "Entorno de pruebas para mensajería y automatización vía Twilio.",
+                review: "Sandbox desarrollado en Node.js para experimentar con las APIs de Twilio (SMS y WhatsApp). El repositorio documenta la implementación de webhooks para recibir mensajes, la gestión de plantillas y la integración de flujos de conversación automatizados. Es un laboratorio técnico para prototipar sistemas de comunicación masiva.",
+                url: "#"
+            },
+            {
+                name: "Rental Admin Dashboard",
+                date: "2025-11-02",
+                category: "business",
+                status: "Archived",
+                icon: "📊",
+                description: "Panel de administración para gestión de inventario y rentas.",
+                review: "Panel de control administrativo desarrollado con Vite y TypeScript. Permite la gestión centralizada de un inventario de equipos, control de disponibilidad en tiempo real y seguimiento de contratos de renta. Incluye un dashboard visual para monitorear el estado de los activos y la facturación, optimizando la operatividad del negocio.",
+                url: "#"
+            },
+            {
+                name: "Gemini Telegram Agent",
+                date: "2025-10-31",
+                category: "ai",
+                status: "Archived",
+                icon: "🤖",
+                description: "Agente de Telegram integrado con Google AI Studio (Gemini).",
+                review: "Este bot de Telegram utiliza la potencia de Gemini Pro para ofrecer una interfaz conversacional inteligente. Construido con TypeScript y desplegado con funciones de backend, el agente es capaz de procesar lenguaje natural, mantener el contexto de la conversación y realizar tareas específicas de asistencia. Es un puente directo entre el usuario final y los modelos de lenguaje de última generación.",
+                url: "#"
+            },
+            {
+                name: "Exatec Run 2025 Portal",
+                date: "2025-10-26",
+                category: "performance",
+                status: "Archived",
+                icon: "👟",
+                description: "Plataforma de visualización para el evento Exatec Run 2025.",
+                review: "Desarrollé este portal interactivo para la carrera Exatec Run 2025. Utiliza React y Vite para ofrecer una experiencia de usuario fluida, centrada en la visualización de resultados y la presentación de tecnologías aplicadas al entrenamiento deportivo. Es una combinación de landing page informativa y herramienta de consulta de métricas post-carrera.",
+                url: "#"
+            },
+            {
+                name: "The Bee (Microrobot)",
+                date: "2025-10-24",
+                category: "performance",
+                status: "Public",
+                icon: "🐝",
+                description: "Microrobot biomimético para análisis biomecánico en tiempo real.",
+                review: "ItsTheBee es un proyecto de vanguardia que combina microrrobótica biomimética con análisis de rendimiento humano. El sistema captura datos cinemáticos y ofrece insights predictivos mediante un bucle de retroalimentación cerrado. Este repositorio contiene la landing page y la documentación técnica del ecosistema diseñado para optimizar el potencial físico mediante tecnología invisible.",
+                url: "#"
+            },
+            {
+                name: "Hyperliquid Trading Agent",
+                date: "2025-10-19",
+                category: "ai",
+                status: "Public",
+                icon: "📈",
+                description: "Agente autónomo de trading para el protocolo Hyperliquid.",
+                review: "Este proyecto documenta y ejecuta la lógica de un agente de trading algorítmico diseñado para Hyperliquid. Utiliza Python para implementar estrategias de market making y arbitraje, integrando modelos predictivos para la toma de decisiones en tiempo real. Es un experimento en la intersección de DeFi (Finanzas Descentralizadas) e Inteligencia Artificial aplicada a mercados de alta frecuencia.",
+                url: "#"
+            },
+            {
+                name: "ShoeTracker Companion",
+                date: "2025-07-18",
+                category: "performance",
+                status: "Public",
+                icon: "👟",
+                description: "Gestión del ciclo de vida de calzado deportivo para prevención de lesiones.",
+                review: "ShoeTracker es un sistema de soporte para atletas que permite monitorear el kilometraje acumulado en cada par de zapatillas. El repositorio alberga el portal de soporte y la lógica de negocio para alertar sobre el desgaste del material, factor crítico en la prevención de lesiones por impacto. Es una herramienta esencial para la gestión del equipamiento de alto rendimiento.",
+                url: "#"
+            },
+            {
+                name: "Oware Digital Game",
+                date: "2025-06-21",
+                category: "play",
+                status: "Archived",
+                icon: "🎲",
+                description: "Implementación web del tradicional juego de mesa africano.",
+                review: "Una versión digital del milenario juego de mesa Oware, desarrollada con TypeScript y Vite. El proyecto se enfoca en una lógica de juego precisa y una interfaz minimalista pero fluida, capturando la esencia estratégica del mancala. Es una exploración de cómo portar mecánicas de juegos físicos a entornos web modernos con alta fidelidad.",
+                url: "#"
+            },
+            {
+                name: "Cheky Productivity",
+                date: "2025-06-06",
+                category: "performance",
+                status: "Public",
+                icon: "✅",
+                description: "Herramienta táctica de productividad y enfoque semanal.",
+                review: "Cheky es el motor de ejecución detrás del concepto 'one-person unicorn'. Este repositorio contiene la lógica para la gestión de acciones semanales de alto impacto, integrando cronogramas dinámicos (como el RunMty 2025) y sistemas de seguimiento visual para maximizar la producción personal sin el ruido de los gestores de tareas tradicionales.",
+                url: "#"
+            },
+            {
+                name: "Premium Portfolio Source",
+                date: "2025-06-04",
+                category: "tech",
+                status: "Public",
+                icon: "💼",
+                description: "Código fuente de este portafolio profesional.",
+                review: "Este repositorio alberga la arquitectura de mi portafolio digital. Desarrollado con un enfoque 100% estático para máxima velocidad, utiliza Vanilla JavaScript para la gestión dinámica de proyectos y CSS personalizado para una estética premium. Es el hub central que documenta mi evolución como desarrollador y entusiasta del rendimiento.",
+                url: "#"
+            },
+            {
+                name: "Plan de Vida (LMS)",
+                date: "2025-05-31",
+                category: "life",
+                status: "Public",
+                icon: "🗺️",
+                description: "Sistema de gestión de aprendizaje para el crecimiento personal.",
+                review: "Una plataforma completa de micro-learning para la planificación vital. Contiene más de 16 sesiones interactivas que guían al usuario a través de un proceso de introspección, definición de objetivos y diseño de futuro. Utiliza una arquitectura HTML5 pura para garantizar la accesibilidad y longevidad del contenido.",
+                url: "#"
+            },
+            {
+                name: "Cheky App Ecosystem",
+                date: "2025-05-31",
+                category: "performance",
+                status: "Archived",
+                icon: "📱",
+                description: "Prototipos móviles para el ecosistema Cheky.",
+                review: "Repositorio dedicado a la exploración de interfaces móviles para la plataforma Cheky. Incluye experimentos de UX centrados en la 'acción rápida' y notificaciones tácticas para mantener el enfoque en las metas semanales, probando diferentes frameworks de frontend para optimizar la respuesta del usuario.",
+                url: "#"
+            },
+            {
+                name: "Cheky Cloud Sync",
+                date: "2025-05-26",
+                category: "performance",
+                status: "Public",
+                icon: "☁️",
+                description: "Módulo de sincronización y persistencia para Cheky.",
+                review: "Este módulo gestiona la persistencia de datos y la sincronización entre dispositivos para las herramientas de productividad de la familia Cheky. Implementa una capa de abstracción sobre almacenamiento en la nube para asegurar que los planes semanales estén siempre disponibles y actualizados, independientemente del dispositivo de acceso.",
+                url: "#"
+            },
+            {
+                name: "cheky3",
+                date: "2025-05-24",
+                category: "tech",
+                status: "Public",
+                icon: "📦",
+                description: "Repositorio de GitHub (public).",
+                review: "Este es un repositorio alojado en GitHub. Repositorio de GitHub (public). Representa una parte de mi historial de desarrollo documentado de forma automática.",
+                url: "#"
+            },
+            {
+                name: "Freeform Web Canvas",
+                date: "2025-05-17",
+                category: "tech",
+                status: "Archived",
+                icon: "🎨",
+                description: "Lienzo interactivo infinito para colaboración visual.",
+                review: "Un prototipo de espacio de trabajo visual desarrollado con React. Permite a los usuarios crear, organizar y conectar ideas en un lienzo infinito, explorando mecánicas de interacción fluida y persistencia de estado complejo para herramientas de pensamiento creativo.",
+                url: "#"
+            },
+            {
+                name: "VBT Engine Core",
+                date: "2025-04-18",
+                category: "performance",
+                status: "Archived",
+                icon: "🏋️",
+                description: "Motor central para el entrenamiento basado en velocidad.",
+                review: "El núcleo tecnológico del ecosistema VBT. Desarrollado con Vite y Tailwind CSS, este repositorio contiene los algoritmos de procesamiento de señal para calcular la velocidad de levantamiento y la potencia mecánica, proporcionando la base para las interfaces de monitoreo de alto rendimiento.",
+                url: "#"
+            },
+            {
+                name: "WarmApp Ecosystem",
+                date: "2025-04-09",
+                category: "performance",
+                status: "Public",
+                icon: "🔥",
+                description: "Plataforma integral para rutinas de calentamiento dinámico.",
+                review: "Este repositorio alberga la lógica de negocio y las bases de datos de ejercicios para WarmApp. Incluye rutinas parametrizadas en formato JSON que permiten una personalización profunda del calentamiento según el tipo de sesión, asegurando que la preparación física sea técnica y reproducible.",
+                url: "#"
+            },
+            {
+                name: "Mobility Web Portal",
+                date: "2025-04-04",
+                category: "performance",
+                status: "Public",
+                icon: "🤸",
+                description: "Portal de análisis y seguimiento de movilidad articular.",
+                review: "Una aplicación web desarrollada con TypeScript enfocada en la evaluación de la amplitud de movimiento (ROM). Proporciona herramientas visuales para que los atletas registren sus progresos en flexibilidad y estabilidad articular, integrando gráficos de evolución temporal.",
+                url: "#"
+            },
+            {
+                name: "Mobility AR (iOS)",
+                date: "2025-03-17",
+                category: "performance",
+                status: "Public",
+                icon: "📱",
+                description: "Aplicación nativa iOS de evaluación de movilidad con AR.",
+                review: "Aprovechando ARKit, esta aplicación nativa permite medir ángulos articulares con precisión quirúrgica a través de la cámara del iPhone. Es una herramienta de diagnóstico portátil para entrenadores y fisioterapeutas que buscan datos objetivos sobre la movilidad funcional de sus atletas.",
+                url: "#"
+            },
+            {
+                name: "Fútbol Predictor AI",
+                date: "2025-03-08",
+                category: "ai",
+                status: "Public",
+                icon: "⚽",
+                description: "Sistema de predicción de resultados basado en estadísticas.",
+                review: "Una herramienta analítica que utiliza modelos probabilísticos para predecir el desenlace de encuentros futbolísticos. El proyecto procesa grandes volúmenes de datos históricos de ligas internacionales para ofrecer porcentajes de victoria, empate o derrota, funcionando como un asistente inteligente para el análisis deportivo profesional.",
+                url: "#"
+            },
+            {
+                name: "Petanca 3D Simulator",
+                date: "2025-02-28",
+                category: "play",
+                status: "Archived",
+                icon: "🥎",
+                description: "Simulador de petanca inmersivo con física realista.",
+                review: "Este proyecto es un simulador avanzado del tradicional juego de petanca, construido para la web inmersiva. Utiliza Three.js para el renderizado 3D de alta fidelidad y Cannon.js para el cálculo de colisiones y trayectorias físicas reales. Además, integra soporte para WebXR, permitiendo una experiencia de realidad virtual directamente desde el navegador. Es una demostración de cómo los motores de física y el 3D pueden revitalizar juegos clásicos.",
+                url: "#"
+            },
+            {
+                name: "Telegram Multi-Bot",
+                date: "2025-02-26",
+                category: "ai",
+                status: "Archived",
+                icon: "🤖",
+                description: "Agente inteligente desplegado en la plataforma Telegram.",
+                review: "Un bot versátil desarrollado con Node.js y desplegado en Vercel. Este agente implementa una lógica de procesamiento de lenguaje natural para interactuar con usuarios en tiempo real, ofreciendo desde respuestas automatizadas hasta integración con servicios externos de API, optimizado para una latencia mínima y escalabilidad serverless.",
+                url: "#"
+            },
+            {
+                name: "Zoom Video SDK Auth",
+                date: "2025-02-25",
+                category: "tech",
+                status: "Archived",
+                icon: "🎥",
+                description: "Servicio de generación de firmas JWT para Zoom SDK.",
+                review: "Este repositorio contiene la lógica de backend necesaria para autenticar sesiones del Zoom Video SDK. Implementa la generación segura de JSON Web Tokens (JWT) requeridos para unir participantes a sesiones de video personalizadas, asegurando que la infraestructura de comunicación sea robusta y cumpla con los estándares de seguridad de Zoom.",
+                url: "#"
+            },
+            {
+                name: "Gemini MultiModal Demo",
+                date: "2025-01-07",
+                category: "ai",
+                status: "Archived",
+                icon: "🔮",
+                description: "Demostración de capacidades multimodales de IA.",
+                review: "Un proyecto experimental que explora la potencia de los modelos multimodales (como Gemini). La demo permite interactuar con la IA a través de texto, imágenes y audio de forma simultánea, demostrando casos de uso avanzados en comprensión de escenas visuales y razonamiento complejo en un entorno web reactivo.",
+                url: "#"
+            },
+            {
+                name: "multimodal-live-api-web-console",
+                date: "2025-01-07",
+                category: "ai",
+                status: "Archived",
+                icon: "🤖",
+                description: "Repositorio de GitHub (private).",
+                review: "Este es un repositorio alojado en GitHub. Repositorio de GitHub (private). Representa una parte de mi historial de desarrollo documentado de forma automática.",
+                url: "#"
+            },
+            {
+                name: "InterBot.me Platform",
+                date: "2024-12-21",
+                category: "ai",
+                status: "Archived",
+                icon: "💬",
+                description: "Plataforma de entrevistas simuladas impulsada por IA.",
+                review: "InterBot.me es una aplicación web desarrollada con Vue.js y desplegada en Vercel, diseñada para entrenar habilidades de entrevista mediante agentes de IA. El sistema utiliza modelos de lenguaje para simular reclutadores técnicos, ofreciendo feedback personalizado y análisis de desempeño. Es una herramienta poderosa para el desarrollo profesional asistido por inteligencia artificial.",
+                url: "#"
+            },
+            {
+                name: "Next.js AI Chatbot",
+                date: "2024-12-19",
+                category: "ai",
+                status: "Archived",
+                icon: "🤖",
+                description: "Implementación de chatbot con Next.js y Vercel AI SDK.",
+                review: "Un prototipo robusto de interfaz conversacional utilizando el framework Next.js. Integra el Vercel AI SDK para manejar flujos de streaming de respuestas de modelos de lenguaje, proporcionando una experiencia de chat fluida y moderna con soporte para TypeScript y Tailwind CSS.",
+                url: "#"
+            },
+            {
+                name: "GonnaFind Portal",
+                date: "2024-12-16",
+                category: "business",
+                status: "Archived",
+                icon: "🔍",
+                description: "Monorepo para plataforma de servicios multipropósito.",
+                review: "GonnaFind es un proyecto monorepo que utiliza Vue.js para el frontend y Express para el backend. Está diseñado como un portal versátil con múltiples variantes de landing pages (clínicas, tiendas digitales, apps). Implementa animaciones avanzadas con WOW.js y una arquitectura escalable para despliegue en Vercel.",
+                url: "#"
+            },
+            {
+                name: "Sensor Logger Server",
+                date: "2024-09-16",
+                category: "performance",
+                status: "Archived",
+                icon: "📊",
+                description: "Servidor Python para recolección de datos biométricos.",
+                review: "Este servidor desarrollado en Python está diseñado para recibir y almacenar flujos de datos crudos provenientes de la aplicación Sensor Logger. Permite capturar información de acelerómetros, giroscopios y GPS durante sesiones de entrenamiento para su posterior análisis biomecánico y técnico.",
+                url: "#"
+            },
+            {
+                name: "AsistenciaFácil ML",
+                date: "2024-09-15",
+                category: "ai",
+                status: "Public",
+                icon: "🆔",
+                description: "Sistema de control de asistencia basado en Machine Learning.",
+                review: "AsistenciaFácil es una solución técnica para la gestión de presencia que integra módulos de Machine Learning. El proyecto explora la identificación biométrica para automatizar el registro de entrada y salida, simplificando procesos administrativos mediante visión artificial y análisis de datos.",
+                url: "#"
+            },
+            {
+                name: "First 5K Run Planner",
+                date: "2024-08-22",
+                category: "performance",
+                status: "Public",
+                icon: "🏃",
+                description: "Aplicación web para el entrenamiento del primer 5K.",
+                review: "Una herramienta digital diseñada para corredores principiantes. Este planificador ayuda a estructurar las semanas de entrenamiento necesarias para completar los primeros 5 kilómetros, integrando cronogramas progresivos y consejos técnicos para optimizar el rendimiento y evitar lesiones.",
+                url: "#"
+            },
+            {
+                name: "Dyole (Draft)",
+                date: "2024-02-16",
+                category: "tech",
+                status: "Archived",
+                icon: "🧪",
+                description: "Repositorio de investigación y prototipado inicial.",
+                review: "Un espacio de trabajo reservado para la exploración de nuevas arquitecturas web y experimentos de frontend. Actúa como un laboratorio de ideas antes de la implementación en proyectos de producción.",
+                url: "#"
+            },
+            {
+                name: "MiPlan Pro Ecosystem",
+                date: "2023-04-15",
+                category: "performance",
+                status: "Public",
+                icon: "📋",
+                description: "Sistema integral de coaching y entrenamiento profesional.",
+                review: "MiPlan Pro es una plataforma robusta diseñada para coaches y atletas de alto rendimiento. Integra manuales técnicos, protocolos de emergencia, sistemas de evaluación física (como el test SPPB) y herramientas de planificación semanal. Es un ecosistema completo que une la teoría del entrenamiento con la ejecución práctica digitalizada.",
+                url: "#"
+            },
+            {
+                name: "ttGPS Tracker",
+                date: "2022-12-30",
+                category: "performance",
+                status: "Archived",
+                icon: "📍",
+                description: "Sistema de seguimiento GPS para pruebas de tiempo.",
+                review: "Desarrollado para el análisis de trayectorias en pruebas de velocidad y resistencia. Este sistema captura y procesa datos de geolocalización de alta precisión, permitiendo visualizar mapas de calor y perfiles de velocidad para optimizar el rendimiento en circuitos específicos.",
+                url: "#"
+            },
+            {
+                name: "PacerPro 2.0",
+                date: "2022-09-28",
+                category: "performance",
+                status: "Archived",
+                icon: "🏃",
+                description: "Calculadora avanzada de ritmo y predictor de carrera.",
+                review: "Segunda iteración de la herramienta de pacing para corredores. PacerPro 2.0 implementa modelos matemáticos para predecir tiempos de meta basados en el historial del atleta y ayuda a establecer ritmos parciales precisos para maratones y medias maratones.",
+                url: "#"
+            },
+            {
+                name: "MyEscapeRoom Project",
+                date: "2022-07-26",
+                category: "play",
+                status: "Archived",
+                icon: "🔑",
+                description: "Concepto de juego de escape interactivo basado en web.",
+                review: "Un proyecto experimental que explora las mecánicas de los 'Escape Rooms' en un entorno digital. Se centra en la creación de acertijos lógicos integrados en la interfaz de usuario y sistemas de temporización para una experiencia de juego inmersiva.",
+                url: "#"
+            },
+            {
+                name: "LatLon Geodata",
+                date: "2022-07-11",
+                category: "tech",
+                status: "Archived",
+                icon: "🗺️",
+                description: "Prototipo de aplicación basada en mapas y geolocalización.",
+                review: "Un experimento técnico que utiliza Firebase para el despliegue de una aplicación web centrada en datos geográficos. El proyecto explora el manejo de coordenadas de latitud y longitud, visualización de puntos de interés y servicios de ubicación en tiempo real.",
+                url: "#"
+            },
+            {
+                name: "CloudRun Alpha",
+                date: "2022-04-13",
+                category: "performance",
+                status: "Archived",
+                icon: "☁️",
+                description: "Investigación sobre servicios de running en la nube.",
+                review: "Repositorio dedicado a la exploración de arquitecturas 'cloud-native' para aplicaciones de seguimiento deportivo. Se centra en el análisis de escalabilidad para servicios que procesan grandes volúmenes de datos GPS y métricas de rendimiento atlético en la nube.",
+                url: "#"
+            },
+            {
+                name: "Proyecto de Vida",
+                date: "2022-02-13",
+                category: "life",
+                status: "Public",
+                icon: "🌟",
+                description: "Portal personal de planificación y crecimiento.",
+                review: "Un espacio digital diseñado para la estructuración de objetivos personales y profesionales. El portal incluye secciones para la reflexión introspectiva ('mi percepción') y herramientas de planificación a largo plazo, funcionando como una bitácora de desarrollo humano integral.",
+                url: "#"
+            },
+            {
+                name: "W3CSS Playground",
+                date: "2021-12-20",
+                category: "tech",
+                status: "Public",
+                icon: "🎨",
+                description: "Laboratorio de diseño con frameworks CSS minimalistas.",
+                review: "Espacio de pruebas dedicado al estudio de frameworks CSS ligeros y modernos. El repositorio documenta experimentos de diseño responsivo, tipografía web y componentes de UI optimizados para un rendimiento máximo sin dependencias pesadas.",
+                url: "#"
+            },
+            {
+                name: "Regalar Gift System",
+                date: "2021-11-20",
+                category: "business",
+                status: "Archived",
+                icon: "🎁",
+                description: "Prototipo de sistema para gestión de obsequios y eventos.",
+                review: "Un concepto de aplicación para simplificar la elección y gestión de regalos. El proyecto explora flujos de usuario para listas de deseos, sugerencias inteligentes y coordinación de eventos especiales, buscando digitalizar la experiencia de dar y recibir.",
+                url: "#"
+            },
+            {
+                name: "Disincronía (ARIS Game)",
+                date: "2021-11-16",
+                category: "play",
+                status: "Archived",
+                icon: "🎮",
+                description: "Diseño de experiencia lúdica para la plataforma ARIS.",
+                review: "Disincronía es una aventura narrativa y técnica diseñada para ser ejecutada en el motor ARIS (arisgames.org). El proyecto integra mecánicas de geolocalización y narrativa no lineal, permitiendo a los jugadores interactuar con el entorno físico a través de una historia digital inmersiva. Este repositorio contiene los activos lógicos y la estructura de datos en formato JSON necesarios para el despliegue de la experiencia.",
+                url: "#"
+            },
+            {
+                name: "Pacer Pro Legacy",
+                date: "2021-07-11",
+                category: "performance",
+                status: "Archived",
+                icon: "👟",
+                description: "La primera versión de la plataforma Pacer Pro.",
+                review: "Repositorio original que dio vida a Pacer Pro. Contiene la estructura inicial de la aplicación web, activos de marca (logos en PSD) y la lógica fundacional para el cálculo de ritmos de carrera. Es la base histórica de mis herramientas de rendimiento deportivo.",
+                url: "#"
+            },
+            {
+                name: "Paced Run WatchKit",
+                date: "2021-07-04",
+                category: "performance",
+                status: "Archived",
+                icon: "⌚",
+                description: "Aplicación nativa para Apple Watch de control de ritmo.",
+                review: "Desarrollada íntegramente para watchOS utilizando WatchKit. Esta aplicación permite a los corredores recibir alertas de ritmo en tiempo real y visualizar métricas críticas directamente en su reloj, eliminando la necesidad de consultar el teléfono durante entrenamientos de alta intensidad.",
+                url: "#"
+            },
+            {
+                name: "Silavi Vision",
+                date: "2021-02-14",
+                category: "tech",
+                status: "Archived",
+                icon: "👁️",
+                description: "Proyecto experimental de visión artificial y análisis.",
+                review: "Silavi es un laboratorio de pruebas para algoritmos de visión por computadora. El repositorio se centra en la detección de objetos y análisis de video en tiempo real, sentando las bases tecnológicas para proyectos posteriores de análisis de movimiento humano.",
+                url: "#"
+            },
+            {
+                name: "PoseAR (Unity)",
+                date: "2020-12-27",
+                category: "performance",
+                status: "Archived",
+                icon: "👓",
+                description: "Estimación de pose humana en Realidad Aumentada.",
+                review: "Un proyecto desarrollado en Unity que combina la potencia de la Realidad Aumentada con la estimación de pose en tiempo real. Utiliza modelos de deep learning para identificar articulaciones humanas y proyectar superposiciones informativas en entornos AR, ideal para feedback técnico instantáneo.",
+                url: "#"
+            },
+            {
+                name: "PoseAR Unity Engine",
+                date: "2020-12-16",
+                category: "performance",
+                status: "Archived",
+                icon: "🎮",
+                description: "Motor de análisis cinemático basado en Unity.",
+                review: "Segunda vertiente del proyecto PoseAR, enfocada en la robustez del motor de análisis cinemático. Este repositorio contiene la configuración avanzada de Unity y los paquetes necesarios para procesar video de alta frecuencia y extraer datos angulares precisos de los movimientos del atleta.",
+                url: "#"
+            },
+            {
+                name: "Plaza 777 Marketplace",
+                date: "2020-12-11",
+                category: "business",
+                status: "Archived",
+                icon: "🏪",
+                description: "Plataforma de comercio electrónico basada en Firebase.",
+                review: "Un sistema de marketplace diseñado para la gestión de locales y ventas en una plaza comercial. Utiliza Firebase Functions para la lógica de backend y una interfaz de usuario optimizada para la navegación de catálogos y gestión de pedidos en tiempo real.",
+                url: "#"
+            },
+            {
+                name: "PosAR Web Visualizer",
+                date: "2020-12-11",
+                category: "performance",
+                status: "Archived",
+                icon: "🌐",
+                description: "Visualizador WebGL para modelos de pose 3D.",
+                review: "Desarrollado con Three.js, este visualizador permite cargar y renderizar modelos FBX de poses humanas directamente en el navegador. Es una herramienta técnica para la validación visual de datos cinemáticos y la creación de entornos interactivos de análisis de movimiento sin plugins externos.",
+                url: "#"
+            },
+            {
+                name: "Unity AR Test Bench",
+                date: "2020-12-11",
+                category: "performance",
+                status: "Archived",
+                icon: "🧪",
+                description: "Banco de pruebas para Realidad Aumentada en Unity.",
+                review: "Repositorio técnico dedicado a la experimentación con paquetes de AR Foundation en Unity. El proyecto se enfoca en la calibración de sensores y la estabilidad de superposiciones digitales sobre el cuerpo humano para aplicaciones de entrenamiento asistido.",
+                url: "#"
+            },
+            {
+                name: "Fuel Dev PWA",
+                date: "2018-10-09",
+                category: "tech",
+                status: "Public",
+                icon: "🔋",
+                description: "Aplicación web progresiva para gestión de energía/recursos.",
+                review: "Una PWA desarrollada con Workbox que garantiza funcionalidad offline y tiempos de carga instantáneos. El proyecto explora el uso de Service Workers para la gestión de datos críticos en entornos con conectividad limitada, enfocándose en una experiencia de usuario fluida y resiliente.",
+                url: "#"
+            },
+            {
+                name: "SOTSAG CRM System",
+                date: "2018-09-27",
+                category: "business",
+                status: "Public",
+                icon: "🏢",
+                description: "Sistema integral de gestión de clientes y finanzas.",
+                review: "SOTSAG es una solución de CRM/ERP diseñada para la administración de centros deportivos. El sistema gestiona bases de datos de clientes, control de gastos, facturación y seguimiento de membresías. Implementa una arquitectura de PWA para permitir el acceso administrativo desde cualquier dispositivo con sincronización en la nube.",
+                url: "#"
+            },
+            {
+                name: "Framework7 Core Mirror",
+                date: "2018-09-27",
+                category: "tech",
+                status: "Public",
+                icon: "📦",
+                description: "Réplica local del framework móvil Framework7.",
+                review: "Este repositorio actúa como un mirror de seguridad y personalización del framework Framework7. Contiene el código fuente completo del motor para la creación de aplicaciones móviles híbridas, sirviendo como referencia técnica fundamental para múltiples proyectos de mi ecosistema digital que utilizan esta tecnología.",
+                url: "#"
+            },
+            {
+                name: "Firebase Serverless Auth",
+                date: "2018-05-20",
+                category: "tech",
+                status: "Public",
+                icon: "🔑",
+                description: "Ejemplos de funciones serverless para autenticación.",
+                review: "Repositorio educativo que explora la implementación de flujos de autenticación personalizados utilizando Firebase Cloud Functions. Incluye lógica para la gestión de tokens, validación de identidades y disparadores de base de datos para perfiles de usuario.",
+                url: "#"
+            },
+            {
+                name: "DVN Mobile App",
+                date: "2018-03-28",
+                category: "tech",
+                status: "Public",
+                icon: "📱",
+                description: "Prototipo de aplicación móvil híbrida con Framework7.",
+                review: "Una aplicación móvil desarrollada con Framework7 que explora la creación de interfaces de usuario nativas utilizando tecnologías web. El proyecto incluye gestión de vistas, componentes interactivos y una arquitectura ligera diseñada para un rendimiento óptimo en dispositivos móviles.",
+                url: "#"
+            },
+            {
+                name: "Django Rest API Lab",
+                date: "2018-03-26",
+                category: "tech",
+                status: "Public",
+                icon: "📡",
+                description: "Backend robusto desarrollado con Django Rest Framework.",
+                review: "Este repositorio contiene la implementación de una API RESTful utilizando Python y Django. Se centra en la creación de endpoints seguros, serialización de datos complejos y gestión de bases de datos relacionales, proporcionando un backend sólido para aplicaciones frontend modernas.",
+                url: "#"
+            },
+            {
+                name: "School Sports Manager",
+                date: "2018-03-19",
+                category: "performance",
+                status: "Public",
+                icon: "🏫",
+                description: "Sistema de gestión para programas deportivos escolares.",
+                review: "Plataforma diseñada para coordinar actividades deportivas dentro de instituciones educativas. Permite la gestión de equipos, calendarios de competencia y seguimiento del progreso de los estudiantes-atletas, integrando una interfaz móvil fluida para entrenadores y coordinadores.",
+                url: "#"
+            },
+            {
+                name: "F7 + Django Integration",
+                date: "2018-03-18",
+                category: "tech",
+                status: "Public",
+                icon: "🏗️",
+                description: "Arquitectura híbrida que une Django con Framework7.",
+                review: "Un proyecto que demuestra la integración de un potente backend en Django con un frontend móvil dinámico desarrollado en Framework7. Explora el renderizado de plantillas, la gestión de estáticos y la comunicación asíncrona para crear aplicaciones híbridas de alto desempeño.",
+                url: "#"
+            },
+            {
+                name: "Amateur Sports Engine",
+                date: "2018-03-16",
+                category: "performance",
+                status: "Public",
+                icon: "🏅",
+                description: "Prototipo de aplicación para la gestión de ligas amateurs.",
+                review: "Una aplicación móvil desarrollada con Framework7 diseñada específicamente para deportistas aficionados. El motor permite gestionar equipos, resultados y estadísticas de ligas locales, democratizando el acceso a herramientas de seguimiento de rendimiento que normalmente solo están disponibles para el sector profesional.",
+                url: "#"
+            },
+            {
+                name: "Génesis: Proyecto 001",
+                date: "2018-02-28",
+                category: "tech",
+                status: "Public",
+                icon: "🥚",
+                description: "El punto de partida: Mi primer repositorio oficial.",
+                review: "Este es el repositorio que marca el inicio de mi trayectoria documentada en GitHub. Representa los primeros pasos en el mundo del desarrollo de software, un ejercicio fundamental de aprendizaje de Git y estructuras básicas de código que sentó las bases para todos los sistemas complejos desarrollados posteriormente.",
+                url: "#"
+            },
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const projectsCollection = db.collection('portfolioProjects'); 
+        ];
 
-        // --- DOM Elements ---
-        const portfolioContainer = document.getElementById('portfolio-container');
-        const loadingMessage = document.getElementById('loading-message');
-        const errorMessage = document.getElementById('error-message');
+        
+        const container = document.getElementById('project-container');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const searchBar = document.getElementById('search-bar');
 
-        // --- Cargar y Mostrar Proyectos ---
-        async function loadAndDisplayPortfolio() {
-            try {
-                const snapshot = await projectsCollection.orderBy('nombre').get();
-                const allProjects = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
+        
+        let allProjects = [...staticProjects];
+        let currentCategory = 'all';
 
-                loadingMessage.style.display = 'none';
+        // --- Render Function (BLOG FORMAT) ---
+        function renderProjects() {
+            container.innerHTML = '';
+            
+            // Sort by date descending
+            allProjects.sort((a, b) => {
+                if (!a.date) return 1;
+                if (!b.date) return -1;
+                return new Date(b.date) - new Date(a.date);
+            });
+            
+            const searchTerm = searchBar.value.toLowerCase().trim();
 
-                if (allProjects.length === 0) {
-                    portfolioContainer.innerHTML = '<p>Aún no hay proyectos en el portafolio.</p>';
-                    return;
-                }
-
-                // --- 1. Agrupar proyectos por estatus ---
-                const projectsByStatus = {
-                    'Producción': [],
-                    'MVP': [],
-                    'Prototipo': [],
-                    'Experimento': [],
-                    'Idea': [],
-                    'Otros': [] // Para proyectos sin estatus o con uno no listado
-                };
-
-                allProjects.forEach(project => {
-                    const status = project.estatus;
-                    if (projectsByStatus.hasOwnProperty(status)) {
-                        projectsByStatus[status].push(project);
-                    } else {
-                        projectsByStatus['Otros'].push(project);
-                    }
-                });
+            const filtered = allProjects.filter(p => {
+                const matchesCategory = currentCategory === 'all' || p.category === currentCategory;
                 
-                // Limpiar el contenedor principal antes de agregar las secciones
-                portfolioContainer.innerHTML = '';
+                const matchesSearch = searchTerm === '' || 
+                    (p.name && p.name.toLowerCase().includes(searchTerm)) || 
+                    (p.description && p.description.toLowerCase().includes(searchTerm)) ||
+                    (p.review && p.review.toLowerCase().includes(searchTerm)) ||
+                    (p.category && p.category.toLowerCase().includes(searchTerm));
 
-                // --- 2. Definir el orden de las secciones ---
-                const sectionOrder = ['Producción', 'MVP', 'Prototipo', 'Experimento', 'Idea', 'Otros'];
+                return matchesCategory && matchesSearch;
+            });
 
-                // --- 3. Renderizar cada sección y sus tarjetas ---
-                sectionOrder.forEach(status => {
-                    const projectsInSection = projectsByStatus[status];
-                    
-                    // Solo crear la sección si tiene proyectos
-                    if (projectsInSection.length > 0) {
-                        
-                        // Crear el título de la sección
-                        const sectionTitle = document.createElement('h2');
-                        sectionTitle.textContent = status;
-                        sectionTitle.classList.add('section-title');
-                        portfolioContainer.appendChild(sectionTitle);
-
-                        // Crear el contenedor de la rejilla para esta sección
-                        const sectionGrid = document.createElement('div');
-                        sectionGrid.classList.add('portfolio-grid');
-                        
-                        // Crear y añadir cada tarjeta de proyecto a la rejilla de la sección
-                        projectsInSection.forEach(project => {
-                            const projectCard = document.createElement('div');
-                            projectCard.classList.add('portfolio-item');
-
-                            // La información de 'estatus' se muestra en la categoría, como antes.
-                            projectCard.innerHTML = `
-                                <a href="${project.direccion}" target="_blank">
-                                    <img src="${project.imagenBase64}" alt="Imagen de ${project.nombre}">
-                                    <h3>${project.nombre}</h3>
-                                </a>
-                                <p class="category">${project.categoria || 'Sin Categoría'} - <strong>${project.estatus || 'N/A'}</strong></p>
-                                <p>${project.descripcion}</p>
-                            `;
-                            sectionGrid.appendChild(projectCard);
-                        });
-
-                        // Añadir la rejilla completa de la sección al contenedor principal
-                        portfolioContainer.appendChild(sectionGrid);
-                    }
-                });
-
-            } catch (error) {
-                console.error('Error al cargar el portafolio desde Firestore:', error);
-                loadingMessage.style.display = 'none';
-                errorMessage.style.display = 'block';
+            if (filtered.length === 0) {
+                container.innerHTML = `<p style="text-align:center; color:#94a3b8; padding: 2rem;">No se encontraron artículos que coincidan con tu búsqueda.</p>`;
+                return;
             }
+
+            filtered.forEach((project, index) => {
+                const isClickable = project.url && project.url !== "#";
+                const article = document.createElement(isClickable ? 'a' : 'div');
+                if (isClickable) article.href = project.url;
+                article.className = 'blog-post fade-in';
+                if (!isClickable) article.style.cursor = 'default';
+                article.style.animationDelay = `${(index % 10) * 0.05}s`;
+                
+                const statusClass = `status-${project.status.toLowerCase().substring(0, 5)}`;
+                
+                const reviewText = project.review || project.description || "Proyecto documentado sin reseña extensa.";
+
+                article.innerHTML = `
+                    <div class="post-header">
+                        <div class="post-icon">${project.icon || '🔥'}</div>
+                        <div class="post-title-wrapper">
+                            <h3>${project.name}</h3>
+                            <div class="post-tags">
+                                <span class="tag ${statusClass}">${project.status}</span>
+                                <span class="tag">${project.category}</span>
+                                ${project.date ? `<span class="tag" style="background:var(--surface); border:1px solid var(--border); color:var(--text-secondary);"><span style="margin-right:4px;">📅</span>${new Date(project.date + 'T00:00:00').toLocaleDateString('es-ES', {month: 'short', year: 'numeric'}).toUpperCase()}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <p>${reviewText}</p>
+                        ${project.gallery ? `
+                            <div class="post-gallery">
+                                ${project.gallery.map(img => `
+                                    <div class="gallery-item">
+                                        <img src="${img.src}" alt="${img.label}">
+                                        <div class="gallery-caption">${img.label}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                    ${isClickable ? '<span class="read-more">Explorar Proyecto &rarr;</span>' : '<span class="read-more" style="opacity:0.5; color:var(--text-muted);">Solo Documentación</span>'}
+                `;
+                container.appendChild(article);
+            });
         }
 
-        document.addEventListener('DOMContentLoaded', loadAndDisplayPortfolio);
+
+
+        // --- Filter Logic ---
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.dataset.category;
+                renderProjects();
+            });
+        });
+
+        // --- Search Logic ---
+        searchBar.addEventListener('input', () => {
+            renderProjects();
+        });
+
+        // Init
+        renderProjects();
     </script>
 </body>
 </html>

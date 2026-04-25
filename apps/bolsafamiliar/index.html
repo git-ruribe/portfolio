@@ -303,6 +303,25 @@
             border: 1px solid #c3e6cb;
         }
 
+
+        .realtime-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .realtime-indicator.show {
+            opacity: 1;
+        }
+
         @media (max-width: 768px) {
             .nav-tabs {
                 flex-direction: column;
@@ -326,25 +345,8 @@
                 width: 100%;
                 justify-content: flex-end;
             }
-
-            .realtime-indicator {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: #28a745;
-                color: white;
-                padding: 8px 12px;
-                border-radius: 5px;
-                font-size: 12px;
-                z-index: 1000;
-                opacity: 0;
-                transition: opacity 0.3s ease;
-            }
-
-            .realtime-indicator.show {
-                opacity: 1;
-            }
         }
+
     </style>
 </head>
 <body>
@@ -384,53 +386,43 @@
                 <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
             </div>
 
-            <div class="nav-tabs">
-                <button class="nav-tab active" onclick="showTab('home')">🏠 Inicio</button>
-                <button class="nav-tab" onclick="showTab('requests')">📝 Solicitudes</button>
-                <button class="nav-tab" onclick="showTab('expenses')">💳 Gastos</button>
-                <button class="nav-tab admin-only" onclick="showTab('admin')">👑 Admin</button>
-            </div>
+<div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('home', this)">🏠 Inicio</button>
+    <button class="nav-tab" onclick="showTab('requests', this)">📝 Solicitudes</button>
+    <button class="nav-tab" onclick="showTab('expenses', this)">💳 Gastos</button>
+    <button class="nav-tab admin-only" onclick="showTab('admin', this)">👑 Admin</button>
+</div>
 
             <div class="tab-content">
                 <!-- Pestaña Inicio -->
-                <div id="home-tab" class="tab-pane active">
-                    <div class="card">
-                        <h3>💰 Balance de la Bolsa Familiar</h3>
-                        <div class="balance-display" id="family-balance">$0.00</div>
-                        <div style="text-align: center; color: #666; font-size: 14px;">
-                            Presupuesto semanal: $<span id="weekly-budget-display">0</span>
-                        </div>
-                    </div>
-
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-value" id="my-received">$0</div>
-                            <div>Total Recibido</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="my-spent">$0</div>
-                            <div>Total Gastado</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="my-requests">0</div>
-                            <div>Mis Solicitudes</div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>💸 Hacer Solicitud de Dinero</h3>
-                        <div id="request-form-messages"></div>
-                        <div class="form-group">
-                            <label>Cantidad ($):</label>
-                            <input type="number" id="request-amount" placeholder="0.00" min="0" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label>Motivo:</label>
-                            <input type="text" id="request-reason" placeholder="¿Para qué necesitas el dinero?" maxlength="100">
-                        </div>
-                        <button class="btn btn-primary" onclick="makeRequest()">Enviar Solicitud</button>
+            <div id="home-tab" class="tab-pane active">
+                <div class="card">
+                    <h3>💰 Balance de la Bolsa Familiar</h3>
+                    <div class="balance-display" id="family-balance">$0.00</div>
+                    <div style="text-align: center; color: #666; font-size: 14px;">
+                        Presupuesto semanal: $<span id="weekly-budget-display">0</span>
                     </div>
                 </div>
+
+                <div class="stats-grid" id="home-stats-grid">
+                    <!-- Se llenará dinámicamente según el rol -->
+                </div>
+
+                <div class="card">
+                    <h3>💸 Hacer Solicitud de Dinero</h3>
+                    <div id="request-form-messages"></div>
+                    <div class="form-group">
+                        <label>Cantidad ($):</label>
+                        <input type="number" id="request-amount" placeholder="0.00" min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Motivo:</label>
+                        <input type="text" id="request-reason" placeholder="¿Para qué necesitas el dinero?" maxlength="100">
+                    </div>
+                    <button class="btn btn-primary" onclick="makeRequest()">Enviar Solicitud</button>
+                </div>
+            </div>
+
 
                 <!-- Pestaña Solicitudes -->
                 <div id="requests-tab" class="tab-pane">
@@ -596,7 +588,7 @@
             auth.signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                     currentUser = userCredential.user;
-                    Profile();
+                    loadUserProfile();;
                 })
                 .catch((error) => {
                     setLoading('login-btn', false);
@@ -654,7 +646,9 @@
                 // Actualizar UI en tiempo real
                 if (document.getElementById('main-app').style.display !== 'none') {
                     updateHomeDisplay();
-                    updateBudgetDisplay();
+                    if (userRole === 'admin' && document.getElementById('admin-tab').classList.contains('active')) {
+                        updateBudgetDisplay();
+                    }
                 }
             });
 
@@ -715,7 +709,7 @@
             document.getElementById('family-balance').textContent = formatCurrency(balance);
             document.getElementById('weekly-budget-display').textContent = weeklyBudget.toLocaleString();
             
-            loadMyStats();
+            loadHomeStats(); // Cambiar de loadMyStats() a loadHomeStats()
         }
 
         function updateBudgetDisplay() {
@@ -747,12 +741,17 @@
         }
 
         function updateStatsDisplay() {
-            // Actualizar estadísticas en tiempo real
-            loadMyStats();
+            // Actualizar estadísticas en la pestaña de inicio si está activa
+            if (document.getElementById('home-tab').classList.contains('active')) {
+                loadHomeStats();
+            }
             
-            // Si estamos en admin, actualizar estadísticas familiares
+            // Si estamos en admin, actualizar TODAS las estadísticas familiares
             if (userRole === 'admin' && document.getElementById('admin-tab').classList.contains('active')) {
                 loadFamilyStats();
+                loadFamilyExpensesSummary();
+                loadUserActivitySummary();
+                updateBudgetDisplay();
             }
         }
 
@@ -783,11 +782,6 @@
         // ========================================
 
         function showMainApp() {
-
-            //console.log("=== DEBUG SHOW MAIN APP ===");
-            //console.log("userName:", userName);
-            //console.log("userRole:", userRole);
-            
             document.getElementById('auth-container').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
             
@@ -800,31 +794,88 @@
                 el.style.display = userRole === 'admin' ? 'block' : 'none';
             });
 
+            // DEBUG: Verificar qué pestañas están visibles
+            console.log("=== DEBUG PESTAÑAS ===");
+            console.log("home-tab display:", document.getElementById('home-tab').style.display);
+            console.log("admin-tab display:", document.getElementById('admin-tab').style.display);
+            console.log("admin-tab classes:", document.getElementById('admin-tab').className);
+
+            fixTabDisplay(); 
+
             loadData();
+
+            
+        }
+
+        function fixTabDisplay() {
+            // Ocultar TODAS las pestañas primero
+            document.querySelectorAll('.tab-pane').forEach(tab => {
+                tab.style.display = 'none';
+                tab.classList.remove('active');
+            });
+
+            // Mostrar SOLO la pestaña activa según los botones
+            const activeNavTab = document.querySelector('.nav-tab.active');
+            let tabName = 'home'; // Por defecto
+            
+            if (activeNavTab) {
+                const onclickAttr = activeNavTab.getAttribute('onclick');
+                if (onclickAttr) {
+                    const match = onclickAttr.match(/showTab\('(.+?)'/);
+                    if (match && match[1]) {
+                        tabName = match[1];
+                    }
+                }
+            }
+            
+            // Mostrar la pestaña correspondiente
+            const targetTab = document.getElementById(tabName + '-tab');
+            if (targetTab) {
+                targetTab.style.display = 'block';
+                targetTab.classList.add('active');
+            }
+            
+            // Asegurar que el botón correcto esté activo
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            const correctButton = document.querySelector(`[onclick*="showTab('${tabName}')"]`);
+            if (correctButton) {
+                correctButton.classList.add('active');
+            }
         }
 
         function showTab(tabName) {
             // Ocultar todas las pestañas
-            const tabs = document.querySelectorAll('.tab-pane');
-            tabs.forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(tab => {
+                tab.style.display = 'none';
+                tab.classList.remove('active');
+            });
             
-            const navTabs = document.querySelectorAll('.nav-tab');
-            navTabs.forEach(tab => tab.classList.remove('active'));
+            // Actualizar botones de navegación
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            
+            // Buscar el botón correcto y activarlo
+            const activeButton = document.querySelector(`[onclick*="showTab('${tabName}')"]`);
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
 
-            // Mostrar la pestaña seleccionada
-            document.getElementById(tabName + '-tab').classList.add('active');
-            event.target.classList.add('active');
+            // Mostrar la pestaña correcta
+            const targetTab = document.getElementById(tabName + '-tab');
+            if (targetTab) {
+                targetTab.style.display = 'block';
+                targetTab.classList.add('active');
+            }
 
             // Cargar datos específicos de la pestaña
             if (tabName === 'home') loadHomeData();
             if (tabName === 'requests') loadMyRequests();
             if (tabName === 'expenses') loadMyExpenses();
             if (tabName === 'admin' && userRole === 'admin') {
-                console.log("Cargando datos de admin..."); // Debug temporal
+                console.log("Cargando datos de admin...");
                 loadAdminData();
             }
-        }
-
+        }   
+        
         function loadData() {
             loadHomeData();
         }
@@ -834,14 +885,9 @@
             database.ref('familySettings').once('value')
                 .then((snapshot) => {
                     const settings = snapshot.val() || {};
-                    console.log("=== DEBUG FAMILY SETTINGS ===");
-                    console.log("Settings desde Firebase:", settings);
                     
                     const balance = settings.currentBalance || 0;
                     const weeklyBudget = settings.weeklyBudget || 0;
-                    
-                    console.log("Balance:", balance);
-                    console.log("Weekly budget:", weeklyBudget);
                     
                     document.getElementById('family-balance').textContent = formatCurrency(balance);
                     document.getElementById('weekly-budget-display').textContent = weeklyBudget.toLocaleString();
@@ -854,7 +900,7 @@
                     familyData.familySettings.weeklyBudget = weeklyBudget;
                     familyData.familySettings.lastBudgetUpdate = settings.lastBudgetUpdate;
                     
-                    loadMyStats();
+                    loadHomeStats(); // Cambiar de loadMyStats() a loadHomeStats()
                 })
                 .catch((error) => {
                     console.error('Error cargando configuración familiar:', error);
@@ -868,9 +914,10 @@
             document.getElementById('family-balance').textContent = formatCurrency(balance);
             document.getElementById('weekly-budget-display').textContent = weeklyBudget.toLocaleString();
             
-            loadMyStats();
+            loadHomeStats();
         }
 
+        /*
         function loadMyStats() {
             // Calcular estadísticas del usuario actual
             const myRequests = (familyData.requests || []).filter(r => r.userId === currentUser.uid);
@@ -886,6 +933,91 @@
             document.getElementById('my-received').textContent = formatCurrency(myReceived);
             document.getElementById('my-spent').textContent = formatCurrency(mySpent);
             document.getElementById('my-requests').textContent = myRequestsCount;
+        }
+        */
+
+        function loadHomeStats() {
+            const container = document.getElementById('home-stats-grid');
+            
+            if (userRole === 'admin') {
+                // Admin ve estadísticas familiares + personales
+                loadAdminHomeStats(container);
+            } else {
+                // Miembros ven solo sus estadísticas personales
+                loadMemberHomeStats(container);
+            }
+        }
+        
+
+        function loadAdminHomeStats(container) {
+            // Calcular estadísticas familiares
+            const totalFamilySpent = (familyData.expenses || []).reduce((sum, exp) => sum + exp.amount, 0);
+            const pendingRequests = (familyData.requests || []).filter(r => r.status === 'pending').length;
+            const familyMembers = Object.keys(familyData.users || {}).length;
+            const currentBalance = familyData.familySettings?.currentBalance || 0;
+            const weeklyBudget = familyData.familySettings?.weeklyBudget || 0;
+            const budgetUsed = weeklyBudget > 0 ? (((weeklyBudget - currentBalance) / weeklyBudget) * 100).toFixed(1) : 0;
+            
+            // Calcular estadísticas personales del admin
+            const myRequests = (familyData.requests || []).filter(r => r.userId === currentUser.uid);
+            const myExpenses = (familyData.expenses || []).filter(e => e.userId === currentUser.uid);
+            const myReceived = myRequests.filter(r => r.status === 'approved').reduce((sum, r) => sum + r.amount, 0);
+            const mySpent = myExpenses.reduce((sum, e) => sum + e.amount, 0);
+
+            container.innerHTML = `
+                <!-- Estadísticas Familiares -->
+                <div class="stat-card" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                    <div class="stat-value">${formatCurrency(totalFamilySpent)}</div>
+                    <div>👥 Gasto Familiar Total</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                    <div class="stat-value">${pendingRequests}</div>
+                    <div>📝 Solicitudes Pendientes</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+                    <div class="stat-value">${familyMembers}</div>
+                    <div>👨‍👩‍👧‍👦 Miembros Familia</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
+                    <div class="stat-value">${budgetUsed}%</div>
+                    <div>📊 Presupuesto Usado</div>
+                </div>
+                
+                <!-- Estadísticas Personales del Admin -->
+                <div class="stat-card" style="background: linear-gradient(135deg, #fa709a, #fee140); opacity: 0.8;">
+                    <div class="stat-value">${formatCurrency(myReceived)}</div>
+                    <div>💰 Mi Total Recibido</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #a8edea, #fed6e3); opacity: 0.8;">
+                    <div class="stat-value">${formatCurrency(mySpent)}</div>
+                    <div>💳 Mi Total Gastado</div>
+                </div>
+            `;
+        }
+
+        function loadMemberHomeStats(container) {
+            // Calcular estadísticas personales
+            const myRequests = (familyData.requests || []).filter(r => r.userId === currentUser.uid);
+            const myExpenses = (familyData.expenses || []).filter(e => e.userId === currentUser.uid);
+            
+            const myReceived = myRequests.filter(r => r.status === 'approved').reduce((sum, r) => sum + r.amount, 0);
+            const mySpent = myExpenses.reduce((sum, e) => sum + e.amount, 0);
+            const myRequestsCount = myRequests.length;
+
+            container.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${formatCurrency(myReceived)}</div>
+                    <div>Total Recibido</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${formatCurrency(mySpent)}</div>
+                    <div>Total Gastado</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${myRequestsCount}</div>
+                    <div>Mis Solicitudes</div>
+                </div>
+            `;
         }
 
         // ========================================
@@ -918,16 +1050,37 @@
                 userName: userName,
                 amount: amount,
                 reason: reason,
-                status: 'pending',
+                status: userRole === 'admin' ? 'approved' : 'pending', // Auto-aprobar si es admin
                 createdAt: new Date().toISOString()
             };
 
-            database.ref('requests').push(request)
+            // Si es admin, agregar campos de aprobación
+            if (userRole === 'admin') {
+                request.approvedAt = new Date().toISOString();
+                request.approvedBy = currentUser.uid;
+            }
+
+            const updates = {};
+            
+            // Agregar la solicitud
+            const newRequestRef = database.ref('requests').push();
+            updates[`requests/${newRequestRef.key}`] = request;
+            
+            // Si es admin, también reducir el balance inmediatamente
+            if (userRole === 'admin') {
+                const newBalance = familyData.familySettings.currentBalance - amount;
+                updates['familySettings/currentBalance'] = newBalance;
+            }
+
+            database.ref().update(updates)
                 .then(() => {
-                    showSuccess('request-form-messages', 'Solicitud enviada exitosamente');
+                    if (userRole === 'admin') {
+                        showSuccess('request-form-messages', '✅ Solicitud aprobada automáticamente (Admin)');
+                    } else {
+                        showSuccess('request-form-messages', 'Solicitud enviada exitosamente');
+                    }
                     document.getElementById('request-amount').value = '';
                     document.getElementById('request-reason').value = '';
-                    // ¡Ya no necesitas llamadas manuales! Los listeners se encargan
                 })
                 .catch((error) => {
                     showError('request-form-messages', 'Error al enviar solicitud: ' + error.message);
@@ -1089,10 +1242,14 @@
                     showError('budget-form-messages', 'Error al establecer presupuesto: ' + error.message);
                 });
         }
+
         function loadAdminData() {
+            console.log("=== loadAdminData() ejecutándose ===");
             loadPendingRequests();
             loadFamilyStats();
-            loadLastBudgetUpdate();
+            loadFamilyExpensesSummary();
+            loadUserActivitySummary();
+            updateBudgetDisplay();
         }
 
         function loadPendingRequests() {
@@ -1203,7 +1360,7 @@
         function loadFamilyExpensesSummary() {
             const container = document.getElementById('family-expenses-summary');
             
-            if (familyData.expenses.length === 0) {
+            if (!familyData.expenses || familyData.expenses.length === 0) {
                 container.innerHTML = '<p style="text-align: center; color: #666;">No hay gastos familiares registrados.</p>';
                 return;
             }
@@ -1218,6 +1375,11 @@
             });
 
             const total = Object.values(expensesByCategory).reduce((sum, amount) => sum + amount, 0);
+
+            if (total === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">No hay gastos para mostrar.</p>';
+                return;
+            }
 
             container.innerHTML = Object.entries(expensesByCategory)
                 .sort((a, b) => b[1] - a[1])
@@ -1237,7 +1399,7 @@
             const userStats = {};
 
             // Inicializar estadísticas de usuarios
-            Object.entries(familyData.users).forEach(([userId, user]) => {
+            Object.entries(familyData.users || {}).forEach(([userId, user]) => {
                 userStats[userId] = {
                     name: user.name,
                     role: user.role,
@@ -1249,7 +1411,7 @@
             });
 
             // Calcular estadísticas de solicitudes
-            familyData.requests.forEach(request => {
+            (familyData.requests || []).forEach(request => {
                 if (userStats[request.userId]) {
                     userStats[request.userId].totalRequested += request.amount;
                     userStats[request.userId].requestCount++;
@@ -1260,7 +1422,7 @@
             });
 
             // Calcular estadísticas de gastos
-            familyData.expenses.forEach(expense => {
+            (familyData.expenses || []).forEach(expense => {
                 if (userStats[expense.userId]) {
                     userStats[expense.userId].totalSpent += expense.amount;
                 }
