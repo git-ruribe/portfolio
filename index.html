@@ -251,6 +251,59 @@
             opacity: 1;
         }
 
+        /* --- Technical Metadata Styles --- */
+        .tech-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0 1rem 0;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .meta-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .meta-value {
+            font-size: 0.85rem;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .meta-value.location {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: #a855f7;
+        }
+
+        .meta-value.tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .tech-pill {
+            background: rgba(99, 102, 241, 0.1);
+            color: #818cf8;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
         .blog-post:hover {
             transform: translateY(-4px);
             background: var(--surface-hover);
@@ -402,30 +455,12 @@
                 icon: "⚡",
                 description: "Sistema IoT de Velocity Based Training con encoder de alta precisión. [Local: ~/Arduino/VBT_Dumbell.ino]",
                 review: "Una solución integral de hardware y software para el monitoreo de la velocidad de ejecución en tiempo real. Utiliza un encoder de alto rendimiento conectado a un Arduino con transmisión MQTT no bloqueante hacia la nube. Incluye algoritmos de filtrado atómico, sincronización NTP y una matriz de feedback visual LED, permitiendo optimizar la carga de entrenamiento de fuerza con precisión de grado científico.",
-                url: "#"
+                url: "#",
+                languages: "C++ (Arduino)",
+                stats: "1 archivo, 433 líneas",
+                location: "MacPro: ~/Arduino/VBT_Dumbell.ino",
+                tech: ["IoT", "MQTT", "NTP", "Real-time Interrupts"]
             },
-            {"name": "Bt", "date": "2025-10-18", "category": "tech", "status": "Private", "icon": "⚙️", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/python/bt]", "review": "Exploración técnica en el área de tech. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
-            {"name": "Tradeagent", "date": "2025-06-18", "category": "tech", "status": "Private", "icon": "⚙️", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/python/tradeAgent]", "review": "Exploración técnica en el área de tech. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
-            {"name": "Cheky", "date": "2024-12-15", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/html/cheky]", "review": "Exploración técnica en el área de tech. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
-            {"name": "Cheky App", "date": "2024-12-15", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/html/cheky-app]", "review": "Exploración técnica en el área de tech. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
-            {"name": "Petanca", "date": "2025-02-28", "category": "play", "status": "Private", "icon": "🌐", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/html/petanca]", "review": "Exploración técnica en el área de play. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
-            {"name": "Kidzmx", "date": "2025-06-20", "category": "life", "status": "Private", "icon": "🌐", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/html/kidzmx]", "review": "Exploración técnica en el área de life. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
-            {"name": "Telegramchatbot", "date": "2025-02-25", "category": "ai", "status": "Private", "icon": "🌐", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/html/TelegramChatBot]", "review": "Exploración técnica en el área de ai. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
-            {"name": "Zoomvideosdk", "date": "2025-02-23", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/html/ZoomVideoSDK]", "review": "Exploración técnica en el área de tech. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
-            {"name": "Videoai", "date": "2024-12-14", "category": "ai", "status": "Private", "icon": "🌐", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/html/VideoAI]", "review": "Exploración técnica en el área de ai. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
-            {"name": "Googleforms", "date": "2024-09-14", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/html/googleForms]", "review": "Exploración técnica en el área de tech. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
-            {"name": "Homilias", "date": "2025-06-16", "category": "life", "status": "Private", "icon": "🌐", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/html/homilias]", "review": "Exploración técnica en el área de life. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
-            {"name": "Mobility App Web", "date": "2025-04-04", "category": "health", "status": "Private", "icon": "🌐", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/html/mobility-app-web]", "review": "Exploración técnica en el área de health. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
-            {"name": "Freeformweb", "date": "2025-05-16", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/html/freeformweb]", "review": "Exploración técnica en el área de tech. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
-            {"name": "Latlon", "date": "2024-08-22", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/html/latlon]", "review": "Exploración técnica en el área de tech. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
-            {"name": "First5K Run", "date": "2024-08-22", "category": "performance", "status": "Private", "icon": "🌐", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/html/First5K_run]", "review": "Exploración técnica en el área de performance. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
-            {"name": "Pupettergrok", "date": "2025-03-08", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/html/pupetterGrok]", "review": "Exploración técnica en el área de tech. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
-            {"name": "Gonnafindvercel", "date": "2024-12-15", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/html/GonnaFindVercel]", "review": "Exploración técnica en el área de tech. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
-            {"name": "Mqttgym", "date": "2025-10-12", "category": "performance", "status": "Private", "icon": "🌐", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/html/MQTTgym]", "review": "Exploración técnica en el área de performance. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
-            {"name": "Pitches", "date": "2024-12-12", "category": "business", "status": "Private", "icon": "🌐", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/html/pitches]", "review": "Exploración técnica en el área de business. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
-            {"name": "Closerbox", "date": "2025-10-13", "category": "business", "status": "Private", "icon": "🌐", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/html/closerbox]", "review": "Exploración técnica en el área de business. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
-            {"name": "Gonnafind", "date": "2024-12-15", "category": "tech", "status": "Private", "icon": "🌐", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/html/GonnaFind]", "review": "Exploración técnica en el área de tech. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
-            {"name": "Bolasar", "date": "2025-06-22", "category": "play", "status": "Private", "icon": "🌐", "description": "Proyecto local en desarrollo. [Local: /Users/rafaeluribe/SWIFT/BolasAR]", "review": "Exploración técnica en el área de play. Este repositorio forma parte del laboratorio de experimentación local de Rafael Uribe, enfocado en el desarrollo de soluciones modulares y escalables.", "url": "#"},
             {
                 name: "Multimodal Live Console",
                 date: "2026-04-15",
@@ -434,7 +469,25 @@
                 icon: "🎙️",
                 description: "Consola de interacción en tiempo real con modelos multimodales. [Local: ~/html/multimodal-live-api-web-console]",
                 review: "Implementación web de vanguardia para interactuar con APIs de IA multimodal (voz, texto, visión). Permite pruebas de latencia y flujos de trabajo de IA generativa en tiempo real, sirviendo como banco de pruebas para la próxima generación de asistentes inteligentes.",
-                url: "#"
+                url: "#",
+                languages: "TypeScript, React, CSS",
+                stats: "28 archivos, 2,840 líneas",
+                location: "MacPro: ~/html/multimodal-live-api-web-console",
+                tech: ["WebSockets", "Multimodal AI", "Computer Vision", "Audio Streaming"]
+            },
+            {
+                name: "Social-Health Feed (MiPlan Pro)",
+                date: "2026-04-20",
+                category: "performance",
+                status: "Production",
+                icon: "📸",
+                description: "Interfaz de entrenamiento diseñada con el lenguaje visual de redes sociales. [Local: ~/Antigravity/miplanpro/programa.html]",
+                review: "Este componente revoluciona la adherencia al ejercicio en adultos mayores al transformar la rutina clínica en un feed interactivo similar a Instagram. Cada sesión diaria se presenta como un 'post' visualmente rico con citas inspiradoras, guías paso a paso y encuestas rápidas de feedback. Es un experimento exitoso en psicología del comportamiento, utilizando la familiaridad de las redes sociales para construir hábitos de salud duraderos.",
+                url: "#",
+                languages: "HTML5, CSS3, JavaScript",
+                stats: "1 archivo, 221 líneas",
+                location: "MacPro: ~/Antigravity/miplanpro/programa.html",
+                tech: ["Responsive Design", "Behavior Psychology", "CSS Animations"]
             },
             {
                 name: "TradeAI Autonomous Agent",
@@ -442,9 +495,97 @@
                 category: "ai",
                 status: "Private",
                 icon: "📈",
-                description: "Agente de trading automatizado con modelos de predicción. [Local: ~/python/tradeAI]",
+                description: "Agente de trading automatizado con modelos de predicción. [Local: ~/python/tradeAgent]",
                 review: "Sistema robusto desarrollado en Python para el análisis técnico y ejecución autónoma en mercados financieros. Utiliza librerías de data science para identificar patrones y gestionar el riesgo de forma algorítmica, minimizando el sesgo humano en el trading.",
-                url: "#"
+                url: "#",
+                languages: "Python",
+                stats: "3,137 archivos, 1.3M líneas",
+                location: "MacPro: ~/python/tradeAgent",
+                tech: ["Machine Learning", "Autotrading", "Financial Data Analysis"]
+            },
+            {
+                name: "MiPlan Pro (Ecosistema Integral)",
+                date: "2025-06-15",
+                category: "health",
+                status: "Production",
+                icon: "🛡️",
+                description: "Plataforma completa de acompañamiento familiar para el adulto mayor. [Local: ~/Antigravity/miplanpro/index.html]",
+                review: "Un ecosistema digital integral diseñado para combatir la fragilidad en la vejez. Esta suite se compone de: \n• Landing Page persuasiva de producto \n• Evaluador de Movilidad Clínica (Test SPPB) \n• Protocolos de seguridad interactivos \n• Sistemas de registro de progreso LiFE \n• Guías de acompañamiento para el binomio Coach-Campeón.",
+                url: "#",
+                languages: "HTML5, JavaScript",
+                stats: "1 archivo, 560 líneas",
+                location: "MacPro: ~/Antigravity/miplanpro/index.html",
+                tech: ["Healthcare UX", "Método LiFE", "Longevidad Activa"]
+            },
+            {
+                name: "Evaluador de Movilidad Clínica (SPPB)",
+                date: "2025-05-15",
+                category: "health",
+                status: "Production",
+                icon: "📋",
+                description: "Implementación digital del test Short Physical Performance Battery. [Local: ~/Antigravity/miplanpro/index.html]",
+                review: "Esta herramienta automatiza la evaluación de la movilidad funcional en adultos mayores mediante el protocolo estándar SPPB. Calcula automáticamente las puntuaciones de equilibrio, velocidad de marcha y fuerza de piernas (levantarse de la silla), generando un perfil de riesgo de fragilidad inmediato. Es una pieza fundamental en el diagnóstico preventivo de la suite MiPlan Pro.",
+                url: "#",
+                languages: "HTML5, JavaScript",
+                stats: "1 archivo, 560 líneas",
+                location: "GitHub: miplanpro",
+                tech: ["SPPB Standard", "Geriatric Assessment", "Clinical Logic"]
+            },
+            {
+                name: "Sentinel HR (Polar ECG Edition)",
+                date: "2026-03-05",
+                category: "health",
+                status: "Production",
+                icon: "🫀",
+                description: "Monitor de frecuencia cardíaca y ECG con sensores Polar. [Local: ~/SentinelHR]",
+                review: "Sentinel es una aplicación nativa para iPhone diseñada para atletas y pacientes que requieren un monitoreo cardíaco de grado médico. A diferencia de los sensores ópticos tradicionales, Sentinel se sincroniza con bandas Polar (H10) para capturar datos de ECG puros, analizando la variabilidad de la frecuencia cardíaca (HRV) en tiempo real para prevenir el sobreentrenamiento y detectar anomalías.",
+                url: "#",
+                languages: "Swift",
+                stats: "11 archivos, 3,157 líneas",
+                location: "GitHub: SentinelHR",
+                tech: ["Polar ECG SDK", "Bluetooth", "iOS Native", "Heart Analytics"]
+            },
+            {
+                name: "Cheky App",
+                date: "2024-12-15",
+                category: "tech",
+                status: "Private",
+                icon: "🌐",
+                description: "Plataforma Fintech de registro y gestión de pagos. [Local: ~/html/cheky-app]",
+                review: "Aplicación web moderna construida con Next.js y Firebase para la gestión de transacciones y registros de usuario. Incluye flujos de autenticación seguros y una base de datos en tiempo real (Firestore), optimizada para una experiencia de usuario fluida y reactiva en dispositivos móviles y escritorio.",
+                url: "#",
+                languages: "TypeScript, Next.js",
+                stats: "16 archivos, 1,003 líneas",
+                location: "GitHub: cheky-app",
+                tech: ["Firebase", "Firestore", "User Auth", "Financial Logic"]
+            },
+            {
+                name: "Tradeagent (Engine)",
+                date: "2025-06-18",
+                category: "tech",
+                status: "Private",
+                icon: "⚙️",
+                description: "Motor autónomo de análisis y ejecución financiera. [Local: ~/python/tradeAgent]",
+                review: "Sistema masivo desarrollado en Python para el procesamiento de datos financieros en tiempo real. Este motor es capaz de gestionar miles de hilos de ejecución para analizar patrones de mercado y ejecutar órdenes de forma autónoma, minimizando la latencia y eliminando el sesgo emocional en el trading.",
+                url: "#",
+                languages: "Python",
+                stats: "3,127 archivos, 1.3M líneas",
+                location: "MacPro: ~/python/tradeAgent",
+                tech: ["Data Science", "FinTech", "Algorithmic Trading"]
+            },
+            {
+                name: "Bt (Bluetooth Tracker)",
+                date: "2025-10-18",
+                category: "tech",
+                status: "Private",
+                icon: "⚙️",
+                description: "Utilidad avanzada de descubrimiento y tracking Bluetooth. [Local: ~/python/bt]",
+                review: "Poderosa herramienta de backend diseñada para el escaneo continuo y logueo de dispositivos Bluetooth en el entorno. Capaz de identificar patrones de proximidad y gestionar la comunicación con múltiples sensores simultáneamente, sirviendo como capa de datos para aplicaciones de rendimiento deportivo.",
+                url: "#",
+                languages: "Python",
+                stats: "5,003 archivos, 2.3M líneas",
+                location: "MacPro: ~/python/bt",
+                tech: ["BLE Protocol", "Device Discovery", "Python Automation"]
             },
             {
                 name: "InterBotMe Platform",
@@ -454,7 +595,11 @@
                 icon: "🤖",
                 description: "Ecosistema de gestión y despliegue de chatbots. [Local: ~/html/InterBotMe]",
                 review: "Una plataforma integral para diseñar, probar y desplegar agentes conversacionales. Incluye herramientas de análisis de sentimiento y dashboards de rendimiento, facilitando la integración de IA en canales de atención al cliente.",
-                url: "#"
+                url: "#",
+                languages: "TypeScript, React (Next.js)",
+                stats: "49 archivos, 28,884 líneas",
+                location: "GitHub: InterBotMe",
+                tech: ["Vercel Serverless", "Bot Logic", "Multi-tenancy"]
             },
             {
                 name: "SensorLogger IoT Bridge",
@@ -464,7 +609,11 @@
                 icon: "📡",
                 description: "Hub de datos IoT con soporte MQTT y Bluetooth. [Local: ~/python/mqtt]",
                 review: "Puente de comunicación diseñado para centralizar datos de múltiples sensores remotos. Utiliza el protocolo MQTT para garantizar una transmisión ligera y eficiente, ideal para monitorización industrial o deportiva en tiempo real.",
-                url: "#"
+                url: "#",
+                languages: "Python",
+                stats: "1,836 archivos, 834,657 líneas",
+                location: "MacPro: ~/python/mqtt",
+                tech: ["MQTT Protocol", "Data Streaming", "BLE"]
             },
             {
                 name: "FreeForm Web Designer",
@@ -474,7 +623,11 @@
                 icon: "🎨",
                 description: "Herramienta de prototipado visual y diseño libre. [Local: ~/html/freeform-web]",
                 review: "Editor visual propietario que permite la creación de layouts sin las restricciones de los frameworks tradicionales. Enfocado en la rapidez y la libertad creativa para el desarrollo de interfaces de usuario experimentales.",
-                url: "#"
+                url: "#",
+                languages: "JavaScript, HTML, CSS",
+                stats: "34 archivos, 22,566 líneas",
+                location: "GitHub: freeform-web",
+                tech: ["DOM Manipulation", "Visual Editing", "Layout Engines"]
             },
             {
                 name: "360° Photo Processor",
@@ -484,7 +637,11 @@
                 icon: "📸",
                 description: "Procesador de metadatos e imágenes panorámicas. [Local: ~/python/360photo]",
                 review: "Script especializado en la manipulación y optimización de fotografías de 360 grados. Gestiona la inyección de metadatos espaciales y la corrección de proyecciones para visualizadores de realidad virtual y tours interactivos.",
-                url: "#"
+                url: "#",
+                languages: "Python",
+                stats: "5 archivos, 596 líneas",
+                location: "MacPro: ~/python/360photo",
+                tech: ["EXIF Data", "Panoramic Imaging", "Image Processing"]
             },
             {
                 name: "Visor 3D Interactivo",
@@ -494,7 +651,11 @@
                 icon: "🧱",
                 description: "Visualizador WebGL para modelos tridimensionales. [Local: ~/html/visor3D]",
                 review: "Potente visualizador basado en Three.js que permite la carga y manipulación de modelos 3D directamente en el navegador. Soporta múltiples formatos y ofrece herramientas de inspección técnica para desarrolladores y diseñadores.",
-                url: "#"
+                url: "#",
+                languages: "JavaScript (Three.js), HTML",
+                stats: "1 archivo, 273 líneas",
+                location: "MacPro: ~/html/visor3D",
+                tech: ["WebGL", "Three.js", "3D Rendering"]
             },
             {
                 name: "WarmApp Mobility",
@@ -534,7 +695,11 @@
                 icon: "🔦",
                 description: "Medición de velocidad y profundidad mediante sensor LiDAR. [Local: ~/SWIFT/LidarSpeed]",
                 review: "Aplicación nativa en Swift que explota las capacidades de hardware del iPhone Pro. LidarSpeed utiliza el sensor de profundidad para rastrear objetos en el espacio tridimensional en tiempo real, permitiendo calcular velocidades de desplazamiento y distancias con precisión quirúrgica. Es un experimento en la frontera de la visión computacional y el tracking deportivo.",
-                url: "#"
+                url: "#",
+                languages: "Swift",
+                stats: "2 archivos, 496 líneas",
+                location: "MacPro: ~/SWIFT/LidarSpeed",
+                tech: ["LiDAR", "ARKit", "Real-time Depth"]
             },
             {
                 name: "MobilityAR Diagnostics",
@@ -544,7 +709,11 @@
                 icon: "🕺",
                 description: "Análisis cinemático con Realidad Aumentada (ARKit). [Local: ~/SWIFT/MobilityAR]",
                 review: "Una herramienta de diagnóstico que utiliza ARKit para superponer esqueletos digitales y ángulos de movimiento sobre el cuerpo del atleta. Permite evaluar la calidad del movimiento y detectar asimetrías funcionales de forma visual e inmediata, transformando el iPhone en un laboratorio de biomecánica portátil.",
-                url: "#"
+                url: "#",
+                languages: "Swift",
+                stats: "19 archivos, 8,243 líneas",
+                location: "GitHub: MobilityAR",
+                tech: ["ARKit", "Human Body Pose", "Kinematics"]
             },
             {
                 name: "Petanque AR App",
@@ -554,7 +723,11 @@
                 icon: "🔵",
                 description: "Árbitro digital de alta precisión para Petanca. [Local: ~/SWIFT/PetanqueARApp]",
                 review: "Esta app resuelve la disputa más común en el juego de petanca: ¿quién está más cerca? Utilizando visión computacional nativa en iOS, la cámara identifica las bolas y el boliche, calculando distancias relativas con un margen de error mínimo. Es la perfecta unión entre un deporte tradicional y la tecnología de vanguardia.",
-                url: "#"
+                url: "#",
+                languages: "Swift",
+                stats: "7 archivos, 1,655 líneas",
+                location: "MacPro: ~/SWIFT/PetanqueARApp",
+                tech: ["Computer Vision", "Distance Estimation", "AR Overlays"]
             },
             {
                 name: "IndoorPositioning Lab",
@@ -564,7 +737,11 @@
                 icon: "📍",
                 description: "Sistema de navegación y beacon tracking en interiores. [Local: ~/SWIFT/IndoorPositioning]",
                 review: "Un laboratorio de pruebas para la localización en interiores donde el GPS no llega. Implementa CoreLocation y protocolos de iBeacon para crear un sistema de posicionamiento preciso dentro de edificios, permitiendo el rastreo de flujos de personas y la interacción basada en la proximidad física.",
-                url: "#"
+                url: "#",
+                languages: "Swift",
+                stats: "13 archivos, 2,626 líneas",
+                location: "MacPro: ~/SWIFT/IndoorPositioning",
+                tech: ["CoreLocation", "iBeacons", "Triangulation"]
             },
             {
                 name: "MindInfluencer App",
@@ -574,37 +751,11 @@
                 icon: "🧠",
                 description: "Suite de refuerzo cognitivo y bienestar. [Local: ~/SWIFT/MindInfluencer]",
                 review: "MindInfluencer es una aplicación nativa diseñada para mejorar el enfoque y la resiliencia mental. Con una interfaz limpia en SwiftUI, ofrece herramientas de meditación guiada, tracking de hábitos y ejercicios cognitivos. El proyecto destaca por su arquitectura robusta y su enfoque en una experiencia de usuario fluida y calmante.",
-                url: "#"
-            },
-            {
-                name: "Social-Health Feed (MiPlan Pro)",
-                date: "2026-04-20",
-                category: "performance",
-                status: "Production",
-                icon: "📸",
-                description: "Interfaz de entrenamiento diseñada con el lenguaje visual de redes sociales. [Local: ~/Antigravity/miplanpro/programa.html]",
-                review: "Este componente revoluciona la adherencia al ejercicio en adultos mayores al transformar la rutina clínica en un feed interactivo similar a Instagram. Cada sesión diaria se presenta como un 'post' visualmente rico con citas inspiradoras, guías paso a paso y encuestas rápidas de feedback. Es un experimento exitoso en psicología del comportamiento, utilizando la familiaridad de las redes sociales para construir hábitos de salud duraderos.",
-                url: "#"
-            },
-            {
-                name: "MiPlan Pro (Ecosistema Integral)",
-                date: "2025-06-15",
-                category: "health",
-                status: "Production",
-                icon: "🛡️",
-                description: "Plataforma completa de acompañamiento familiar para el adulto mayor. [Local: ~/Antigravity/miplanpro/index.html]",
-                review: "Un ecosistema digital integral diseñado para combatir la fragilidad en la vejez. Esta suite se compone de: \n• Landing Page persuasiva de producto \n• Evaluador de Movilidad Clínica (Test SPPB) \n• Protocolos de seguridad interactivos \n• Sistemas de registro de progreso LiFE \n• Guías de acompañamiento para el binomio Coach-Campeón.",
-                url: "#"
-            },
-            {
-                name: "Evaluador de Movilidad Clínica (SPPB)",
-                date: "2025-05-15",
-                category: "health",
-                status: "Production",
-                icon: "👵",
-                description: "Herramienta de diagnóstico funcional para el adulto mayor. [Local: ~/Antigravity/miplanpro/sppb-test.html]",
-                review: "Este sistema es una implementación digital del protocolo SPPB, el 'estándar de oro' en geriatría para medir la fragilidad y el riesgo de discapacidad. Incluye cronómetros reactivos, guías visuales y un algoritmo de puntuación automática que prescribe la intensidad del ejercicio seguro. Es una pieza fundamental de tecnología asistencial diseñada para proteger y mejorar la autonomía de las personas mayores.",
                 url: "#",
+                languages: "Swift (SwiftUI)",
+                stats: "2 archivos, 1,931 líneas",
+                location: "MacPro: ~/SWIFT/MindInfluencer",
+                tech: ["SwiftUI", "Cognitive Tracking", "HealthKit"]
             },
             {
                 name: "El Callejón de los Recuerdos",
@@ -1803,6 +1954,38 @@
                     </div>
                     <div class="post-content">
                         <p>${reviewText}</p>
+                        
+                        ${(project.languages || project.location || project.tech) ? `
+                            <div class="tech-meta">
+                                ${project.languages ? `
+                                    <div class="meta-item">
+                                        <span class="meta-label">Lenguajes</span>
+                                        <span class="meta-value">${project.languages}</span>
+                                    </div>
+                                ` : ''}
+                                ${project.stats ? `
+                                    <div class="meta-item">
+                                        <span class="meta-label">Métricas</span>
+                                        <span class="meta-value">${project.stats}</span>
+                                    </div>
+                                ` : ''}
+                                ${project.location ? `
+                                    <div class="meta-item" style="grid-column: span 2;">
+                                        <span class="meta-label">Ubicación</span>
+                                        <span class="meta-value location">${project.location}</span>
+                                    </div>
+                                ` : ''}
+                                ${project.tech ? `
+                                    <div class="meta-item" style="grid-column: span 2;">
+                                        <span class="meta-label">Tecnologías Clave</span>
+                                        <div class="meta-value tech-tags">
+                                            ${project.tech.map(t => `<span class="tech-pill">${t}</span>`).join('')}
+                                        </div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        ` : ''}
+
                         ${project.gallery ? `
                             <div class="post-gallery">
                                 ${project.gallery.map(img => `
