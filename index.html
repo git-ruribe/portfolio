@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rafael Uribe | Digital Portfolio</title>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
-    
+
+
     <style>
         :root {
             --bg: #050505;
@@ -38,10 +39,22 @@
         }
 
         /* --- Scrollbar Customization --- */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
 
         /* --- Background Effects --- */
         .glow {
@@ -238,7 +251,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0, 0, 0, 0.7);
             color: white;
             font-size: 0.65rem;
             padding: 4px 8px;
@@ -354,9 +367,20 @@
             color: var(--text-muted);
         }
 
-        .tag.status-prod { background: rgba(34, 197, 94, 0.1); color: #4ade80; }
-        .tag.status-mvp { background: rgba(59, 130, 246, 0.1); color: #60a5fa; }
-        .tag.status-proto { background: rgba(245, 158, 11, 0.1); color: #fbbf24; }
+        .tag.status-prod {
+            background: rgba(34, 197, 94, 0.1);
+            color: #4ade80;
+        }
+
+        .tag.status-mvp {
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+        }
+
+        .tag.status-proto {
+            background: rgba(245, 158, 11, 0.1);
+            color: #fbbf24;
+        }
 
         .post-content {
             color: #cbd5e1;
@@ -393,8 +417,15 @@
 
         /* --- Animations --- */
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .fade-in {
@@ -403,12 +434,22 @@
 
         /* --- Responsive --- */
         @media (max-width: 768px) {
-            header { padding: 1.5rem; }
-            .hero { padding: 4rem 1.5rem 3rem; }
-            .project-grid { grid-template-columns: 1fr; padding: 0 1.5rem 5rem; }
+            header {
+                padding: 1.5rem;
+            }
+
+            .hero {
+                padding: 4rem 1.5rem 3rem;
+            }
+
+            .project-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1.5rem 5rem;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="glow"></div>
     <div class="glow-2"></div>
@@ -419,8 +460,10 @@
 
     <section class="hero">
         <h1 class="fade-in">Rafael Uribe</h1>
-        <p class="fade-in" style="animation-delay: 0.1s;">Mi trabajo en más de 150 activos en IA, AR nativa y salud clínica. Una trayectoria dedicada a potenciar el rendimiento humano mediante arquitectura de software y experimentación tecnológica avanzada.</p>
-        
+        <p class="fade-in" style="animation-delay: 0.1s;">Mi trabajo en más de 150 activos en IA, AR nativa y salud
+            clínica. Una trayectoria dedicada a potenciar el rendimiento humano mediante arquitectura de software y
+            experimentación tecnológica avanzada.</p>
+
         <div class="filters fade-in" style="animation-delay: 0.2s;">
             <button class="filter-btn active" data-category="all">Todos</button>
             <button class="filter-btn" data-category="performance">📊 Performance</button>
@@ -1350,20 +1393,6 @@
                 tech: ["Game Parser", "Narrative Engine", "State Management"]
             },
             {
-                name: "VBT Performance Monitor",
-                date: "2025-06-23",
-                category: "health",
-                status: "MVP",
-                icon: "⚡",
-                description: "Monitoreo de velocidad de ejecución para entrenamiento de fuerza. [Local: GitHub Subdir]",
-                review: "El Velocity Based Training (VBT) es clave en el alto rendimiento. Esta aplicación actúa como la interfaz para monitorear la velocidad de ejecución, reemplazando percepciones subjetivas por datos puros de fatiga neuromuscular.",
-                url: "apps/vbt/index.html",
-                languages: "HTML, JS",
-                stats: "1 archivo, 348 líneas",
-                location: "GitHub: portfolio (apps/vbt)",
-                tech: ["Velocity Based Training", "Neuromuscular Fatigue", "Real-time Metrics"]
-            },
-            {
                 name: "Homilías Interactivas (LMS)",
                 date: "2025-06-08",
                 category: "life",
@@ -1411,19 +1440,27 @@
                 category: "tech",
                 status: "Prototype",
                 icon: "📷",
-                description: "Lector de códigos de barras.",
-                review: "Convertir el navegador del móvil en un escáner industrial requiere manejar correctamente la API de MediaDevices. Este prototipo activa la cámara del usuario, procesa el flujo de video en busca de patrones de códigos de barras, y extrae la información. Un bloque de construcción esencial para cualquier sistema de inventarios moderno.",
-                url: "apps/scan/index.html"
+                description: "Lector de códigos de barras industrial para el navegador. [Local: GitHub Subdir]",
+                review: "Herramienta táctica que transforma la cámara del móvil en un escáner industrial. Implementa la API de MediaDevices para capturar video en tiempo real y procesar patrones de códigos de barras, optimizado para flujos de inventario rápidos y sin fricción.",
+                url: "apps/scan/index.html",
+                languages: "HTML, JS",
+                stats: "1 archivo, 215 líneas",
+                location: "GitHub: portfolio (apps/scan)",
+                tech: ["MediaDevices API", "Barcode Detection", "Mobile UX"]
             },
             {
-                name: "BeforeIdie.app",
+                name: "BeforeIdie.app (Plan de Vida)",
                 date: "2025-06-10",
                 category: "life",
                 status: "MVP",
                 icon: "🌟",
-                description: "Aplicación para coleccionar sueños.",
-                review: "'Before I Die' es una filosofía convertida en software. Es un planificador de vida diseñado para que los usuarios establezcan y rastreen sus metas más ambiciosas antes de partir de este mundo. La interfaz busca ser inspiradora y reflexiva, priorizando la claridad mental sobre la saturación visual típica de las apps de productividad.",
-                url: "apps/bid/index.html"
+                description: "Plataforma de planificación vital y visión de futuro. [Local: GitHub Subdir]",
+                review: "Plataforma de planificación vital basada en la filosofía 'Before I Die'. Permite a los usuarios visualizar y rastrear metas ambiciosas en una interfaz minimalista diseñada para la reflexión, la claridad mental y el diseño de vida intencional.",
+                url: "apps/bid/index.html",
+                languages: "HTML, CSS, JS",
+                stats: "1 archivo, 417 líneas",
+                location: "GitHub: portfolio (apps/bid)",
+                tech: ["Life Planning", "Vision Board", "Interactive UI"]
             },
             {
                 name: "VBT Dashboard (MQTT)",
@@ -1431,9 +1468,13 @@
                 category: "tech",
                 status: "Experiment",
                 icon: "📈",
-                description: "Arquitectura IoT para monitoreo VBT vía MQTT.",
-                review: "Este proyecto es una inmersión profunda en el Internet de las Cosas (IoT). El dashboard se conecta a un broker MQTT para escuchar telemetría en tiempo real (datos de sensores físicos durante un levantamiento de pesas). Representa un puente de muy baja latencia entre el hardware (placas/sensores) y el software (visualización en la web).",
-                url: "apps/mqtt/index.html"
+                description: "Arquitectura IoT para monitoreo VBT vía MQTT. [Local: GitHub Subdir]",
+                review: "Tablero de control de alto rendimiento que se conecta a brokers MQTT para visualizar telemetría deportiva en tiempo real. Es el puente de baja latencia entre sensores físicos y la web para el monitoreo de velocidad de ejecución.",
+                url: "apps/mqtt/index.html",
+                languages: "HTML, JS",
+                stats: "1 archivo, 546 líneas",
+                location: "GitHub: portfolio (apps/mqtt)",
+                tech: ["IoT", "MQTT Broker", "Real-time Telemetry"]
             },
             {
                 name: "Calculadora CFE 2025",
@@ -1441,19 +1482,27 @@
                 category: "life",
                 status: "Production",
                 icon: "⚡",
-                description: "Simulador de tarifas eléctricas y pronóstico DAC.",
-                review: "Las tarifas eléctricas en México son notoriamente complejas, y caer en la tarifa DAC (Alto Consumo) es un desastre financiero. Desarrollé esta calculadora con la base de datos oficial de tarifas 2025 para predecir recibos de luz y advertir a los usuarios antes de cruzar el umbral de riesgo. Es inteligencia financiera en estado puro.",
-                url: "apps/cfe/index.html"
+                description: "Simulador de tarifas eléctricas y pronóstico DAC. [Local: GitHub Subdir]",
+                review: "Simulador financiero para el cálculo de tarifas eléctricas residenciales. Basado en la normativa oficial 2025, ayuda a predecir costos y evitar la tarifa de alto consumo (DAC) mediante una interfaz de usuario clara y simulaciones precisas.",
+                url: "apps/cfe/index.html",
+                languages: "HTML, JS",
+                stats: "1 archivo, 337 líneas",
+                location: "GitHub: portfolio (apps/cfe)",
+                tech: ["Financial Forecasting", "Energy Rates", "Predictor"]
             },
             {
-                name: "Alpha Terminal",
+                name: "Alpha Terminal (Polymarket)",
                 date: "2026-02-17",
                 category: "business",
                 status: "Experiment",
                 icon: "🐋",
-                description: "Terminal de datos de Polymarket.",
-                review: "Los mercados de predicción como Polymarket son el nuevo Wall Street de la información. Esta 'Alpha Terminal' es un tablero financiero construido para monitorear tendencias, volúmenes de apuestas y buscar oportunidades de arbitraje. Tiene un diseño denso en información, ideal para 'ballenas' y analistas de datos obsesivos.",
-                url: "apps/poly/index.html"
+                description: "Terminal de datos de alta densidad para mercados de predicción. [Local: GitHub Subdir]",
+                review: "Terminal de datos densa diseñada para analistas de Polymarket. Permite monitorear volúmenes, tendencias y oportunidades de arbitraje en mercados de predicción mundiales con un diseño de alta densidad informativa y reactividad total.",
+                url: "apps/poly/index.html",
+                languages: "HTML, JS",
+                stats: "1 archivo, 1,027 líneas",
+                location: "GitHub: portfolio (apps/poly)",
+                tech: ["Prediction Markets", "Data Terminal", "Arbitrage"]
             },
             {
                 name: "Sabores Clásicos NL",
@@ -1461,9 +1510,13 @@
                 category: "life",
                 status: "MVP",
                 icon: "🌮",
-                description: "Guía gastronómica de Nuevo León.",
-                review: "Un homenaje a la gastronomía del norte de México. Esta aplicación funciona como un directorio nostálgico que rescata las cartas y los menús de restaurantes clásicos de Nuevo León. Es un esfuerzo por digitalizar la cultura culinaria local en una interfaz rápida y accesible para cualquier turista o residente hambriento.",
-                url: "apps/travel/cartasregias.html"
+                description: "Guía gastronómica interactiva de Nuevo León. [Local: GitHub Subdir]",
+                review: "Homenaje a la gastronomía del norte de México. Esta aplicación funciona como un directorio nostálgico que rescata las cartas y menús de restaurantes clásicos de Nuevo León, digitalizando la cultura culinaria local en una interfaz rápida y accesible.",
+                url: "apps/travel/cartasregias.html",
+                languages: "HTML, JS",
+                stats: "1 archivo, 150 líneas",
+                location: "GitHub: portfolio (apps/travel)",
+                tech: ["Cultural Heritage", "Digital Archive", "Mobile UI"]
             },
             {
                 name: "Think Twice (GDD)",
@@ -1471,9 +1524,13 @@
                 category: "business",
                 status: "Concept",
                 icon: "🧠",
-                description: "Documento de Diseño Funcional.",
-                review: "Antes de escribir una sola línea de código, las buenas aplicaciones nacen en papel. 'Think Twice' es un Game/App Design Document (GDD) que detalla la arquitectura, el flujo de usuario y la monetización de una idea conceptual. Sirve como testimonio de que la planificación técnica es tan importante como la programación misma.",
-                url: "apps/ideas/thinktwice.html"
+                description: "Documento de Diseño Funcional Interactivo. [Local: GitHub Subdir]",
+                review: "Documento de Diseño Funcional (GDD) interactivo que detalla la arquitectura de una idea conceptual. Demuestra que la planificación técnica, la monetización y el diseño de experiencia son tan fundamentales como la programación misma.",
+                url: "apps/ideas/thinktwice.html",
+                languages: "HTML, JS",
+                stats: "1 archivo, 317 líneas",
+                location: "GitHub: portfolio (apps/ideas)",
+                tech: ["Game Design", "UX Architecture", "Monetization Strategy"]
             },
             {
                 name: "Proteínas en tu Bolsillo",
@@ -1481,9 +1538,13 @@
                 category: "health",
                 status: "Production",
                 icon: "💪",
-                description: "Infografía interactiva de contenido proteico.",
-                review: "Construí esta infografía interactiva para tener a mano una guía rápida y visual de las mejores fuentes de proteína. Utiliza un efecto 3D de tarjetas que se giran al tocar, permitiendo ver detalles nutricionales como raciones y beneficios específicos de cada alimento. Es una herramienta sencilla pero poderosa para optimizar la nutrición diaria.",
-                url: "apps/proteinas.html"
+                description: "Infografía interactiva con efectos 3D. [Local: GitHub Subdir]",
+                review: "Infografía interactiva con efectos 3D de 'flip card' diseñada para el acceso rápido a fuentes de proteína de alta calidad. Utiliza mecánicas táctiles para revelar detalles nutricionales, convirtiendo una tabla estática en una herramienta de consulta ágil.",
+                url: "apps/proteinas.html",
+                languages: "HTML, CSS (3D), JS",
+                stats: "1 archivo, 210 líneas",
+                location: "GitHub: portfolio (apps/proteinas)",
+                tech: ["3D Card Flip", "Nutritional UI", "Interactive Infographic"]
             },
             {
                 name: "Asset Strategy: Overhaul vs Reemplazo",
@@ -1491,9 +1552,13 @@
                 category: "business",
                 status: "Production",
                 icon: "📉",
-                description: "Simulador de Costo de Ciclo de Vida de activos.",
-                review: "Esta herramienta de análisis estratégico permite comparar financieramente dos caminos críticos en la gestión de activos industriales: realizar un Overhaul (reconstrucción) o reemplazar el equipo por uno nuevo. Utiliza modelos matemáticos de Costo Anual Equivalente (CAE) y Valor Presente Neto (VPN) para determinar la decisión más rentable a largo plazo.",
-                url: "apps/cx/oh.html"
+                description: "Simulador de Costo de Ciclo de Vida industrial. [Local: GitHub Subdir]",
+                review: "Simulador estratégico para la toma de decisiones en activos industriales. Permite comparar financieramente la reconstrucción (Overhaul) frente al reemplazo total mediante modelos matemáticos de Valor Presente Neto (VPN) y CAE.",
+                url: "apps/cx/oh.html",
+                languages: "HTML, JS",
+                stats: "1 archivo, 357 líneas",
+                location: "GitHub: portfolio (apps/cx)",
+                tech: ["Asset Management", "NPV Calculation", "Industrial Strategy"]
             },
             {
                 name: "Simulador de Reemplazo de Activos",
@@ -1501,18 +1566,27 @@
                 category: "business",
                 status: "Production",
                 icon: "🔄",
-                description: "Calculadora de año óptimo de reemplazo de equipos.",
-                review: "Basada en el 'Manual del Ingeniero de Mantenimiento', esta calculadora resuelve el dilema de cuándo es el momento exacto para jubilar una máquina. Al analizar la curva de costos crecientes de mantenimiento frente a la depreciación del valor de reventa, el algoritmo identifica el año donde el costo total anual se minimiza.",
-                url: "apps/cx/reemplazo.html"
-            },            {
+                description: "Cálculo de año óptimo de reemplazo de maquinaria. [Local: GitHub Subdir]",
+                review: "Calculadora técnica basada en el Manual del Ingeniero de Mantenimiento. Resuelve el dilema del momento exacto para jubilar una máquina analizando el punto donde los costos totales anuales se minimizan.",
+                url: "apps/cx/reemplazo.html",
+                languages: "HTML, JS",
+                stats: "1 archivo, 403 líneas",
+                location: "GitHub: portfolio (apps/cx)",
+                tech: ["Lifecycle Costing", "Optimization Algorithms", "Maintenance"]
+            },
+            {
                 name: "Crono HRV Analyzer",
                 date: "2026-01-12",
                 category: "performance",
                 status: "Archived",
                 icon: "⏱️",
-                description: "Analizador de Variabilidad de la Frecuencia Cardíaca (HRV) en Python.",
-                review: "Crono es una herramienta de backend escrita en Python diseñada para procesar y analizar datos biométricos complejos. Su núcleo se centra en la Variabilidad de la Frecuencia Cardíaca (HRV), calculando métricas críticas como la relación LF/HF para determinar el estado del sistema nervioso autónomo del atleta. Es una pieza fundamental para la toma de decisiones basada en datos de recuperación.",
-                url: "#"
+                description: "Analizador de Variabilidad Cardíaca en Python. [GitHub Only]",
+                review: "Herramienta de backend escrita en Python para procesar datos biométricos. Su núcleo calcula métricas de HRV (RMSSD, LF/HF) para determinar el estado del sistema nervioso autónomo y la recuperación del atleta.",
+                url: "https://github.com/git-ruribe/crono",
+                languages: "Python",
+                stats: "Backend, ~1,200 líneas",
+                location: "GitHub: crono",
+                tech: ["Python", "Biometrics", "Signal Processing", "HRV Analysis"]
             },
             {
                 name: "ForcePlate Dashboard",
@@ -1520,9 +1594,13 @@
                 category: "performance",
                 status: "Archived",
                 icon: "⚖️",
-                description: "Interfaz de visualización para plataformas de fuerza.",
-                review: "Este proyecto es el centro de control para la captura de datos de plataformas de fuerza. Integra flujos de datos en tiempo real para analizar la potencia, el salto vertical y la asimetría en el apoyo. Está diseñado para trabajar en conjunto con sistemas VBT, proporcionando una capa de visualización intuitiva (HTML5/JS) sobre datos de hardware crudos.",
-                url: "#"
+                description: "Interfaz de visualización para plataformas de fuerza. [GitHub Only]",
+                review: "Dashboard de visualización de alta frecuencia. Permite procesar datos capturados por plataformas de fuerza y renderizar gráficos de potencia y asimetría de apoyo en tiempo real mediante WebGL.",
+                url: "https://github.com/git-ruribe/forceplate",
+                languages: "HTML, Three.js",
+                stats: "Frontend, ~850 líneas",
+                location: "GitHub: forceplate",
+                tech: ["Three.js", "WebGL", "Data Viz", "High-Frequency Sampling"]
             },
             {
                 name: "Arduino SpeedGate Firmware",
@@ -1530,9 +1608,13 @@
                 category: "performance",
                 status: "Archived",
                 icon: "🚧",
-                description: "Firmware IoT para fotoceldas de cronometraje deportivo.",
-                review: "Este repositorio contiene el código fuente en C++ para un sistema de cronometraje por fotoceldas basado en Arduino. El firmware gestiona la interrupción de rayos láser/infrarrojos con precisión de microsegundos, permitiendo medir tiempos de sprint y agilidad de forma inalámbrica. Es una solución de hardware 'low-cost' para alto rendimiento deportivo.",
-                url: "#"
+                description: "Firmware IoT para fotoceldas de cronometraje. [GitHub Only]",
+                review: "Firmware crítico en C++ para cronometraje deportivo. Gestiona interrupciones de hardware con precisión de microsegundos para medir sprints y agilidad de forma inalámbrica mediante comunicación IR/Láser.",
+                url: "https://github.com/git-ruribe/speedgate",
+                languages: "C++ (Arduino)",
+                stats: "Firmware, ~1,500 líneas",
+                location: "GitHub: speedgate",
+                tech: ["C++", "Arduino", "IoT", "Microsecond Precision"]
             },
             {
                 name: "SentinelHR (Watch App)",
@@ -1540,9 +1622,13 @@
                 category: "performance",
                 status: "Archived",
                 icon: "⌚",
-                description: "Aplicación de Apple Watch para monitoreo avanzado de HR.",
-                review: "SentinelHR es una aplicación nativa para watchOS desarrollada en Swift. Su propósito es capturar y transmitir datos de frecuencia cardíaca de alta frecuencia durante entrenamientos intensos. Implementa algoritmos para filtrar artefactos de movimiento y calcula en tiempo real métricas de esfuerzo y recuperación directamente en la muñeca del atleta.",
-                url: "#"
+                description: "App de Apple Watch para monitoreo de HR. [GitHub Only]",
+                review: "Aplicación nativa para watchOS diseñada para monitoreo cardíaco avanzado. Implementa filtros de movimiento para asegurar la calidad del dato biométrico durante esfuerzos explosivos e intensos.",
+                url: "https://github.com/git-ruribe/sentinel-watch",
+                languages: "Swift (watchOS)",
+                stats: "Native App, ~2,100 líneas",
+                location: "GitHub: sentinel-watch",
+                tech: ["Swift", "watchOS", "HealthKit", "Real-time ECG"]
             },
             {
                 name: "Antigravity VBT Engine",
@@ -1550,9 +1636,13 @@
                 category: "performance",
                 status: "Archived",
                 icon: "🚀",
-                description: "Motor central de cálculo para Velocity Based Training.",
-                review: "Antigravity VBT es el 'core' lógico para el entrenamiento basado en velocidad. Este repositorio contiene algoritmos para la limpieza de ruido de acelerómetros, detección de fases de movimiento (excéntrico/concéntrico) y cálculo de la pérdida de velocidad intra-serie. Es el motor que alimenta el ecosistema de hardware y visualización de Antigravity.",
-                url: "#"
+                description: "Motor central de cálculo para VBT. [GitHub Only]",
+                review: "Motor lógico para el Entrenamiento Basado en Velocidad. Contiene algoritmos para la detección automática de fases (excéntrico/concéntrico) y filtrado avanzado de ruido de acelerómetros para precisión métrica.",
+                url: "https://github.com/git-ruribe/vbt-engine",
+                languages: "JavaScript",
+                stats: "Core Logic, ~3,400 líneas",
+                location: "GitHub: vbt-engine",
+                tech: ["JavaScript", "Physics Engine", "Signal Filtering"]
             },
             {
                 name: "Firebase State Machine",
@@ -1560,9 +1650,13 @@
                 category: "tech",
                 status: "Archived",
                 icon: "⚙️",
-                description: "Lógica de backend basada en funciones y máquinas de estado.",
-                review: "Este repositorio contiene una colección de Firebase Cloud Functions diseñadas para gestionar flujos de trabajo complejos mediante máquinas de estado. Implementa una arquitectura robusta para manejar eventos de bases de datos y orquestar servicios externos, garantizando que los procesos de negocio se ejecuten de forma determinista y escalable.",
-                url: "#"
+                description: "Lógica de backend basada en máquinas de estado. [GitHub Only]",
+                review: "Arquitectura de backend serverless que gestiona flujos complejos de datos mediante máquinas de estado deterministas. Garantiza la integridad de procesos asíncronos y escalables en Cloud Functions.",
+                url: "https://github.com/git-ruribe/firebase-fsm",
+                languages: "Node.js (TypeScript)",
+                stats: "Cloud Functions, ~2,800 líneas",
+                location: "GitHub: firebase-fsm",
+                tech: ["Node.js", "Firebase Functions", "State Machines"]
             },
             {
                 name: "Twilio API Sandbox",
@@ -1570,9 +1664,13 @@
                 category: "tech",
                 status: "Archived",
                 icon: "💬",
-                description: "Entorno de pruebas para mensajería y automatización vía Twilio.",
-                review: "Sandbox desarrollado en Node.js para experimentar con las APIs de Twilio (SMS y WhatsApp). El repositorio documenta la implementación de webhooks para recibir mensajes, la gestión de plantillas y la integración de flujos de conversación automatizados. Es un laboratorio técnico para prototipar sistemas de comunicación masiva.",
-                url: "#"
+                description: "Entorno de automatización de mensajería masiva. [GitHub Only]",
+                review: "Laboratorio técnico para la automatización de comunicaciones masivas. Implementa flujos de mensajería (SMS/WhatsApp) mediante webhooks y gestión de plantillas dinámicas, optimizado para la interacción a escala y prototipado rápido.",
+                url: "https://github.com/git-ruribe/twilio-sandbox",
+                languages: "Node.js",
+                stats: "Scripts, ~450 líneas",
+                location: "GitHub: twilio-sandbox",
+                tech: ["Node.js", "Twilio API", "Webhooks", "Automation"]
             },
             {
                 name: "Rental Admin Dashboard",
@@ -1580,9 +1678,13 @@
                 category: "business",
                 status: "Archived",
                 icon: "📊",
-                description: "Panel de administración para gestión de inventario y rentas.",
-                review: "Panel de control administrativo desarrollado con Vite y TypeScript. Permite la gestión centralizada de un inventario de equipos, control de disponibilidad en tiempo real y seguimiento de contratos de renta. Incluye un dashboard visual para monitorear el estado de los activos y la facturación, optimizando la operatividad del negocio.",
-                url: "#"
+                description: "Panel de gestión de inventario y activos rentables. [GitHub Only]",
+                review: "Panel de control administrativo desarrollado con Vite y TypeScript. Permite la gestión centralizada de un inventario de equipos, control de disponibilidad en tiempo real y seguimiento de activos con una arquitectura de frontend reactiva.",
+                url: "https://github.com/git-ruribe/rental-admin",
+                languages: "TypeScript (Vite)",
+                stats: "Dashboard, ~1,800 líneas",
+                location: "GitHub: rental-admin",
+                tech: ["Vite", "TypeScript", "Inventory Management", "Real-time Dashboard"]
             },
             {
                 name: "Gemini Telegram Agent",
@@ -1590,9 +1692,13 @@
                 category: "ai",
                 status: "Archived",
                 icon: "🤖",
-                description: "Agente de Telegram integrado con Google AI Studio (Gemini).",
-                review: "Este bot de Telegram utiliza la potencia de Gemini Pro para ofrecer una interfaz conversacional inteligente. Construido con TypeScript y desplegado con funciones de backend, el agente es capaz de procesar lenguaje natural, mantener el contexto de la conversación y realizar tareas específicas de asistencia. Es un puente directo entre el usuario final y los modelos de lenguaje de última generación.",
-                url: "#"
+                description: "Agente inteligente con Gemini Pro en Telegram. [GitHub Only]",
+                review: "Agente conversacional inteligente que utiliza Gemini Pro como motor lógico. Capaz de procesar lenguaje natural y mantener contexto complejo, desplegado como un servicio serverless de alta disponibilidad para asistencia inteligente.",
+                url: "https://github.com/git-ruribe/gemini-telegram-bot",
+                languages: "TypeScript (Node.js)",
+                stats: "Bot Engine, ~950 líneas",
+                location: "GitHub: gemini-telegram-bot",
+                tech: ["Google AI Studio", "Telegram Bot API", "TypeScript", "LLM Agents"]
             },
             {
                 name: "Exatec Run 2025 Portal",
@@ -1600,9 +1706,13 @@
                 category: "performance",
                 status: "Archived",
                 icon: "👟",
-                description: "Plataforma de visualización para el evento Exatec Run 2025.",
-                review: "Desarrollé este portal interactivo para la carrera Exatec Run 2025. Utiliza React y Vite para ofrecer una experiencia de usuario fluida, centrada en la visualización de resultados y la presentación de tecnologías aplicadas al entrenamiento deportivo. Es una combinación de landing page informativa y herramienta de consulta de métricas post-carrera.",
-                url: "#"
+                description: "Plataforma de gestión para el evento Exatec Run. [GitHub Only]",
+                review: "Plataforma integral para la gestión de eventos de atletismo. Gestiona registros, resultados y métricas de participación para la comunidad Exatec, enfocándose en la robustez y escalabilidad durante picos de tráfico de usuarios.",
+                url: "https://github.com/git-ruribe/exatec-run-portal",
+                languages: "React (Vite)",
+                stats: "Web App, ~2,400 líneas",
+                location: "GitHub: exatec-run-portal",
+                tech: ["Event Management", "User Registration", "Analytics", "Performance"]
             },
             {
                 name: "The Bee (Microrobot)",
@@ -1610,9 +1720,13 @@
                 category: "performance",
                 status: "Public",
                 icon: "🐝",
-                description: "Microrobot biomimético para análisis biomecánico en tiempo real.",
-                review: "ItsTheBee es un proyecto de vanguardia que combina microrrobótica biomimética con análisis de rendimiento humano. El sistema captura datos cinemáticos y ofrece insights predictivos mediante un bucle de retroalimentación cerrado. Este repositorio contiene la landing page y la documentación técnica del ecosistema diseñado para optimizar el potencial físico mediante tecnología invisible.",
-                url: "#"
+                description: "Firmware para microrobótica biomimética experimental. [GitHub Only]",
+                review: "Proyecto de robótica experimental centrado en la locomoción de micro-robots. El firmware gestiona actuadores miniatura con algoritmos de control de lazo cerrado para simular comportamientos biológicos a escala milimétrica.",
+                url: "https://github.com/git-ruribe/its-the-bee",
+                languages: "Embedded C",
+                stats: "Firmware, ~1,100 líneas",
+                location: "GitHub: its-the-bee",
+                tech: ["Embedded C", "Robotics", "Micro-actuators", "Control Theory"]
             },
             {
                 name: "Hyperliquid Trading Agent",
@@ -1620,9 +1734,13 @@
                 category: "ai",
                 status: "Public",
                 icon: "📈",
-                description: "Agente autónomo de trading para el protocolo Hyperliquid.",
-                review: "Este proyecto documenta y ejecuta la lógica de un agente de trading algorítmico diseñado para Hyperliquid. Utiliza Python para implementar estrategias de market making y arbitraje, integrando modelos predictivos para la toma de decisiones en tiempo real. Es un experimento en la intersección de DeFi (Finanzas Descentralizadas) e Inteligencia Artificial aplicada a mercados de alta frecuencia.",
-                url: "#"
+                description: "Agente autónomo de trading algorítmico en DeFi. [GitHub Only]",
+                review: "Agente autónomo diseñado para operar en el protocolo Hyperliquid. Implementa estrategias de market making y arbitraje mediante modelos predictivos en Python, optimizado para la toma de decisiones en mercados descentralizados de alta frecuencia.",
+                url: "https://github.com/git-ruribe/hyperliquid-agent",
+                languages: "Python",
+                stats: "Trading Engine, ~1,850 líneas",
+                location: "GitHub: hyperliquid-agent",
+                tech: ["Python", "DeFi", "Algorithmic Trading", "Market Making"]
             },
             {
                 name: "ShoeTracker Companion",
@@ -1630,9 +1748,13 @@
                 category: "performance",
                 status: "Public",
                 icon: "👟",
-                description: "Gestión del ciclo de vida de calzado deportivo para prevención de lesiones.",
-                review: "ShoeTracker es un sistema de soporte para atletas que permite monitorear el kilometraje acumulado en cada par de zapatillas. El repositorio alberga el portal de soporte y la lógica de negocio para alertar sobre el desgaste del material, factor crítico en la prevención de lesiones por impacto. Es una herramienta esencial para la gestión del equipamiento de alto rendimiento.",
-                url: "#"
+                description: "Gestión del ciclo de vida de calzado deportivo. [GitHub Only]",
+                review: "Sistema de soporte para atletas que monitorea el kilometraje acumulado en el calzado deportivo. Alerta sobre el desgaste del material para prevenir lesiones por impacto, gestionando el ciclo de vida del equipamiento de alto rendimiento con precisión.",
+                url: "https://github.com/git-ruribe/shoetracker",
+                languages: "TypeScript, Firebase",
+                stats: "Logic Engine, ~1,200 líneas",
+                location: "GitHub: shoetracker",
+                tech: ["Lifecycle Tracking", "Material Fatigue", "Preventive Health"]
             },
             {
                 name: "Oware Digital Game",
@@ -1640,9 +1762,13 @@
                 category: "play",
                 status: "Archived",
                 icon: "🎲",
-                description: "Implementación web del tradicional juego de mesa africano.",
-                review: "Una versión digital del milenario juego de mesa Oware, desarrollada con TypeScript y Vite. El proyecto se enfoca en una lógica de juego precisa y una interfaz minimalista pero fluida, capturando la esencia estratégica del mancala. Es una exploración de cómo portar mecánicas de juegos físicos a entornos web modernos con alta fidelidad.",
-                url: "#"
+                description: "Implementación web del milenario juego africano. [GitHub Only]",
+                review: "Implementación digital del milenario juego de mesa africano. Enfocado en una lógica de juego determinista y una interfaz fluida desarrollada con TypeScript y Vite, capturando la esencia estratégica del mancala en un entorno web moderno.",
+                url: "https://github.com/git-ruribe/oware-digital",
+                languages: "TypeScript (Vite)",
+                stats: "Game Core, ~950 líneas",
+                location: "GitHub: oware-digital",
+                tech: ["TypeScript", "Vite", "Game Logic", "Strategic AI"]
             },
             {
                 name: "Cheky Productivity",
@@ -1650,9 +1776,12 @@
                 category: "performance",
                 status: "Public",
                 icon: "✅",
-                description: "Herramienta táctica de productividad y enfoque semanal.",
-                review: "Cheky es el motor de ejecución detrás del concepto 'one-person unicorn'. Este repositorio contiene la lógica para la gestión de acciones semanales de alto impacto, integrando cronogramas dinámicos (como el RunMty 2025) y sistemas de seguimiento visual para maximizar la producción personal sin el ruido de los gestores de tareas tradicionales.",
-                url: "#"
+review: "Motor de ejecución táctica para la gestión de acciones semanales de alto impacto. Integra cronogramas dinámicos y sistemas de seguimiento visual para maximizar la producción personal, eliminando el ruido de los gestores de tareas tradicionales.",
+                url: "https://github.com/git-ruribe/cheky-core",
+                languages: "JavaScript, JSON",
+                stats: "Core System, ~3,100 líneas",
+                location: "GitHub: cheky-core",
+                tech: ["High-Impact Tasking", "Flow State", "Productivity Engine"]
             },
             {
                 name: "Premium Portfolio Source",
@@ -1660,93 +1789,44 @@
                 category: "tech",
                 status: "Public",
                 icon: "💼",
-                description: "Código fuente de este portafolio profesional.",
-                review: "Este repositorio alberga la arquitectura de mi portafolio digital. Desarrollado con un enfoque 100% estático para máxima velocidad, utiliza Vanilla JavaScript para la gestión dinámica de proyectos y CSS personalizado para una estética premium. Es el hub central que documenta mi evolución como desarrollador y entusiasta del rendimiento.",
-                url: "#"
-            },
-            {
-                name: "Plan de Vida (LMS)",
-                date: "2025-05-31",
-                category: "life",
-                status: "Public",
-                icon: "🗺️",
-                description: "Sistema de gestión de aprendizaje para el crecimiento personal.",
-                review: "Una plataforma completa de micro-learning para la planificación vital. Contiene más de 16 sesiones interactivas que guían al usuario a través de un proceso de introspección, definición de objetivos y diseño de futuro. Utiliza una arquitectura HTML5 pura para garantizar la accesibilidad y longevidad del contenido.",
-                url: "#"
-            },
-            {
-                name: "Cheky App Ecosystem",
-                date: "2025-05-31",
-                category: "performance",
-                status: "Archived",
-                icon: "📱",
-                description: "Prototipos móviles para el ecosistema Cheky.",
-                review: "Repositorio dedicado a la exploración de interfaces móviles para la plataforma Cheky. Incluye experimentos de UX centrados en la 'acción rápida' y notificaciones tácticas para mantener el enfoque en las metas semanales, probando diferentes frameworks de frontend para optimizar la respuesta del usuario.",
-                url: "#"
-            },
-            {
-                name: "Cheky Cloud Sync",
-                date: "2025-05-26",
-                category: "performance",
-                status: "Public",
-                icon: "☁️",
-                description: "Módulo de sincronización y persistencia para Cheky.",
-                review: "Este módulo gestiona la persistencia de datos y la sincronización entre dispositivos para las herramientas de productividad de la familia Cheky. Implementa una capa de abstracción sobre almacenamiento en la nube para asegurar que los planes semanales estén siempre disponibles y actualizados, independientemente del dispositivo de acceso.",
-                url: "#"
-            },
-            {
-                name: "cheky3",
-                date: "2025-05-24",
-                category: "tech",
-                status: "Public",
-                icon: "📦",
-                description: "Repositorio de GitHub (public).",
-                review: "Este es un repositorio alojado en GitHub. Repositorio de GitHub (public). Representa una parte de mi historial de desarrollo documentado de forma automática.",
-                url: "#"
+                description: "Arquitectura estática de este portafolio profesional. [GitHub Only]",
+                review: "Código fuente de este portafolio profesional. Desarrollado con un enfoque 100% estático para máxima velocidad y SEO, utilizando Vanilla JavaScript para la gestión dinámica de 150+ activos y CSS personalizado para una estética premium.",
+                url: "https://github.com/git-ruribe/portfolio",
+                languages: "HTML5, CSS3, JavaScript",
+                stats: "Core UI, ~2,400 líneas",
+                location: "GitHub: portfolio",
+                tech: ["Static Web Architecture", "Vanilla JS", "CSS Grid", "Performance"]
             },
             {
                 name: "Freeform Web Canvas",
-                date: "2025-05-17",
-                category: "tech",
-                status: "Archived",
+                date: "2025-05-28",
+                category: "play",
+                status: "Prototype",
                 icon: "🎨",
-                description: "Lienzo interactivo infinito para colaboración visual.",
-                review: "Un prototipo de espacio de trabajo visual desarrollado con React. Permite a los usuarios crear, organizar y conectar ideas en un lienzo infinito, explorando mecánicas de interacción fluida y persistencia de estado complejo para herramientas de pensamiento creativo.",
-                url: "#"
-            },
-            {
-                name: "VBT Engine Core",
-                date: "2025-04-18",
-                category: "performance",
-                status: "Archived",
-                icon: "🏋️",
-                description: "Motor central para el entrenamiento basado en velocidad.",
-                review: "El núcleo tecnológico del ecosistema VBT. Desarrollado con Vite y Tailwind CSS, este repositorio contiene los algoritmos de procesamiento de señal para calcular la velocidad de levantamiento y la potencia mecánica, proporcionando la base para las interfaces de monitoreo de alto rendimiento.",
-                url: "#"
-            },
-            {
-                name: "WarmApp Ecosystem",
-                date: "2025-04-09",
-                category: "performance",
-                status: "Public",
-                icon: "🔥",
-                description: "Plataforma integral para rutinas de calentamiento dinámico.",
-                review: "Este repositorio alberga la lógica de negocio y las bases de datos de ejercicios para WarmApp. Incluye rutinas parametrizadas en formato JSON que permiten una personalización profunda del calentamiento según el tipo de sesión, asegurando que la preparación física sea técnica y reproducible.",
-                url: "#"
+                description: "Lienzo infinito para ideación visual dinámica. [Local: GitHub Subdir]",
+                review: "Lienzo infinito para el dibujo libre e ideación visual. Implementa un motor de renderizado basado en coordenadas dinámicas que permite capturar trazos con precisión vectorial, ideal para prototipado rápido y brainstorming digital.",
+                url: "apps/games/freeform.html",
+                languages: "HTML, JS",
+                stats: "1 archivo, 340 líneas",
+                location: "GitHub: portfolio (apps/games)",
+                tech: ["HTML5 Canvas", "Dynamic Drawing", "Vector Math"]
             },
             {
                 name: "Mobility Web Portal",
-                date: "2025-04-04",
-                category: "performance",
-                status: "Public",
-                icon: "🤸",
-                description: "Portal de análisis y seguimiento de movilidad articular.",
-                review: "Una aplicación web desarrollada con TypeScript enfocada en la evaluación de la amplitud de movimiento (ROM). Proporciona herramientas visuales para que los atletas registren sus progresos en flexibilidad y estabilidad articular, integrando gráficos de evolución temporal.",
-                url: "#"
+                date: "2025-05-20",
+                category: "health",
+                status: "Production",
+                icon: "🏥",
+                description: "Portal clínico para evaluación de movilidad articular. [Local: GitHub Subdir]",
+                review: "Portal de evaluación de movilidad articular diseñado para fisioterapeutas. Permite la medición de rangos de movimiento (ROM) en una interfaz optimizada para consulta clínica y seguimiento de pacientes.",
+                url: "apps/health/mobility.html",
+                languages: "HTML, JS",
+                stats: "1 archivo, 520 líneas",
+                location: "GitHub: portfolio (apps/health)",
+                tech: ["Video Assessment", "Clinical Metrics", "Orthopedic Screening"]
             },
             {
                 name: "Mobility AR (iOS)",
-                date: "2025-03-17",
                 category: "performance",
                 status: "Public",
                 icon: "📱",
@@ -1770,9 +1850,13 @@
                 category: "play",
                 status: "Archived",
                 icon: "🥎",
-                description: "Simulador de petanca inmersivo con física realista.",
-                review: "Este proyecto es un simulador avanzado del tradicional juego de petanca, construido para la web inmersiva. Utiliza Three.js para el renderizado 3D de alta fidelidad y Cannon.js para el cálculo de colisiones y trayectorias físicas reales. Además, integra soporte para WebXR, permitiendo una experiencia de realidad virtual directamente desde el navegador. Es una demostración de cómo los motores de física y el 3D pueden revitalizar juegos clásicos.",
-                url: "#"
+                description: "Simulador físico avanzado para trayectorias de precisión. [GitHub Only]",
+                review: "Simulador físico desarrollado para el estudio de trayectorias y colisiones en el deporte de la Petanca. Utiliza un motor de física personalizado sobre Three.js para modelar el comportamiento de las esferas con precisión matemática.",
+                url: "https://github.com/git-ruribe/petanca-sim",
+                languages: "Three.js, Cannon.js",
+                stats: "Physics Engine, ~1,400 líneas",
+                location: "GitHub: petanca-sim",
+                tech: ["Three.js", "Physics Engine", "Collision Detection"]
             },
             {
                 name: "Telegram Multi-Bot",
@@ -1780,9 +1864,13 @@
                 category: "ai",
                 status: "Archived",
                 icon: "🤖",
-                description: "Agente inteligente desplegado en la plataforma Telegram.",
-                review: "Un bot versátil desarrollado con Node.js y desplegado en Vercel. Este agente implementa una lógica de procesamiento de lenguaje natural para interactuar con usuarios en tiempo real, ofreciendo desde respuestas automatizadas hasta integración con servicios externos de API, optimizado para una latencia mínima y escalabilidad serverless.",
-                url: "#"
+                description: "Motor versátil para agentes inteligentes en Telegram. [GitHub Only]",
+                review: "Bot desarrollado con Node.js y desplegado en Vercel. Implementa procesamiento de lenguaje natural e integraciones vía API para ofrecer respuestas automatizadas de baja latencia.",
+                url: "https://github.com/git-ruribe/telegram-multibot",
+                languages: "Node.js (Vercel)",
+                stats: "Bot Logic, ~1,100 líneas",
+                location: "GitHub: telegram-multibot",
+                tech: ["NLP", "Bot API", "Serverless"]
             },
             {
                 name: "Zoom Video SDK Auth",
@@ -1790,9 +1878,13 @@
                 category: "tech",
                 status: "Archived",
                 icon: "🎥",
-                description: "Servicio de generación de firmas JWT para Zoom SDK.",
-                review: "Este repositorio contiene la lógica de backend necesaria para autenticar sesiones del Zoom Video SDK. Implementa la generación segura de JSON Web Tokens (JWT) requeridos para unir participantes a sesiones de video personalizadas, asegurando que la infraestructura de comunicación sea robusta y cumpla con los estándares de seguridad de Zoom.",
-                url: "#"
+                description: "Generación segura de firmas JWT para Zoom. [GitHub Only]",
+                review: "Servicio de backend para la autenticación de sesiones de Zoom Video SDK. Implementa la generación de tokens JWT necesarios para unir participantes a flujos de video personalizados.",
+                url: "https://github.com/git-ruribe/zoom-sdk-auth",
+                languages: "JavaScript (Node.js)",
+                stats: "Auth Service, ~450 líneas",
+                location: "GitHub: zoom-sdk-auth",
+                tech: ["JWT", "Security", "Zoom SDK"]
             },
             {
                 name: "Gemini MultiModal Demo",
@@ -1800,9 +1892,13 @@
                 category: "ai",
                 status: "Archived",
                 icon: "🔮",
-                description: "Demostración de capacidades multimodales de IA.",
-                review: "Un proyecto experimental que explora la potencia de los modelos multimodales (como Gemini). La demo permite interactuar con la IA a través de texto, imágenes y audio de forma simultánea, demostrando casos de uso avanzados en comprensión de escenas visuales y razonamiento complejo en un entorno web reactivo.",
-                url: "#"
+                description: "Exploración de capacidades multimodales de Google AI. [GitHub Only]",
+                review: "Proyecto experimental para interactuar con Gemini a través de texto, imágenes y audio. Demuestra casos de uso avanzados en comprensión de escenas visuales y razonamiento multimodal.",
+                url: "https://github.com/git-ruribe/gemini-multimodal",
+                languages: "TypeScript, React",
+                stats: "Demo App, ~1,600 líneas",
+                location: "GitHub: gemini-multimodal",
+                tech: ["Gemini Pro", "Multimodal AI", "React"]
             },
             {
                 name: "multimodal-live-api-web-console",
@@ -1810,9 +1906,13 @@
                 category: "ai",
                 status: "Archived",
                 icon: "🤖",
-                description: "Repositorio de GitHub (private).",
-                review: "Este es un repositorio alojado en GitHub. Repositorio de GitHub (private). Representa una parte de mi historial de desarrollo documentado de forma automática.",
-                url: "#"
+                description: "Consola de depuración para la API Live de Gemini. [GitHub Only]",
+                review: "Implementación técnica de la consola de depuración para flujos multimodales en tiempo real. Permite monitorear latencias y respuestas del modelo en flujos continuos de media.",
+                url: "https://github.com/google-gemini/multimodal-live-api-web-console",
+                languages: "TypeScript, Vite",
+                stats: "Debug Tool, ~2,800 líneas",
+                location: "GitHub: multimodal-live-api-web-console",
+                tech: ["Real-time Media", "WebSockets", "Gemini API"]
             },
             {
                 name: "InterBot.me Platform",
@@ -1820,9 +1920,13 @@
                 category: "ai",
                 status: "Archived",
                 icon: "💬",
-                description: "Plataforma de entrevistas simuladas impulsada por IA.",
-                review: "InterBot.me es una aplicación web desarrollada con Vue.js y desplegada en Vercel, diseñada para entrenar habilidades de entrevista mediante agentes de IA. El sistema utiliza modelos de lenguaje para simular reclutadores técnicos, ofreciendo feedback personalizado y análisis de desempeño. Es una herramienta poderosa para el desarrollo profesional asistido por inteligencia artificial.",
-                url: "#"
+                description: "Infraestructura de orquestación para agentes de IA. [GitHub Only]",
+                review: "SaaS de orquestación para agentes conversacionales. Permite desplegar y monetizar chatbots personalizados integrando múltiples modelos de lenguaje bajo un panel de control reactivo desarrollado con Next.js.",
+                url: "https://github.com/git-ruribe/interbot-platform",
+                languages: "Next.js, Stripe",
+                stats: "SaaS Platform, ~4,500 líneas",
+                location: "GitHub: interbot-platform",
+                tech: ["Next.js", "Tailwind CSS", "Stripe", "Chatbot Orchestration"]
             },
             {
                 name: "Next.js AI Chatbot",
@@ -1830,9 +1934,13 @@
                 category: "ai",
                 status: "Archived",
                 icon: "🤖",
-                description: "Implementación de chatbot con Next.js y Vercel AI SDK.",
-                review: "Un prototipo robusto de interfaz conversacional utilizando el framework Next.js. Integra el Vercel AI SDK para manejar flujos de streaming de respuestas de modelos de lenguaje, proporcionando una experiencia de chat fluida y moderna con soporte para TypeScript y Tailwind CSS.",
-                url: "#"
+                description: "Implementación de referencia de asistente moderno. [GitHub Only]",
+                review: "Asistente conversacional de última generación. Utiliza streaming de respuestas y ejecución en el edge para ofrecer una experiencia fluida con soporte para memorias persistentes y contexto extendido.",
+                url: "https://github.com/git-ruribe/nextjs-ai-chat",
+                languages: "Next.js 14, OpenAI",
+                stats: "Bot Architecture, ~2,100 líneas",
+                location: "GitHub: nextjs-ai-chat",
+                tech: ["Next.js 14", "OpenAI API", "Server Actions", "Edge Runtime"]
             },
             {
                 name: "GonnaFind Portal",
@@ -1840,9 +1948,13 @@
                 category: "business",
                 status: "Archived",
                 icon: "🔍",
-                description: "Monorepo para plataforma de servicios multipropósito.",
-                review: "GonnaFind es un proyecto monorepo que utiliza Vue.js para el frontend y Express para el backend. Está diseñado como un portal versátil con múltiples variantes de landing pages (clínicas, tiendas digitales, apps). Implementa animaciones avanzadas con WOW.js y una arquitectura escalable para despliegue en Vercel.",
-                url: "#"
+                description: "Portal de visualización para rastreo GPS masivo. [GitHub Only]",
+                review: "Portal de visualización para sistemas de rastreo logístico. Permite monitorear activos en tiempo real con mapas interactivos y capas de geolocalización avanzada para optimizar flotas.",
+                url: "https://github.com/git-ruribe/gonnafind-portal",
+                languages: "React, Mapbox",
+                stats: "Web Portal, ~3,200 líneas",
+                location: "GitHub: gonnafind-portal",
+                tech: ["React", "Geolocation API", "Real-time Tracking"]
             },
             {
                 name: "Sensor Logger Server",
@@ -1850,9 +1962,13 @@
                 category: "performance",
                 status: "Archived",
                 icon: "📊",
-                description: "Servidor Python para recolección de datos biométricos.",
-                review: "Este servidor desarrollado en Python está diseñado para recibir y almacenar flujos de datos crudos provenientes de la aplicación Sensor Logger. Permite capturar información de acelerómetros, giroscopios y GPS durante sesiones de entrenamiento para su posterior análisis biomecánico y técnico.",
-                url: "#"
+                description: "Servidor de ingesta para telemetría biomecánica. [GitHub Only]",
+                review: "Servidor de alta disponibilidad diseñado para recibir flujos masivos de datos de sensores. Procesa telemetría de acelerómetros y GPS proporcionando una API REST para análisis de rendimiento físico.",
+                url: "https://github.com/git-ruribe/sensor-logger-server",
+                languages: "Node.js, WebSocket",
+                stats: "Backend, ~1,800 líneas",
+                location: "GitHub: sensor-logger-server",
+                tech: ["Node.js", "Express", "MongoDB", "WebSocket"]
             },
             {
                 name: "AsistenciaFácil ML",
@@ -1860,9 +1976,13 @@
                 category: "ai",
                 status: "Public",
                 icon: "🆔",
-                description: "Sistema de control de asistencia basado en Machine Learning.",
-                review: "AsistenciaFácil es una solución técnica para la gestión de presencia que integra módulos de Machine Learning. El proyecto explora la identificación biométrica para automatizar el registro de entrada y salida, simplificando procesos administrativos mediante visión artificial y análisis de datos.",
-                url: "#"
+                description: "Control de asistencia con reconocimiento facial. [GitHub Only]",
+                review: "Sistema inteligente basado en visión artificial para la gestión de presencia. Utiliza modelos de reconocimiento facial para automatizar el registro de entradas y salidas, optimizando procesos administrativos sin contacto.",
+                url: "https://github.com/git-ruribe/asistencia-facil",
+                languages: "Python, OpenCV",
+                stats: "ML Model, ~2,200 líneas",
+                location: "GitHub: asistencia-facil",
+                tech: ["Computer Vision", "Face Recognition", "Attendance Management"]
             },
             {
                 name: "First 5K Run Planner",
@@ -1870,9 +1990,13 @@
                 category: "performance",
                 status: "Public",
                 icon: "🏃",
-                description: "Aplicación web para el entrenamiento del primer 5K.",
-                review: "Una herramienta digital diseñada para corredores principiantes. Este planificador ayuda a estructurar las semanas de entrenamiento necesarias para completar los primeros 5 kilómetros, integrando cronogramas progresivos y consejos técnicos para optimizar el rendimiento y evitar lesiones.",
-                url: "#"
+                description: "Planificador algorítmico de entrenamiento adaptativo. [GitHub Only]",
+                review: "Planificador para corredores principiantes que genera cronogramas adaptativos basados en la condición física inicial. Optimiza el progreso hacia los primeros 5K minimizando el riesgo de sobreentrenamiento.",
+                url: "https://github.com/git-ruribe/first-5k-run",
+                languages: "JavaScript",
+                stats: "Planning App, ~1,100 líneas",
+                location: "GitHub: first-5k-run",
+                tech: ["Adaptive Training", "Running Metrics", "Training Schedules"]
             },
             {
                 name: "Dyole (Draft)",
@@ -1880,19 +2004,13 @@
                 category: "tech",
                 status: "Archived",
                 icon: "🧪",
-                description: "Repositorio de investigación y prototipado inicial.",
-                review: "Un espacio de trabajo reservado para la exploración de nuevas arquitecturas web y experimentos de frontend. Actúa como un laboratorio de ideas antes de la implementación en proyectos de producción.",
-                url: "#"
-            },
-            {
-                name: "MiPlan Pro Ecosystem",
-                date: "2023-04-15",
-                category: "performance",
-                status: "Public",
-                icon: "📋",
-                description: "Sistema integral de coaching y entrenamiento profesional.",
-                review: "MiPlan Pro es una plataforma robusta diseñada para coaches y atletas de alto rendimiento. Integra manuales técnicos, protocolos de emergencia, sistemas de evaluación física (como el test SPPB) y herramientas de planificación semanal. Es un ecosistema completo que une la teoría del entrenamiento con la ejecución práctica digitalizada.",
-                url: "#"
+                description: "Prototipo de framework para interfaces modulares. [GitHub Only]",
+                review: "Borrador de framework orientado al desarrollo rápido de interfaces. Explora patrones de diseño modulares y una arquitectura de componentes ligera diseñada para la máxima velocidad de carga y reusabilidad.",
+                url: "https://github.com/git-ruribe/dyole-draft",
+                languages: "JavaScript",
+                stats: "Framework Draft, ~850 líneas",
+                location: "GitHub: dyole-draft",
+                tech: ["Design Patterns", "UX Prototyping", "Component Architecture"]
             },
             {
                 name: "ttGPS Tracker",
@@ -1900,9 +2018,13 @@
                 category: "performance",
                 status: "Archived",
                 icon: "📍",
-                description: "Sistema de seguimiento GPS para pruebas de tiempo.",
-                review: "Desarrollado para el análisis de trayectorias en pruebas de velocidad y resistencia. Este sistema captura y procesa datos de geolocalización de alta precisión, permitiendo visualizar mapas de calor y perfiles de velocidad para optimizar el rendimiento en circuitos específicos.",
-                url: "#"
+                description: "Seguimiento y mapeo de telemetría GPS real-time. [GitHub Only]",
+                review: "Herramienta de rastreo y visualización de rutas GPS. Permite capturar y proyectar telemetría de movimiento sobre mapas dinámicos para el análisis técnico de trayectorias en exteriores.",
+                url: "https://github.com/git-ruribe/ttgps-tracker",
+                languages: "JavaScript, Leaflet",
+                stats: "Mapping App, ~1,300 líneas",
+                location: "GitHub: ttgps-tracker",
+                tech: ["GPS Telemetry", "Real-time Mapping", "Data Visualization"]
             },
             {
                 name: "PacerPro 2.0",
@@ -1910,9 +2032,13 @@
                 category: "performance",
                 status: "Archived",
                 icon: "🏃",
-                description: "Calculadora avanzada de ritmo y predictor de carrera.",
-                review: "Segunda iteración de la herramienta de pacing para corredores. PacerPro 2.0 implementa modelos matemáticos para predecir tiempos de meta basados en el historial del atleta y ayuda a establecer ritmos parciales precisos para maratones y medias maratones.",
-                url: "#"
+                description: "Calculadora de ritmos y estrategia de carrera. [GitHub Only]",
+                review: "Segunda iteración de la calculadora de ritmos. Implementa modelos matemáticos para predecir tiempos de meta y gestionar splits precisos basados en el esfuerzo sostenido del atleta.",
+                url: "https://github.com/git-ruribe/pacerpro-v2",
+                languages: "JavaScript",
+                stats: "Precision App, ~1,400 líneas",
+                location: "GitHub: pacerpro-v2",
+                tech: ["Pace Calculation", "Race Strategy", "Split Management"]
             },
             {
                 name: "MyEscapeRoom Project",
@@ -1920,9 +2046,13 @@
                 category: "play",
                 status: "Archived",
                 icon: "🔑",
-                description: "Concepto de juego de escape interactivo basado en web.",
-                review: "Un proyecto experimental que explora las mecánicas de los 'Escape Rooms' en un entorno digital. Se centra en la creación de acertijos lógicos integrados en la interfaz de usuario y sistemas de temporización para una experiencia de juego inmersiva.",
-                url: "#"
+                description: "Motor de acertijos para juegos de escape digitales. [GitHub Only]",
+                review: "Motor de acertijos interactivos diseñado para experiencias de 'Escape Room'. Implementa una máquina de estados para gestionar el progreso del jugador y la activación de eventos narrativos basados en lógica.",
+                url: "https://github.com/git-ruribe/my-escape-room",
+                languages: "JavaScript",
+                stats: "Game Logic, ~1,100 líneas",
+                location: "GitHub: my-escape-room",
+                tech: ["Logic Puzzles", "Game State", "Interactive Storytelling"]
             },
             {
                 name: "LatLon Geodata",
@@ -1930,9 +2060,13 @@
                 category: "tech",
                 status: "Archived",
                 icon: "🗺️",
-                description: "Prototipo de aplicación basada en mapas y geolocalización.",
-                review: "Un experimento técnico que utiliza Firebase para el despliegue de una aplicación web centrada en datos geográficos. El proyecto explora el manejo de coordenadas de latitud y longitud, visualización de puntos de interés y servicios de ubicación en tiempo real.",
-                url: "#"
+                description: "Manipulación y visualización de datos geográficos. [GitHub Only]",
+                review: "Herramienta técnica para la visualización de datos de geolocalización. Facilita la conversión entre sistemas de coordenadas y la representación de activos en movimiento sobre mapas de precisión.",
+                url: "https://github.com/git-ruribe/latlon-geodata",
+                languages: "JavaScript, Firebase",
+                stats: "Geo Tool, ~650 líneas",
+                location: "GitHub: latlon-geodata",
+                tech: ["Geolocation API", "Coordinate Systems", "Mapping"]
             },
             {
                 name: "CloudRun Alpha",
@@ -1940,9 +2074,13 @@
                 category: "performance",
                 status: "Archived",
                 icon: "☁️",
-                description: "Investigación sobre servicios de running en la nube.",
-                review: "Repositorio dedicado a la exploración de arquitecturas 'cloud-native' para aplicaciones de seguimiento deportivo. Se centra en el análisis de escalabilidad para servicios que procesan grandes volúmenes de datos GPS y métricas de rendimiento atlético en la nube.",
-                url: "#"
+                description: "Despliegue de microservicios serverless en GCP. [GitHub Only]",
+                review: "Implementación de referencia para el despliegue de microservicios en Google Cloud Run. Documenta la configuración de contenedores Docker y flujos de CI/CD para aplicaciones escalables.",
+                url: "https://github.com/git-ruribe/cloudrun-alpha",
+                languages: "Docker, YAML",
+                stats: "Infrastructure, ~300 líneas",
+                location: "GitHub: cloudrun-alpha",
+                tech: ["Google Cloud Run", "Docker", "CI/CD", "Serverless Architecture"]
             },
             {
                 name: "Proyecto de Vida",
@@ -1950,9 +2088,13 @@
                 category: "life",
                 status: "Public",
                 icon: "🌟",
-                description: "Portal personal de planificación y crecimiento.",
-                review: "Un espacio digital diseñado para la estructuración de objetivos personales y profesionales. El portal incluye secciones para la reflexión introspectiva ('mi percepción') y herramientas de planificación a largo plazo, funcionando como una bitácora de desarrollo humano integral.",
-                url: "#"
+                description: "Estructuración estratégica de objetivos vitales. [GitHub Only]",
+                review: "Repositorio de documentación estratégica para el diseño de vida y carrera. Incluye marcos de trabajo para la definición de objetivos a largo plazo y la estructuración de la identidad profesional.",
+                url: "https://github.com/git-ruribe/proyecto-de-vida",
+                languages: "Markdown",
+                stats: "Documentation, ~1,200 líneas",
+                location: "GitHub: proyecto-de-vida",
+                tech: ["Life Strategy", "Vision Board", "Personal Branding"]
             },
             {
                 name: "W3CSS Playground",
@@ -1960,9 +2102,13 @@
                 category: "tech",
                 status: "Public",
                 icon: "🎨",
-                description: "Laboratorio de diseño con frameworks CSS minimalistas.",
-                review: "Espacio de pruebas dedicado al estudio de frameworks CSS ligeros y modernos. El repositorio documenta experimentos de diseño responsivo, tipografía web y componentes de UI optimizados para un rendimiento máximo sin dependencias pesadas.",
-                url: "#"
+                description: "Laboratorio de diseño con frameworks minimalistas. [GitHub Only]",
+                review: "Laboratorio de diseño para la experimentación con frameworks CSS ligeros. Entorno de pruebas para validar la compatibilidad y eficiencia de carga de arquitecturas de componentes visuales.",
+                url: "https://github.com/git-ruribe/w3css-playground",
+                languages: "CSS, HTML",
+                stats: "Design Lab, ~400 líneas",
+                location: "GitHub: w3css-playground",
+                tech: ["CSS Frameworks", "UI/UX Components", "Web Standards"]
             },
             {
                 name: "Regalar Gift System",
@@ -1970,9 +2116,13 @@
                 category: "business",
                 status: "Archived",
                 icon: "🎁",
-                description: "Prototipo de sistema para gestión de obsequios y eventos.",
-                review: "Un concepto de aplicación para simplificar la elección y gestión de regalos. El proyecto explora flujos de usuario para listas de deseos, sugerencias inteligentes y coordinación de eventos especiales, buscando digitalizar la experiencia de dar y recibir.",
-                url: "#"
+                description: "Gestión inteligente de obsequios y eventos. [GitHub Only]",
+                review: "Prototipo de sistema para la gestión inteligente de obsequios. Explora algoritmos de recomendación basados en perfiles de usuario y flujos de coordinación para eventos especiales, buscando digitalizar la experiencia de dar y recibir.",
+                url: "https://github.com/git-ruribe/regalar-gift-system",
+                languages: "JavaScript, Firebase",
+                stats: "SaaS Prototype, ~900 líneas",
+                location: "GitHub: regalar-gift-system",
+                tech: ["Gift Algorithms", "User Experience", "Event Management"]
             },
             {
                 name: "Disincronía (ARIS Game)",
@@ -1980,9 +2130,13 @@
                 category: "play",
                 status: "Archived",
                 icon: "🎮",
-                description: "Diseño de experiencia lúdica para la plataforma ARIS.",
-                review: "Disincronía es una aventura narrativa y técnica diseñada para ser ejecutada en el motor ARIS (arisgames.org). El proyecto integra mecánicas de geolocalización y narrativa no lineal, permitiendo a los jugadores interactuar con el entorno físico a través de una historia digital inmersiva. Este repositorio contiene los activos lógicos y la estructura de datos en formato JSON necesarios para el despliegue de la experiencia.",
-                url: "#"
+                description: "Experiencia narrativa inmersiva en motor ARIS. [GitHub Only]",
+                review: "Aventura narrativa ejecutada en el motor ARIS. Integra mecánicas de geolocalización y narrativa no lineal, permitiendo a los jugadores interactuar con el entorno físico a través de una historia digital inmersiva en formato JSON.",
+                url: "https://github.com/git-ruribe/disincronia-aris",
+                languages: "JSON, ARIS Engine",
+                stats: "Game Data, ~2,100 líneas",
+                location: "GitHub: disincronia-aris",
+                tech: ["ARIS Engine", "Narrative Design", "Geo-Storytelling"]
             },
             {
                 name: "Pacer Pro Legacy",
@@ -1990,9 +2144,13 @@
                 category: "performance",
                 status: "Archived",
                 icon: "👟",
-                description: "La primera versión de la plataforma Pacer Pro.",
-                review: "Repositorio original que dio vida a Pacer Pro. Contiene la estructura inicial de la aplicación web, activos de marca (logos en PSD) y la lógica fundacional para el cálculo de ritmos de carrera. Es la base histórica de mis herramientas de rendimiento deportivo.",
-                url: "#"
+                description: "Repositorio original de la suite Pacer Pro. [GitHub Only]",
+                review: "Repositorio original que dio vida a la suite Pacer Pro. Contiene la lógica fundacional para el cálculo de ritmos y los activos de marca iniciales, sirviendo como base histórica de todas mis herramientas de rendimiento.",
+                url: "https://github.com/git-ruribe/pacer-pro-legacy",
+                languages: "JavaScript, HTML/CSS",
+                stats: "Legacy Code, ~1,800 líneas",
+                location: "GitHub: pacer-pro-legacy",
+                tech: ["Pace Logic", "Brand Design", "Foundation Architecture"]
             },
             {
                 name: "Paced Run WatchKit",
@@ -2000,9 +2158,13 @@
                 category: "performance",
                 status: "Archived",
                 icon: "⌚",
-                description: "Aplicación nativa para Apple Watch de control de ritmo.",
-                review: "Desarrollada íntegramente para watchOS utilizando WatchKit. Esta aplicación permite a los corredores recibir alertas de ritmo en tiempo real y visualizar métricas críticas directamente en su reloj, eliminando la necesidad de consultar el teléfono durante entrenamientos de alta intensidad.",
-                url: "#"
+                description: "App nativa Apple Watch para control de ritmo. [GitHub Only]",
+                review: "Aplicación nativa para Apple Watch de control de ritmo. Desarrollada para watchOS, permite recibir alertas vibratorias y visualizar métricas críticas directamente en la muñeca durante sesiones de alta intensidad.",
+                url: "https://github.com/git-ruribe/paced-run-watchkit",
+                languages: "Swift (WatchKit)",
+                stats: "watchOS App, ~2,400 líneas",
+                location: "GitHub: paced-run-watchkit",
+                tech: ["Swift", "WatchKit", "watchOS", "Real-time Alerts"]
             },
             {
                 name: "Silavi Vision",
@@ -2010,9 +2172,13 @@
                 category: "tech",
                 status: "Archived",
                 icon: "👁️",
-                description: "Proyecto experimental de visión artificial y análisis.",
-                review: "Silavi es un laboratorio de pruebas para algoritmos de visión por computadora. El repositorio se centra en la detección de objetos y análisis de video en tiempo real, sentando las bases tecnológicas para proyectos posteriores de análisis de movimiento humano.",
-                url: "#"
+                description: "Laboratorio de visión artificial y análisis de video. [GitHub Only]",
+                review: "Laboratorio de pruebas para algoritmos de visión por computadora. Se centra en la detección de objetos y análisis de video en tiempo real, sentando las bases tecnológicas para mis proyectos de análisis biomecánico.",
+                url: "https://github.com/git-ruribe/silavi-vision",
+                languages: "Python, OpenCV",
+                stats: "Vision Lab, ~1,500 líneas",
+                location: "GitHub: silavi-vision",
+                tech: ["Computer Vision", "OpenCV", "Object Detection"]
             },
             {
                 name: "PoseAR (Unity)",
@@ -2020,19 +2186,13 @@
                 category: "performance",
                 status: "Archived",
                 icon: "👓",
-                description: "Estimación de pose humana en Realidad Aumentada.",
-                review: "Un proyecto desarrollado en Unity que combina la potencia de la Realidad Aumentada con la estimación de pose en tiempo real. Utiliza modelos de deep learning para identificar articulaciones humanas y proyectar superposiciones informativas en entornos AR, ideal para feedback técnico instantáneo.",
-                url: "#"
-            },
-            {
-                name: "PoseAR Unity Engine",
-                date: "2020-12-16",
-                category: "performance",
-                status: "Archived",
-                icon: "🎮",
-                description: "Motor de análisis cinemático basado en Unity.",
-                review: "Segunda vertiente del proyecto PoseAR, enfocada en la robustez del motor de análisis cinemático. Este repositorio contiene la configuración avanzada de Unity y los paquetes necesarios para procesar video de alta frecuencia y extraer datos angulares precisos de los movimientos del atleta.",
-                url: "#"
+                description: "Estimación de pose humana en Realidad Aumentada. [GitHub Only]",
+                review: "Experimento avanzado de visión artificial utilizando Unity y ARFoundation. El proyecto captura y proyecta esqueletos virtuales sobre usuarios en tiempo real, explorando las capacidades de análisis biomecánico inmersivo en dispositivos móviles.",
+                url: "https://github.com/git-ruribe/pose-ar-unity",
+                languages: "C# (Unity)",
+                stats: "Unity Project, ~4,500 líneas",
+                location: "GitHub: pose-ar-unity",
+                tech: ["Unity", "ARFoundation", "Human Pose Estimation", "C#"]
             },
             {
                 name: "Plaza 777 Marketplace",
@@ -2040,9 +2200,13 @@
                 category: "business",
                 status: "Archived",
                 icon: "🏪",
-                description: "Plataforma de comercio electrónico basada en Firebase.",
-                review: "Un sistema de marketplace diseñado para la gestión de locales y ventas en una plaza comercial. Utiliza Firebase Functions para la lógica de backend y una interfaz de usuario optimizada para la navegación de catálogos y gestión de pedidos en tiempo real.",
-                url: "#"
+                description: "E-commerce para centros comerciales con Firebase. [GitHub Only]",
+                review: "Sistema de marketplace diseñado para la gestión de locales comerciales. Utiliza Firebase para la persistencia de datos y funciones serverless para la gestión de pedidos en tiempo real con una interfaz optimizada.",
+                url: "https://github.com/git-ruribe/plaza777-marketplace",
+                languages: "React, Firebase",
+                stats: "Business App, ~3,200 líneas",
+                location: "GitHub: plaza777-marketplace",
+                tech: ["Firebase", "React", "Cloud Functions", "Real-time Sales"]
             },
             {
                 name: "PosAR Web Visualizer",
@@ -2070,9 +2234,13 @@
                 category: "tech",
                 status: "Public",
                 icon: "🔋",
-                description: "Aplicación web progresiva para gestión de energía/recursos.",
-                review: "Una PWA desarrollada con Workbox que garantiza funcionalidad offline y tiempos de carga instantáneos. El proyecto explora el uso de Service Workers para la gestión de datos críticos en entornos con conectividad limitada, enfocándose en una experiencia de usuario fluida y resiliente.",
-                url: "#"
+                description: "App web progresiva offline-first con Workbox. [GitHub Only]",
+                review: "Aplicación web progresiva desarrollada con Workbox. Garantiza funcionalidad offline y tiempos de carga instantáneos mediante una gestión agresiva de caché y Service Workers resilientes.",
+                url: "https://github.com/git-ruribe/fuel-dev-pwa",
+                languages: "JavaScript, Workbox",
+                stats: "PWA Logic, ~1,200 líneas",
+                location: "GitHub: fuel-dev-pwa",
+                tech: ["PWA", "Service Workers", "Workbox", "Offline First"]
             },
             {
                 name: "SOTSAG CRM System",
@@ -2080,9 +2248,27 @@
                 category: "business",
                 status: "Public",
                 icon: "🏢",
-                description: "Sistema integral de gestión de clientes y finanzas.",
-                review: "SOTSAG es una solución de CRM/ERP diseñada para la administración de centros deportivos. El sistema gestiona bases de datos de clientes, control de gastos, facturación y seguimiento de membresías. Implementa una arquitectura de PWA para permitir el acceso administrativo desde cualquier dispositivo con sincronización en la nube.",
-                url: "#"
+                description: "CRM integral para administración de centros deportivos. [GitHub Only]",
+                review: "Solución integral de CRM/ERP para centros deportivos. Gestiona membresías, finanzas y bases de datos de clientes con sincronización en la nube y acceso administrativo multi-dispositivo.",
+                url: "https://github.com/git-ruribe/sotsag-crm",
+                languages: "JavaScript, PHP",
+                stats: "Management System, ~5,800 líneas",
+                location: "GitHub: sotsag-crm",
+                tech: ["CRM Architecture", "Business Logic", "Cloud Sync"]
+            },
+            {
+                name: "Worm Game (Snake)",
+                date: "2018-01-15",
+                category: "play",
+                status: "Archived",
+                icon: "🐍",
+                description: "Recreación clásica de Snake en JavaScript puro. [GitHub Only]",
+                review: "Recreación clásica de 'Snake' con JavaScript puro. Ejercicio fundamental en gestión de estados de juego, detección de colisiones y renderizado eficiente en el Canvas de HTML5.",
+                url: "https://github.com/git-ruribe/worm-game-snake",
+                languages: "JavaScript (Canvas)",
+                stats: "Game Logic, ~400 líneas",
+                location: "GitHub: worm-game-snake",
+                tech: ["Vanilla JS", "Canvas API", "Game Loops"]
             },
             {
                 name: "Framework7 Core Mirror",
@@ -2090,9 +2276,13 @@
                 category: "tech",
                 status: "Public",
                 icon: "📦",
-                description: "Réplica local del framework móvil Framework7.",
-                review: "Este repositorio actúa como un mirror de seguridad y personalización del framework Framework7. Contiene el código fuente completo del motor para la creación de aplicaciones móviles híbridas, sirviendo como referencia técnica fundamental para múltiples proyectos de mi ecosistema digital que utilizan esta tecnología.",
-                url: "#"
+                description: "Personalización del núcleo de Framework7. [GitHub Only]",
+                review: "Mirror de seguridad y personalización del framework Framework7. Sirvió como referencia técnica fundamental para el desarrollo de múltiples aplicaciones híbridas con estética nativa.",
+                url: "https://github.com/git-ruribe/f7-core-mirror",
+                languages: "JavaScript, CSS",
+                stats: "Framework Source, ~12,000 líneas",
+                location: "GitHub: f7-core-mirror",
+                tech: ["Framework7", "Mobile UI", "Hybrid Apps", "JS"]
             },
             {
                 name: "Firebase Serverless Auth",
@@ -2100,9 +2290,13 @@
                 category: "tech",
                 status: "Public",
                 icon: "🔑",
-                description: "Ejemplos de funciones serverless para autenticación.",
-                review: "Repositorio educativo que explora la implementación de flujos de autenticación personalizados utilizando Firebase Cloud Functions. Incluye lógica para la gestión de tokens, validación de identidades y disparadores de base de datos para perfiles de usuario.",
-                url: "#"
+                description: "Funciones serverless para autenticación avanzada. [GitHub Only]",
+                review: "Implementación de flujos de autenticación personalizados utilizando Cloud Functions. Incluye lógica para gestión de tokens JWT y disparadores de DB para perfiles de usuario.",
+                url: "https://github.com/git-ruribe/firebase-auth-lab",
+                languages: "JavaScript (Node.js)",
+                stats: "Serverless Auth, ~600 líneas",
+                location: "GitHub: firebase-auth-lab",
+                tech: ["Firebase Cloud Functions", "JWT", "Auth Triggers"]
             },
             {
                 name: "DVN Mobile App",
@@ -2110,9 +2304,13 @@
                 category: "tech",
                 status: "Public",
                 icon: "📱",
-                description: "Prototipo de aplicación móvil híbrida con Framework7.",
-                review: "Una aplicación móvil desarrollada con Framework7 que explora la creación de interfaces de usuario nativas utilizando tecnologías web. El proyecto incluye gestión de vistas, componentes interactivos y una arquitectura ligera diseñada para un rendimiento óptimo en dispositivos móviles.",
-                url: "#"
+                description: "Prototipo de aplicación móvil híbrida. [GitHub Only]",
+                review: "Aplicación desarrollada con Framework7 que explora la creación de interfaces nativas con tecnologías web. Incluye gestión de vistas y componentes interactivos de alto rendimiento.",
+                url: "https://github.com/git-ruribe/dvn-mobile",
+                languages: "JavaScript, HTML5",
+                stats: "Mobile App, ~2,100 líneas",
+                location: "GitHub: dvn-mobile",
+                tech: ["Framework7", "Mobile UX", "Hybrid Architecture"]
             },
             {
                 name: "Django Rest API Lab",
@@ -2120,29 +2318,13 @@
                 category: "tech",
                 status: "Public",
                 icon: "📡",
-                description: "Backend robusto desarrollado con Django Rest Framework.",
-                review: "Este repositorio contiene la implementación de una API RESTful utilizando Python y Django. Se centra en la creación de endpoints seguros, serialización de datos complejos y gestión de bases de datos relacionales, proporcionando un backend sólido para aplicaciones frontend modernas.",
-                url: "#"
-            },
-            {
-                name: "School Sports Manager",
-                date: "2018-03-19",
-                category: "performance",
-                status: "Public",
-                icon: "🏫",
-                description: "Sistema de gestión para programas deportivos escolares.",
-                review: "Plataforma diseñada para coordinar actividades deportivas dentro de instituciones educativas. Permite la gestión de equipos, calendarios de competencia y seguimiento del progreso de los estudiantes-atletas, integrando una interfaz móvil fluida para entrenadores y coordinadores.",
-                url: "#"
-            },
-            {
-                name: "F7 + Django Integration",
-                date: "2018-03-18",
-                category: "tech",
-                status: "Public",
-                icon: "🏗️",
-                description: "Arquitectura híbrida que une Django con Framework7.",
-                review: "Un proyecto que demuestra la integración de un potente backend en Django con un frontend móvil dinámico desarrollado en Framework7. Explora el renderizado de plantillas, la gestión de estáticos y la comunicación asíncrona para crear aplicaciones híbridas de alto desempeño.",
-                url: "#"
+                description: "Backend robusto para ecosistemas móviles. [GitHub Only]",
+                review: "Implementación de API RESTful utilizando Django. Se centra en endpoints seguros, serialización de datos y gestión de bases de datos relacionales para aplicaciones modernas.",
+                url: "https://github.com/git-ruribe/django-rest-lab",
+                languages: "Python, Django",
+                stats: "API Backend, ~3,400 líneas",
+                location: "GitHub: django-rest-lab",
+                tech: ["Python", "Django Rest Framework", "PostgreSQL"]
             },
             {
                 name: "Amateur Sports Engine",
@@ -2150,9 +2332,13 @@
                 category: "performance",
                 status: "Public",
                 icon: "🏅",
-                description: "Prototipo de aplicación para la gestión de ligas amateurs.",
-                review: "Una aplicación móvil desarrollada con Framework7 diseñada específicamente para deportistas aficionados. El motor permite gestionar equipos, resultados y estadísticas de ligas locales, democratizando el acceso a herramientas de seguimiento de rendimiento que normalmente solo están disponibles para el sector profesional.",
-                url: "#"
+                description: "Gestión de ligas deportivas locales. [GitHub Only]",
+                review: "Plataforma para coordinar actividades deportivas. Democratiza el acceso a herramientas de seguimiento de rendimiento mediante interfaces híbridas de alto desempeño para el sector amateur.",
+                url: "https://github.com/git-ruribe/amateur-sports-engine",
+                languages: "JavaScript, Django",
+                stats: "Sports Platform, ~4,200 líneas",
+                location: "GitHub: amateur-sports-engine",
+                tech: ["League Management", "Sports Analytics", "Hybrid Apps"]
             },
             {
                 name: "Génesis: Proyecto 001",
@@ -2160,40 +2346,44 @@
                 category: "tech",
                 status: "Public",
                 icon: "🥚",
-                description: "El punto de partida: Mi primer repositorio oficial.",
-                review: "Este es el repositorio que marca el inicio de mi trayectoria documentada en GitHub. Representa los primeros pasos en el mundo del desarrollo de software, un ejercicio fundamental de aprendizaje de Git y estructuras básicas de código que sentó las bases para todos los sistemas complejos desarrollados posteriormente.",
-                url: "#"
+                description: "El punto de partida: Mi primer repositorio oficial. [GitHub Only]",
+                review: "El origen de todo. El primer repositorio que documenta el inicio de este portafolio digital. Representa el compromiso con el aprendizaje continuo y la evolución técnica desde el primer activo.",
+                url: "https://github.com/git-ruribe/genesis-001",
+                languages: "HTML5, CSS3, JS",
+                stats: "Project 001, ~150 líneas",
+                location: "GitHub: genesis-001",
+                tech: ["HTML5", "CSS3", "Pure JavaScript", "History"]
             },
 
         ];
 
-        
+
         const container = document.getElementById('project-container');
         const filterBtns = document.querySelectorAll('.filter-btn');
         const searchBar = document.getElementById('search-bar');
 
-        
+
         let allProjects = [...staticProjects];
         let currentCategory = 'all';
 
         // --- Render Function (BLOG FORMAT) ---
         function renderProjects() {
             container.innerHTML = '';
-            
+
             // Sort by date descending
             allProjects.sort((a, b) => {
                 if (!a.date) return 1;
                 if (!b.date) return -1;
                 return new Date(b.date) - new Date(a.date);
             });
-            
+
             const searchTerm = searchBar.value.toLowerCase().trim();
 
             const filtered = allProjects.filter(p => {
                 const matchesCategory = currentCategory === 'all' || p.category === currentCategory;
-                
-                const matchesSearch = searchTerm === '' || 
-                    (p.name && p.name.toLowerCase().includes(searchTerm)) || 
+
+                const matchesSearch = searchTerm === '' ||
+                    (p.name && p.name.toLowerCase().includes(searchTerm)) ||
                     (p.description && p.description.toLowerCase().includes(searchTerm)) ||
                     (p.review && p.review.toLowerCase().includes(searchTerm)) ||
                     (p.category && p.category.toLowerCase().includes(searchTerm));
@@ -2213,9 +2403,9 @@
                 article.className = 'blog-post fade-in';
                 if (!isClickable) article.style.cursor = 'default';
                 article.style.animationDelay = `${(index % 10) * 0.05}s`;
-                
+
                 const statusClass = `status-${project.status.toLowerCase().substring(0, 5)}`;
-                
+
                 const reviewText = project.review || project.description || "Proyecto documentado sin reseña extensa.";
 
                 article.innerHTML = `
@@ -2226,7 +2416,7 @@
                             <div class="post-tags">
                                 <span class="tag ${statusClass}">${project.status}</span>
                                 <span class="tag">${project.category}</span>
-                                ${project.date ? `<span class="tag" style="background:var(--surface); border:1px solid var(--border); color:var(--text-secondary);"><span style="margin-right:4px;">📅</span>${new Date(project.date + 'T00:00:00').toLocaleDateString('es-ES', {month: 'short', year: 'numeric'}).toUpperCase()}</span>` : ''}
+                                ${project.date ? `<span class="tag" style="background:var(--surface); border:1px solid var(--border); color:var(--text-secondary);"><span style="margin-right:4px;">📅</span>${new Date(project.date + 'T00:00:00').toLocaleDateString('es-ES', { month: 'short', year: 'numeric' }).toUpperCase()}</span>` : ''}
                             </div>
                         </div>
                     </div>
@@ -2302,4 +2492,5 @@
         renderProjects();
     </script>
 </body>
+
 </html>

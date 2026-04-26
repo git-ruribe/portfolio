@@ -1,0 +1,149 @@
+[451] NAME: VBT Performance System | LOC: MacPro: ~/Arduino/VBT_Dumbell.ino | URL: #
+[465] NAME: Multimodal Live Console | LOC: MacPro: ~/html/multimodal-live-api-web-console | URL: #
+[479] NAME: Social-Health Feed (MiPlan Pro) | LOC: MacPro: ~/Antigravity/miplanpro/programa.html | URL: #
+[493] NAME: TradeAI Autonomous Agent | LOC: MacPro: ~/python/tradeAgent | URL: #
+[507] NAME: MiPlan Pro (Ecosistema Integral) | LOC: MacPro: ~/Antigravity/miplanpro/index.html | URL: #
+[521] NAME: Evaluador de Movilidad Clínica (SPPB) | LOC: GitHub: miplanpro | URL: #
+[535] NAME: Sentinel HR (Polar ECG Edition) | LOC: GitHub: SentinelHR | URL: #
+[549] NAME: Cheky App | LOC: GitHub: cheky-app | URL: #
+[563] NAME: Tradeagent (Engine) | LOC: MacPro: ~/python/tradeAgent | URL: #
+[577] NAME: Bt (Bluetooth Tracker) | LOC: MacPro: ~/python/bt | URL: #
+[591] NAME: InterBotMe Platform | LOC: GitHub: InterBotMe | URL: #
+[605] NAME: SensorLogger IoT Bridge | LOC: MacPro: ~/python/mqtt | URL: #
+[619] NAME: FreeForm Web Designer | LOC: GitHub: freeform-web | URL: #
+[633] NAME: 360° Photo Processor | LOC: MacPro: ~/python/360photo | URL: #
+[647] NAME: Visor 3D Interactivo | LOC: MacPro: ~/html/visor3D | URL: #
+[661] NAME: WarmApp Mobility | LOC:  | URL: #
+[671] NAME: Selenium Automation Engine | LOC:  | URL: #
+[681] NAME: Raspberry Pi Vision Lab | LOC:  | URL: #
+[691] NAME: LidarSpeed Tracker (iOS) | LOC: MacPro: ~/SWIFT/LidarSpeed | URL: #
+[705] NAME: MobilityAR Diagnostics | LOC: GitHub: MobilityAR | URL: #
+[719] NAME: Petanque AR App | LOC: MacPro: ~/SWIFT/PetanqueARApp | URL: #
+[733] NAME: IndoorPositioning Lab | LOC: MacPro: ~/SWIFT/IndoorPositioning | URL: #
+[747] NAME: MindInfluencer App | LOC: MacPro: ~/SWIFT/MindInfluencer | URL: #
+[761] NAME: Petanca (HTML/JS) | LOC:  | URL: #
+[771] NAME: Kidzmx Platform | LOC:  | URL: #
+[781] NAME: TelegramChatBot Engine | LOC:  | URL: #
+[791] NAME: Zoom Video SDK Lab | LOC:  | URL: #
+[801] NAME: VideoAI Experiment | LOC:  | URL: #
+[811] NAME: Google Forms Automator | LOC: MacPro: ~/html/googleForms | URL: #
+[825] NAME: Homilias (Base) | LOC: MacPro: ~/html/homilias | URL: #
+[839] NAME: Mobility App Web (Legacy) | LOC: GitHub: mobility-app-web | URL: #
+[853] NAME: FreeForm (Legacy) | LOC:  | URL: #
+[863] NAME: LatLon Tracker | LOC: MacPro: ~/html/latlon | URL: #
+[877] NAME: First5K Run (Dev) | LOC: GitHub: First5K_run | URL: #
+[891] NAME: PupetterGrok Scraper | LOC: MacPro: ~/html/pupetterGrok | URL: #
+[905] NAME: GonnaFindVercel (Dev) | LOC: MacPro: ~/html/GonnaFindVercel | URL: #
+[919] NAME: MQTTgym Engine | LOC: MacPro: ~/html/MQTTgym | URL: #
+[933] NAME: Pitches & Business | LOC: MacPro: ~/html/pitches | URL: #
+[947] NAME: CloserBox (Legacy) | LOC: MacPro: ~/html/closerbox | URL: #
+[961] NAME: GonnaFind (Original) | LOC: MacPro: ~/html/GonnaFind | URL: #
+[975] NAME: BolasAR (Nativo iOS) | LOC: MacPro: ~/SWIFT/BolasAR | URL: #
+[989] NAME: El Callejón de los Recuerdos | LOC: MacPro: ~/Antigravity/el-callejón-de-los-recuerdos-dinámico | URL: #
+[1003] NAME: PolyStars Trading Hub | LOC: MacPro: ~/Antigravity/PolyStars | URL: #
+[1017] NAME: Arduino SpeedGate System | LOC: GitHub: ArduinoSpeedGate | URL: #
+[1031] NAME: BOT Administrador Suite | LOC:  | URL: #
+[1042] NAME: Stress Pilot (Crono) | LOC:  | URL: #
+[1053] NAME: Claudia Design Editor | LOC: MacPro: ~/Antigravity/claudesign | URL: #
+[1067] NAME: Biofeedback Sensors Lab | LOC:  | URL: #
+[1078] NAME: PolyMarket IA Bot | LOC:  | URL: #
+[1089] NAME: ForcePlate Analysis | LOC:  | URL: #
+[1100] NAME: PolarH10 ECG Monitor | LOC:  | URL: #
+[1112] NAME: Navidad Fuerza (Vite App) | LOC:  | URL: #
+[1124] NAME: MiPlan Pro (Full Suite) | LOC: GitHub: miplanpro | URL: #
+[1138] NAME: Radar CRM (Local Build) | LOC:  | URL: #
+[1149] NAME: Cartas Regias (Gastro-App) | LOC: GitHub: portfolio (apps/travel) | URL: apps/travel/cartasregias.html
+[1163] NAME: Karvonen Calculator | LOC: GitHub: portfolio (apps/health) | URL: apps/health/karvonen.html
+[1177] NAME: Energy Sim (CFE Lab) | LOC: GitHub: portfolio (apps/cfe) | URL: apps/cfe/index.html
+[1191] NAME: CloserBox Shop | LOC: GitHub: portfolio (apps/shop) | URL: apps/shop/index.html
+[1205] NAME: Generador Binaural | LOC: GitHub: portfolio (apps/binaural) | URL: apps/binaural/index.html
+[1219] NAME: Proyecto M60-Gold | LOC: GitHub: portfolio (apps/plan) | URL: apps/plan/rp2025.html
+[1233] NAME: WarmApp (Calientapp) | LOC: GitHub: portfolio (apps/health) | URL: apps/health/warmapp.html
+[1247] NAME: Bolsa Familiar (Simulator) | LOC: GitHub: portfolio (apps/bolsafamiliar) | URL: apps/bolsafamiliar/index.html
+[1261] NAME: Cheky.app | LOC: GitHub: portfolio (apps/plan) | URL: apps/plan/cheky.html
+[1275] NAME: Doble o Nada: El Reto del 1% | LOC: GitHub: portfolio (apps/plan) | URL: apps/plan/doble.html
+[1289] NAME: Face Identifica | LOC:  | URL: apps/facerecognition/identifica.html
+[1300] NAME: Entrenador de Modelos Faciales | LOC:  | URL: apps/facerecognition/facedescriptors.html
+[1311] NAME: Protocolo Suple (M60-ORO) | LOC: GitHub: portfolio (apps/plan) | URL: apps/plan/suple.html
+[1325] NAME: Oware Game | LOC: GitHub: portfolio (apps/oware) | URL: apps/oware/index.html
+[1339] NAME: Zyllia Quest | LOC: GitHub: portfolio (apps/games) | URL: apps/games/zyllia.html
+[1353] NAME: VBT Performance Monitor | LOC: GitHub: portfolio (apps/vbt) | URL: apps/vbt/index.html
+[1367] NAME: Homilías Interactivas (LMS) | LOC: GitHub: portfolio (apps/homilias) | URL: apps/homilias/index.html
+[1381] NAME: K-Means Analyzer | LOC: GitHub: portfolio (apps/cx) | URL: apps/cx/kmeans.html
+[1395] NAME: Visor 3D Engine | LOC: GitHub: portfolio (apps/visor3d) | URL: apps/visor3d/index.html
+[1409] NAME: Barcode Scanner | LOC:  | URL: apps/scan/index.html
+[1419] NAME: BeforeIdie.app | LOC:  | URL: apps/bid/index.html
+[1429] NAME: VBT Dashboard (MQTT) | LOC:  | URL: apps/mqtt/index.html
+[1439] NAME: Calculadora CFE 2025 | LOC:  | URL: apps/cfe/index.html
+[1449] NAME: Alpha Terminal | LOC:  | URL: apps/poly/index.html
+[1459] NAME: Sabores Clásicos NL | LOC:  | URL: apps/travel/cartasregias.html
+[1469] NAME: Think Twice (GDD) | LOC:  | URL: apps/ideas/thinktwice.html
+[1479] NAME: Proteínas en tu Bolsillo | LOC:  | URL: apps/proteinas.html
+[1489] NAME: Asset Strategy: Overhaul vs Reemplazo | LOC:  | URL: apps/cx/oh.html
+[1499] NAME: Simulador de Reemplazo de Activos | LOC:  | URL: apps/cx/reemplazo.html
+[1508] NAME: Crono HRV Analyzer | LOC:  | URL: #
+[1518] NAME: ForcePlate Dashboard | LOC:  | URL: #
+[1528] NAME: Arduino SpeedGate Firmware | LOC:  | URL: #
+[1538] NAME: SentinelHR (Watch App) | LOC:  | URL: #
+[1548] NAME: Antigravity VBT Engine | LOC:  | URL: #
+[1558] NAME: Firebase State Machine | LOC:  | URL: #
+[1568] NAME: Twilio API Sandbox | LOC:  | URL: #
+[1578] NAME: Rental Admin Dashboard | LOC:  | URL: #
+[1588] NAME: Gemini Telegram Agent | LOC:  | URL: #
+[1598] NAME: Exatec Run 2025 Portal | LOC:  | URL: #
+[1608] NAME: The Bee (Microrobot) | LOC:  | URL: #
+[1618] NAME: Hyperliquid Trading Agent | LOC:  | URL: #
+[1628] NAME: ShoeTracker Companion | LOC:  | URL: #
+[1638] NAME: Oware Digital Game | LOC:  | URL: #
+[1648] NAME: Cheky Productivity | LOC:  | URL: #
+[1658] NAME: Premium Portfolio Source | LOC:  | URL: #
+[1668] NAME: Plan de Vida (LMS) | LOC:  | URL: #
+[1678] NAME: Cheky App Ecosystem | LOC:  | URL: #
+[1688] NAME: Cheky Cloud Sync | LOC:  | URL: #
+[1698] NAME: cheky3 | LOC:  | URL: #
+[1708] NAME: Freeform Web Canvas | LOC:  | URL: #
+[1718] NAME: VBT Engine Core | LOC:  | URL: #
+[1728] NAME: WarmApp Ecosystem | LOC:  | URL: #
+[1738] NAME: Mobility Web Portal | LOC:  | URL: #
+[1748] NAME: Mobility AR (iOS) | LOC:  | URL: #
+[1758] NAME: Fútbol Predictor AI | LOC:  | URL: #
+[1768] NAME: Petanca 3D Simulator | LOC:  | URL: #
+[1778] NAME: Telegram Multi-Bot | LOC:  | URL: #
+[1788] NAME: Zoom Video SDK Auth | LOC:  | URL: #
+[1798] NAME: Gemini MultiModal Demo | LOC:  | URL: #
+[1808] NAME: multimodal-live-api-web-console | LOC:  | URL: #
+[1818] NAME: InterBot.me Platform | LOC:  | URL: #
+[1828] NAME: Next.js AI Chatbot | LOC:  | URL: #
+[1838] NAME: GonnaFind Portal | LOC:  | URL: #
+[1848] NAME: Sensor Logger Server | LOC:  | URL: #
+[1858] NAME: AsistenciaFácil ML | LOC:  | URL: #
+[1868] NAME: First 5K Run Planner | LOC:  | URL: #
+[1878] NAME: Dyole (Draft) | LOC:  | URL: #
+[1888] NAME: MiPlan Pro Ecosystem | LOC:  | URL: #
+[1898] NAME: ttGPS Tracker | LOC:  | URL: #
+[1908] NAME: PacerPro 2.0 | LOC:  | URL: #
+[1918] NAME: MyEscapeRoom Project | LOC:  | URL: #
+[1928] NAME: LatLon Geodata | LOC:  | URL: #
+[1938] NAME: CloudRun Alpha | LOC:  | URL: #
+[1948] NAME: Proyecto de Vida | LOC:  | URL: #
+[1958] NAME: W3CSS Playground | LOC:  | URL: #
+[1968] NAME: Regalar Gift System | LOC:  | URL: #
+[1978] NAME: Disincronía (ARIS Game) | LOC:  | URL: #
+[1988] NAME: Pacer Pro Legacy | LOC:  | URL: #
+[1998] NAME: Paced Run WatchKit | LOC:  | URL: #
+[2008] NAME: Silavi Vision | LOC:  | URL: #
+[2018] NAME: PoseAR (Unity) | LOC:  | URL: #
+[2028] NAME: PoseAR Unity Engine | LOC:  | URL: #
+[2038] NAME: Plaza 777 Marketplace | LOC:  | URL: #
+[2048] NAME: PosAR Web Visualizer | LOC:  | URL: #
+[2058] NAME: Unity AR Test Bench | LOC:  | URL: #
+[2068] NAME: Fuel Dev PWA | LOC:  | URL: #
+[2078] NAME: SOTSAG CRM System | LOC:  | URL: #
+[2088] NAME: Framework7 Core Mirror | LOC:  | URL: #
+[2098] NAME: Firebase Serverless Auth | LOC:  | URL: #
+[2108] NAME: DVN Mobile App | LOC:  | URL: #
+[2118] NAME: Django Rest API Lab | LOC:  | URL: #
+[2128] NAME: School Sports Manager | LOC:  | URL: #
+[2138] NAME: F7 + Django Integration | LOC:  | URL: #
+[2148] NAME: Amateur Sports Engine | LOC:  | URL: #
+[2158] NAME: Génesis: Proyecto 001 | LOC:  | URL: #
