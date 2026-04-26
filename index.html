@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rafael Uribe | Digital Portfolio</title>
+    <meta name="description" content="Portafolio digital de Rafael Uribe. Exploración de activos en IA, AR nativa, salud clínica y arquitectura de software.">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -367,19 +368,35 @@
             color: var(--text-muted);
         }
 
+        .tag.status-production,
         .tag.status-prod {
             background: rgba(34, 197, 94, 0.1);
             color: #4ade80;
         }
 
-        .tag.status-mvp {
+        .tag.status-mvp,
+        .tag.status-public {
             background: rgba(59, 130, 246, 0.1);
             color: #60a5fa;
         }
 
-        .tag.status-proto {
+        .tag.status-proto,
+        .tag.status-prototype,
+        .tag.status-experiment {
             background: rgba(245, 158, 11, 0.1);
             color: #fbbf24;
+        }
+
+        .tag.status-private,
+        .tag.status-archived {
+            background: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+        }
+
+        .tag.status-exploration,
+        .tag.status-concept {
+            background: rgba(168, 85, 247, 0.1);
+            color: #c084fc;
         }
 
         .post-content {
@@ -2412,12 +2429,7 @@ review: "Motor de ejecución táctica para la gestión de acciones semanales de 
         function renderProjects() {
             container.innerHTML = '';
 
-            // Sort by date descending
-            allProjects.sort((a, b) => {
-                if (!a.date) return 1;
-                if (!b.date) return -1;
-                return new Date(b.date) - new Date(a.date);
-            });
+            // Filtering logic
 
             const searchTerm = searchBar.value.toLowerCase().trim();
 
@@ -2446,7 +2458,7 @@ review: "Motor de ejecución táctica para la gestión de acciones semanales de 
                 if (!isClickable) article.style.cursor = 'default';
                 article.style.animationDelay = `${(index % 10) * 0.05}s`;
 
-                const statusClass = `status-${project.status.toLowerCase().substring(0, 5)}`;
+                const statusClass = `status-${project.status.toLowerCase()}`;
 
                 const reviewText = project.review || project.description || "Proyecto documentado sin reseña extensa.";
 
@@ -2531,6 +2543,11 @@ review: "Motor de ejecución táctica para la gestión de acciones semanales de 
         });
 
         // Init
+        allProjects.sort((a, b) => {
+            if (!a.date) return 1;
+            if (!b.date) return -1;
+            return new Date(b.date) - new Date(a.date);
+        });
         renderProjects();
     </script>
 </body>
