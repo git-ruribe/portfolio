@@ -508,18 +508,18 @@
         // --- DATA: Static Projects (Found in Repository) ---
         const staticProjects = [
             {
-                name: "VBT Performance System",
-                date: "2025-06-23",
+                name: "SpeedGate: GPS Timing System",
+                date: "2025-12-15",
                 category: "performance",
                 status: "Production",
-                icon: "⚡",
-                description: "Sistema IoT de Velocity Based Training con encoder de alta precisión. [Local: ~/Arduino/VBT_Dumbell.ino]",
-                review: "Una solución integral de hardware y software para el monitoreo de la velocidad de ejecución en tiempo real. Utiliza un encoder de alto rendimiento conectado a un Arduino con transmisión MQTT no bloqueante hacia la nube. Incluye algoritmos de filtrado atómico, sincronización NTP y una matriz de feedback visual LED, permitiendo optimizar la carga de entrenamiento de fuerza con precisión de grado científico.",
+                icon: "⏱️",
+                description: "Sistema distribuido de cronometraje con sincronización GPS. [Local: ~/ArduinoSpeedGate]",
+                review: "Ingeniería de precisión para el atletismo de élite. SpeedGate utiliza módulos GPS y pulsos PPS para sincronizar múltiples nodos inalámbricos con una precisión de ±0.01s. El sistema crea una red mesh propia entre sensores (ESP-NOW) y sirve una interfaz web en tiempo real, permitiendo medir sprints y tramos de hasta 400m sin un solo cable.",
                 url: "#",
-                languages: "C++ (Arduino)",
-                stats: "1 archivo, 433 líneas",
-                location: "MacPro: ~/Arduino/VBT_Dumbell.ino",
-                tech: ["IoT", "MQTT", "NTP", "Real-time Interrupts"]
+                languages: "C++ (Arduino/ESP32), HTML/JS",
+                stats: "Sincronización GPS PPS, Red Mesh ESP-NOW",
+                location: "MacPro: ~/ArduinoSpeedGate",
+                tech: ["GPS Sync", "Mesh Networking", "ESP32", "Real-time Timing"]
             },
             {
                 name: "Multimodal Live Console",
@@ -1108,6 +1108,20 @@
                 review: "Stress Pilot utiliza algoritmos avanzados para procesar datos de Variabilidad de la Frecuencia Cardíaca (HRV). El sistema predice estados de sobreentrenamiento y alerta sobre niveles críticos de estrés fisiológico, sugiriendo ajustes tácticos en la carga de trabajo diaria.",
                 url: "#",
                 tech: ["HRV Analytics", "Predictive Health", "Stress Monitoring"]
+            },
+            {
+                name: "VBT Performance Suite",
+                date: "2025-11-15",
+                category: "performance",
+                status: "Production",
+                icon: "🏋️‍♂️",
+                description: "Ecosistema integral de Velocity Based Training. [Local: ~/SWIFT/VBT / ~/Arduino]",
+                review: "Una suite multidisciplinaria que combina hardware y software para el entrenamiento de fuerza. Incluye el firmware nativo para sensores de mancuerna (VBT_Dumbell.ino) y el sistema de análisis de datos para monitorizar la velocidad de ejecución en tiempo real, optimizando la carga de entrenamiento basada en la fatiga neuromuscular detectada.",
+                url: "#",
+                languages: "Swift, C++ (Arduino), Python",
+                stats: "Múltiples sensores, Análisis de fatiga",
+                location: "MacPro: ~/Antigravity/VBT",
+                tech: ["VBT", "CoreBluetooth", "Embedded Systems", "Sports Analytics"]
             },
             {
                 name: "Claudia Design Editor",
@@ -2413,8 +2427,134 @@ review: "Motor de ejecución táctica para la gestión de acciones semanales de 
                 location: "GitHub: genesis-001",
                 tech: ["HTML5", "CSS3", "Pure JavaScript", "History"]
             },
-
+            {
+                name: "MemoVibe - AI Memory Coach",
+                date: "2025-12-08",
+                category: "ai",
+                status: "Private",
+                icon: "🧠",
+                description: "Entrenador de memoria multimodal inspirado en Duolingo. [Local: ~/Antigravity/memovibe---ai-memory-coach]",
+                review: "Un juego de entrenamiento cognitivo de vanguardia que utiliza Gemini 3 Pro para generar dinámicas de aprendizaje personalizadas. MemoVibe destaca por su enfoque multimodal, integrando ejercicios de audio, visión y video con una interfaz inspirada en la gamificación moderna para mejorar la retención y la salud mental.",
+                url: "#",
+                languages: "TypeScript (React), Vite",
+                stats: "4 subdirectorios, 8 archivos",
+                location: "MacPro: ~/Antigravity/memovibe---ai-memory-coach",
+                tech: ["Gemini 3 Pro", "Multimodal AI", "Gamification", "Cognitive Health"]
+            },
+            {
+                name: "Control de Gastos Pro",
+                date: "2025-12-12",
+                category: "business",
+                status: "Private",
+                icon: "💸",
+                description: "Sistema avanzado de gestión financiera y control de flujo de caja. [Local: ~/Antigravity/ControlDeGastosPro]",
+                review: "Plataforma robusta construida sobre Firebase para el seguimiento detallado de finanzas personales. Incluye un motor de reglas para transacciones recurrentes (Agente Cronos), gestión de cuentas multimoneda, y soporte para compras a meses sin intereses, ofreciendo una visión clara y automatizada del patrimonio neto.",
+                url: "#",
+                languages: "Firebase (Functions/Firestore)",
+                stats: "Functions Backend, Firestore Schema",
+                location: "MacPro: ~/Antigravity/ControlDeGastosPro",
+                tech: ["Firebase", "Cronos Agent", "Financial Logic", "Firestore Rules"]
+            },
+            {
+                name: "Pincel Espacial AR",
+                date: "2025-06-21",
+                category: "play",
+                status: "Private",
+                icon: "🎨",
+                description: "Herramienta nativa de dibujo 3D en Realidad Aumentada. [Local: ~/SWIFT/HolaMundo/ARSimpleDrawing]",
+                review: "Este proyecto explora la persistencia espacial y el tracking de alta precisión. Transforma el dispositivo en un pincel virtual que coloca esferas en coordenadas 3D exactas mientras el usuario se desplaza, permitiendo crear estructuras volométricas invisibles al ojo humano pero tangibles a través de la lente del iPhone. Incluye una versión experimental con soporte colaborativo para dibujo compartido.",
+                url: "#",
+                languages: "Swift (SwiftUI)",
+                stats: "10 archivos, 1,126 líneas",
+                location: "MacPro: ~/SWIFT/HolaMundo/ARSimpleDrawing",
+                tech: ["ARKit", "SceneKit", "Spatial Tracking", "Collaborative AR"]
+            },
+            {
+                name: "ShoeLog & Health Sync",
+                date: "2025-07-17",
+                category: "salud",
+                status: "Private",
+                icon: "👟",
+                description: "Gestión inteligente de calzado deportivo con integración HealthKit. [Local: ~/SWIFT/HolaMundo/shoes]",
+                review: "Aplicación nativa de alto rendimiento que utiliza SwiftData para rastrear el ciclo de vida de zapatillas de running. Se integra profundamente con Apple Health para automatizar el registro de kilometraje y utiliza notificaciones locales inteligentes para mantener al atleta informado sobre el desgaste de su equipo.",
+                url: "#",
+                languages: "Swift (SwiftUI), SwiftData",
+                stats: "26 archivos Swift, HealthKit Sync",
+                location: "MacPro: ~/SWIFT/HolaMundo/shoes",
+                tech: ["HealthKit", "SwiftData", "Local Notifications", "Personal Finance"]
+            },
+            {
+                name: "VBT Real-time Sensor Viewer",
+                date: "2025-06-27",
+                category: "tech",
+                status: "Private",
+                icon: "📡",
+                description: "Monitor nativo para sensores de velocidad (VBT) vía Bluetooth. [Local: ~/SWIFT/HolaMundo/VBTSensorViewer]",
+                review: "Herramienta técnica diseñada para la captura de datos de sensores de entrenamiento de fuerza. Implementa un stack robusto de CoreBluetooth para la comunicación de baja latencia y feedback auditivo en tiempo real mediante síntesis de voz, optimizando la experiencia de entrenamiento sin necesidad de mirar la pantalla.",
+                url: "#",
+                languages: "Swift (CoreBluetooth)",
+                stats: "Módulo de conectividad de baja latencia",
+                location: "MacPro: ~/SWIFT/HolaMundo/HolaMundo/HolaMundo/VBTSensorViewer",
+                tech: ["CoreBluetooth", "AVFoundation", "Real-time Data", "VBT Technology"]
+            },
+            {
+                name: "AhorraLuz CFE (Nativo iOS)",
+                date: "2025-07-15",
+                category: "vida",
+                status: "Private",
+                icon: "💡",
+                description: "App nativa para el control de consumo eléctrico y tarifas CFE 2025. [Local: ~/SWIFT/HolaMundo/ahorraluz]",
+                review: "La evolución nativa de los simuladores energéticos. AhorraLuz implementa un motor de cálculo local utilizando SwiftData para gestionar las complejas tablas de tarifas subsidiadas (1-1F) y DAC. Permite a los usuarios modelar su consumo bimestral con precisión quirúrgica, considerando regiones climáticas y estacionalidades de verano directamente desde el iPhone.",
+                url: "#",
+                languages: "Swift (SwiftUI), SwiftData",
+                stats: "24 archivos Swift, Motor 2025",
+                location: "MacPro: ~/SWIFT/HolaMundo/ahorraluz",
+                tech: ["Energy Economics", "SwiftData", "iOS Native", "CFE Algorithm"]
+            },
+            {
+                name: "Hybrid Athlete Native Dashboard",
+                date: "2025-07-05",
+                category: "salud",
+                status: "Private",
+                icon: "⚡",
+                description: "Centro de mando nativo para atletas híbridos. [Local: ~/SWIFT/HolaMundo/HybridAthleteDashboard]",
+                review: "La herramienta definitiva de gestión de entrenamiento nativa. Diseñada para atletas que combinan fuerza y resistencia, este dashboard gestiona planes de entrenamiento complejos con una arquitectura robusta en Swift. Incluye visualización de tendencias de carga, editores de sesiones dinámicos y un motor de carga de planes masivos que optimiza la experiencia de usuario móvil.",
+                url: "#",
+                languages: "Swift (SwiftUI), JSON Engine",
+                stats: "24 archivos Swift, Lógica masiva",
+                location: "MacPro: ~/SWIFT/HolaMundo/HybridAthleteDashboard",
+                tech: ["SwiftUI", "Data Visualization", "Hybrid Training", "App Architecture"]
+            },
+            {
+                name: "PolyPredict Intelligence Suite",
+                date: "2026-02-21",
+                category: "tech",
+                status: "Private",
+                icon: "🎯",
+                description: "Laboratorio de análisis de mercados de predicción (Polymarket). [Local: ~/Antigravity/PolyPredict]",
+                review: "Suite avanzada de herramientas de inteligencia para el análisis de mercados descentralizados. PolyPredict permite identificar ineficiencias de mercado mediante detección de arbitraje, monitoreo de snipers y seguimiento de ballenas (whales). Es un centro de investigación de datos que transforma el ruido del mercado en señales de trading accionables.",
+                url: "#",
+                languages: "Python, HTML/JS",
+                stats: "Sniper Detector, Arbitrage Analyzer",
+                location: "MacPro: ~/Antigravity/PolyPredict",
+                tech: ["Market Intelligence", "Arbitrage", "Blockchain Data", "Python Scripts"]
+            },
+            {
+                name: "CFE Analizador Móvil (Flutter)",
+                date: "2025-08-10",
+                category: "vida",
+                status: "Production",
+                icon: "📱",
+                description: "App móvil multiplataforma para lectura de medidores CFE. [Local: ~/flutter/cfe_gasto_app]",
+                review: "La herramienta visual definitiva para el control de energía. Esta app desarrollada en Flutter permite a los usuarios interactuar con un simulador de medidor analógico (dials) para ingresar lecturas reales de forma intuitiva. Calcula el gasto proyectado basado en las tarifas 2025 y ofrece una experiencia de usuario premium con animaciones fluidas e integración con Firebase.",
+                url: "#",
+                languages: "Dart (Flutter)",
+                stats: "Widget de medidor analógico personalizado",
+                location: "MacPro: ~/flutter/cfe_gasto_app",
+                tech: ["Flutter", "Dart", "Firebase", "UX/UI Design"]
+            }
         ];
+
 
 
         const container = document.getElementById('project-container');
