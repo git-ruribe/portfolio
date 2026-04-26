@@ -1263,9 +1263,27 @@
                 category: "health",
                 status: "MVP",
                 icon: "✨",
-                description: "Planificador de acción semanal.",
-                review: "Cheky es una herramienta para construir el 'one-person unicorn'. En lugar de perderte en listas infinitas de tareas, este planificador te obliga a definir acciones semanales claras y concisas con un sistema visual gratificante. Es mi manifiesto personal sobre la productividad: menos ruido, más ejecución táctica.",
-                url: "apps/plan/cheky.html"
+                description: "Planificador semanal de alto impacto para la ejecución táctica. [Local: GitHub Subdir]",
+                review: "Cheky es una herramienta de productividad diseñada para eliminar el ruido y centrarse en la ejecución. Utiliza un sistema visual simplificado para definir acciones semanales críticas, permitiendo a los usuarios mantener el foco en sus objetivos principales sin la complejidad de los gestores de tareas tradicionales.",
+                url: "apps/plan/cheky.html",
+                languages: "HTML, JS",
+                stats: "1 archivo, 395 líneas",
+                location: "GitHub: portfolio (apps/plan)",
+                tech: ["Weekly Planning", "Productivity Tool", "Action Driven"]
+            },
+            {
+                name: "Doble o Nada: El Reto del 1%",
+                date: "2026-04-22",
+                category: "business",
+                status: "Production",
+                icon: "🎲",
+                description: "Simulador de interés compuesto y psicología del riesgo. [Local: GitHub Subdir]",
+                review: "Un experimento de gamificación financiera y psicología del riesgo diseñado para modelar el crecimiento exponencial. Doble o Nada invita al usuario a un reto de disciplina diaria, visualizando cómo pequeñas ganancias acumuladas (el 1%) pueden transformar un capital inicial, mientras explora la avaricia humana bajo presión.",
+                url: "apps/plan/doble.html",
+                languages: "HTML, Tailwind CSS",
+                stats: "1 archivo, 237 líneas",
+                location: "GitHub: portfolio (apps/plan)",
+                tech: ["Financial Gamification", "Psychology of Risk", "Interactive Planning"]
             },
             {
                 name: "Face Identifica",
@@ -1273,9 +1291,10 @@
                 category: "ai",
                 status: "Experiment",
                 icon: "👤",
-                description: "Reconocimiento y descriptor facial.",
-                review: "Me sumergí en el mundo de la visión artificial (Computer Vision) para construir este prototipo. Captura el feed de la webcam y utiliza modelos de machine learning en el navegador para extraer descriptores faciales en tiempo real. Es un experimento fascinante sobre biometría y privacidad, todo ejecutándose sin enviar imágenes a un servidor.",
-                url: "apps/facerecognition/identifica.html"
+                description: "Prototipo de visión artificial para reconocimiento y descripción facial. [Local: AI Lab]",
+                review: "Exploración técnica en Computer Vision que utiliza modelos de machine learning en el navegador para extraer descriptores faciales en tiempo real. Este experimento analiza la geometría facial y la expresión sin necesidad de procesamiento en servidor, priorizando la privacidad y el rendimiento del lado del cliente.",
+                url: "apps/facerecognition/identifica.html",
+                tech: ["Computer Vision", "Machine Learning", "Face Descriptors"]
             },
             {
                 name: "Entrenador de Modelos Faciales",
@@ -1283,49 +1302,38 @@
                 category: "ai",
                 status: "Production",
                 icon: "🧠",
-                description: "Herramienta de generación de descriptores faciales.",
-                review: "La otra mitad esencial de 'Face Identifica'. Esta herramienta permite capturar rostros con la webcam, generar sus vectores matemáticos (descriptores) usando redes neuronales, y exportarlos en formato JSON. Funciona como un pequeño estudio de entrenamiento biométrico que funciona 100% del lado del cliente.",
-                url: "apps/facerecognition/facedescriptors.html"
+                description: "Herramienta de generación de descriptores faciales biométricos. [Local: AI Lab]",
+                review: "Sistema complementario de 'Face Identifica' que permite capturar rostros y generar vectores matemáticos (descriptores) usando redes neuronales. Funciona como un estudio de entrenamiento biométrico que opera 100% del lado del cliente, exportando los datos en formato JSON para su uso en aplicaciones de reconocimiento.",
+                url: "apps/facerecognition/facedescriptors.html",
+                tech: ["Neural Networks", "Biometric Training", "JSON Export"]
             },
             {
-                name: "Restaurador de Fotos",
-                date: "2025-06-14",
-                category: "ai",
+                name: "Protocolo Suple (M60-ORO)",
+                date: "2025-11-25",
+                category: "health",
                 status: "Production",
-                icon: "🎨",
-                description: "Motor de procesamiento de imágenes.",
-                review: "Este es uno de los proyectos técnicos de los que estoy más orgulloso. Sin usar librerías externas de procesamiento, construí un motor que manipula la matriz de píxeles de HTML5 Canvas directamente mediante Javascript. Implementé algoritmos matemáticos para reducir ruido, ajustar exposición y eliminar tonos sepia de fotos antiguas.",
-                url: "apps/restaura/index.html"
+                icon: "💊",
+                description: "Manual operativo interactivo de suplementación para atletas. [Local: GitHub Subdir]",
+                review: "Componente crítico del ecosistema M60-Oro. Este documento dinámico centraliza protocolos de bio-hacking, dosificación y sinergias nutricionales, ofreciendo una interfaz optimizada para la consulta rápida en entornos de entrenamiento de alto rendimiento.",
+                url: "apps/plan/suple.html",
+                languages: "HTML, CSS, JS",
+                stats: "1 archivo, 695 líneas",
+                location: "GitHub: portfolio (apps/plan)",
+                tech: ["Bio-hacking", "Supplement Protocol", "Athlete Management"]
             },
             {
                 name: "Oware Game",
-                date: "2025-06-20",
+                date: "2024-04-10",
                 category: "play",
                 status: "Production",
                 icon: "🏺",
-                description: "Juego de estrategia africano.",
-                review: "Llevar un juego de mesa milenario al entorno digital requiere entender profundamente sus reglas y su flujo. Esta implementación de Oware destaca por sus animaciones fluidas y la gestión precisa del estado del juego en JavaScript. Es un ejercicio de lógica y una forma de preservar la cultura a través del código.",
-                url: "apps/oware/index.html"
-            },
-            {
-                name: "Radar Digital (CRM)",
-                date: "2025-07-14",
-                category: "business",
-                status: "MVP",
-                icon: "🎯",
-                description: "CRM táctico de ventas y seguimientos.",
-                review: "Un CRM (Customer Relationship Management) ágil y sin fricciones. Permite gestionar prospectos a través de vistas de lista ('Para Hoy') y tableros Kanban ('Pipeline'). Está conectado a Firestore para sincronización en tiempo real y categoriza los leads en etapas clave: Contacto Inicial, Propuesta, Seguimiento y Cierre.",
-                url: "apps/radar/index.html"
-            },
-            {
-                name: "K-Means CX",
-                date: "2025-07-29",
-                category: "ai",
-                status: "Experiment",
-                icon: "📊",
-                description: "Algoritmo de clustering (K-Means).",
-                review: "Para resolver problemas logísticos y de experiencia del cliente, implementé el algoritmo de clustering K-Means desde cero en Javascript. Permite visualizar cómo un conjunto de datos (por ejemplo, ubicaciones de clientes) se agrupa automáticamente alrededor de 'centros de gravedad' para optimizar rutas o aperturas de tiendas.",
-                url: "apps/cx/kmeans.html"
+                description: "Juego de estrategia ancestral africano recreado en la web. [Local: GitHub Subdir]",
+                review: "Implementación digital del juego de mesa Oware con lógica determinista y una interfaz minimalista. Este proyecto explora la gestión de estado compleja y las mecánicas de juego por turnos, preservando la esencia de la estrategia clásica mediante una arquitectura ligera y reactiva.",
+                url: "apps/oware/index.html",
+                languages: "HTML, JS",
+                stats: "1 archivo, 429 líneas",
+                location: "GitHub: portfolio (apps/oware)",
+                tech: ["Game Logic", "Strategy Engine", "Cultural Tech"]
             },
             {
                 name: "Zyllia Quest",
@@ -1333,39 +1341,27 @@
                 category: "play",
                 status: "Prototype",
                 icon: "⚔️",
-                description: "Aventura de texto en entorno web.",
-                review: "Zyllia es un viaje a la nostalgia de los juegos conversacionales (MUDs) de los 80s, pero con un motor moderno bajo el capó. Construí un parser de comandos determinista y un sistema de gestión de inventario y estado global. Demuestra que no siempre se necesitan gráficos 3D hiperrealistas para crear inmersión y narrativa profunda.",
-                url: "apps/games/zyllia.html"
+                description: "Aventura de texto en entorno web con motor determinista. [Local: GitHub Subdir]",
+                review: "Zyllia es un viaje a la nostalgia de los juegos conversacionales (MUDs). Construí un parser de comandos y un sistema de gestión de inventario que demuestra que la narrativa profunda no requiere gráficos hiperrealistas para crear inmersión.",
+                url: "apps/games/zyllia.html",
+                languages: "HTML, JS",
+                stats: "1 archivo, 646 líneas",
+                location: "GitHub: portfolio (apps/games)",
+                tech: ["Game Parser", "Narrative Engine", "State Management"]
             },
             {
-                name: "Doble o Nada",
-                date: "2026-04-22",
-                category: "play",
-                status: "Experiment",
-                icon: "🎲",
-                description: "Juego psicológico de riesgo.",
-                review: "¿Qué pasa si tu dinero se duplica con cada clic, pero la probabilidad de perderlo todo sube un 1%? Este experimento lúdico explora la psicología del riesgo y la avaricia humana. Con un diseño oscuro tipo casino y animaciones reactivas, es sorprendentemente adictivo y un gran estudio sobre la toma de decisiones bajo presión.",
-                url: "apps/plan/doble.html"
-            },
-            {
-                name: "Protocolo Suple",
-                date: "2025-11-25",
-                category: "health",
-                status: "Production",
-                icon: "💊",
-                description: "Manual operativo de suplementación.",
-                review: "Como parte del ecosistema M60-Oro, este documento web interactivo actúa como un 'Manual Operativo' para bio-hackers y atletas. Centraliza información crítica sobre dosificación, tiempos de ingesta y sinergias entre suplementos. Está estructurado para ser leído rápidamente desde un móvil justo antes o después de entrenar.",
-                url: "apps/plan/suple.html"
-            },
-            {
-                name: "VBT Performance",
+                name: "VBT Performance Monitor",
                 date: "2025-06-23",
                 category: "health",
                 status: "MVP",
                 icon: "⚡",
-                description: "Velocity Based Training.",
-                review: "El Velocity Based Training (VBT) es el futuro del levantamiento de pesas. Esta aplicación actúa como la interfaz frontal para monitorear la velocidad de ejecución de los ejercicios. El objetivo es ofrecer a los atletas métricas objetivas en tiempo real sobre su fatiga neuromuscular, reemplazando las percepciones subjetivas por datos puros.",
-                url: "apps/vbt/index.html"
+                description: "Monitoreo de velocidad de ejecución para entrenamiento de fuerza. [Local: GitHub Subdir]",
+                review: "El Velocity Based Training (VBT) es clave en el alto rendimiento. Esta aplicación actúa como la interfaz para monitorear la velocidad de ejecución, reemplazando percepciones subjetivas por datos puros de fatiga neuromuscular.",
+                url: "apps/vbt/index.html",
+                languages: "HTML, JS",
+                stats: "1 archivo, 348 líneas",
+                location: "GitHub: portfolio (apps/vbt)",
+                tech: ["Velocity Based Training", "Neuromuscular Fatigue", "Real-time Metrics"]
             },
             {
                 name: "Homilías Interactivas (LMS)",
@@ -1373,19 +1369,41 @@
                 category: "life",
                 status: "Production",
                 icon: "🕊️",
-                description: "Plataforma de e-learning espiritual con 20+ lecciones interactivas.",
-                review: "Lo que comenzó como un repositorio de reflexiones evolucionó en una plataforma de Micro-Learning espiritual. Cada una de las más de 20 lecciones (documentadas por fecha) incluye el texto del Evangelio, una síntesis pedagógica de la homilía y un cuento reflexivo. La pieza clave es su sistema de evaluación interactivo construido con JavaScript y Tailwind CSS, que permite a los usuarios validar su comprensión del mensaje en tiempo real. Es un ejemplo de cómo aplicar principios de UX y Gamificación a contenidos tradicionales.",
-                url: "apps/homilias/index.html"
+                description: "Plataforma de e-learning espiritual con 20+ lecciones interactivas. [Local: GitHub Subdir]",
+                review: "Plataforma de Micro-Learning espiritual que incluye el Evangelio, síntesis pedagógicas y un sistema de evaluación interactivo. Es un ejemplo de cómo aplicar principios de UX y Gamificación a contenidos tradicionales.",
+                url: "apps/homilias/index.html",
+                languages: "HTML, Tailwind CSS, JS",
+                stats: "21 archivos, ~8,500 líneas",
+                location: "GitHub: portfolio (apps/homilias)",
+                tech: ["Micro-Learning", "LMS Architecture", "Interactive Evaluation"]
             },
             {
-                name: "Visor 3D",
-                date: "2025-06-21",
-                category: "tech",
+                name: "K-Means Analyzer",
+                date: "2025-03-12",
+                category: "ai",
                 status: "Experiment",
+                icon: "📊",
+                description: "Herramienta de visualización y análisis de clustering. [Local: GitHub Subdir]",
+                review: "Utilidad técnica que implementa el algoritmo K-Means para la segmentación de datos en el navegador. Permite visualizar el proceso de agrupación de puntos en tiempo real, facilitando la comprensión de patrones complejos y la experimentación con modelos de aprendizaje no supervisado.",
+                url: "apps/cx/kmeans.html",
+                languages: "HTML, JS",
+                stats: "1 archivo, 566 líneas",
+                location: "GitHub: portfolio (apps/cx)",
+                tech: ["Clustering", "Data Science", "Real-time Analysis"]
+            },
+            {
+                name: "Visor 3D Engine",
+                date: "2025-06-18",
+                category: "tech",
+                status: "Exploration",
                 icon: "🧊",
-                description: "Visor interactivo de modelos y dibujos en 3D.",
-                review: "Uniendo Three.js con Firebase, construí este Visor 3D en la nube. Lee coordenadas tridimensionales de una base de datos en tiempo real y renderiza la geometría (puntos/esferas) en el navegador. Es la pieza fundamental (el frontend) de una arquitectura desacoplada donde el dibujo ocurre en otro dispositivo y se transmite a la web.",
-                url: "apps/visor3d/index.html"
+                description: "Motor de renderizado 3D ligero para el navegador. [Local: GitHub Subdir]",
+                review: "Prototipo de visualización tridimensional que utiliza Three.js para renderizar objetos complejos. Este proyecto explora la manipulación de mallas, iluminación y cámaras en un entorno web, sirviendo como base para interfaces inmersivas y prototipado de productos digitales.",
+                url: "apps/visor3d/index.html",
+                languages: "HTML, Three.js",
+                stats: "1 archivo, 273 líneas",
+                location: "GitHub: portfolio (apps/visor3d)",
+                tech: ["3D Rendering", "Three.js", "Web Graphics"]
             },
             {
                 name: "Barcode Scanner",
@@ -1406,16 +1424,6 @@
                 description: "Aplicación para coleccionar sueños.",
                 review: "'Before I Die' es una filosofía convertida en software. Es un planificador de vida diseñado para que los usuarios establezcan y rastreen sus metas más ambiciosas antes de partir de este mundo. La interfaz busca ser inspiradora y reflexiva, priorizando la claridad mental sobre la saturación visual típica de las apps de productividad.",
                 url: "apps/bid/index.html"
-            },
-            {
-                name: "Calculadora Karvonen",
-                date: "2026-01-21",
-                category: "health",
-                status: "Production",
-                icon: "❤️",
-                description: "Zonas de frecuencia cardíaca.",
-                review: "Para entrenar el sistema cardiovascular eficientemente, las pulsaciones deben ser matemáticas, no adivinanzas. Esta herramienta aplica la fórmula de Karvonen (tomando en cuenta la frecuencia cardíaca en reposo) para entregar zonas de entrenamiento altamente personalizadas. Es pequeña, veloz y resuelve un problema muy específico.",
-                url: "apps/kravonen/index.html"
             },
             {
                 name: "VBT Dashboard (MQTT)",
