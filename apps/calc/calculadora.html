@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Calculadora Muscular</title>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #f5f4f0;
+            --surface: #ffffff;
+            --primary: #1a6b4a;
+            --primary-light: #e8f5ef;
+            --primary-dark: #0f4a32;
+            --text: #1a1a18;
+            --text-muted: #6b6b67;
+            --border: rgba(0, 0, 0, 0.12);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        #app {
+            width: 100%;
+            max-width: 420px;
+            min-height: calc(100dvh - 2rem);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            flex: 1;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header / Brand */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brand-icon svg {
+            width: 22px;
+            height: 22px;
+            fill: #fff;
+        }
+
+        .brand-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .brand-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Step indicator */
+        .steps {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 1.75rem;
+        }
+
+        .step {
+            flex: 1;
+            height: 3px;
+            border-radius: 99px;
+            background: var(--border);
+            transition: background 0.4s;
+        }
+
+        .step.done {
+            background: var(--primary);
+        }
+
+        .step.active {
+            background: var(--primary);
+            opacity: 0.5;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 0.5px solid var(--border);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+
+        /* Form */
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            margin-top: 1.1rem;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 16px;
+            border: 0.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--bg);
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.2s;
+            -webkit-appearance: none;
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 107, 74, 0.12);
+        }
+
+        .field-error {
+            font-size: 12px;
+            color: #c0392b;
+            margin-top: 4px;
+            display: none;
+        }
+
+        /* Buttons */
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: opacity 0.15s, transform 0.1s;
+            margin-top: 0.75rem;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+            opacity: 0.85;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        /* Instructions list */
+        .instruction-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            padding: 10px 0;
+            border-bottom: 0.5px solid var(--border);
+        }
+
+        .instruction-item:last-child {
+            border-bottom: none;
+        }
+
+        .step-num {
+            width: 26px;
+            height: 26px;
+            min-width: 26px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .instruction-item p {
+            font-size: 14px;
+            color: var(--text);
+            padding-top: 3px;
+        }
+
+        /* Calibration */
+        .calib-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 0;
+            gap: 1rem;
+        }
+
+        .phone-icon {
+            width: 60px;
+            height: 100px;
+            border: 3px solid var(--primary);
+            border-radius: 14px;
+            position: relative;
+            background: var(--primary-light);
+            transition: transform 0.5s;
+        }
+
+        .phone-icon.bounce {
+            animation: phoneBounce 0.6s ease-in-out infinite alternate;
+        }
+
+        @keyframes phoneBounce {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(-12px);
+            }
+        }
+
+        .phone-icon::after {
+            content: '';
+            position: absolute;
+            bottom: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            border-radius: 99px;
+            background: var(--primary);
+        }
+
+        .calib-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .calib-progress {
+            width: 100%;
+            height: 6px;
+            background: var(--border);
+            border-radius: 99px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .calib-bar {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 99px;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        /* Exercise */
+        .timer-ring-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem 0;
+        }
+
+        .timer-svg {
+            transform: rotate(-90deg);
+        }
+
+        .timer-bg {
+            fill: none;
+            stroke: var(--border);
+            stroke-width: 8;
+        }
+
+        .timer-fill {
+            fill: none;
+            stroke: var(--primary);
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-dasharray: 565;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        .timer-text {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        .timer-unit {
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .timer-container {
+            position: relative;
+            width: 190px;
+            height: 190px;
+        }
+
+        .timer-container .timer-text {
+            inset: 0;
+        }
+
+        .rep-display {
+            text-align: center;
+            background: var(--primary-light);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .rep-num {
+            font-size: 56px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            line-height: 1;
+        }
+
+        .rep-lbl {
+            font-size: 13px;
+            color: var(--primary);
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .sensor-status {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 8px;
+            border-radius: var(--radius-sm);
+            background: var(--bg);
+        }
+
+        .sensor-status.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        /* Results */
+        .result-age-card {
+            background: var(--primary);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+
+        .result-age-label {
+            font-size: 13px;
+            opacity: 0.85;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-age-value {
+            font-size: 72px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .result-age-unit {
+            font-size: 20px;
+            opacity: 0.85;
+            margin-top: 4px;
+        }
+
+        .result-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 0.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .stat-lbl {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .result-msg {
+            border-radius: var(--radius-sm);
+            padding: 1rem;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .result-msg.good {
+            background: #e8f5ef;
+            color: #0f4a32;
+        }
+
+        .result-msg.bad {
+            background: #fdecea;
+            color: #7a1a1a;
+        }
+
+        .disclaimer {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: center;
+            line-height: 1.5;
+            margin-top: 0.5rem;
+            padding: 0 0.5rem;
+        }
+
+        /* Desktop warning */
+        .desktop-warning {
+            background: #fff8e8;
+            border: 0.5px solid #e8c848;
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #7a5500;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+            display: none;
+        }
+
+        .spacer {
+            flex: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+
+        <!-- ── SCREEN 1: WELCOME ── -->
+        <div class="screen active" id="s-welcome">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 2C9.8 2 8 3.8 8 6c0 1.5.8 2.8 2 3.5V11H8l-1 3h10l-1-3h-2V9.5c1.2-.7 2-2 2-3.5 0-2.2-1.8-4-4-4zm0 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zM6 15v5h3v-3h6v3h3v-5H6z" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="brand-name">Calculadora Muscular</div>
+                    <div class="brand-sub">Test de fuerza en 30 segundos</div>
+                </div>
+            </div>
+
+            <div class="desktop-warning" id="desktop-warn">
+                <strong>Mejor en móvil.</strong> Este test usa el acelerómetro de tu celular para contar sentadillas. En
+                computadora puedes hacer el test ingresando las reps manualmente.
+            </div>
+
+            <div class="card">
+                <h1>Descubre tu edad muscular</h1>
+                <p>Realiza sentadillas durante 30 segundos y descubre cómo están tus músculos respecto a tu edad.</p>
+
+                <label for="age">Tu edad</label>
+                <input type="number" id="age" placeholder="Ej. 35" min="1" max="99" inputmode="numeric">
+                <div class="field-error" id="age-error">Ingresa una edad válida (1–99)</div>
+
+                <label for="gender">Sexo</label>
+                <select id="gender">
+                    <option value="">Selecciona…</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="femenino">Femenino</option>
+                    <option value="otro">Otro</option>
+                </select>
+                <div class="field-error" id="gender-error">Selecciona una opción</div>
+
+                <button class="btn btn-primary" id="btn-start">
+                    Comenzar test
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
+
+            <p class="disclaimer">Este test es una herramienta educativa. No sustituye una valoración médica.</p>
+            <div class="spacer"></div>
+        </div>
+
+        <!-- ── SCREEN 2: INSTRUCTIONS ── -->
+        <div class="screen" id="s-instructions">
+            <div class="steps">
+                <div class="step done"></div>
+                <div class="step active"></div>
+                <div class="step"></div>
+                <div class="step"></div>
+            </div>
+
+            <h2>Cómo realizar el test</h2>
+            <p style="margin-bottom:1rem;">Sigue estos pasos con tu celular en mano:</p>
+
+            <div class="card">
+                <div class="instruction-item">
+                    <div class="step-num">1</div>
+                    <p><strong>Posición inicial:</strong> Toma el celular en posición vertical con los brazos extendidos
+                        hacia el frente.</p>
+                </div>
+                <div class="instruction-item">
+                    <div class="step-num">2</div>
+                    <p><strong>Al bajar (sentadilla):</strong> Mientras te sientas, sube los brazos rápidamente.</p>
+                </div>
+                <div class="instruction-item">
+                    <div class="step-num">3</div>
+                    <p><strong>Al subir:</strong> Al ponerte de pie, baja los brazos a la misma velocidad.</p>
+                </div>
+                <div class="instruction-item">
+                    <div class="step-num">4</div>
+                    <p><strong>Ritmo continuo:</strong> Realiza el movimiento de forma fluida y constante durante
+                        <strong>30 segundos</strong>.</p>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="btn-to-calib">
+                Iniciar calibración
+            </button>
+            <button class="btn btn-outline" id="btn-back-welcome">
+                Volver
+            </button>
+            <div class="spacer"></div>
+        </div>
+
+        <!-- ── SCREEN 3: CALIBRATION ── -->
+        <div class="screen" id="s-calibration">
+            <div class="steps">
+                <div class="step done"></div>
+                <div class="step done"></div>
+                <div class="step active"></div>
+                <div class="step"></div>
+            </div>
+
+            <h2>Calibración</h2>
+            <p>Mantén el celular en posición inicial (brazos extendidos al frente) y presiona <strong>Calibrar</strong>.
+            </p>
+
+            <div class="card">
+                <div class="calib-visual">
+                    <div class="phone-icon" id="phone-anim"></div>
+                    <div class="calib-label" id="calib-label">Listo para calibrar</div>
+                    <div class="calib-progress" id="calib-progress-wrap" style="display:none;">
+                        <div class="calib-bar" id="calib-bar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="btn-calibrate">
+                Calibrar
+            </button>
+            <div id="manual-mode-wrap" style="display:none;">
+                <button class="btn btn-outline" id="btn-manual">
+                    Sin sensor — ingresar reps manualmente
+                </button>
+            </div>
+            <div class="spacer"></div>
+        </div>
+
+        <!-- ── SCREEN 4: EXERCISE ── -->
+        <div class="screen" id="s-exercise">
+            <div class="steps">
+                <div class="step done"></div>
+                <div class="step done"></div>
+                <div class="step done"></div>
+                <div class="step active"></div>
+            </div>
+
+            <h2 style="text-align:center; margin-bottom:0.5rem;">¡Adelante!</h2>
+            <p style="text-align:center; margin-bottom:1rem;">Haz sentadillas de forma continua</p>
+
+            <div class="rep-display">
+                <div class="rep-num" id="rep-counter">0</div>
+                <div class="rep-lbl">repeticiones</div>
+            </div>
+
+            <div class="timer-ring-wrap">
+                <div class="timer-container">
+                    <svg class="timer-svg" width="190" height="190" viewBox="0 0 190 190">
+                        <circle class="timer-bg" cx="95" cy="95" r="80" />
+                        <circle class="timer-fill" id="timer-circle" cx="95" cy="95" r="80" />
+                    </svg>
+                    <div class="timer-text">
+                        <span id="timer-seconds">30</span>
+                        <span class="timer-unit">seg</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sensor-status active" id="sensor-status">
+                Sensor activo — mueve el celular
+            </div>
+
+            <div id="manual-reps-wrap" style="display:none; margin-top:1rem;">
+                <label for="manual-reps">Ingresar repeticiones manualmente:</label>
+                <input type="number" id="manual-reps" placeholder="Ej. 12" min="0" max="99" inputmode="numeric">
+                <button class="btn btn-primary" id="btn-finish-manual" style="margin-top:0.5rem;">Ver resultado</button>
+            </div>
+
+            <div class="spacer"></div>
+        </div>
+
+        <!-- ── SCREEN 5: RESULTS ── -->
+        <div class="screen" id="s-results">
+            <div class="steps">
+                <div class="step done"></div>
+                <div class="step done"></div>
+                <div class="step done"></div>
+                <div class="step done"></div>
+            </div>
+
+            <h2 style="margin-bottom:1rem;">Tu resultado</h2>
+
+            <div class="result-age-card">
+                <div class="result-age-label">Tu edad muscular</div>
+                <div class="result-age-value" id="res-muscular-age">—</div>
+                <div class="result-age-unit">años</div>
+            </div>
+
+            <div class="result-compare">
+                <div class="stat-card">
+                    <div class="stat-val" id="res-real-age">—</div>
+                    <div class="stat-lbl">Edad real</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-val" id="res-reps">—</div>
+                    <div class="stat-lbl">Repeticiones</div>
+                </div>
+            </div>
+
+            <div class="result-msg" id="res-message"></div>
+
+            <button class="btn btn-primary" id="btn-retry">
+                Intentar de nuevo
+            </button>
+
+            <p class="disclaimer">Considera hablar con tu médico si estás interesado en aumentar o mantener tu masa
+                muscular.</p>
+            <div class="spacer"></div>
+        </div>
+
+    </div>
+
+    <script>
+        const $ = id => document.getElementById(id);
+
+        /* ── State ── */
+        const state = {
+            age: 0,
+            gender: '',
+            reps: 0,
+            isManual: false,
+            hasSensor: false,
+        };
+
+        /* ── SquatDetector ── */
+        class SquatDetector {
+            constructor() {
+                this.MAX_TIME = 30;
+                this.isCalibrated = false;
+                this.calibrationData = { baseline: null, threshold: null };
+                this.repCount = 0;
+                this.isInSquat = false;
+                this.timeLeft = this.MAX_TIME;
+                this.isExerciseActive = false;
+                this.sensitivity = 1;
+                this.squatDownThresholdBase = -5;
+                this.squatUpThresholdBase = 3;
+                this._motionHandler = this.handleMotion.bind(this);
+                this._calibSamples = [];
+                this._calibTimer = null;
+                this._exTimer = null;
+                this._onRep = null;
+                this._onTick = null;
+                this._onDone = null;
+            }
+
+            /* Calibration — 3s sampling */
+            startCalibration(onProgress, onDone) {
+                this._calibSamples = [];
+                const start = Date.now();
+                const CALIB_MS = 2500;
+
+                const sample = (e) => {
+                    const a = e.accelerationIncludingGravity;
+                    if (a && a.y !== null) this._calibSamples.push(a.y);
+                    const pct = Math.min(1, (Date.now() - start) / CALIB_MS);
+                    if (onProgress) onProgress(pct);
+                };
+
+                window.addEventListener('devicemotion', sample);
+
+                setTimeout(() => {
+                    window.removeEventListener('devicemotion', sample);
+                    if (this._calibSamples.length > 5) {
+                        const avg = this._calibSamples.reduce((a, b) => a + b, 0) / this._calibSamples.length;
+                        this.calibrationData.baseline = avg;
+                        this.calibrationData.threshold = avg + (this.squatDownThresholdBase * this.sensitivity);
+                        this.isCalibrated = true;
+                        if (onDone) onDone(true);
+                    } else {
+                        if (onDone) onDone(false);
+                    }
+                }, CALIB_MS);
+            }
+
+            /* Start exercise */
+            startExercise(onRep, onTick, onDone) {
+                this._onRep = onRep;
+                this._onTick = onTick;
+                this._onDone = onDone;
+                this.repCount = 0;
+                this.isInSquat = false;
+                this.timeLeft = this.MAX_TIME;
+                this.isExerciseActive = true;
+                window.addEventListener('devicemotion', this._motionHandler);
+                this._startTimer();
+            }
+
+            _startTimer() {
+                this._exTimer = setInterval(() => {
+                    this.timeLeft--;
+                    if (this._onTick) this._onTick(this.timeLeft);
+                    if (this.timeLeft <= 0) {
+                        this.stop();
+                        if (this._onDone) this._onDone(this.repCount);
+                    }
+                }, 1000);
+            }
+
+            handleMotion(event) {
+                if (!this.isExerciseActive) return;
+                const accel = event.accelerationIncludingGravity;
+                if (!accel || accel.y === null) return;
+
+                const baseline = this.calibrationData.baseline;
+                const currentY = accel.y;
+                const squatDownThreshold = baseline + (this.squatDownThresholdBase * this.sensitivity);
+                const squatUpThreshold = baseline + (this.squatUpThresholdBase * this.sensitivity);
+
+                if (currentY < squatDownThreshold && !this.isInSquat) {
+                    this.isInSquat = true;
+                } else if (currentY > squatUpThreshold && this.isInSquat) {
+                    this.isInSquat = false;
+                    this.repCount++;
+                    if (this._onRep) this._onRep(this.repCount);
+                }
+            }
+
+            stop() {
+                this.isExerciseActive = false;
+                window.removeEventListener('devicemotion', this._motionHandler);
+                if (this._exTimer) { clearInterval(this._exTimer); this._exTimer = null; }
+            }
+        }
+
+        /* ── Muscular Age Formula (reverse-engineered from Ensure's code) ── */
+        function calcMuscularAge(age, reps) {
+            if (reps === 0) return null;
+            let idealReps;
+            if (age < 40) idealReps = 20;
+            else if (age < 60) idealReps = 15;
+            else idealReps = 10;
+            let muscularAge = Math.round(age + (idealReps - reps) * 1.5);
+            muscularAge = Math.max(age - 10, Math.min(muscularAge, age + 30));
+            return muscularAge;
+        }
+
+        /* ── Screen nav ── */
+        const screens = ['welcome', 'instructions', 'calibration', 'exercise', 'results'];
+        function showScreen(name) {
+            screens.forEach(s => {
+                const el = $('s-' + s);
+                el.classList.toggle('active', s === name);
+            });
+        }
+
+        /* ── Detect sensor ── */
+        const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+        const detector = new SquatDetector();
+        if (!isMobile) $('desktop-warn').style.display = 'block';
+
+        /* ── Welcome ── */
+        $('btn-start').addEventListener('click', () => {
+            const age = parseInt($('age').value);
+            const gender = $('gender').value;
+            let ok = true;
+            if (!age || age < 1 || age > 99) {
+                $('age-error').style.display = 'block'; ok = false;
+            } else $('age-error').style.display = 'none';
+            if (!gender) {
+                $('gender-error').style.display = 'block'; ok = false;
+            } else $('gender-error').style.display = 'none';
+            if (!ok) return;
+            state.age = age;
+            state.gender = gender;
+            showScreen('instructions');
+        });
+
+        $('btn-back-welcome').addEventListener('click', () => showScreen('welcome'));
+
+        /* ── Instructions → Calibration ── */
+        $('btn-to-calib').addEventListener('click', () => {
+            showScreen('calibration');
+        });
+
+        /* ── Calibration ── */
+        $('btn-calibrate').addEventListener('click', async () => {
+            /* iOS requires user gesture to request DeviceMotion permission */
+            if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+                try {
+                    const perm = await DeviceMotionEvent.requestPermission();
+                    if (perm !== 'granted') {
+                        alert('Permiso denegado. Por favor habilita el acceso al movimiento en Configuración > Safari.');
+                        return;
+                    }
+                } catch (e) {
+                    showManualMode();
+                    return;
+                }
+            }
+
+            /* Check if device has sensor by listening briefly */
+            let gotSensor = false;
+            const checkSensor = (e) => {
+                if (e.accelerationIncludingGravity && e.accelerationIncludingGravity.y !== null) {
+                    gotSensor = true;
+                }
+            };
+            window.addEventListener('devicemotion', checkSensor);
+            await new Promise(r => setTimeout(r, 400));
+            window.removeEventListener('devicemotion', checkSensor);
+
+            if (!gotSensor) {
+                showManualMode();
+                return;
+            }
+
+            state.hasSensor = true;
+            $('btn-calibrate').disabled = true;
+            $('calib-label').textContent = 'Mantén el celular quieto…';
+            $('phone-anim').classList.add('bounce');
+            $('calib-progress-wrap').style.display = 'block';
+
+            detector.startCalibration(
+                (pct) => {
+                    $('calib-bar').style.width = (pct * 100) + '%';
+                },
+                (success) => {
+                    $('phone-anim').classList.remove('bounce');
+                    if (success) {
+                        $('calib-label').textContent = '¡Calibrado! Listo para comenzar.';
+                        setTimeout(() => startExercise(), 600);
+                    } else {
+                        $('calib-label').textContent = 'No se detectó movimiento.';
+                        showManualMode();
+                    }
+                }
+            );
+        });
+
+        function showManualMode() {
+            state.isManual = true;
+            $('btn-calibrate').style.display = 'none';
+            $('calib-label').textContent = 'Sin sensor disponible. Podrás ingresar tus reps manualmente.';
+            $('manual-mode-wrap').style.display = 'block';
+        }
+
+        $('btn-manual').addEventListener('click', () => {
+            state.isManual = true;
+            startExercise();
+        });
+
+        /* ── Exercise ── */
+        const CIRCUMFERENCE = 2 * Math.PI * 80;
+
+        function startExercise() {
+            showScreen('exercise');
+            $('rep-counter').textContent = '0';
+            $('timer-seconds').textContent = '30';
+            $('timer-circle').style.strokeDashoffset = '0';
+
+            if (state.isManual) {
+                $('sensor-status').textContent = 'Haz tus sentadillas e ingresa el total abajo';
+                $('sensor-status').classList.remove('active');
+                $('manual-reps-wrap').style.display = 'block';
+                /* Still run the visual timer */
+                startVisualTimer();
+                return;
+            }
+
+            $('sensor-status').textContent = 'Sensor activo — comienza las sentadillas';
+            $('sensor-status').classList.add('active');
+
+            detector.startExercise(
+                (reps) => { $('rep-counter').textContent = reps; },
+                (timeLeft) => {
+                    $('timer-seconds').textContent = timeLeft;
+                    const offset = CIRCUMFERENCE * (1 - timeLeft / 30);
+                    $('timer-circle').style.strokeDashoffset = offset;
+                },
+                (reps) => {
+                    state.reps = reps;
+                    showResults();
+                }
+            );
+        }
+
+        function startVisualTimer() {
+            let t = 30;
+            const iv = setInterval(() => {
+                t--;
+                $('timer-seconds').textContent = t;
+                const offset = CIRCUMFERENCE * (1 - t / 30);
+                $('timer-circle').style.strokeDashoffset = offset;
+                if (t <= 0) clearInterval(iv);
+            }, 1000);
+        }
+
+        $('btn-finish-manual').addEventListener('click', () => {
+            const reps = parseInt($('manual-reps').value) || 0;
+            state.reps = reps;
+            showResults();
+        });
+
+        /* ── Results ── */
+        function showResults() {
+            showScreen('results');
+            const age = state.age;
+            const reps = state.reps;
+            const muscularAge = calcMuscularAge(age, reps);
+
+            $('res-real-age').textContent = age;
+            $('res-reps').textContent = reps;
+
+            if (muscularAge === null) {
+                $('res-muscular-age').textContent = '—';
+                $('res-message').className = 'result-msg bad';
+                $('res-message').textContent = 'No se detectaron repeticiones. Intenta de nuevo y asegúrate de mover el celular con los brazos.';
+                return;
+            }
+
+            $('res-muscular-age').textContent = muscularAge;
+
+            const diff = muscularAge - age;
+            const msgEl = $('res-message');
+
+            if (diff <= -5) {
+                msgEl.className = 'result-msg good';
+                msgEl.textContent = '¡Excelente! Tus músculos están más fuertes que el promedio de tu grupo de edad. Sigue así.';
+            } else if (diff <= 0) {
+                msgEl.className = 'result-msg good';
+                msgEl.textContent = 'Bien. Tus músculos están en buena forma para tu edad. Mantén el ritmo.';
+            } else if (diff <= 10) {
+                msgEl.className = 'result-msg bad';
+                msgEl.textContent = 'Tus músculos están un poco por debajo del promedio. Considera aumentar tu actividad física y revisar tu nutrición.';
+            } else {
+                msgEl.className = 'result-msg bad';
+                msgEl.textContent = 'Tus músculos necesitan atención. Es buen momento para hablar con tu médico sobre cómo mejorar tu fuerza muscular.';
+            }
+        }
+
+        /* ── Retry ── */
+        $('btn-retry').addEventListener('click', () => {
+            detector.stop();
+            state.reps = 0;
+            state.isManual = false;
+            state.hasSensor = false;
+            $('calib-bar').style.width = '0%';
+            $('calib-progress-wrap').style.display = 'none';
+            $('btn-calibrate').disabled = false;
+            $('btn-calibrate').style.display = 'flex';
+            $('calib-label').textContent = 'Listo para calibrar';
+            $('manual-mode-wrap').style.display = 'none';
+            $('manual-reps-wrap').style.display = 'none';
+            $('manual-reps').value = '';
+            $('timer-circle').style.strokeDashoffset = '0';
+            $('timer-seconds').textContent = '30';
+            showScreen('welcome');
+        });
+    </script>
+</body>
+
+</html>
